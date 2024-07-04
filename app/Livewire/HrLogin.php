@@ -75,9 +75,9 @@ class HrLogin extends Component
             // $this->showLoader = true;
 
             if (Auth::guard('hr')->attempt(['hr_emp_id' => $this->form['emp_id'], 'password' => $this->form['password']])) {
-                return redirect().route('hello');
+                return redirect()->route('hello');
             } elseif (Auth::guard('hr')->attempt(['email' => $this->form['emp_id'], 'password' => $this->form['password']])) {
-                return redirect().route('hello');
+                return redirect()->route('hello');
             }  else {
                 $this->error = "Invalid ID or Password. Please try again.";
             }
