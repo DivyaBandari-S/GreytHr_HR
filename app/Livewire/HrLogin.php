@@ -66,6 +66,7 @@ class HrLogin extends Component
     }
     public function empLogin()
     {
+
         $this->validate([
             "form.emp_id" => 'required',
             "form.password" => "required"
@@ -115,17 +116,18 @@ class HrLogin extends Component
     {
         $this->resetForm();
         $this->resetValidation();
-        $this->showDialog = true;
+        $this->showDialog =true;
     }
     public function remove()
     {
+        $this->showDialog =false;
         $this->resetForm();
-        $this->showDialog = false;
+
     }
 
     public function closeSuccessModal()
     {
-        $this->showSuccessModal = false;
+        $this->showSuccessModal =false;
     }
     public function closeErrorModal()
     {
@@ -137,7 +139,6 @@ class HrLogin extends Component
     }
     public function verifyEmailAndDOB()
     {
-
         $this->validate([
             'email' => ['nullable', 'email', 'required_without:company_email'],
             'company_email' => ['nullable', 'email', 'required_without:email'],
@@ -174,6 +175,7 @@ class HrLogin extends Component
                 $this->verified = true;
                 if ($this->verified) {
                     $this->verified = false;
+                    $this->showDialog=false;
                     $this->showSuccessModal = true;
                 }
             } else {
@@ -209,6 +211,7 @@ class HrLogin extends Component
     {
         $this->verified = true;
         $this->showSuccessModal = false;
+        $this->showDialog=true;
     }
     public function createNewPassword()
     {
