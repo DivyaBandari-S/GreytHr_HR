@@ -1,32 +1,21 @@
 <div class="container-fluid p-0 loginBGGradiant">
-    <div class="m-0 pt-3 row">
+    <!-- <div class="m-0 pt-3 row">
         <div class="col-md-12" style="text-align: end;">
             <button class="btn btn-primary" wire:click="jobs" style="background-color: rgb(2, 17, 79);color:white;border-radius:5px;border:none">
                 Recruitment</button>
         </div>
-    </div>
+    </div> -->
 
 
     <div class="row m-0">
         <!-- Left Side (Login Form) -->
-        <div class="col-md-6 p-5 ">
-            <div class="text-center mb-4">
-            </div>
+        <div class="col-md-6 loginform  ">
             @if (Session::has('success'))
-            <div style="height: 30px;width:400px;margin-bottom:0px;margin-left:13%" class="text-center mb-4">
-
-                <div class="alert alert-success alert-dismissible fade show" role="alert" style="font-size: 12px;">
-
+            <div style="height: 30px; display: flex; align-items: center;" class="mb-4">
+                <div class="alert alert-success alert-dismissible fade show d-flex justify-content-between align-items-center" role="alert" style="font-size: 15px;">
                     {{ Session::get('success') }}
-
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-
-                        <span aria-hidden="true">&times;</span>
-
-                    </button>
-
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" style="border: 0;"></button>
                 </div>
-
             </div>
             @endif
             @if (session('sessionExpired'))
@@ -35,7 +24,7 @@
             </div>
             @endif
 
-            <form wire:submit.prevent="empLogin" class="login-form-with-shadow" style="margin-top: 0px; background-color: #f2f2f6; backdrop-filter: blur(36px);">
+            <form wire:submit.prevent="empLogin" class="login-form-with-shadow" style="margin-top: 10px; background-color: #f2f2f6; backdrop-filter: blur(36px);">
                 <div class="text-center mb-1" style="padding-top: 20px;">
                     <img src="{{ asset('images/hr_new_blue.png') }}" alt="Company Logo" style="width: 14em !important; height: auto !important; margin-bottom: 10px;">
                 </div>
@@ -67,72 +56,61 @@
                     @enderror
                 </div>
                 <div style="margin-left: 60%; text-align: center;" wire:click="show">
-                    <span><a href="#" wire:click="show" style="color: rgb(2, 17, 79);font-size:12px;">Forgot
+                    <span><a style="color: rgb(2, 17, 79);font-size:15px; cursor:pointer">Forgot
                             Password?</a></span>
                 </div>
                 <div class="form-group" style="text-align:center; margin-top:10px;">
-                    <input data-bs-toggle="modal" data-bs-target="#loginLoader" style="background-color:rgb(2,17,79); font-size:small; width:fit-content; margin: 0 auto;" type="submit" class="btn btn-primary btn-block" value="Login" />
+                    <input data-bs-toggle="modal" data-bs-target="#loginLoader" style="background-color:rgb(2,17,79); font-size:20px; width:100px; margin: 0 auto;" type="submit" class="btn btn-primary btn-block" value="Login" />
                 </div>
-
-
             </form>
 
         </div>
         <!-- Right Side (Carousel) -->
-        <div class="col-md-6 p-0">
+        <div class="col-md-6 p-0 loginanimation  " style="background-color:rgb(244 244 244);height:100vh; background-color:white">
             <!-- Carousel -->
-            <div id="demo" class="carousel slide" data-bs-ride="carousel" style="background-color: f0f0f0; aspect-ratio: 16/9;border-radius:10px">
-                <!-- Indicators/dots -->
-                <div class="carousel-indicators">
-                    <button type="button" data-bs-target="#demo" data-bs-slide-to="0" class="active"></button>
-                    <button type="button" data-bs-target="#demo" data-bs-slide-to="1"></button>
-                    <button type="button" data-bs-target="#demo" data-bs-slide-to="2"></button>
-                </div>
 
-                <!-- The slideshow/carousel -->
+            <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel" style=" aspect-ratio: 16/9;border-radius:10px">
+                <div class="carousel-indicators">
+                    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
+                </div>
                 <div class="carousel-inner">
                     <div class="carousel-item active">
                         <img src="{{ asset('images/communication.svg') }}" style="width: 85%;" alt="Los Angeles" class="d-block">
-                        <div class="carousel-caption" style="bottom: 0px; padding-bottom: 0px; color: #007bff;">
 
-                        </div>
+
                     </div>
                     <div class="carousel-item">
                         <img src="{{ asset('images/task.svg') }}" style="width: 85%;" alt="Chicago" class="d-block">
-                        <div class="carousel-caption" style="bottom: 0px; padding-bottom: 0px; color: #007bff;">
 
-                        </div>
                     </div>
                     <div class="carousel-item">
                         <img src="{{ asset('images/working.svg') }}" style="width: 85%;" alt="New York" class="d-block">
-                        <div class="carousel-caption" style="bottom: 0px; padding-bottom: 0px; color: #007bff;">
-
-                        </div>
                     </div>
                 </div>
-
-                <!-- Left and right controls/icons -->
-                <button class="carousel-control-prev" type="button" data-bs-target="#demo" data-bs-slide="prev">
-                    <span class="carousel-control-prev-icon"></span>
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
                 </button>
-                <button class="carousel-control-next" type="button" data-bs-target="#demo" data-bs-slide="next">
-                    <span class="carousel-control-next-icon"></span>
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
                 </button>
             </div>
         </div>
 
         @if ($showDialog)
         <div class="modal" tabindex="-1" role="dialog" style="display: block;">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content">
+            <div class="modal-dialog modal-dialog-centered" style="justify-content: center;display: flex;" role="document">
+                <div class="modal-content" style="width: 80%;">
                     <div class="modal-header" style="background-color: rgb(2, 17, 79);">
                         <h5 style="padding: 5px; color: white; font-size: 15px;" class="modal-title">
                             <b>{{ $verified ? 'Create New Password' : 'Verify Email and DOB' }}</b>
                         </h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close" wire:click="remove">
-                            <span aria-hidden="true" style="color: white;">x</span>
-                        </button>
+                        <button wire:click="remove" type="button" class="btn-close text-white " aria-label="Close" style=" background-color:white;"></button>
                     </div>
+
                     <div class="modal-body" style="background-color: #f0f0f0; padding: 20px;">
                         @if ($verified)
                         <!-- Form for creating a new password -->
@@ -158,8 +136,9 @@
                                 <span class="text-danger">{{ $message }}</span>
                                 @enderror
                             </div>
-
-                            <button type="submit" class="btn btn-success">Save Password</button>
+                            <div style="display:flex; justify-content:center;padding:10px">
+                                <button type="submit" class="btn btn-success">Save Password</button>
+                            </div>
 
                             <!-- Success or error message for password update -->
                             @if (session()->has('passwordMessage'))
@@ -170,7 +149,7 @@
                         </form>
                         @else
                         <!-- Form for verifying email and DOB -->
-                        <form wire:submit.prevent="verifyEmailAndDOB">
+                        <form wire:submit.prevent="verifyEmailAndDOB" style="display: flex;justify-content:center;flex-direction:column">
                             <!-- Add input fields for email and DOB verification -->
                             @if ($verify_error)
                             <div class="alert alert-danger alert-dismissible fade show" role="alert">
@@ -178,14 +157,14 @@
                                 <button type="button" class="btn-close btn-sm" data-bs-dismiss="alert" aria-label="Close"></button>
                             </div>
                             @endif
-                            <div class="form-group">
+                            <div class="form-group" style="margin-bottom: 10px;">
                                 <label for="email">Email</label>
                                 <input type="email" id="email" name="email" class="form-control" placeholder="Enter your email/company email" wire:model="email">
                                 @error('email')
                                 <span class="text-danger">{{ $message }}</span>
                                 @enderror
                             </div>
-                            <div class="form-group">
+                            <div class="form-group" style="margin-bottom: 10px;">
                                 <label for="dob">Date of Birth</label>
                                 <div class="input-group">
                                     <input type="date" id="dob" name="dob" class="form-control" wire:model="dob" max="{{ date('Y-m-d') }}">
@@ -195,8 +174,10 @@
                                 @enderror
                             </div>
 
+                            <div style="display: flex;justify-content:center;padding:10px">
+                                <button type="submit" style="width: 100px;" class="btn btn-primary">Verify</button>
 
-                            <button type="submit" class="btn btn-primary">Verify</button>
+                            </div>
 
                             <!-- Success or error message for email and DOB verification -->
                             @if (session()->has('emailDobMessage'))
@@ -211,7 +192,8 @@
                 </div>
             </div>
         </div>
-        <div class="modal-backdrop fade show blurred-backdrop"></div>
+        <div class="modal-backdrop fade show blurred-backdrop">
+        </div>
         @endif
 
         @if ($showSuccessModal)
@@ -223,15 +205,18 @@
                         <h5 style="padding: 5px; color: white; font-size: 15px;" class="modal-title">
                             <b>Success Message</b>
                         </h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close" wire:click="closeSuccessModal">
-                            <span aria-hidden="true" style="color: white;">x</span>
+                        <button type="button" style="margin-left: auto;background-color: rgb(2, 17, 79);border:0px; " class="close" data-dismiss="modal" aria-label="Close" wire:click="closeSuccessModal">
+                            <span aria-hidden="true" style="color: white;font-size:20px;background-color: rgb(2, 17, 79); ">x</span>
                         </button>
                     </div>
                     <div class="modal-body" style="background-color: #f0f0f0; padding: 20px;">
                         <p>Verification successful! Do you want to change your password?</p>
-                        <button type="button" class="btn btn-primary" wire:click="showPasswordChangeModal">Change
-                            Password</button>
-                        <button type="button" class="btn btn-secondary" wire:click="closeSuccessModal">Cancel</button>
+                        <div style="display: flex;justify-content:center;gap:5px;">
+                            <button type="button" class="btn btn-primary" wire:click="showPasswordChangeModal">Change
+                                Password</button>
+                            <button type="button" class="btn btn-secondary" wire:click="closeSuccessModal">Cancel</button>
+                        </div>
+
                     </div>
                 </div>
             </div>
@@ -248,13 +233,16 @@
                         <h5 style="padding: 5px; color: white; font-size: 12px;" class="modal-title">
                             <b>Error Message</b>
                         </h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close" wire:click="closeErrorModal">
-                            <span aria-hidden="true" style="color: white;">x</span>
+                        <button type="button" style="background-color: rgb(255, 0, 0);margin-left:auto;border:0px;" class="close" data-dismiss="modal" aria-label="Close" wire:click="closeErrorModal">
+                            <span aria-hidden="true" style="color: white; font-size:20px;background-color:rgb(255, 0, 0);">x</span>
                         </button>
                     </div>
                     <div class="modal-body" style="background-color: #f0f0f0; padding: 20px;">
                         <p>Sorry You Are not Verified.... Please try again.</p>
-                        <button type="button" class="btn btn-danger" wire:click="closeErrorModal">Close</button>
+                        <div style="display: flex;justify-content:center;">
+                            <button type="button" class="btn btn-danger" wire:click="closeErrorModal">Close</button>
+
+                        </div>
                     </div>
                 </div>
             </div>
@@ -317,3 +305,4 @@
         @endif
 
     </div>
+</div>
