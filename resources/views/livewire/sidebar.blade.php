@@ -3,8 +3,8 @@
         <div class="col1">
             <div>
                 <ul>
-                    <li wire:click.prevent="setActiveIcon('home')" class="list {{ ($activeIcon === 'home' || request()->is('*' . 'home' . '*')) ? 'active' : '' }}">
-                        <a href="/home " wire:navigate class="fa fa-home mainmenu-icons"></a>
+                    <li wire:click.prevent="setActiveIcon('home')" class="list {{ ($activeIcon === 'home' || request()->is('*' . 'dashboard' . '*')) ? 'active' : '' }}">
+                        <a href="/hr/dashboard " wire:navigate class="fa fa-home mainmenu-icons"></a>
                     </li>
                 </ul>
                 <ul>
