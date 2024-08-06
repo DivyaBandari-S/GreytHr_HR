@@ -1,12 +1,15 @@
 /* @import url(https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css);
 @import url(https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swa); */
 
+@charset "UTF-8";
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap");
 
 html,
 body {
     height: 100vh;
     display: 0px;
     background-color: rgb(244 244 244);
+    font-family: "Montserrat", sans-serif;
 }
 .loginform{
     display: flex;
@@ -253,3 +256,371 @@ ul {
     text-overflow: ellipsis;
 
 }
+/* admin dashboard */
+.a {
+    background: #fcfcfc;
+    border: 1px solid #ccc;
+    color: rgb(2, 17, 79);
+    transition: transform 0.3s ease, background-color 0.3s ease,
+        box-shadow 0.3s ease;
+}
+
+.avaPosCard {
+    background-color: #01bde012;
+    border: 1px solid #01bde0;
+    border-radius: 10px;
+    padding: 5px 15px;
+}
+.countOfNum {
+    color: #000;
+}
+.subHeading {
+    margin-bottom: 0;
+    font-size: 14px;
+    font-weight: 500;
+    color: #383838;
+}
+.announcemnt {
+    font-weight: 500;
+    color: #383838;
+    margin-bottom: 15px;
+    text-align: start;
+}
+.totalEmpText {
+    color: #383838;
+    font-weight: 500;
+    font-size: 16px;
+}
+.text-time {
+    font-size: 11px;
+    color: #778899;
+    margin-top: 5px;
+}
+.jobOpenCard {
+    background-color: #ff104012;
+    border: 1px solid #ff104b;
+    border-radius: 10px;
+    padding: 5px 15px;
+}
+.newEpmCard {
+    background-color: #00874012;
+    border: 1px solid #00874f;
+    border-radius: 10px;
+    padding: 5px 15px;
+}
+.totalEmpCard {
+    background-color: #f5e90012;
+    border: 1px solid #f5e901;
+    border-radius: 10px;
+    font-size: 13px;
+    padding: 5px 15px;
+    text-align: start;
+}
+.hrReqCard {
+    background-color: #c3479012;
+    border: 1px solid #c3479f;
+    border-radius: 10px;
+    font-size: 13px;
+    text-align: start;
+    padding: 5px 15px;
+}
+.annocmentCard {
+    background-color: #ffffff;
+    border: 1px solid #9a9999;
+    border-radius: 10px;
+    text-align: start;
+    font-size: 13px;
+    padding: 5px 15px;
+}
+.helpChip {
+    border: 1px solid #afafaf;
+    background-color: #fff;
+    border-radius: 30px;
+    padding: 8px 15px;
+    margin: 0px 4px 8px 0px;
+    display: inline-block;
+    cursor: pointer;
+    font-size: var( --normal-font-size);
+    color: #778899;
+}
+.helpChip:hover {
+    background-color: #01bde012;
+}
+.small-text {
+    font-size: 0.625rem;
+}
+.chart-title {
+    text-align: center;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 5px;
+    margin-bottom: 10px;
+    margin-top: 10px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #778899;
+}
+.card-body {
+    line-height: 1.6;
+    padding: 7px 0;
+    margin: 0 auto;
+    text-align: start;
+}
+.card-text {
+    font-size: 9px;
+    padding: 2px 5px;
+    margin-bottom: 0px;
+    margin-top: 7px;
+    border-radius: 20px;
+    background-color: #f4f4f4;
+}
+.btn-start {
+    display: flex;
+    height: 28px;
+    color: white;
+    font-size: 0.625rem;
+    padding: 5px 2px;
+    width: 100px;
+    justify-content: center;
+    align-items: center;
+    border-radius: 4px;
+    background: rgb(2, 17, 79);
+}
+/* end of admin dashboard */
+/* Step Form */
+
+#msform {
+    /* text-align: center; */
+    position: relative;
+    background: #fff;
+    z-index: 1;
+}
+#msform fieldset {
+    background: white;
+    border: 0 none;
+    border-radius: 3px;
+    padding: 20px 30px;
+    box-sizing: border-box;
+    width: 80%;
+    margin: 0 10%;
+
+    /*stacking fieldsets above each other*/
+    position: relative;
+}
+/*Hide all except first fieldset*/
+#msform fieldset:not(:first-of-type) {
+    display: none;
+}
+/*inputs*/
+#msform input,
+#msform textarea {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    margin-bottom: 10px;
+    /* width: 100%; */
+    box-sizing: border-box;
+    /* font-family: 'Source Sans Pro'; */
+    color: #2c3e50;
+    font-size: 13px;
+}
+/*buttons*/
+#msform .action-button {
+    width: 100px;
+    background: #27ae60;
+    font-weight: bold;
+    color: white;
+    border: 0 none;
+    border-radius: 1px;
+    cursor: pointer;
+    padding: 10px 5px;
+    margin: 10px 5px;
+}
+#msform .action-button:hover,
+#msform .action-button:focus {
+    box-shadow: 0 0 0 2px white, 0 0 0 3px #27ae60;
+}
+/*headings*/
+.fs-title {
+    font-size: 28px;
+    color: #26254e;
+    margin-bottom: 10px;
+    font-weight: 700;
+}
+.fs18 {
+    font-size: 18px;
+}
+.fs-subtitle {
+    font-weight: normal;
+    font-size: 16px;
+    color: #666;
+    margin-bottom: 20px;
+}
+/*progressbar*/
+#progressbar {
+    margin-bottom: 30px;
+    overflow: hidden;
+    /*CSS counters to number the steps*/
+    counter-reset: step;
+}
+#progressbar li {
+    list-style-type: none;
+    color: black;
+    text-transform: uppercase;
+    font-size: 10px;
+    width: 25%;
+    float: left;
+    position: relative;
+}
+#progressbar li:before {
+    content: counter(step);
+    counter-increment: step;
+    width: 20px;
+    line-height: 20px;
+    display: block;
+    font-size: 10px;
+    color: #333;
+    background: #eee;
+    border-radius: 3px;
+    margin: 0 auto 5px auto;
+}
+/*progressbar connectors*/
+#progressbar li:after {
+    content: "";
+    width: 100%;
+    height: 2px;
+    background: #eee;
+    position: absolute;
+    left: -50%;
+    top: 9px;
+    z-index: -1; /*put it behind the numbers*/
+}
+#progressbar li:first-child:after {
+    /*connector not needed before the first step*/
+    content: none;
+}
+/*marking active/completed steps green*/
+/*The number of the step and the connector before it = green*/
+#progressbar li.active:before,
+#progressbar li.active:after {
+    background: #26254e;
+    color: white;
+}
+
+.ilynn-btn {
+    width: 20%;
+    /* padding: 20px; */
+    padding: 7px 15px !important;
+    /* margin: 10px 0px; */
+    /* border-radius: 100px !important; */
+    border: none !important;
+    background-color: #eee;
+    font-size: 16px !important;
+    color: #303030;
+    margin-right: 20px;
+    float: inline-end;
+}
+
+.ilynn-btn:hover {
+    background-color: #26254e;
+    color: #fff !important;
+    cursor: pointer;
+}
+.styled-checkbox {
+    position: absolute;
+    opacity: 0;
+}
+.styled-checkbox + label {
+    position: relative;
+    cursor: pointer;
+    padding: 0;
+}
+.styled-checkbox + label:before {
+    content: "";
+    margin-right: 10px;
+    display: inline-block;
+    vertical-align: text-top;
+    width: 20px;
+    height: 20px;
+    background: #eee;
+}
+.styled-checkbox:hover + label:before {
+    background: #26254e;
+}
+.styled-checkbox:focus + label:before {
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.12);
+}
+.styled-checkbox:checked + label:before {
+    background: #26254e;
+}
+.styled-checkbox:disabled + label {
+    color: #b8b8b8;
+    cursor: auto;
+}
+.styled-checkbox:disabled + label:before {
+    box-shadow: none;
+    background: #ddd;
+}
+.styled-checkbox:checked + label:after {
+    content: "";
+    position: absolute;
+    left: 5px;
+    top: 9px;
+    background: white;
+    width: 2px;
+    height: 2px;
+    box-shadow: 2px 0 0 white, 4px 0 0 white, 4px -2px 0 white, 4px -4px 0 white,
+        4px -6px 0 white, 4px -8px 0 white;
+    -webkit-transform: rotate(45deg);
+    transform: rotate(45deg);
+}
+
+.unstyled {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+}
+
+.unstyled li {
+    text-align: left;
+    margin: 20px;
+}
+.srf-btn {
+    text-decoration: none;
+    color: white;
+    background-color: #26254e !important;
+    border-radius: 100px;
+    padding: 10px 20px;
+}
+
+.srf-title {
+    margin: 25px;
+    color: #26254e;
+}
+
+.srf-para {
+    margin: 10px;
+    line-height: 30px;
+    color: #aaa;
+}
+
+.app-drawer-img {
+    width: 1.2em;
+    background: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+::-webkit-scrollbar-track {
+    background: #55535333;
+}
+
+.btn-btn {
+    background: rgb(2, 17, 79);
+    border: none;
+}
+.closed-btn {
+    background-color: rgb(2, 17, 79);
+    border: none;
+}
+/* end of styles */
+
