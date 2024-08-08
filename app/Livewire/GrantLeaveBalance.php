@@ -121,7 +121,7 @@ class GrantLeaveBalance extends Component
             }
         }
 
-        return redirect()->to('/addLeaves');
+        return redirect()->to('/hr/update-employee-leaves');
     }
  
     public function render()
