@@ -56,7 +56,6 @@
                                 List</a></button>
                     </div>
                 </div>
-
                 <!-- multistep form -->
                 <form id="msform" wire:submit.prevent="register" enctype="multipart/form-data" class="row m-0">
                     <div class="row m-0 mt-3 mb-3" style="text-align: center">
@@ -70,7 +69,9 @@
                                 <li class="{{ $currentStep >= 1 ? 'active' : '' }}">Employee Details</li>
                                 <li class="{{ $currentStep >= 2 ? 'active' : '' }}">Employee Job Details</li>
                                 <li class="{{ $currentStep >= 3 ? 'active' : '' }}"> Employee Personal Details</li>
-                                <li class="{{ $currentStep == 4 ? 'active' : '' }}">Other Details</li>
+                                <li class="{{ $currentStep >= 4 ? 'active' : '' }}">Employee Address Details</li>
+                                <li class="{{ $currentStep >= 5 ? 'active' : '' }}">Employee Parents Details</li>
+
                             </ul>
                         </div>
                         <div class="col-md-2"></div>
@@ -85,7 +86,7 @@
                                 <h2 class="fs-subtitle">Employee Details</h2>
                             </div>
                             <div class="form-group col-md-6">
-                                <label class="mt-1" for="first_name">First Name  <span class="text-danger">*</span></label>
+                                <label class="mt-1" for="first_name">First Name <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control  placeholder-small  m-0" placeholder="Enter first name" wire:model="first_name" style="width:100%;">
                                 @error('first_name')
                                 <span class="text-danger">{{ $message }}</span>
@@ -212,7 +213,7 @@
 
                     <div class="form-group col-md-6">
                         <label class="mt-1" for="company_id">Company Name <span class="text-danger">*</span></label>
-                        <select wire:click="selectedCompany" class="form-control  placeholder-small m-0" wire:model="company_id" style="margin-bottom: 10px;">
+                        <select wire:click="selectedCompany" class="form-control custom-select   placeholder-small m-0" wire:model="company_id" style="margin-bottom: 10px;">
                             <option disabled value="">Select Company</option>
                             <!-- Add a default option -->
                             @foreach ($companieIds as $id)
@@ -251,7 +252,7 @@
 
                     <div class="form-group col-md-6">
                         <label class="mt-1" for="department">Department <span class="text-danger">*</span></label>
-                        <select wire:change="selectedDepartment($event.target.value)" class="form-control  placeholder-small m-0" wire:model="department_id">
+                        <select wire:change="selectedDepartment($event.target.value)" class="form-control custom-select  placeholder-small m-0" wire:model="department_id">
                             <option disabled selected value="">Select Department</option>
                             @foreach ($departments as $department)
                             <option value="{{ $department->dept_id }}">{{ $department->department }}</option>
@@ -265,7 +266,7 @@
 
                     <div class="form-group col-md-6">
                         <label class="mt-1" for="department"> Sub Department <span class="text-danger">*</span></label>
-                        <select class="form-control  placeholder-small m-0" wire:model="sub_department_id" style="margin-bottom: 10px;">
+                        <select class="form-control custom-select  placeholder-small m-0" wire:model="sub_department_id" style="margin-bottom: 10px;">
                             <option disabled selected value="">Select sub department</option>
                             @foreach ($sub_departments as $sub_department)
                             <option value="{{ $sub_department->sub_dept_id }}">{{ $sub_department->sub_department }}</option>
@@ -278,7 +279,7 @@
 
                     <div class="form-group col-md-6">
                         <label class="mt-1" for="manager_id">Reporting To <span class="text-danger">*</span></label>
-                        <select wire:change="fetchReportTo" class="form-control  placeholder-small m-0"  wire:model="manager_id" style="margin-bottom: 10px;">
+                        <select wire:change="fetchReportTo" class="form-control custom-select placeholder-small m-0" wire:model="manager_id" style="margin-bottom: 10px;">
                             <option value="">Select manager</option>
                             <!-- Add a default option -->
                             @if ($managerIds != null)
@@ -293,10 +294,10 @@
                     </div>
                     <div class="form-group col-md-6">
                         <label class="mt-1" for="department">Shift Type </label>
-                        <select  class="form-control  placeholder-small m-0" wire:model="shift_type">
-                            <option  selected value="GS">General Shift</option>
-                            <option   value="AS">Afternoon Shift</option>
-                            <option   value="ES">Evening Shift</option>
+                        <select class="form-control  placeholder-small m-0" wire:model="shift_type">
+                            <option selected value="GS">General Shift</option>
+                            <option value="AS">Afternoon Shift</option>
+                            <option value="ES">Evening Shift</option>
 
                         </select>
                         @error('shift_type')
@@ -305,14 +306,14 @@
                     </div>
                     <div class="form-group col-md-6">
                         <label class="mt-1" for="hire_date">Shift Start Time </label>
-                        <input type="time" class="form-control  placeholder-small m-0" wire:model="shift_start_time" >
+                        <input type="time" class="form-control  placeholder-small m-0" wire:model="shift_start_time">
                         @error('shift_start_time')
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>
                     <div class="form-group col-md-6">
                         <label class="mt-1" for="hire_date">Shift End Time </label>
-                        <input type="time" class="form-control  placeholder-small m-0" wire:model="shift_end_time" >
+                        <input type="time" class="form-control  placeholder-small m-0" wire:model="shift_end_time">
                         @error('shift_end_time')
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
@@ -327,21 +328,21 @@
                     </div>
                     <div class="form-group col-md-6">
                         <label class="mt-1" for="referrer">Probation Period </label>
-                        <input type="text" class="form-control  placeholder-small m-0" placeholder="Enter probation period "   wire:model="probation_period">
+                        <input type="text" class="form-control  placeholder-small m-0" placeholder="Enter probation period " wire:model="probation_period">
                         @error('probation_period')
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>
                     <div class="form-group col-md-6">
                         <label class="mt-1" for="confirmation_date">Confirmation Date </label>
-                        <input type="date" class="form-control  placeholder-small m-0"  placeholder="Enter confirmation date  " wire:model="confirmation_date" max="{{ date('Y-m-d') }}">
+                        <input type="date" class="form-control  placeholder-small m-0" placeholder="Enter confirmation date  " wire:model="confirmation_date" max="{{ date('Y-m-d') }}">
                         @error('confirmation_date')
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>
                     <div class="form-group col-md-6">
                         <label class="mt-1" for="notice_period">Notice Period </label>
-                        <input type="text" class="form-control  placeholder-small m-0" placeholder="Enter notice period "   wire:model="notice_period">
+                        <input type="text" class="form-control  placeholder-small m-0" placeholder="Enter notice period " wire:model="notice_period">
                         @error('notice_period')
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
@@ -418,7 +419,7 @@
                 </div>
 
                 <hr class="hr-wizard" />
-                <input type="button" name="next" class="next ilynn-btn" value="Next" wire:click="nextPage" />
+                <input type="button" name="next" class="next ilynn-btn" value=" Save & Next" wire:click="nextPage" />
                 <input type="button" name="previous" class="previous ilynn-btn" value="Back" wire:click="previousPage" />
             </fieldset>
             @endif
@@ -440,7 +441,7 @@
 
                     <div class="form-group col-md-6">
                         <label class="mt-1" for="blood_group">Blood Group <span class="text-danger">*</span></label>
-                        <select class="form-control  placeholder-small m-0" wire:model="blood_group">
+                        <select class="form-control custom-select  placeholder-small m-0" wire:model="blood_group">
                             <option disabled selected value="">Select blood group</option>
 
                             @foreach ($blood_groups as $blood)
@@ -448,6 +449,48 @@
                             @endforeach
                         </select>
                         @error('blood_group')
+                        <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="mt-1" for="aadhar_no">Aadhar Number <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control  placeholder-small m-0" placeholder="Enter Aadhar number" wire:model="aadhar_no">
+                        @error('aadhar_no')
+                        <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="mt-1" for="pan_no">PAN Number </label>
+                        <input type="text" class="form-control  placeholder-small m-0" placeholder="Enter PAN number" wire:model="pan_no" oninput="this.value = this.value.toUpperCase();">
+                        @error('pan_no')
+                        <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="mt-1" for="alternate_mobile_number">Alternate Phone Number </label>
+                        <input type="text" class="form-control  placeholder-small m-0" placeholder="Enter alternate phone number" wire:model="alternate_mobile_number">
+                        @error('alternate_mobile_number')
+                        <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="mt-1" for="email">Personal Email <span class="text-danger">*</span></label>
+                        <input type="email" class="form-control  placeholder-small m-0" placeholder="Enter personal email" wire:model="email">
+                        @error('email')
+                        <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="mt-1" for="passport_no">Passport Number </label>
+                        <input type="text" class="form-control  placeholder-small m-0" placeholder="Enter passport number " wire:model="passport_no">
+                        @error('passport_no')
+                        <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="mt-1" for="pf_no">PF Number </label>
+                        <input type="text" class="form-control  placeholder-small m-0" placeholder="Enter passport number " wire:model="pf_no">
+                        @error('pf_no')
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>
@@ -465,27 +508,8 @@
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>
-                    <div class="form-group col-md-6">
-                        <label class="mt-1" for="aadhar_no">Aadhar Number <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control  placeholder-small m-0" placeholder="Enter adhar number" wire:model="aadhar_no">
-                        @error('aadhar_no')
-                        <span class="text-danger">{{ $message }}</span>
-                        @enderror
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label class="mt-1" for="alternate_mobile_number">Alternate Phone Number </label>
-                        <input type="text" class="form-control  placeholder-small m-0" placeholder="Enter alternate phone number" wire:model="alternate_mobile_number">
-                        @error('alternate_mobile_number')
-                        <span class="text-danger">{{ $message }}</span>
-                        @enderror
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label class="mt-1" for="email">Personal Email <span class="text-danger">*</span></label>
-                        <input type="email" class="form-control  placeholder-small m-0" placeholder="Enter email" wire:model="email">
-                        @error('email')
-                        <span class="text-danger">{{ $message }}</span>
-                        @enderror
-                    </div>
+
+
                     <div class="form-group col-md-6">
                         <div class="input-group onboarding-check-boxes">
                             <label class="mt-1">Martial Status <span class="text-danger">*</span></label>
@@ -496,7 +520,7 @@
                                 </div>
                                 <div class="form-check form-check-inline">
                                     <input class="form-check-input  mb-2" type="radio" wire:model="marital_status" value="married" id="marriedRadio" name="marital_status_group">
-                                    <label  class="form-check-label-options mt-1 " for="marriedRadio">Married</label>
+                                    <label class="form-check-label-options mt-1 " for="marriedRadio">Married</label>
                                 </div>
                             </div>
                         </div>
@@ -513,11 +537,11 @@
                             <div>
                                 <div class="form-check form-check-inline">
                                     <input class="form-check-input  mb-2" type="radio" wire:model="physically_challenge" value="Yes" id="yesRadio" name="physically_challenge_group">
-                                    <label  class="form-check-label-options mt-1" for="yesRadio">Yes</label>
+                                    <label class="form-check-label-options mt-1" for="yesRadio">Yes</label>
                                 </div>
                                 <div class="form-check form-check-inline">
                                     <input class="form-check-input  mb-2" type="radio" wire:model="physically_challenge" value="No" id="noRadio" name="physically_challenge_group" checked>
-                                    <label  class="form-check-label-options mt-1" for="noRadio">No</label>
+                                    <label class="form-check-label-options mt-1" for="noRadio">No</label>
                                 </div>
                             </div>
                         </div>
@@ -538,11 +562,11 @@
             <fieldset>
                 <div class="bg-light m-0 row ">
                     <div class="row m-0 mb-2 mt-3" style="text-align: center">
-                        <h2 class="fs-subtitle">Other Details</h2>
+                        <h2 class="fs-subtitle">Employee Address Details</h2>
                     </div>
                     <div class="form-group col-md-6">
-                        <label class="mt-1" for="address">Address <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control  placeholder-small m-0" placeholder="Enter address" wire:model="address">
+                        <label class="mt-1" for="address"> Permanent Address <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control  placeholder-small m-0" placeholder="Enter Permanent address" wire:model="address">
                         @error('address')
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
@@ -576,45 +600,301 @@
                         @enderror
                     </div>
                     <div class="form-group col-md-6">
+                        <label class="mt-1" for="present_address"> Present Address <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control  placeholder-small m-0" placeholder="Enter present address" wire:model="present_address">
+                        @error('present_address')
+                        <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="mt-1" for="facebook"> Facebook Url </label>
+                        <input type="text" class="form-control  placeholder-small m-0" placeholder="Enter facebook url" wire:model="facebook">
+                        @error('facebook')
+                        <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="mt-1" for="twitter"> Twitter Url </label>
+                        <input type="text" class="form-control  placeholder-small m-0" placeholder="Enter facebook url" wire:model="twitter">
+                        @error('twitter')
+                        <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="mt-1" for="linked_in"> Linked-In Url </label>
+                        <input type="text" class="form-control  placeholder-small m-0" placeholder="Enter facebook url" wire:model="linked_in">
+                        @error('linked_in')
+                        <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    {{-- <div class="form-group col-md-6">
                         <label class="mt-1" for="education">Education :</label>
                         <input type="text" class="form-control  placeholder-small m-0" placeholder="Enter education" wire:model="education">
                         @error('education')
                         <span class="text-danger">{{ $message }}</span>
-                        @enderror
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label class="mt-1" for="experience">Experience :</label>
-                        <input type="text" class="form-control  placeholder-small m-0" placeholder="Enter experience" wire:model="experience">
-                        @error('experience')
-                        <span class="text-danger">{{ $message }}</span>
-                        @enderror
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label class="mt-1" for="spouse">Spouse:</label>
-                        <input type="text" class="form-control  placeholder-small m-0" placeholder="Enter spouse name" wire:model="spouse">
-                        @error('spouse')
-                        <span class="text-danger">{{ $message }}</span>
-                        @enderror
-                    </div>
+                    @enderror
+                </div>
+                <div class="form-group col-md-6">
+                    <label class="mt-1" for="experience">Experience :</label>
+                    <input type="text" class="form-control  placeholder-small m-0" placeholder="Enter experience" wire:model="experience">
+                    @error('experience')
+                    <span class="text-danger">{{ $message }}</span>
+                    @enderror
+                </div>
+                <div class="form-group col-md-6">
+                    <label class="mt-1" for="spouse">Spouse:</label>
+                    <input type="text" class="form-control  placeholder-small m-0" placeholder="Enter spouse name" wire:model="spouse">
+                    @error('spouse')
+                    <span class="text-danger">{{ $message }}</span>
+                    @enderror
+                </div>--}}
+        </div>
+
+
+        <hr class="hr-wizard" />
+        @if($employeeId)
+        <button wire:click="updateEmployee" class="btn btn-primary" wire:loading.attr="disabled" style="float: inline-end">Update</button>
+        @else
+        <!-- If employeeId is not set, it means we're adding a new employee -->
+        <input type="button" name="next" class="next ilynn-btn" value=" Save & Next" wire:click="nextPage" /> @endif
+        <!-- <input type="button" name="next" class="next ilynn-btn" value="Next" onclick="getChecked()" /> -->
+        <input type="button" name="previous" class="previous ilynn-btn" wire:click='previousPage' value="Back" />
+        </fieldset>
+        @endif
+
+        @if($currentStep==5)
+        @if($parentscurrentStep==1)
+        <fieldset>
+            <div class="bg-light m-0 row">
+                <div class="row m-0 mb-2 mt-3" style="text-align: center">
+                    <h2 class="fs-subtitle">Employee Parents Details</h2>
+                </div>
+
+                <div class="form-group col-md-6">
+                    <label class="mt-1" for="father_first_name">Father First Name <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control  placeholder-small  m-0" placeholder="Enter father first name" wire:model="father_first_name" style="width:100%;">
+                    @error('father_first_name')
+                    <span class="text-danger">{{ $message }}</span>
+                    @enderror
                 </div>
 
 
+                <div class="form-group col-md-6">
+                    <label class="mt-1" for="father_last_name">Father Last Name <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control  placeholder-small m-0" placeholder="Enter father last name" wire:model="father_last_name">
+                    @error('father_last_name')
+                    <span class="text-danger">{{ $message }}</span>
+                    @enderror
+                </div>
+                <div class="form-group col-md-6">
+                    <label class="mt-1" for="mother_first_name">Mother First Name <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control  placeholder-small  m-0" placeholder="Enter mother first name" wire:model="mother_first_name" style="width:100%;">
+                    @error('mother_first_name')
+                    <span class="text-danger">{{ $message }}</span>
+                    @enderror
+                </div>
+
+
+                <div class="form-group col-md-6">
+                    <label class="mt-1" for="mother_last_name">Mother Last Name <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control  placeholder-small m-0" placeholder="Enter mother last name" wire:model="mother_last_name">
+                    @error('mother_last_name')
+                    <span class="text-danger">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                <div class="form-group col-md-6">
+                    <label class="mt-1" for="father_dob">Father DOB </label>
+                    <input type="date" class="form-control  placeholder-small m-0" wire:model="father_dob" max="{{ date('Y-m-d') }}">
+                    @error('father_dob')
+                    <span class="text-danger">{{ $message }}</span>
+                    @enderror
+                </div>
+                <div class="form-group col-md-6">
+                    <label class="mt-1" for="mother_dob">Mother DOB </label>
+                    <input type="date" class="form-control  placeholder-small m-0" wire:model="mother_dob" max="{{ date('Y-m-d') }}">
+                    @error('mother_dob')
+                    <span class="text-danger">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                <div class="form-group col-md-6">
+                    <label class="mt-1" for="father_blood_group"> Father Blood Group <span class="text-danger">*</span></label>
+                    <select class="form-control custom-select  placeholder-small m-0" wire:model="father_blood_group">
+                        <option disabled selected value="">Select blood group</option>
+
+                        @foreach ($blood_groups as $blood)
+                        <option value="{{ $blood }}">{{ $blood }}</option>
+                        @endforeach
+                    </select>
+                    @error('father_blood_group')
+                    <span class="text-danger">{{ $message }}</span>
+                    @enderror
+                </div>
+                <div class="form-group col-md-6">
+                    <label class="mt-1" for="mother_blood_group"> Mother Blood Group <span class="text-danger">*</span></label>
+                    <select class="form-control custom-select  placeholder-small m-0" wire:model="mother_blood_group">
+                        <option disabled selected value="">Select blood group</option>
+
+                        @foreach ($blood_groups as $blood)
+                        <option value="{{ $blood }}">{{ $blood }}</option>
+                        @endforeach
+                    </select>
+                    @error('mother_blood_group')
+                    <span class="text-danger">{{ $message }}</span>
+                    @enderror
+                </div>
+                <div class="form-group col-md-6">
+                    <label class="mt-1" for="father_phone">Father Phone Number</label>
+                    <input type="text" class="form-control  placeholder-small m-0" placeholder="Enter father phone number" wire:model="father_phone">
+                    @error('father_phone')
+                    <span class="text-danger">{{ $message }}</span>
+                    @enderror
+                </div>
+                <div class="form-group col-md-6">
+                    <label class="mt-1" for="mother_phone">Mother Phone Number</label>
+                    <input type="text" class="form-control  placeholder-small m-0" placeholder="Enter mother phone number" wire:model="mother_phone">
+                    @error('mother_phone')
+                    <span class="text-danger">{{ $message }}</span>
+                    @enderror
+                </div>
+
+            </div>
+            <hr class="hr-wizard" />
+            <input type="button" name="next" class="next ilynn-btn" value="Next" wire:click="parentsnextPage" />
+            <input type="button" name="previous" class="previous ilynn-btn" value="Back" wire:click="previousPage" />
+        </fieldset>
+        @elseif($parentscurrentStep==2)
+        <div style="display: flex;justify-content:center">
+
+
+            <div style="width: 80%; padding: 20px 30px;">
+                <div class="bg-light m-0 row">
+                    <div class="row m-0 mb-2 mt-3" style="text-align: center">
+                        <h2 class="fs-subtitle">Employee Parents Optional Details</h2>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label class="mt-1" for="father_email">Father Email </label>
+                        <input type="email" class="form-control  placeholder-small  m-0" placeholder="Enter father email" wire:model="father_email" style="width:100%;">
+                        @error('father_email')
+                        <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="mt-1" for="mother_email">Mother Email </label>
+                        <input type="email" class="form-control  placeholder-small  m-0" placeholder="Enter mother email" wire:model="mother_email" style="width:100%;">
+                        @error('mother_email')
+                        <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="mt-1" for="father_religion">Father Religion </label>
+                        <input type="text" class="form-control  placeholder-small  m-0" placeholder="Enter father religion" wire:model="father_religion" style="width:100%;">
+                        @error('father_religion')
+                        <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="mt-1" for="mother_religion">Mother Religion </label>
+                        <input type="text" class="form-control  placeholder-small  m-0" placeholder="Enter mother religion" wire:model="mother_religion" style="width:100%;">
+                        @error('mother_religion')
+                        <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="mt-1" for="father_nationality">Father Nationality </label>
+                        <input type="text" class="form-control  placeholder-small  m-0" placeholder="Enter father nationality" wire:model="father_nationality" style="width:100%;">
+                        @error('father_nationality')
+                        <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="mt-1" for="mother_nationality">Mother Nationality </label>
+                        <input type="text" class="form-control  placeholder-small  m-0" placeholder="Enter mother nationality" wire:model="mother_nationality" style="width:100%;">
+                        @error('mother_nationality')
+                        <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="mt-1" for="father_occupation">Father Occupation </label>
+                        <input type="text" class="form-control  placeholder-small  m-0" placeholder="Enter father occupation" wire:model="father_occupation" style="width:100%;">
+                        @error('father_occupation')
+                        <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="mt-1" for="mother_occupation">Mother Occupation </label>
+                        <input type="text" class="form-control  placeholder-small  m-0" placeholder="Enter mother occupation" wire:model="mother_occupation" style="width:100%;">
+                        @error('mother_occupation')
+                        <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="mt-1" for="father_address">Father Address </label>
+                        <input type="text" class="form-control  placeholder-small  m-0" placeholder="Enter father address" wire:model="father_address" style="width:100%;">
+                        @error('father_address')
+                        <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="mt-1" for="mother_address">Mother Address </label>
+                        <input type="text" class="form-control  placeholder-small  m-0" placeholder="Enter mother address" wire:model="mother_address" style="width:100%;">
+                        @error('mother_address')
+                        <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group col-md-6">
+                            <label class="mt-1" for="image">Father Image</label>
+                            <input type="file" wire:model="father_image" style="font-size:12px;border:none;">
+                            @error('father_image')
+                            <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+                        <div class="form-group col-md-6  " style="display: flex;justify-content:end">
+                            @if($father_image)
+                            <img src="{{ is_string($father_image) ? asset('storage/' . $father_image) : $father_image->temporaryUrl() }}" alt="Preview" style='height:100px;width:100px' class="img-thumbnail" />
+                           {{-- @elseif($employee && $employee->image)
+                            <img src="{{ asset('storage/' . $employee->image) }}" alt="Preview" style='height:100px;width:100px' class="img-thumbnail" />
+                            @endif --}}
+                            @endif
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group col-md-6">
+                            <label class="mt-1" for="image">Mother Image</label>
+                            <input type="file" wire:model="mother_image" style="font-size:12px;border:none;">
+                            @error('mother_image')
+                            <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+                        <div class="form-group col-md-6  " style="display: flex;justify-content:end">
+                            @if($mother_image)
+                            <img src="{{ is_string($mother_image) ? asset('storage/' . $mother_image) : $mother_image->temporaryUrl() }}" alt="Preview" style='height:100px;width:100px' class="img-thumbnail" />
+                           {{-- @elseif($employee && $employee->image)
+                            <img src="{{ asset('storage/' . $employee->image) }}" alt="Preview" style='height:100px;width:100px' class="img-thumbnail" />
+                            @endif --}}
+
+                            @endif
+                        </div>
+                    </div>
+
+                </div>
                 <hr class="hr-wizard" />
-                @if($employeeId)
-                <button wire:click="updateEmployee" class="btn btn-primary" wire:loading.attr="disabled" style="float: inline-end">Update</button>
-                @else
-                <!-- If employeeId is not set, it means we're adding a new employee -->
-                <button wire:click="register" class="btn btn-primary" wire:loading.attr="disabled" style="float: inline-end">Save</button>
-                @endif
-                <!-- <input type="button" name="next" class="next ilynn-btn" value="Next" onclick="getChecked()" /> -->
-                <input type="button" name="previous" class="previous ilynn-btn" wire:click='previousPage' value="Back" />
-            </fieldset>
-            @endif
-            </form>
-
-
-
+                <input type="button" name="next" class="next ilynn-btn" value=" Skip & Next" wire:click="nextPage" />
+                <input type="button" name="previous" class="previous ilynn-btn" value="Back" wire:click="parentspreviousPage" />
+            </div>
         </div>
+        @endif
+        @endif
+        </form>
+
+
+
     </div>
+</div>
 </div>
 </div>
