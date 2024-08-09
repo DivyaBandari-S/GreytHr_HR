@@ -212,7 +212,7 @@
 
                     <div class="form-group col-md-6">
                         <label class="mt-1" for="company_id">Company Name <span class="text-danger">*</span></label>
-                        <select wire:click="selectedCompany" class="form-control  placeholder-small m-0" wire:model="company_id" style="margin-bottom: 10px;">
+                        <select wire:click="selectedCompany" class="form-control custom-select   placeholder-small m-0" wire:model="company_id" style="margin-bottom: 10px;">
                             <option disabled value="">Select Company</option>
                             <!-- Add a default option -->
                             @foreach ($companieIds as $id)

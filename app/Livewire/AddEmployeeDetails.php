@@ -29,7 +29,7 @@ class AddEmployeeDetails extends Component
 {
     use WithFileUploads;
 
-    public $emp_id;
+    public $emp_id='';
     public $first_name;
     public $last_name;
     public $date_of_birth;
@@ -119,16 +119,21 @@ class AddEmployeeDetails extends Component
     public function nextPage()
 
     {
+
         $this->validate($this->validationRules());
-        if($this->currentStep==1 || $this->currentStep==2){
+
+        if( $this->currentStep==1){
+            $this->currentStep++;
+        }elseif($this->currentStep==2){
            $this->registerEmployeeDetails();
         }elseif($this->currentStep==3){
+            $this->currentStep++;
+        }
+        elseif($this->currentStep==3){
             $this->registerEmployeeJobDetails();
         }else{
 
         }
-        // $this->currentStep++;
-
 
     }
 
@@ -176,28 +181,26 @@ class AddEmployeeDetails extends Component
 
     public function registerEmployeeDetails()
     {
-
-        try{
-
-
+        try {
             $this->validate($this->validationRules());
 
             if ($this->image) {
-                $imageBinary  =base64_encode(file_get_contents($this->image->getRealPath())) ;
+                $imageBinary = base64_encode(file_get_contents($this->image->getRealPath()));
             } else {
                 $imageBinary = 'Null';
             }
 
-
-
             $report_to = EmployeeDetails::where('emp_id', $this->manager_id)->value('manager_id');
-            $employee = EmployeeDetails::updateOrCreate(
-                ['emp_id' => $this->emp_id],
-                [
+
+
+                 EmployeeDetails::updateorCreate(
+                    [ 'emp_id' => $this->emp_id],
+                    [
                     'first_name' => $this->first_name,
                     'last_name' => $this->last_name,
                     'gender' => $this->gender,
                     'email' => $this->company_email,
+                    'company_id' => $this->company_id,
                     'hire_date' => $this->hire_date,
                     'employee_type' => $this->employee_type,
                     'manager_id' => $this->manager_id,
@@ -210,35 +213,28 @@ class AddEmployeeDetails extends Component
                     'inter_emp' => $this->inter_emp,
                     'job_location' => $this->job_location,
                     // 'image' => $imageBinary,
-                    'emp_domain'=>$this->emp_domain,
-                    'referral'=>$this->referrer,
-                    'probation_Period'=>$this->probation_period,
-                    'confirmation_date' =>$this->confirmation_date,
-                    'shift_type'=>$this->shift_type,
-                    'shift_start_time'=>$this->shift_start_time,
-                    'shift_end_time'=>$this->shift_end_time,
+                    'emp_domain' => $this->emp_domain,
+                    'referral' => $this->referrer,
+                    'probation_Period' => $this->probation_period,
+                    'confirmation_date' => $this->confirmation_date,
+                    'shift_type' => $this->shift_type,
+                    'shift_start_time' => $this->shift_start_time,
+                    'shift_end_time' => $this->shift_end_time,
+                ]);
 
-                ]
-            );
+                $this->emp_id = EmployeeDetails::where('email', $this->company_email)->value('emp_id');
 
-            $this->emp_id = $employee->emp_id;
-            dd($this->emp_id);
 
             session()->flash('emp_success', 'Employee registered successfully!');
 
             // Clear the form fields
-            $this->reset();
             $this->currentStep++;
-            // return redirect('/update-employee-details');
-
-        }
-        catch(\Exception $e ){
-            Log::error('Error in getTubeColor method: ' . $e->getMessage());
+        } catch (\Exception $e) {
+            Log::error('Error in registerEmployeeDetails method: ' . $e->getMessage());
             throw $e;
         }
-
-
     }
+
     public function registerEmployeeJobDetails(){
         // 'nationality' => $this->nationality,
                 // 'religion' => $this->religion,
@@ -348,7 +344,6 @@ class AddEmployeeDetails extends Component
         $this->employee_type = $this->employee_type ?? 'full-time';
         $this->physically_challenge = $this->physically_challenge ?? 'No';
         $this->inter_emp = $this->inter_emp ?? 'no';
-        $empId = request()->query('emp_id');
         $hrId = auth()->guard('hr')->user()->emp_id;
         $employee = EmployeeDetails::find($hrId);
         $empCompanyId = $employee->company_id;
@@ -356,23 +351,24 @@ class AddEmployeeDetails extends Component
 
 
         $this->companieIds = Company::where('company_id', $empCompanyId)->get();
+    //    dd( $this->companieIds);
         $companieIdsLength = count($this->companieIds);
         if ($companieIdsLength == 1) {
             $this->company_id = $this->companieIds->first()->company_id;
         }
         $this->departments = EmpDepartment::where('company_id', $empCompanyId)->get();
 
-        if ($empId) {
-            try {
-                $decryptedEmpId = Crypt::decrypt($empId);
-                //dd($decryptedEmpId);
-                $this->editEmployee($decryptedEmpId);
-            } catch (DecryptException $e) {
-                // Handle the error appropriately
-                session()->flash('error_message', 'Invalid Employee ID.');
-                return redirect()->route('some-error-route'); // Or handle the error as needed
-            }
-        }
+        // if ($empId) {
+        //     try {
+        //         $decryptedEmpId = Crypt::decrypt($empId);
+
+        //         $this->editEmployee($decryptedEmpId);
+        //     } catch (DecryptException $e) {
+        //         // Handle the error appropriately
+        //         session()->flash('error_message', 'Invalid Employee ID.');
+        //         return redirect()->route('some-error-route'); // Or handle the error as needed
+        //     }
+        // }
     }
     public function editEmployee($employeeId)
     {
