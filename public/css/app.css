@@ -663,5 +663,8 @@ input{
 .form-check-label{
     font-size: 10px;
 }
+.custom-select{
+    font-size: 13px;
+}
 /* end of styles */
 

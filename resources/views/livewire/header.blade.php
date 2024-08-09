@@ -1,7 +1,7 @@
 <nav class="navbar navbar-expand-lg bg-body-tertiary p-0 " >
                 <div class="navbar-row " >
                     <div style="display: flex; align-items:center;gap:10px">
-                        <img src="https://bsmedia.business-standard.com/_media/bs/img/article/2024-02/19/full/20240219171029.jpg" height="50px" width="100px" alt="" >
+                        <img src="{{ asset('images/hr_new_blue.png') }}" height="50px" width="150px" alt="" >
                         <span class=" navbar-toggler-icon  " onclick="toggleSidebar()"></span>
                     </div>
                     <div class=" navbar-collapse d-flex">
