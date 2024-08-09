@@ -11,6 +11,18 @@ body {
     background-color: rgb(244 244 244);
     font-family: "Montserrat", sans-serif;
 }
+
+:root {
+    --main-heading-color: #3b4452
+        /* use main heading along with font-weight-500 */;
+    --requiredAlert: red;
+    --label-color: #778899;
+    --sub-heading-color: #778899
+        /* use sub heading along with font-weight-500 */;
+    --normal-font-size: 0.75rem;
+    --sub-headings-font-size: 0.8rem;
+    --main-headings-font-size: 1rem;
+}
 .loginform{
     display: flex;
     flex-direction: column;
@@ -151,12 +163,12 @@ ul {
     width: 100%;
     display: flex;
     justify-content: center;
-    padding: 20px;
+    padding: 22px;
 
 }
 
 .mainmenu-icons {
-    font-size: 20px;
+    font-size: 16px;
     text-decoration: none;
     align-items: center;
     color: white;
@@ -166,7 +178,7 @@ ul {
 .col1 {
 
     position: sticky;
-    width: 25%;
+    width: 21%;
     background-color: #306cc6;
     padding: 0px;
     margin: 0px;
@@ -175,7 +187,7 @@ ul {
 }
 
 .col2 {
-    width: 75%;
+    width: 79%;
     background-color: rgb(249, 249, 249);
     color: black;
     padding: 1px;
@@ -194,10 +206,26 @@ ul {
     margin-bottom: 0px;
 
 }
+.main-heading {
+    font-weight: 600;
+    margin-bottom: 5px;
+    margin-left: 10px;
+    font-size: var(--sub-headings-font-size);
+}
+.sub-heading {
+    font-weight: 500;
+    padding-top: 5px;
+    font-size: var(--sub-headings-font-size);
+    color: var(--sub-heading-color);
+}
+.horizontal-line{
+    margin-top: 11px;
+}
 
 .text {
     color: rgb(93, 97, 96);
     margin-bottom: 0px;
+    font-size: 0.8rem;
 }
 
 .col {
@@ -233,6 +261,11 @@ ul {
     justify-content: end;
     margin-left: auto;
 }
+.arrow-icon{
+    font-size: 14px;
+    color: var(--sub-heading-color);
+    cursor: pointer;
+}
 
 #Submenus {
     display: flex;
@@ -242,19 +275,13 @@ ul {
 }
 
 .submenu {
+    color: var(--label-color);
     text-decoration: none;
-    color: black;
-    background-color: rgb(243 241 241);
-    margin: 2px;
-    border-radius: 5px;
-    padding-left: 5px;
-    height: 35px;
-    display: block;
-    width: 100%;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    font-size: var(--normal-font-size);
 
+}
+.submenu-container{
+    margin-left: 20px;
 }
 /* admin dashboard */
 .a {

@@ -4,8 +4,10 @@ use App\Livewire\Dashboard;
 use App\Livewire\HrLogin;
 use App\Livewire\HomeDashboard;
 use App\Livewire\AddEmployeeDetails;
+use App\Livewire\AnalyticsHub;
 use App\Livewire\GrantLeaveBalance;
 use App\Livewire\UpdateEmployeeDetails;
+use App\Livewire\EmployeeDirectory;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -41,6 +43,8 @@ Route::middleware(['auth:hr'])->group(function () {
                 Route::get('/add-employee-details/{employee?}', AddEmployeeDetails::class)->name('add-employee-details');
                 Route::get('/update-employee-details', UpdateEmployeeDetails::class)->name('update-employee-details');
                 Route::get('/update-employee-leaves', GrantLeaveBalance::class)->name('update-employee-leaves');
+                Route::get('/hremployeedirectory', EmployeeDirectory::class)->name('employee-directory');
+                Route::get('/analytics-hub', AnalyticsHub::class)->name('analytics-hub');
 
     });
 

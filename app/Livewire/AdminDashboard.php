@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\EmployeeDetails;
+use App\Models\Hr;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use Carbon\Carbon;
@@ -22,11 +23,15 @@ class AdminDashboard extends Component
     public $maleCount = 0;
     public $femaleCount = 0;
     public $employeeCountsByLocation;
+    public $loginEmployee;
 
 
     public function mount()
     {
         try {
+           
+            $employeeId = auth()->guard('hr')->user()->emp_id;
+            $this->loginEmployee = Hr::where('emp_id',$employeeId)->select('emp_id', 'employee_name')->first();
             $companyId = Auth::user()->company_id;
 
             // Count total employees
