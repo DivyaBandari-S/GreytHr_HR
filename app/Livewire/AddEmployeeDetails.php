@@ -23,6 +23,7 @@ use App\Models\EmpSubDepartments;
 use App\Models\EmpBankDetail;
 use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Log;
 
 class AddEmployeeDetails extends Component
 {
@@ -34,7 +35,7 @@ class AddEmployeeDetails extends Component
     public $date_of_birth;
     public $gender;
     public $email;
-    public $company_name='';
+    public $company_name = '';
     public $company_email;
     public $mobile_number;
     public $alternate_mobile_number;
@@ -46,17 +47,21 @@ class AddEmployeeDetails extends Component
     public $hire_date;
     public $employee_type;
     public $departments;
-    public $sub_departments=[];
-    public $department_id='';
-    public $sub_department_id='';
+    public $sub_departments = [];
+    public $department_id = '';
+    public $sub_department_id = '';
     public $job_title;
+    public $job_mode;
     public $manager_id;
     public $report_to;
 
     public $emergency_contact;
     public $password;
     public $image;
-    public $blood_group;
+    public $blood_groups = [
+        'A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'
+    ];
+    public $blood_group = '';
     public $nationality;
     public $religion;
     public $marital_status;
@@ -77,7 +82,7 @@ class AddEmployeeDetails extends Component
     public $facebook;
     public $twitter;
     public $linked_in;
-    public $company_id='';
+    public $company_id = '';
     public $is_starred;
     public $skill_set;
     public $savedImage;
@@ -93,75 +98,43 @@ class AddEmployeeDetails extends Component
     public $reportTos, $selectedEmployee, $employee;
     public $selectedId;
     public $companieIds;
+    public $referrer;
+    public $probation_period;
+    public $confirmation_date;
+    public $notice_period;
+    public $emp_domain;
+    public $shift_type;
+    public $shift_start_time;
+    public $shift_end_time;
+
+
     public  $selectedEmployees;
-    public $showEmployeeDetails = false;
-    public $showEmployeePersonalDetails = false;
-    public $showEmployeeJobDetails = true;
-    public $showEmployeeOtherDetails = false;
-    public $currentStep = 3;
+    public $currentStep = 1;
 
     protected function validationRules()
     {
         return $this->rules[$this->currentStep];
     }
 
-    public function nextPageOne()
+    public function nextPage()
 
-    {
-
-        // $this->validate($this->validationRules());
-        // $this->currentStep = 2;
-        // $this->showEmployeeDetails = false;
-        // $this->showEmployeePersonalDetails = true;
-
-            $this->validate($this->validationRules()); // Validate form fields
-
-            // $this->register(); // Call the register method to handle form submission
-            // Proceed to the next page
-            $this->currentStep = 2;
-            $this->showEmployeeDetails = false;
-            $this->showEmployeePersonalDetails = true;
-
-    }
-
-    public function nextPageTwo()
-    {
-
-        $this->validate($this->validationRules());
-        $this->currentStep = 3;
-        $this->showEmployeePersonalDetails=false;
-        $this->showEmployeeJobDetails = true;
-
-    }
-
-    public function nextPageThree()
     {
         $this->validate($this->validationRules());
-        $this->currentStep = 4;
-        $this->showEmployeeJobDetails = false;
-        $this->showEmployeeOtherDetails = true;
+        if($this->currentStep==1 || $this->currentStep==2){
+           $this->registerEmployeeDetails();
+        }elseif($this->currentStep==3){
+            $this->registerEmployeeJobDetails();
+        }else{
+
+        }
+        // $this->currentStep++;
+
+
     }
 
-    public function backPageOne()
+    public function previousPage()
     {
-        $this->currentStep = 1;
-        $this->showEmployeeDetails = true;
-        $this->showEmployeePersonalDetails = false;
-    }
-
-
-
-    public function backPageTwo()
-    {
-        $this->currentStep = 2;
-        $this->showEmployeePersonalDetails = true;
-        $this->showEmployeeJobDetails = false;
-    }
-    public function backPageThree()
-    {
-        $this->currentStep = 3;
-        $this->showEmployeeOtherDetails = false;
-        $this->showEmployeeJobDetails = true;
+        $this->currentStep--;
     }
 
     protected $rules = [
@@ -169,26 +142,28 @@ class AddEmployeeDetails extends Component
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'mobile_number' => 'required|string|max:15',
-            'email' => 'required|email|unique:employee_details',
             'company_email' => 'required|email',
             'gender' => 'required|in:Male,Female',
         ],
         2 => [
+            'hire_date' => 'required|date',
+            'employee_type' => 'required|in:full-time,part-time,contract',
+            'employee_status' => 'required|in:active,on-leave,terminated',
+            'department_id' => 'required|string|max:255',
+            'sub_department_id' => 'required|string|max:255',
+            'job_title' => 'required|string|max:255',
+            'job_location' => 'required|string|max:255',
+            'company_id' => 'required|exists:companies,company_id',
+            'manager_id' => 'required',
+        ],
+        3 =>
+        [
             'date_of_birth' => 'required|date',
             'blood_group' => 'required',
             'religion' => 'required',
             'nationality' => 'required',
             'marital_status' => 'required',
-        ],
-        3 => [
-            'hire_date' => 'required|date',
-            'employee_type' => 'required|in:full-time,part-time,contract',
-            'employee_status' => 'required|in:active,on-leave,terminated',
-            'department' => 'required|string|max:255',
-            'job_title' => 'required|string|max:255',
-            'job_location' => 'required|string|max:255',
-            // 'company_id' => 'required|exists:companies,company_id',
-            // 'manager_id' => 'required|exists:managers,id',
+            'email' => 'required|email|unique:employee_details',
         ],
         4 => [
             'address' => 'required|string|max:255',
@@ -199,67 +174,100 @@ class AddEmployeeDetails extends Component
         ],
     ];
 
-    public function register()
+    public function registerEmployeeDetails()
     {
 
-        $this->validate($this->validationRules());
+        try{
 
-        $imageBinary  = file_get_contents($this->image->getRealPath());
-        // $imagePath='';
-        EmployeeDetails::create([
-            'first_name' => $this->first_name,
-            'last_name' => $this->last_name,
-            'date_of_birth' => $this->date_of_birth,
-            'gender' => $this->gender,
-            'email' => $this->email,
-            // 'company_name' => $this->company_name,
-            // 'company_email' => $this->company_email,
-            // 'mobile_number' => $this->mobile_number,
-            // 'alternate_mobile_number' => $this->alternate_mobile_number,
-            // 'address' => $this->address,
-            // 'city' => $this->city,
-            // 'state' => $this->state,
-            // 'postal_code' => $this->postal_code,
-            // 'country' => $this->country,
-            'hire_date' => $this->hire_date,
-            'employee_type' => $this->employee_type,
-            'manager_id' => $this->manager_id,
-            // 'report_to' => $this->report_to,
-            // 'department' => $this->department,
-            // 'job_title' => $this->job_title,
-            'employee_status' => $this->employee_status,
-            'emergency_contact' => $this->emergency_contact,
-            'password' => $this->password,
-            'image' => $imageBinary, // Example storage for image upload
-            // 'blood_group' => $this->blood_group,
-            'nationality' => $this->nationality,
-            'religion' => $this->religion,
-            'marital_status' => $this->marital_status,
-            'spouse' => $this->spouse,
-            'physically_challenge' => $this->physically_challenge,
-            'inter_emp' => $this->inter_emp,
-            'job_location' => $this->job_location,
-            'education' => $this->education,
-            'experience' => $this->experience,
-            'pan_no' => $this->pan_no,
-            'aadhar_no' => $this->aadhar_no,
-            'pf_no' => $this->pf_no,
-            'nick_name' => $this->nick_name,
-            'time_zone' => $this->time_zone,
-            'biography' => $this->biography,
-            'facebook' => $this->facebook,
-            'twitter' => $this->twitter,
-            'linked_in' => $this->linked_in,
-            'company_id' => $this->company_id,
-            'is_starred' => $this->is_starred,
-        ]);
 
-        session()->flash('emp_success', 'Employee registered successfully!');
+            $this->validate($this->validationRules());
 
-        // Clear the form fields
-        $this->reset();
-        return redirect('/update-employee-details');
+            if ($this->image) {
+                $imageBinary  =base64_encode(file_get_contents($this->image->getRealPath())) ;
+            } else {
+                $imageBinary = 'Null';
+            }
 
+
+
+            $report_to = EmployeeDetails::where('emp_id', $this->manager_id)->value('manager_id');
+            $employee = EmployeeDetails::updateOrCreate(
+                ['emp_id' => $this->emp_id],
+                [
+                    'first_name' => $this->first_name,
+                    'last_name' => $this->last_name,
+                    'gender' => $this->gender,
+                    'email' => $this->company_email,
+                    'hire_date' => $this->hire_date,
+                    'employee_type' => $this->employee_type,
+                    'manager_id' => $this->manager_id,
+                    'dept_head' => $report_to,
+                    'dept_id' => $this->department_id,
+                    'sub_dept_id' => $this->sub_department_id,
+                    'job_role' => $this->job_title,
+                    'employee_status' => $this->employee_status,
+                    'emergency_contact' => $this->mobile_number,
+                    'inter_emp' => $this->inter_emp,
+                    'job_location' => $this->job_location,
+                    // 'image' => $imageBinary,
+                    'emp_domain'=>$this->emp_domain,
+                    'referral'=>$this->referrer,
+                    'probation_Period'=>$this->probation_period,
+                    'confirmation_date' =>$this->confirmation_date,
+                    'shift_type'=>$this->shift_type,
+                    'shift_start_time'=>$this->shift_start_time,
+                    'shift_end_time'=>$this->shift_end_time,
+
+                ]
+            );
+
+            $this->emp_id = $employee->emp_id;
+            dd($this->emp_id);
+
+            session()->flash('emp_success', 'Employee registered successfully!');
+
+            // Clear the form fields
+            $this->reset();
+            $this->currentStep++;
+            // return redirect('/update-employee-details');
+
+        }
+        catch(\Exception $e ){
+            Log::error('Error in getTubeColor method: ' . $e->getMessage());
+            throw $e;
+        }
+
+
+    }
+    public function registerEmployeeJobDetails(){
+        // 'nationality' => $this->nationality,
+                // 'religion' => $this->religion,
+                // 'marital_status' => $this->marital_status,
+                // 'physically_challenge' => $this->physically_challenge,
+                // 'education' => $this->education,
+                // 'experience' => $this->experience,
+                // 'pan_no' => $this->pan_no,
+                // 'aadhar_no' => $this->aadhar_no,
+                // 'pf_no' => $this->pf_no,
+                // 'nick_name' => $this->nick_name,
+                // 'time_zone' => $this->time_zone,
+                // 'biography' => $this->biography,
+                // 'facebook' => $this->facebook,
+                // 'twitter' => $this->twitter,
+                // 'linked_in' => $this->linked_in,
+                // 'company_id' => $this->company_id,
+                // 'is_starred' => $this->is_starred,
+                 // 'mobile_number' => $this->mobile_number,
+                // 'alternate_mobile_number' => $this->alternate_mobile_number,
+                // 'address' => $this->address,
+                // 'city' => $this->city,
+                // 'state' => $this->state,
+                // 'postal_code' => $this->postal_code,
+                // 'country' => $this->country,
+                  // 'email' => $this->email,
+                // 'company_name' => $this->company_name,
+                 // 'blood_group' => $this->blood_group,
+                 // 'date_of_birth' => $this->date_of_birth,
     }
 
     public function logout()
@@ -285,22 +293,31 @@ class AddEmployeeDetails extends Component
             //         }
             //     }
             // }
-            $managers = EmployeeDetails:: where('dept_id',$this->department_id)
-            ->pluck('manager_id')
-            ->unique()
-            ->toArray();
+            $managers = EmployeeDetails::where('dept_id', $this->department_id)
+                ->pluck('manager_id')
+                ->unique()
+                ->toArray();
 
             $this->managerIds = EmployeeDetails::whereIn('emp_id', $managers)
-            ->get(['emp_id', 'first_name', 'last_name', 'manager_id']);
+                ->get(['emp_id', 'first_name', 'last_name', 'manager_id']);
 
             //  dd( $this->managerIds);
 
         }
     }
 
-    public function selectedDepartment($value){
-        if($value!==''){
-            $this->sub_departments=EmpSubDepartments::where('dept_id',$value)->get();
+    public function selectedDepartment($value)
+    {
+        if ($value !== '') {
+            $this->sub_departments = EmpSubDepartments::where('dept_id', $value)->get();
+
+            $managers = EmployeeDetails::where('dept_id', $this->department_id)
+                ->pluck('manager_id')
+                ->unique()
+                ->toArray();
+
+            $this->managerIds = EmployeeDetails::whereIn('emp_id', $managers)
+                ->get(['emp_id', 'first_name', 'last_name', 'manager_id']);
         }
     }
 
@@ -326,6 +343,7 @@ class AddEmployeeDetails extends Component
     public function mount()
     {
         // Set default values if the properties are not set
+        $this->job_mode = $this->job_mode ?? 'Office';
         $this->employee_status = $this->employee_status ?? 'active';
         $this->employee_type = $this->employee_type ?? 'full-time';
         $this->physically_challenge = $this->physically_challenge ?? 'No';
@@ -333,16 +351,16 @@ class AddEmployeeDetails extends Component
         $empId = request()->query('emp_id');
         $hrId = auth()->guard('hr')->user()->emp_id;
         $employee = EmployeeDetails::find($hrId);
-        $empCompanyId=$employee->company_id;
-        $employeeCompanyName=Company::find($empCompanyId)->company_name;
+        $empCompanyId = $employee->company_id;
+        $employeeCompanyName = Company::find($empCompanyId)->company_name;
 
 
         $this->companieIds = Company::where('company_id', $empCompanyId)->get();
         $companieIdsLength = count($this->companieIds);
-        if( $companieIdsLength==1){
-            $this->company_id=$this->companieIds->first()->company_id;
+        if ($companieIdsLength == 1) {
+            $this->company_id = $this->companieIds->first()->company_id;
         }
-        $this->departments=EmpDepartment::where('company_id', $empCompanyId)->get();
+        $this->departments = EmpDepartment::where('company_id', $empCompanyId)->get();
 
         if ($empId) {
             try {
@@ -424,52 +442,52 @@ class AddEmployeeDetails extends Component
             }
 
             $employee->update([
-            'first_name' => $this->first_name,
-            'last_name' => $this->last_name,
-            'date_of_birth' => $this->date_of_birth,
-            'gender' => $this->gender,
-            'email' => $this->email,
-            'company_name' => $this->company_name,
-            'company_email' => $this->company_email,
-            'mobile_number' => $this->mobile_number,
-            'alternate_mobile_number' => $this->alternate_mobile_number,
-            'address' => $this->address,
-            'city' => $this->city,
-            'state' => $this->state,
-            'postal_code' => $this->postal_code,
-            'country' => $this->country,
-            'hire_date' => $this->hire_date,
-            'employee_type' => $this->employee_type,
-            'manager_id' => $this->manager_id,
-            'report_to' => $this->report_to,
-            'department' => $this->department,
-            'job_title' => $this->job_title,
-            'employee_status' => $this->employee_status,
-            'emergency_contact' => $this->emergency_contact,
-            'password' => $this->password,
-            'image' => $imagePath,
-            'blood_group' => $this->blood_group,
-            'nationality' => $this->nationality,
-            'religion' => $this->religion,
-            'marital_status' => $this->marital_status,
-            'spouse' => $this->spouse,
-            'physically_challenge' => $this->physically_challenge,
-            'inter_emp' => $this->inter_emp,
-            'job_location' => $this->job_location,
-            'education' => $this->education,
-            'experience' => $this->experience,
-            'pan_no' => $this->pan_no,
-            'aadhar_no' => $this->aadhar_no,
-            'pf_no' => $this->pf_no,
-            'nick_name' => $this->nick_name,
-            'time_zone' => $this->time_zone,
-            'biography' => $this->biography,
-            'facebook' => $this->facebook,
-            'twitter' => $this->twitter,
-            'linked_in' => $this->linked_in,
-            'company_id' => $this->company_id,
-            'is_starred' => $this->is_starred,
-        ]);
+                'first_name' => $this->first_name,
+                'last_name' => $this->last_name,
+                'date_of_birth' => $this->date_of_birth,
+                'gender' => $this->gender,
+                'email' => $this->email,
+                'company_name' => $this->company_name,
+                'company_email' => $this->company_email,
+                'mobile_number' => $this->mobile_number,
+                'alternate_mobile_number' => $this->alternate_mobile_number,
+                'address' => $this->address,
+                'city' => $this->city,
+                'state' => $this->state,
+                'postal_code' => $this->postal_code,
+                'country' => $this->country,
+                'hire_date' => $this->hire_date,
+                'employee_type' => $this->employee_type,
+                'manager_id' => $this->manager_id,
+                'report_to' => $this->report_to,
+                'department' => $this->department,
+                'job_title' => $this->job_title,
+                'employee_status' => $this->employee_status,
+                'emergency_contact' => $this->emergency_contact,
+                'password' => $this->password,
+                'image' => $imagePath,
+                'blood_group' => $this->blood_group,
+                'nationality' => $this->nationality,
+                'religion' => $this->religion,
+                'marital_status' => $this->marital_status,
+                'spouse' => $this->spouse,
+                'physically_challenge' => $this->physically_challenge,
+                'inter_emp' => $this->inter_emp,
+                'job_location' => $this->job_location,
+                'education' => $this->education,
+                'experience' => $this->experience,
+                'pan_no' => $this->pan_no,
+                'aadhar_no' => $this->aadhar_no,
+                'pf_no' => $this->pf_no,
+                'nick_name' => $this->nick_name,
+                'time_zone' => $this->time_zone,
+                'biography' => $this->biography,
+                'facebook' => $this->facebook,
+                'twitter' => $this->twitter,
+                'linked_in' => $this->linked_in,
+                'company_id' => $this->company_id,
+                'is_starred' => $this->is_starred,
+            ]);
             // Show success message
             session()->flash('emp_success', 'Employee updated successfully!');
 
@@ -482,15 +500,14 @@ class AddEmployeeDetails extends Component
     {
         $hrId = auth()->guard('hr')->user()->emp_id;
         $employee = EmployeeDetails::find($hrId);
-        $empCompanyId=$employee->company_id;
+        $empCompanyId = $employee->company_id;
         $hrCompanies = Company::where('company_id',  $empCompanyId)->get();
         // $hrDetails = Company::where('company_id', $hrEmail)->first();
         $this->companies = $hrCompanies;
         // $this->hrDetails = $hrDetails;
-        return view('livewire.add-employee-details',[
+        return view('livewire.add-employee-details', [
             'managerName' => $this->managerName,
             'companyName' => $this->company_name,
         ]);
     }
-
 }

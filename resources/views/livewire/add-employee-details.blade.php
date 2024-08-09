@@ -68,8 +68,8 @@
                         <div class="col-md-8">
                             <ul id="progressbar">
                                 <li class="{{ $currentStep >= 1 ? 'active' : '' }}">Employee Details</li>
-                                <li class="{{ $currentStep >= 2 ? 'active' : '' }}">Employee Personal Details</li>
-                                <li class="{{ $currentStep >= 3 ? 'active' : '' }}">Job Details</li>
+                                <li class="{{ $currentStep >= 2 ? 'active' : '' }}">Employee Job Details</li>
+                                <li class="{{ $currentStep >= 3 ? 'active' : '' }}"> Employee Personal Details</li>
                                 <li class="{{ $currentStep == 4 ? 'active' : '' }}">Other Details</li>
                             </ul>
                         </div>
@@ -78,221 +78,100 @@
                     </div>
 
                     <!-- fieldsets -->
-                    @if($showEmployeeDetails)
+                    @if($currentStep==1)
                     <fieldset>
                         <div class="bg-light m-0 row">
-                            <div class="row m-0 mb-2 mt-3 p-0" style="text-align: start">
+                            <div class="row m-0 mb-2 mt-3 p-0" style="text-align: center">
                                 <h2 class="fs-subtitle">Employee Details</h2>
                             </div>
                             <div class="form-group col-md-6">
-                                <label for="first_name">First Name :</label>
-                                <input type="text" class="form-control placeholder-small" placeholder="Enter first name" wire:model="first_name" style="margin-bottom:10px;width:100%;">
+                                <label class="mt-1" for="first_name">First Name  <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control  placeholder-small  m-0" placeholder="Enter first name" wire:model="first_name" style="width:100%;">
                                 @error('first_name')
                                 <span class="text-danger">{{ $message }}</span>
                                 @enderror
                             </div>
 
                             <div class="form-group col-md-6">
-                                <label for="last_name">Last Name :</label>
-                                <input type="text" class="form-control placeholder-small" placeholder="Enter last name" wire:model="last_name" style="margin-bottom:10px;;">
+                                <label class="mt-1" for="last_name">Last Name <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control  placeholder-small m-0" placeholder="Enter last name" wire:model="last_name">
                                 @error('last_name')
                                 <span class="text-danger">{{ $message }}</span>
                                 @enderror
                             </div>
 
                             <div class="form-group col-md-6">
-                                <label for="mobile_number">Phone Number :</label>
-                                <input type="text" class="form-control placeholder-small" placeholder="Enter phone number" wire:model="mobile_number" style="margin-bottom:10px;;">
+                                <label class="mt-1" for="mobile_number">Phone Number <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control  placeholder-small m-0" placeholder="Enter phone number" wire:model="mobile_number">
                                 @error('mobile_number')
                                 <span class="text-danger">{{ $message }}</span>
                                 @enderror
                             </div>
+
                             <div class="form-group col-md-6">
-                                <label for="alternate_mobile_number">Alternate Phone Number :</label>
-                                <input type="text" class="form-control placeholder-small" placeholder="Enter alternate phone number" wire:model="alternate_mobile_number" style="margin-bottom:10px;;">
-                                @error('alternate_mobile_number')
-                                <span class="text-danger">{{ $message }}</span>
-                                @enderror
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label for="education">Education :</label>
-                                <input type="text" class="form-control placeholder-small" placeholder="Enter education" wire:model="education" style="margin-bottom:10px;;">
-                                @error('education')
-                                <span class="text-danger">{{ $message }}</span>
-                                @enderror
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label for="experience">Experience :</label>
-                                <input type="text" class="form-control placeholder-small" placeholder="Enter experience" wire:model="experience" style="margin-bottom:10px;;">
-                                @error('experience')
-                                <span class="text-danger">{{ $message }}</span>
-                                @enderror
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label for="email">Email :</label>
-                                <input type="email" class="form-control placeholder-small" placeholder="Enter email" wire:model="email" style="margin-bottom:10px;;">
-                                @error('email')
-                                <span class="text-danger">{{ $message }}</span>
-                                @enderror
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label for="email">Company Email :</label>
-                                <input type="email" class="form-control placeholder-small" placeholder="Enter company email" wire:model="company_email" style="margin-bottom:10px;;">
+                                <label class="mt-1" for="email">Company Email <span class="text-danger">*</span></label>
+                                <input type="email" class="form-control  placeholder-small m-0" placeholder="Enter company email" wire:model="company_email">
                                 @error('company_email')
                                 <span class="text-danger">{{ $message }}</span>
                                 @enderror
                             </div>
-                            <div class="form-group col-md-6">
-                                <label for="aadhar_no">Aadhar Number :</label>
-                                <input type="text" class="form-control placeholder-small" placeholder="Enter adhar number" wire:model="aadhar_no" style="margin-bottom:10px;;">
-                                @error('aadhar_no')
-                                <span class="text-danger">{{ $message }}</span>
-                                @enderror
-                            </div>
+
 
                             <!-- Password -->
                             {{-- <div class="form-group col-md-6">
-                                    <label for="password">Password :</label>
-                                    <input type="password" class="form-control placeholder-small" placeholder="Enter passowrd" wire:model="password"
-                                        style="margin-bottom:10px;;">
+                                    <label  class="mt-1" for="password">Password </label>
+                                    <input type="password" class="form-control  placeholder-small m-0" placeholder="Enter passowrd" wire:model="password"
+                                       >
                                     @error('password')
                                         <span class="text-danger">{{ $message }}</span>
                             @enderror
                         </div> --}}
                         <div class="form-group col-md-6">
-                            <div class="input-group">
-                                <label>Gender : </label>
-                                <div class="form-check form-check-inline mb-0 mx-2 ">
-                                    <input class="form-check-input" type="radio" wire:model="gender" value="Male" id="maleRadio" name="gender">
-                                    <label class="form-check-label mb-0" for="maleRadio">Male</label>
-                                </div>
-                                <div class="form-check form-check-inline mb-0 mx-2">
-                                    <input class="form-check-input" type="radio" wire:model="gender" value="Female" id="femaleRadio" name="gender">
-                                    <label class="form-check-label mb-0" for="femaleRadio">Female</label>
+                            <div class="input-group onboarding-check-boxes">
+                                <label class="mt-1">Gender <span class="text-danger">*</span> </label>
+                                <div>
+                                    <div class="form-check form-check-inline mb-0 mx-2 ">
+                                        <input class="form-check-input " type="radio" wire:model="gender" value="Male" id="maleRadio" name="gender">
+                                        <label class="form-check-label-options mt-1 mb-0" for="maleRadio">Male</label>
+                                    </div>
+                                    <div class="form-check form-check-inline mb-0 mx-2">
+                                        <input class="form-check-input " type="radio" wire:model="gender" value="Female" id="femaleRadio" name="gender">
+                                        <label class="form-check-label-options mt-1 mb-0" for="femaleRadio">Female</label>
+                                    </div>
                                 </div>
                             </div>
                             <div>
-                            @error('gender')
-                            <span class="text-danger">{{ $message }}</span>
-                            @enderror
+                                @error('gender')
+                                <span class="text-danger">{{ $message }}</span>
+                                @enderror
+                            </div>
                         </div>
-                        </div>
+
 
 
                         {{-- Upload Employee Image --}}
                         <div class="form-group col-md-6">
-                            <label for="image">Employee Image:</label>
-                            <input type="file" wire:model="image" style="margin-bottom:10px;font-size:12px;border:none;">
+                            <label class="mt-1" for="image">Employee Image</label>
+                            <input type="file" wire:model="image" style="font-size:12px;border:none;">
                             @error('image')
                             <span class="text-danger">{{ $message }}</span>
                             @enderror
                         </div>
-
-                        <div class="form-group col-md-6">
-                        @if($image)
-
-                            <img src="{{ is_string($image) ? asset('storage/' . $image) : $image->temporaryUrl() }}"
-                                alt="Preview" width="100" height="100" class="img-thumbnail" />
+                        <div class="col-md-6"></div>
+                        <div class="form-group col-md-6  " style="display: flex;justify-content:end">
+                            @if($image)
+                            <img src="{{ is_string($image) ? asset('storage/' . $image) : $image->temporaryUrl() }}" alt="Preview" style='height:100px;width:100px' class="img-thumbnail" />
                             @elseif($employee && $employee->image)
-                            <img src="{{ asset('storage/' . $employee->image) }}" alt="Preview" width="25"
-                                height="25" class="img-thumbnail" />
+                            <img src="{{ asset('storage/' . $employee->image) }}" alt="Preview" style='height:100px;width:100px' class="img-thumbnail" />
                             @endif
-                            </div>
+                        </div>
 
             </div>
             <hr class="hr-wizard" />
-            <input type="button" name="next" class="next ilynn-btn" value="Next" wire:click="nextPageOne" />
+            <input type="button" name="next" class="next ilynn-btn" value="Next" wire:click="nextPage" />
             </fieldset>
             @endif
-
-            @if($showEmployeePersonalDetails)
-            <fieldset>
-                <div class="bg-light m-0 row">
-                    <div class="row m-0 mb-2 mt-3" style="text-align: center">
-                        <h2 class="fs-subtitle">Employee Personal Details</h2>
-                    </div>
-
-                    <div class="form-group col-md-6">
-                        <label for="date_of_birth">Date of Birth :</label>
-                        <input type="date" class="form-control placeholder-small" wire:model="date_of_birth" max="{{ date('Y-m-d') }}" style="margin-bottom:10px;">
-                        @error('date_of_birth')
-                        <span class="text-danger">{{ $message }}</span>
-                        @enderror
-                    </div>
-
-                    <div class="form-group col-md-6">
-                        <label for="blood_group">Blood Group :</label>
-                        <input type="text" class="form-control placeholder-small" placeholder="Enter blood group" wire:model="blood_group" style="margin-bottom:10px;">
-                        @error('blood_group')
-                        <span class="text-danger">{{ $message }}</span>
-                        @enderror
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label for="religion">Religion :</label>
-                        <input type="text" class="form-control placeholder-small" placeholder="Enter religion" wire:model="religion" style="margin-bottom:10px;">
-                        @error('religion')
-                        <span class="text-danger">{{ $message }}</span>
-                        @enderror
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label for="nationality">Nationality :</label>
-                        <input type="text" class="form-control placeholder-small" placeholder="Enter nationality" wire:model="nationality" style="margin-bottom:10px;">
-                        @error('nationality')
-                        <span class="text-danger">{{ $message }}</span>
-                        @enderror
-                    </div>
-                    <div class="form-group col-md-6">
-                        <div class="input-group">
-                            <label>Martial Status:</label><br>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input mb-2" type="radio" wire:model="marital_status" value="unmarried" id="unmarriedRadio" name="marital_status_group">
-                                <label class="form-check-label " for="unmarriedRadio">Single</label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input mb-2" type="radio" wire:model="marital_status" value="married" id="marriedRadio" name="marital_status_group">
-                                <label class="form-check-label " for="marriedRadio">Married</label>
-                            </div>
-                        </div>
-                    </div>
-                    <div>
-                        @error('marital_status')
-                        <span class="text-danger">{{ $message }}</span>
-                        @enderror
-                    </div>
-
-                    <div class="form-group col-md-6">
-                        <label for="spouse">Spouse:</label>
-                        <input type="text" class="form-control placeholder-small" placeholder="Enter spouse name" wire:model="spouse" style="margin-bottom:10px;">
-                        @error('spouse')
-                        <span class="text-danger">{{ $message }}</span>
-                        @enderror
-                    </div>
-
-                    <div class="form-group col-md-6">
-                        <div class="input-group">
-                            <label>Physically Challenge:</label><br>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input mb-2" type="radio" wire:model="physically_challenge" value="Yes" id="yesRadio" name="physically_challenge_group">
-                                <label class="form-check-label" for="yesRadio">Yes</label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input mb-2" type="radio" wire:model="physically_challenge" value="No" id="noRadio" name="physically_challenge_group" checked>
-                                <label class="form-check-label" for="noRadio">No</label>
-                            </div>
-                        </div>
-                    </div>
-                    <div>
-                        @error('physically_challenge')
-                        <span class="text-danger">{{ $message }}</span>
-                        @enderror
-                    </div>
-                </div>
-                <hr class="hr-wizard" />
-                <input type="button" name="next" class="next ilynn-btn" value="Next" wire:click="nextPageTwo" />
-                <input type="button" name="previous" class="previous ilynn-btn" value="Back" wire:click="backPageOne" />
-            </fieldset>
-            @endif
-            @if($showEmployeeJobDetails)
+            @if($currentStep==2)
             <fieldset>
                 <h2 class="fs-title">Job Details</h2>
                 <div class="bg-light m-0 row">
@@ -300,60 +179,40 @@
                         <h2 class="fs-subtitle">Job Details</h2>
                     </div>
                     <div class="form-group col-md-6">
-                        <label for="hire_date">Hire Date :</label>
-                        <input type="date" class="form-control placeholder-small" wire:model="hire_date" max="{{ date('Y-m-d') }}" style="margin-bottom:10px;">
+                        <label class="mt-1" for="hire_date">Hire Date <span class="text-danger">*</span></label>
+                        <input type="date" class="form-control  placeholder-small m-0" wire:model="hire_date" max="{{ date('Y-m-d') }}">
                         @error('hire_date')
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>
 
                     <div class="form-group col-md-6">
-                        <label for="employee_type">Employee Type:</label>
-                        <div class="input-group">
-                            <div class="form-check form-check-inline custom-radio">
-                                <input class="form-check-input mb-2" type="radio" id="full-time" value="full-time" wire:model="employee_type" checked>
-                                <label class="form-check-label " for="full-time">Full-Time</label>
-                            </div>
-                            <div class="form-check form-check-inline custom-radio">
-                                <input class="form-check-input mb-2" type="radio" id="part-time" value="part-time" wire:model="employee_type">
-                                <label class="form-check-label " for="part-time">Part-Time</label>
-                            </div>
-                            <div class="form-check form-check-inline custom-radio">
-                                <input class="form-check-input mb-2" type="radio" id="contract" value="contract" wire:model="employee_type">
-                                <label class="form-check-label " for="contract">Contract</label>
+
+                        <div class="input-group onboarding-check-boxes">
+                            <label class="mt-1" for="employee_type">Employee Type</label>
+                            <div>
+                                <div class="form-check form-check-inline custom-radio">
+                                    <input class="form-check-input  mb-2" type="radio" id="full-time" value="full-time" wire:model="employee_type" checked>
+                                    <label class="form-check-label-options mt-1 " for="full-time">Full-Time</label>
+                                </div>
+                                <div class="form-check form-check-inline custom-radio">
+                                    <input class="form-check-input  mb-2" type="radio" id="part-time" value="part-time" wire:model="employee_type">
+                                    <label class="form-check-label-options mt-1 " for="part-time">Part-Time</label>
+                                </div>
+                                <div class="form-check form-check-inline custom-radio">
+                                    <input class="form-check-input  mb-2" type="radio" id="contract" value="contract" wire:model="employee_type">
+                                    <label class="form-check-label-options mt-1" for="contract">Contract</label>
+                                </div>
                             </div>
                         </div>
                         @error('employee_type')
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>
+
                     <div class="form-group col-md-6">
-                        <label for="employee_status">Employee Status:</label>
-                        <div class="input-group">
-                            <div class="form-check form-check-inline custom-radio">
-                                <input class="form-check-input mb-2" type="radio" id="active" value="active" wire:model="employee_status" checked>
-                                <label class="form-check-label " for="active">Active</label>
-                            </div>
-                            <div class="form-check form-check-inline custom-radio">
-                                <input class="form-check-input mb-2" type="radio" id="on-leave" value="on-leave" wire:model="employee_status">
-                                <label class="form-check-label " for="on-leave">On Leave</label>
-                            </div>
-                            <div class="form-check form-check-inline custom-radio">
-                                <input class="form-check-input mb-2" type="radio" id="terminated" value="terminated" wire:model="employee_status">
-                                <label class="form-check-label " for="terminated">Terminated</label>
-                            </div>
-                            <div class="form-check form-check-inline custom-radio">
-                                <input class="form-check-input mb-2" type="radio" id="resigned" value="resigned" wire:model="employee_status">
-                                <label class="form-check-label " for="resigned">Resigned</label>
-                            </div>
-                        </div>
-                        @error('employee_status')
-                        <span class="text-danger">{{ $message }}</span>
-                        @enderror
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label for="company_id">Company Name :</label>
-                        <select wire:click="selectedCompany" class="form-control placeholder-small" wire:model="company_id" style="margin-bottom: 10px;">
+                        <label class="mt-1" for="company_id">Company Name <span class="text-danger">*</span></label>
+                        <select wire:click="selectedCompany" class="form-control  placeholder-small m-0" wire:model="company_id" style="margin-bottom: 10px;">
                             <option disabled value="">Select Company</option>
                             <!-- Add a default option -->
                             @foreach ($companieIds as $id)
@@ -368,55 +227,63 @@
 
 
                     <div class="form-group col-md-6">
-                        <label for="job_title">Job Title :</label>
-                        <input type="text" class="form-control placeholder-small" placeholder="Enter job title" wire:model="job_title" style="margin-bottom:10px;;">
+                        <label class="mt-1" for="job_title">Job Title <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control  placeholder-small m-0" placeholder="Enter job title" wire:model="job_title">
                         @error('job_title')
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>
                     <div class="form-group col-md-6">
-                        <label for="job_location">Job Location :</label>
-                        <input type="text" class="form-control placeholder-small" placeholder="Enter job location " wire:model="job_location" style="margin-bottom:10px;;">
+                        <label class="mt-1" for="emp_domain">Employee Domain </label>
+                        <input type="text" class="form-control  placeholder-small m-0" placeholder="Enter employee domain " wire:model="emp_domain">
+                        @error('emp_domain')
+                        <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="mt-1" for="job_location">Job Location <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control  placeholder-small m-0" placeholder="Enter job location " wire:model="job_location">
                         @error('job_location')
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>
 
+
                     <div class="form-group col-md-6">
-                        <label for="department">Department :</label>
-                        <select wire:change="selectedDepartment($event.target.value)" class="form-control placeholder-small" wire:model="department_id" style="margin-bottom: 10px;">
+                        <label class="mt-1" for="department">Department <span class="text-danger">*</span></label>
+                        <select wire:change="selectedDepartment($event.target.value)" class="form-control  placeholder-small m-0" wire:model="department_id">
                             <option disabled selected value="">Select Department</option>
                             @foreach ($departments as $department)
                             <option value="{{ $department->dept_id }}">{{ $department->department }}</option>
                             @endforeach
                         </select>
-                         @error('department_id')
+                        @error('department_id')
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>
 
 
                     <div class="form-group col-md-6">
-                        <label for="department"> Sub Department :</label>
-                        <select  class="form-control placeholder-small" wire:model="sub_department_id" style="margin-bottom: 10px;">
-                            <option disabled selected value="">Select Department</option>
+                        <label class="mt-1" for="department"> Sub Department <span class="text-danger">*</span></label>
+                        <select class="form-control  placeholder-small m-0" wire:model="sub_department_id" style="margin-bottom: 10px;">
+                            <option disabled selected value="">Select sub department</option>
                             @foreach ($sub_departments as $sub_department)
                             <option value="{{ $sub_department->sub_dept_id }}">{{ $sub_department->sub_department }}</option>
                             @endforeach
                         </select>
-                         @error('sub_department_id')
+                        @error('sub_department_id')
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>
 
                     <div class="form-group col-md-6">
-                        <label for="manager_id">Manager Id :</label>
-                        <select wire:change="fetchReportTo" class="form-control placeholder-small" placeholder="Enter manager Id" wire:model="manager_id" style="margin-bottom: 10px;">
-                            <option value="">Select Manager</option>
+                        <label class="mt-1" for="manager_id">Reporting To <span class="text-danger">*</span></label>
+                        <select wire:change="fetchReportTo" class="form-control  placeholder-small m-0"  wire:model="manager_id" style="margin-bottom: 10px;">
+                            <option value="">Select manager</option>
                             <!-- Add a default option -->
                             @if ($managerIds != null)
                             @foreach ($managerIds as $id)
-                            <option value="{{ $id->emp_id }}">{{ucwords(strtolower( $id->first_name)) }}  {{ ucwords(strtolower($id->last_name)) }}</option>
+                            <option value="{{ $id->emp_id }}">{{ucwords(strtolower( $id->first_name)) }} {{ ucwords(strtolower($id->last_name)) }}</option>
                             @endforeach
                             @endif
                         </select>
@@ -424,84 +291,308 @@
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>
-
                     <div class="form-group col-md-6">
-                        <label for="report_to">Report To :</label>
-                        @if ($managerName === null)
-                        <input type="text" class="form-control placeholder-small" placeholder="Enter manager name" wire:model="report_to" style="margin-bottom:10px;">
-                        @else
-                        <p class="mb-0" style="color:black;font-weight:500;font-size:0.825rem;">
-                            {{ $managerName }}
-                        </p>
-                        @endif
-                        @if ($managerName === null)
-                        @error('report_to')
+                        <label class="mt-1" for="department">Shift Type </label>
+                        <select  class="form-control  placeholder-small m-0" wire:model="shift_type">
+                            <option  selected value="GS">General Shift</option>
+                            <option   value="AS">Afternoon Shift</option>
+                            <option   value="ES">Evening Shift</option>
+
+                        </select>
+                        @error('shift_type')
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
-                        @endif
                     </div>
                     <div class="form-group col-md-6">
-                        <div class="input-group">
-                            <label>International Employee :</label><br>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input mb-2" type="radio" wire:model="inter_emp" value="yes" id="yesRadio" name="inter_emp">
-                                <label class="form-check-label " for="yesRadio">Yes</label>
+                        <label class="mt-1" for="hire_date">Shift Start Time </label>
+                        <input type="time" class="form-control  placeholder-small m-0" wire:model="shift_start_time" >
+                        @error('shift_start_time')
+                        <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="mt-1" for="hire_date">Shift End Time </label>
+                        <input type="time" class="form-control  placeholder-small m-0" wire:model="shift_end_time" >
+                        @error('shift_end_time')
+                        <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label class="mt-1" for="referrer">Referrer </label>
+                        <input type="text" class="form-control  placeholder-small m-0" placeholder="Enter referrer " wire:model="referrer">
+                        @error('referrer')
+                        <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="mt-1" for="referrer">Probation Period </label>
+                        <input type="text" class="form-control  placeholder-small m-0" placeholder="Enter probation period "   wire:model="probation_period">
+                        @error('probation_period')
+                        <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="mt-1" for="confirmation_date">Confirmation Date </label>
+                        <input type="date" class="form-control  placeholder-small m-0"  placeholder="Enter confirmation date  " wire:model="confirmation_date" max="{{ date('Y-m-d') }}">
+                        @error('confirmation_date')
+                        <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="mt-1" for="notice_period">Notice Period </label>
+                        <input type="text" class="form-control  placeholder-small m-0" placeholder="Enter notice period "   wire:model="notice_period">
+                        @error('notice_period')
+                        <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div class="form-group col-md-6">
+
+                        <div class="input-group onboarding-check-boxes">
+                            <label class="mt-1" for="employee_status">Employee Status</label>
+                            <div>
+                                <div class="form-check form-check-inline custom-radio">
+                                    <input class="form-check-input  mb-2" type="radio" id="active" value="active" wire:model="employee_status" checked>
+                                    <label class="form-check-label-options mt-1 " for="active">Active</label>
+                                </div>
+                                <div class="form-check form-check-inline custom-radio">
+                                    <input class="form-check-input  mb-2" type="radio" id="on-leave" value="on-leave" wire:model="employee_status">
+                                    <label class="form-check-label-options mt-1 " for="on-leave">On Leave</label>
+                                </div>
+                                <div class="form-check form-check-inline custom-radio">
+                                    <input class="form-check-input gender mb-2" type="radio" id="terminated" value="terminated" wire:model="employee_status">
+                                    <label class="form-check-label-options mt-1 " for="terminated">Terminated</label>
+                                </div>
+                                <div class="form-check form-check-inline custom-radio">
+                                    <input class="form-check-input  mb-2 " type="radio" id="resigned" value="resigned" wire:model="employee_status">
+                                    <label class="form-check-label-options mt-1 " for="resigned">Resigned</label>
+                                </div>
                             </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input mb-2" type="radio" wire:model="inter_emp" value="no" id="noRadio" name="inter_emp" checked>
-                                <label class="form-check-label " for="noRadio">No</label>
+                        </div>
+                        @error('employee_status')
+                        <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <div class="input-group onboarding-check-boxes">
+                            <div>
+                                <label class="mt-1">International Employee </label><br>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input  mb-2" type="radio" wire:model="inter_emp" value="yes" id="yesRadio" name="inter_emp">
+                                    <label class="form-check-label-options mt-1 " for="yesRadio">Yes</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input  mb-2" type="radio" wire:model="inter_emp" value="no" id="noRadio" name="inter_emp" checked>
+                                    <label class="form-check-label-options mt-1 " for="noRadio">No</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            @error('inter_emp')
+                            <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <div class="input-group onboarding-check-boxes">
+                            <label class="mt-1">Job Mode </label>
+                            <div>
+                                <div class="form-check form-check-inline mb-0 mx-2 ">
+                                    <input class="form-check-input " type="radio" wire:model="job_mode" value="Office" id="OfficeRadio" name="job_mode">
+                                    <label class="form-check-label-options mt-1 mb-0" for="maleRadio">Office</label>
+                                </div>
+                                <div class="form-check form-check-inline mb-0 mx-2">
+                                    <input class="form-check-input " type="radio" wire:model="job_mode" value="Remote" id="RemoteRadio" name="job_mode">
+                                    <label class="form-check-label-options mt-1 mb-0" for="femaleRadio">Remote</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            @error('job_mode')
+                            <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
+                    </div>
+
+                </div>
+
+                <hr class="hr-wizard" />
+                <input type="button" name="next" class="next ilynn-btn" value="Next" wire:click="nextPage" />
+                <input type="button" name="previous" class="previous ilynn-btn" value="Back" wire:click="previousPage" />
+            </fieldset>
+            @endif
+
+            @if($currentStep==3)
+            <fieldset>
+                <div class="bg-light m-0 row">
+                    <div class="row m-0 mb-2 mt-3" style="text-align: center">
+                        <h2 class="fs-subtitle">Employee Personal Details</h2>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label class="mt-1" for="date_of_birth">Date of Birth <span class="text-danger">*</span></label>
+                        <input type="date" class="form-control  placeholder-small m-0" wire:model="date_of_birth" max="{{ date('Y-m-d') }}">
+                        @error('date_of_birth')
+                        <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label class="mt-1" for="blood_group">Blood Group <span class="text-danger">*</span></label>
+                        <select class="form-control  placeholder-small m-0" wire:model="blood_group">
+                            <option disabled selected value="">Select blood group</option>
+
+                            @foreach ($blood_groups as $blood)
+                            <option value="{{ $blood }}">{{ $blood }}</option>
+                            @endforeach
+                        </select>
+                        @error('blood_group')
+                        <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="mt-1" for="religion">Religion <span class="text-danger">*</span> </label>
+                        <input type="text" class="form-control  placeholder-small m-0" placeholder="Enter religion" wire:model="religion">
+                        @error('religion')
+                        <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="mt-1" for="nationality">Nationality <span class="text-danger">*</span> </label>
+                        <input type="text" class="form-control  placeholder-small m-0" placeholder="Enter nationality" wire:model="nationality">
+                        @error('nationality')
+                        <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="mt-1" for="aadhar_no">Aadhar Number <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control  placeholder-small m-0" placeholder="Enter adhar number" wire:model="aadhar_no">
+                        @error('aadhar_no')
+                        <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="mt-1" for="alternate_mobile_number">Alternate Phone Number </label>
+                        <input type="text" class="form-control  placeholder-small m-0" placeholder="Enter alternate phone number" wire:model="alternate_mobile_number">
+                        @error('alternate_mobile_number')
+                        <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="mt-1" for="email">Personal Email <span class="text-danger">*</span></label>
+                        <input type="email" class="form-control  placeholder-small m-0" placeholder="Enter email" wire:model="email">
+                        @error('email')
+                        <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div class="form-group col-md-6">
+                        <div class="input-group onboarding-check-boxes">
+                            <label class="mt-1">Martial Status <span class="text-danger">*</span></label>
+                            <div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input  mb-2" type="radio" wire:model="marital_status" value="unmarried" id="unmarriedRadio" name="marital_status_group">
+                                    <label class="form-check-label-options mt-1 " for="unmarriedRadio">Single</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input  mb-2" type="radio" wire:model="marital_status" value="married" id="marriedRadio" name="marital_status_group">
+                                    <label  class="form-check-label-options mt-1 " for="marriedRadio">Married</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            @error('marital_status')
+                            <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <div class="input-group onboarding-check-boxes">
+                            <label class="mt-1">Physically Challenge</label>
+                            <div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input  mb-2" type="radio" wire:model="physically_challenge" value="Yes" id="yesRadio" name="physically_challenge_group">
+                                    <label  class="form-check-label-options mt-1" for="yesRadio">Yes</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input  mb-2" type="radio" wire:model="physically_challenge" value="No" id="noRadio" name="physically_challenge_group" checked>
+                                    <label  class="form-check-label-options mt-1" for="noRadio">No</label>
+                                </div>
                             </div>
                         </div>
                     </div>
                     <div>
-                        @error('inter_emp')
+                        @error('physically_challenge')
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>
                 </div>
                 <hr class="hr-wizard" />
-                <input type="button" name="next" class="next ilynn-btn" value="Next" wire:click="nextPageThree" />
-                <input type="button" name="previous" class="previous ilynn-btn" value="Back" wire:click="backPageTwo" />
+                <input type="button" name="next" class="next ilynn-btn" value="Next" wire:click="nextPage" />
+                <input type="button" name="previous" class="previous ilynn-btn" value="Back" wire:click="previousPage" />
             </fieldset>
             @endif
-            @if($showEmployeeOtherDetails)
+
+            @if($currentStep==4)
             <fieldset>
-                <div class="bg-light m-0 row">
+                <div class="bg-light m-0 row ">
                     <div class="row m-0 mb-2 mt-3" style="text-align: center">
                         <h2 class="fs-subtitle">Other Details</h2>
                     </div>
                     <div class="form-group col-md-6">
-                        <label for="address">Address :</label>
-                        <input type="text" class="form-control placeholder-small" placeholder="Enter address" wire:model="address" style="margin-bottom:10px;">
+                        <label class="mt-1" for="address">Address <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control  placeholder-small m-0" placeholder="Enter address" wire:model="address">
                         @error('address')
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>
                     <div class="form-group col-md-6">
-                        <label for="city">City :</label>
-                        <input type="text" class="form-control placeholder-small" placeholder="Enter city" wire:model="city" style="margin-bottom:10px;">
+                        <label class="mt-1" for="city">City <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control  placeholder-small m-0" placeholder="Enter city" wire:model="city">
                         @error('city')
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>
                     <div class="form-group col-md-6">
-                        <label for="state">State :</label>
-                        <input type="text" class="form-control placeholder-small" placeholder="Enter state" wire:model="state" style="margin-bottom:10px;">
+                        <label class="mt-1" for="state">State <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control  placeholder-small m-0" placeholder="Enter state" wire:model="state">
                         @error('state')
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>
                     <div class="form-group col-md-6">
-                        <label for="postal_code">Pin Code :</label>
-                        <input type="text" class="form-control placeholder-small" placeholder="Enter pin code" wire:model="postal_code" style="margin-bottom:10px;">
+                        <label class="mt-1" for="postal_code">Pin Code </label>
+                        <input type="text" class="form-control  placeholder-small m-0" placeholder="Enter pin code" wire:model="postal_code">
                         @error('postal_code')
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>
                     <div class="form-group col-md-6">
-                        <label for="country">Country :</label>
-                        <input type="text" class="form-control placeholder-small" placeholder="Enter country" wire:model="country" style="margin-bottom:10px;">
+                        <label class="mt-1" for="country">Country :</label>
+                        <input type="text" class="form-control  placeholder-small m-0" placeholder="Enter country" wire:model="country">
                         @error('country')
+                        <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="mt-1" for="education">Education :</label>
+                        <input type="text" class="form-control  placeholder-small m-0" placeholder="Enter education" wire:model="education">
+                        @error('education')
+                        <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="mt-1" for="experience">Experience :</label>
+                        <input type="text" class="form-control  placeholder-small m-0" placeholder="Enter experience" wire:model="experience">
+                        @error('experience')
+                        <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="mt-1" for="spouse">Spouse:</label>
+                        <input type="text" class="form-control  placeholder-small m-0" placeholder="Enter spouse name" wire:model="spouse">
+                        @error('spouse')
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>
@@ -516,7 +607,7 @@
                 <button wire:click="register" class="btn btn-primary" wire:loading.attr="disabled" style="float: inline-end">Save</button>
                 @endif
                 <!-- <input type="button" name="next" class="next ilynn-btn" value="Next" onclick="getChecked()" /> -->
-                <input type="button" name="previous" class="previous ilynn-btn" wire:click='backPageThree' value="Back" />
+                <input type="button" name="previous" class="previous ilynn-btn" wire:click='previousPage' value="Back" />
             </fieldset>
             @endif
             </form>

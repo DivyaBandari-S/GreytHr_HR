@@ -622,5 +622,19 @@ ul {
     background-color: rgb(2, 17, 79);
     border: none;
 }
+.form-check-label-options{
+    font-size: 13px;
+}
+.onboarding-check-boxes{
+    display: flex;
+    flex-direction: column;
+
+}
+input{
+    margin-bottom:0px;
+}
+.form-check-label{
+    font-size: 10px;
+}
 /* end of styles */
 
