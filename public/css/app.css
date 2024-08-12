@@ -508,6 +508,7 @@ ul {
     width: 25%;
     float: left;
     position: relative;
+    padding: 0px 5px;
 }
 #progressbar li:before {
     content: counter(step);
@@ -530,7 +531,7 @@ ul {
     position: absolute;
     left: -50%;
     top: 9px;
-    z-index: -1; /*put it behind the numbers*/
+    z-index: -1;
 }
 #progressbar li:first-child:after {
     /*connector not needed before the first step*/
@@ -662,6 +663,7 @@ ul {
 }
 .form-check-label-options{
     font-size: 13px;
+    margin-left: 5px;
 }
 .onboarding-check-boxes{
     display: flex;
