@@ -11,6 +11,19 @@ body {
     background-color: rgb(244 244 244);
     font-family: "Montserrat", sans-serif;
 }
+
+:root {
+    --main-heading-color: #3b4452
+        /* use main heading along with font-weight-500 */;
+    --main-button-color: #306cc6;
+    --requiredAlert: red;
+    --label-color: #778899;
+    --sub-heading-color: #778899
+        /* use sub heading along with font-weight-500 */;
+    --normal-font-size: 0.75rem;
+    --sub-headings-font-size: 0.8rem;
+    --main-headings-font-size: 1rem;
+}
 .loginform{
     display: flex;
     flex-direction: column;
@@ -151,12 +164,12 @@ ul {
     width: 100%;
     display: flex;
     justify-content: center;
-    padding: 20px;
+    padding: 15px;
 
 }
 
 .mainmenu-icons {
-    font-size: 20px;
+    font-size: 16px;
     text-decoration: none;
     align-items: center;
     color: white;
@@ -166,8 +179,8 @@ ul {
 .col1 {
 
     position: sticky;
-    width: 25%;
-    background-color: #306cc6;
+    width: 21%;
+    background-color: var(--main-button-color);
     padding: 0px;
     margin: 0px;
 
@@ -175,7 +188,7 @@ ul {
 }
 
 .col2 {
-    width: 75%;
+    width: 79%;
     background-color: rgb(249, 249, 249);
     color: black;
     padding: 1px;
@@ -194,10 +207,29 @@ ul {
     margin-bottom: 0px;
 
 }
+.main-heading {
+    font-weight: 600;
+    margin-bottom: 5px;
+    margin-left: 10px;
+    font-size: var(--sub-headings-font-size);
+}
+.sub-heading {
+    font-weight: 500;
+    padding-top: 5px;
+    font-size: var(--sub-headings-font-size);
+    color: var(--sub-heading-color);
+}
+.sub-heading.active {
+    color: var(--main-button-color); 
+}
+.horizontal-line{
+    margin-top: -3px;
+}
 
 .text {
     color: rgb(93, 97, 96);
     margin-bottom: 0px;
+    font-size: 0.8rem;
 }
 
 .col {
@@ -233,6 +265,16 @@ ul {
     justify-content: end;
     margin-left: auto;
 }
+.arrow-icon{
+    font-size: 14px;
+    color: var(--sub-heading-color);
+    cursor: pointer;
+}
+.arrow-icon-active{
+    font-size: 14px;
+    color: var(--main-button-color);
+    cursor: pointer;
+}
 
 #Submenus {
     display: flex;
@@ -242,19 +284,15 @@ ul {
 }
 
 .submenu {
+    color: var(--label-color);
     text-decoration: none;
-    color: black;
-    background-color: rgb(243 241 241);
-    margin: 2px;
-    border-radius: 5px;
-    padding-left: 5px;
-    height: 35px;
-    display: block;
-    width: 100%;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    font-size: var(--normal-font-size);
 
+}
+
+.submenu-container{
+    margin-left: 20px;
+    margin-top: 8px;
 }
 /* admin dashboard */
 .a {
@@ -642,4 +680,409 @@ input{
     font-size: 13px;
 }
 /* end of styles */
+/* button styles started*/
+.submit-btn {
+    background-color: var(--main-button-color);
+    color: #fff;
+    border: 1px solid var(--main-button-color);
+    font-weight: 500;
+    border-radius: 5px;
+    padding: 6px 12px;
+    font-size: var(--normal-font-size);
+    border: none;
+}
+.submit-btn:hover {
+    background-color: var(--main-button-color);
+    color: #fff;
+}
 
+.cancel-btn {
+    background-color: white;
+    color: var(--main-button-color);
+    font-weight: 500;
+    border-radius: 5px;
+    padding: 6px 12px;
+    font-size: var(--normal-font-size);
+    border: 1px solid var(--main-button-color) !important;
+}
+/* button styles ended*/
+
+/* analytics hub styles started */
+
+.analytic-right {
+    color: var(--main-button-color);
+    cursor: pointer;
+    font-size: var(--sub-headings-font-size);
+}
+.analytic-left{
+    color: var(--main-heading-color);
+    font-size: var(--sub-headings-font-size);
+    font-weight: 500;
+}
+
+.analytic-right:hover {
+    text-decoration: underline;
+}
+
+.analytic-main-container {
+    background-color: white;
+    margin: 20px;
+    /* Adjust margin as needed */
+    padding: 20px;
+    
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+}
+
+.analytic-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.analytic-content-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.analytic-content-box {
+    background-color: white;
+    flex: 1;
+    min-width: 200px;
+    /* Ensures the boxes stack on smaller screens */
+    padding: 10px;
+    display: flex;
+    /* Ensure contents are flex items */
+    align-items: center;
+    /* Center items vertically */
+    border-radius: 10px;
+    border: 1px solid grey;
+    cursor: pointer;
+}
+
+.analytic-icon {
+    font-size: var(--main-headings-font-size);
+    color: var(--label-color);
+    margin-right: 8px;
+    /* Adjust margin as needed */
+}
+
+.analytic-text {
+    font-size: var(--normal-font-size);
+    color: var(--label-color);
+}
+
+@media (max-width: 600px) {
+    .analytic-content-box {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .analytic-icon {
+        margin-right: 0;
+        margin-bottom: 5px;
+    }
+}
+
+.analytic-container1 {
+
+    margin: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.analytic-header1 {
+    display: flex;
+    padding: 10px;
+    justify-content: space-between;
+    align-items: center;
+
+}
+
+.analytic-header-left {
+    font-size: 16px;
+    font-weight: 400;
+}
+
+
+
+.analytic-search-bar {
+    display: flex;
+    padding: 10px;
+    justify-content: space-between;
+    /* Adjust spacing between items */
+    align-items: center;
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+
+.analytic-search-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.analytic-search-bar input[type="text"] {
+    width: 180px;
+    padding: 6px 28px 6px 10px;
+    /* Adjust padding for right space */
+    border: 1px solid #ccc;
+    border-radius: 15px;
+    position: relative;
+}
+
+.analytic-search-icon {
+    position: absolute;
+    right: 10px;
+    color: #666;
+    pointer-events: none;
+}
+
+.analytic-restore-text {
+    margin-right: 10px;
+    color: var(--main-button-color);
+    cursor: pointer;
+    font-size: var(--sub-headings-font-size);
+}
+
+.analytic-restore-icon {
+    font-style: normal;
+    margin-left: 10px;
+    color: var(--main-button-color);
+    cursor: pointer;
+}
+
+/* Adjusted CSS for alternating row colors */
+.analytic-table-container {
+    overflow-x: auto;
+}
+
+.analytic-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #CFD8DC;
+}
+
+.analytic-table th,
+.analytic-table td {
+    padding: 10px;
+    text-align: left;
+    border-right: 1px solid #ddd;
+    /* Add right border to all cells */
+}
+
+.analytic-table th {
+    background-color: #CFD8DC;
+    color: black;
+    font-size: var(--sub-headings-font-size);
+    font-weight: 500;
+    position: relative;
+    /* Ensure the position context for pseudo-element */
+}
+
+.analytic-table th:last-child {
+    border-right: none;
+    /* Remove right border for the last header cell */
+}
+
+/* Alternating row colors */
+.analytic-table tr:nth-child(even) {
+    background-color: #F5F5F5;
+    /* Grey background for even rows */
+}
+
+.analytic-table tr:nth-child(odd) {
+    background-color: #ffffff;
+    /* White background for odd rows */
+}
+
+
+.analytic-grey-text {
+    color: var(--label-color);
+    font-size: var(--sub-headings-font-size);
+}
+.analytic-blue-text{
+    color: var(--main-button-color);
+    font-size: var(--sub-headings-font-size);
+}
+
+.analytic-table th:nth-child(2) {
+    width: 300px;
+    /* Adjust width as needed */
+    text-align: center;
+}
+
+.analytic-highlighted {
+    background-color: #e1e5f6;
+    border: 1px solid var(--main-button-color);
+}
+
+/* analytics hub styles ended */
+
+/* analytics hub view all styles started */
+
+.card-container {
+    margin: 15px 30px;
+}
+
+.back {
+
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+
+}
+
+
+.back:hover .analytic-blue-text {
+    text-decoration: underline;
+    /* Change this to your desired hover color */
+}
+
+.back i {
+    color: var(--main-button-color);
+    margin-right: 10px;
+    font-size: var(--sub-headings-font-size);
+}
+
+.search-bar {
+    display: flex;
+    padding: 20px 0px;
+    justify-content: space-between;
+    /* Adjust spacing between items */
+    align-items: center;
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+
+.search-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.search-bar input[type="text"] {
+    width: 280px;
+    padding: 6px 28px 6px 10px;
+    /* Adjust padding for right space */
+    border: 1px solid #ccc;
+    border-radius: 18px;
+    position: relative;
+}
+
+.search-icon {
+    position: absolute;
+    right: 10px;
+    color: #666;
+    pointer-events: none;
+}
+
+.tab-container {
+    margin-bottom: 48px;
+}
+
+input[type="radio"] {
+    display: none;
+}
+
+label {
+    display: inline-block;
+    padding: 10px 20px;
+    margin-right: -1px;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    background-color: #f1f1f1;
+}
+
+label:hover {
+    background-color: #ddd;
+}
+
+input[type="radio"]:checked+label {
+    background-color: white;
+    border-bottom: 1px solid white;
+}
+
+.accordion-item {
+    width: 100%;
+}
+
+.accordion-button {
+    width: 100%;
+    color: black;
+    font-size: var(--sub-headings-font-size);
+}
+
+.accordion-collapse {
+    width: 100%;
+}
+
+.accordion-body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+.list-group-item {
+    width: 100%;
+}
+
+
+.custom-accordion .accordion-button:after {
+    display: none;
+}
+
+.custom-accordion .accordion-button {
+    padding-left: 1.5rem;
+}
+
+.custom-accordion .accordion-item {
+    border: none;
+}
+
+.custom-accordion .accordion-body {
+    padding-left: 3rem;
+}
+
+.tab-content {
+    border: 1px solid #dee2e6;
+    border-top: none;
+    padding: 1rem;
+}
+
+.nav-tabs .nav-link.active {
+    background-color: #ffffff;
+    border-color: #dee2e6 #dee2e6 #ffffff;
+    color: var(--main-button-color);
+}
+.nav-tabs .nav-link {
+    font-size: var(--sub-headings-font-size);
+    color: black;
+}
+.nav-tabs .nav-link.folder-active {
+    font-size: var(--sub-headings-font-size);
+    color: var(--main-button-color);
+}
+
+.nav-link {
+    border: 1px solid transparent;
+}
+
+.list-group-item {
+    padding: 0.5rem 1rem;
+    color: var(--main-button-color);
+    font-size: var(--sub-headings-font-size);
+}
+
+.star-icon {
+    color: #c0c0c0;
+    margin-right: 0.5rem;
+}
+
+.folder-icon {
+    margin-right: 0.5rem;
+}
+
+/* analytics hub view all styles ended */

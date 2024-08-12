@@ -16,7 +16,7 @@
             <div class="tab-pane show active" id="summary-tab-pane" role="tabpanel" aria-labelledby="summary-tab" tabindex="0">
                 <div class="row m-0 mb-4">
                     <div class="col-md-7 m-auto " style="text-align: center;line-height:2;">
-                       <h4 style="background: linear-gradient(90deg, #0F3057, #045575); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Welcome Bandari Divya, your dashboard is ready!</h4>
+                       <h4 style="background: linear-gradient(90deg, #0F3057, #045575); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Welcome {{ ucwords(strtolower($loginEmployee->employee_name)) }}, your dashboard is ready!</h4>
                         <p class="p-0 " style="color: #565656;font-size:12px;">Congratulations! Your affiliate dashboard is now ready for use. You have access to view profiles, requests, and job details. Get started and make the most out of your affiliate opportunities.</p>
                     </div>
                     <div class="col-md-5">
