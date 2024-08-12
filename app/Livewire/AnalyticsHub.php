@@ -14,7 +14,7 @@ class AnalyticsHub extends Component
     }
     public function analyticsHubList()
     {
-        return redirect()->route('viewAll'); 
+        return redirect()->route('analytics-hub-viewall'); 
     }
     public function render()
     {

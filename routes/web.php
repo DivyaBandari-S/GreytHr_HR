@@ -5,9 +5,11 @@ use App\Livewire\HrLogin;
 use App\Livewire\HomeDashboard;
 use App\Livewire\AddEmployeeDetails;
 use App\Livewire\AnalyticsHub;
+use App\Livewire\AnalyticsHubViewAll;
 use App\Livewire\GrantLeaveBalance;
 use App\Livewire\UpdateEmployeeDetails;
 use App\Livewire\EmployeeDirectory;
+use App\Livewire\HrAttendanceOverviewNew;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -43,8 +45,11 @@ Route::middleware(['auth:hr'])->group(function () {
                 Route::get('/add-employee-details/{employee?}', AddEmployeeDetails::class)->name('add-employee-details');
                 Route::get('/update-employee-details', UpdateEmployeeDetails::class)->name('update-employee-details');
                 Route::get('/update-employee-leaves', GrantLeaveBalance::class)->name('update-employee-leaves');
-                Route::get('/hremployeedirectory', EmployeeDirectory::class)->name('employee-directory');
-                Route::get('/analytics-hub', AnalyticsHub::class)->name('analytics-hub');
+        //HR Employee Related Routes
+                Route::get('/user/hremployeedirectory', EmployeeDirectory::class)->name('employee-directory');
+                Route::get('/user/analytics-hub', AnalyticsHub::class)->name('analytics-hub');
+                Route::get('/user/analytics-hub-viewall', AnalyticsHubViewAll::class)->name('analytics-hub-viewall');
+                Route::get('/user/overview', HrAttendanceOverviewNew::class)->name('overview');
 
     });
 

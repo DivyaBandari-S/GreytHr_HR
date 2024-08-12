@@ -24,7 +24,7 @@ class AnalyticsHubViewAll extends Component
    
     public function goBack()
     {
-        return redirect()->route('analytichub'); 
+        return redirect()->route('analytics-hub'); 
     }
    
     public function render()

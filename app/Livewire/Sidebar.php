@@ -18,9 +18,9 @@ class Sidebar extends Component
             $this->showSubmenu[$rowId] = true;
         }
     }
-    public function mount()
+   public function mount()
     {
-        $this->activeIcon = request()->segment(1);
+        $this->activeIcon = request()->segment(2);
     }
 
 

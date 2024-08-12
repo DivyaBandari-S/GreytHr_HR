@@ -61,18 +61,18 @@
                 </div>
 
                 <!-- Employee Menus -->
-            @elseif($activeIcon === 'user')
+            @elseif($activeIcon === 'user' || request()->is('*' . 'user' . '*'))
                 <h6 class="main-heading">EMPLOYEE</h6>
                 <div class="main-menus">
                     <!-- Main -->
-                    <div class="row main-menu">
+                    <div class="row main-menu"wire:key="row-1">
                         <div class="col">
                             <div wire:click="toggleSubmenu('row-1')"
                                 style="display: flex;justify-content: space-between; align-items: center;">
-                                <h6 class="sub-heading" wire:click="yourFunction">Main</h6>
+                                <h6 class="sub-heading {{isset($showSubmenu['row-1']) && $showSubmenu['row-1']? 'active' : ''}}" wire:click='testing'>Main</h6>
                                 <div class="arrows">
                                     @if (isset($showSubmenu['row-1']) && $showSubmenu['row-1'])
-                                        <a class="fa fa-chevron-down arrow-icon"> </a>
+                                        <a class="fa fa-chevron-down arrow-icon-active"> </a>
                                     @else
                                         <a class="fa fa-chevron-right arrow-icon"> </a>
                                     @endif
@@ -85,12 +85,12 @@
 
                                     <!-- Main SubMenues -->
 
-                                    <p class="p-0"><a href="/home" class="submenu" wire:navigate>Overview</a></p>
+                                    <p class="p-0"><a href="/hr/user/overview"  class="submenu" wire:navigate>Overview</a></p>
 
-                                    <p class="p-0"><a href="/hr/analytics-hub" class="submenu" wire:navigate>Analytics Hub</a>
+                                    <p class="p-0"><a href="/hr/user/analytics-hub" class="submenu" wire:navigate>Analytics Hub</a>
                                     </p>
 
-                                    <p class="p-0"><a href="/hr/hremployeedirectory" class="submenu" wire:navigate>Employee
+                                    <p class="p-0"><a href="/hr/user/hremployeedirectory" class="submenu" wire:navigate>Employee
                                             Directory</a></p>
 
                                     <p class="p-0"><a href="/user" class="submenu" wire:navigate>Organization
@@ -105,10 +105,10 @@
                         <div class="col">
 
                             <div wire:click="toggleSubmenu('row-2')" style="display: flex;">
-                                <h6 class="sub-heading">Information</h6>
+                                <h6 class="sub-heading {{ isset($showSubmenu['row-2']) && $showSubmenu['row-2'] ? 'active' : '' }}">Information</h6>
                                 <div class="arrows">
                                     @if (isset($showSubmenu['row-2']) && $showSubmenu['row-2'])
-                                        <a class="fa fa-chevron-down arrow-icon"> </a>
+                                        <a class="fa fa-chevron-down arrow-icon-active"> </a>
                                     @else
                                         <a class="fa fa-chevron-right arrow-icon"> </a>
                                     @endif
@@ -136,10 +136,10 @@
                         <div class="col">
 
                             <div wire:click="toggleSubmenu('row-3')" style="display: flex;">
-                                <h6 class="sub-heading">Admin</h6>
+                                <h6 class="sub-heading {{ isset($showSubmenu['row-3']) && $showSubmenu['row-3'] ? 'active' : '' }}">Admin</h6>
                                 <div class="arrows">
                                     @if (isset($showSubmenu['row-3']) && $showSubmenu['row-3'])
-                                        <a class="fa fa-chevron-down arrow-icon"> </a>
+                                        <a class="fa fa-chevron-down arrow-icon-active"> </a>
                                     @else
                                         <a class="fa fa-chevron-right arrow-icon"> </a>
                                     @endif
@@ -167,10 +167,10 @@
                         <div class="col">
 
                             <div wire:click="toggleSubmenu('row-4')" style="display: flex;">
-                                <h6 class="sub-heading">Setup</h6>
+                                <h6 class="sub-heading {{ isset($showSubmenu['row-4']) && $showSubmenu['row-4'] ? 'active' : '' }}">Setup</h6>
                                 <div class="arrows">
                                     @if (isset($showSubmenu['row-4']) && $showSubmenu['row-4'])
-                                        <a class="fa fa-chevron-down arrow-icon"> </a>
+                                        <a class="fa fa-chevron-down arrow-icon-active"> </a>
                                     @else
                                         <a class="fa fa-chevron-right arrow-icon"> </a>
                                     @endif
