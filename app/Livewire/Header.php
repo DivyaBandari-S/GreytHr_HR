@@ -8,6 +8,17 @@ use Livewire\Component;
 
 class Header extends Component
 {
+    public $showLogoutModal = false;
+
+    public function handleLogout()
+    {
+        $this->showLogoutModal = true;
+    }
+
+    public function cancelLogout()
+    {
+        $this->showLogoutModal = false;
+    }
     public function confirmLogout()
     {
 
