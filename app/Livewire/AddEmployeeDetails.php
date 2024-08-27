@@ -33,7 +33,7 @@ class AddEmployeeDetails extends Component
 {
     use WithFileUploads;
 
-    public $emp_id = 'XSS-0564';
+    public $emp_id = '';
     public $first_name;
     public $last_name;
     public $date_of_birth;
@@ -88,7 +88,7 @@ class AddEmployeeDetails extends Component
         ['company_name' => '',  'start_date' => '', 'end_date' => '', 'skills' => '', 'description' => '']
     ];
     public $pan_no;
-    public $aadhar_no;
+    public $adhar_no;
     public $pf_no;
     public $passport_no;
     public $employee_status;
@@ -182,6 +182,7 @@ class AddEmployeeDetails extends Component
     public  $selectedEmployees;
     public $currentStep = 1;
     public $parentscurrentStep = 1;
+    public $showAlert = false;
 
 
     protected function validationRules()
@@ -192,11 +193,12 @@ class AddEmployeeDetails extends Component
     public function nextPage()
 
     {
-        if ($this->currentStep != 6 && $this->currentStep != 7) {
-            $this->validate($this->validationRules());
-        }
+
+
+        $this->validate($this->validationRules());
 
         if ($this->currentStep == 1) {
+
             $this->currentStep++;
         } elseif ($this->currentStep == 2) {
             $this->registerEmployeeDetails();
@@ -205,7 +207,8 @@ class AddEmployeeDetails extends Component
         } elseif ($this->currentStep == 4) {
             $this->registerEmployeeJobDetails();
         } elseif ($this->currentStep == 5) {
-            $this->registerEmployeeParentsDetails();
+            // $this->validate($this->validationRules());
+            $this->parentscurrentStep++;
         } elseif ($this->currentStep == 6) {
 
             $this->registerEmployeeSpouseDetails();
@@ -214,13 +217,17 @@ class AddEmployeeDetails extends Component
         } elseif ($this->currentStep == 8) {
 
             $this->addEducationDetails();
-        }elseif ($this->currentStep == 9) {
+        } elseif ($this->currentStep == 9) {
 
             $this->addExperienceDetails();
-        }
-       else {
+        } else {
         }
     }
+    public function hideAlert()
+    {
+        $this->showAlert = false;
+    }
+
 
     public function previousPage()
     {
@@ -228,8 +235,9 @@ class AddEmployeeDetails extends Component
     }
     public function parentsnextPage()
     {
-        $this->validate($this->validationRules());
-        $this->parentscurrentStep++;
+
+        $this->validate($this->rules[11]);
+        $this->registerEmployeeParentsDetails();
     }
     public function parentspreviousPage()
     {
@@ -252,20 +260,25 @@ class AddEmployeeDetails extends Component
     {
         $this->education[] = ['level' => '', 'institution' => '', 'course_name' => '', 'year_of_passing' => '', 'percentage_or_cgpa' => ''];
     }
+    public function removeEducation($index)
+    {
+        unset($this->education[$index]);
+        $this->education = array_values($this->education); // Reindex the array
+    }
     public function addExperience()
     {
         $this->experience[] = ['company_name' => '', 'skills' => '', 'start_date' => '', 'end_date' => '', 'description' => ''];
     }
     public function removeExperience($index)
-{
-    unset($this->experience[$index]);
-    $this->experience = array_values($this->experience); // Reindex the array
-}
+    {
+        unset($this->experience[$index]);
+        $this->experience = array_values($this->experience); // Reindex the array
+    }
 
     protected $rules = [
         1 => [
-            'first_name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
+            'first_name' => 'required|regex:/^[\pL\s]+$/u|max:255',
+            'last_name' => 'required|regex:/^[\pL\s]+$/u|max:255',
             'mobile_number' => 'required|string|size:10|different:alternate_mobile_number',
             'company_email' => 'required|email|different:email',
             'gender' => 'required|in:Male,Female',
@@ -278,109 +291,222 @@ class AddEmployeeDetails extends Component
             'department_id' => 'required|string|max:255',
             'sub_department_id' => 'required|string|max:255',
             'job_title' => 'required|string|max:255',
+            'emp_domain' => 'nullable|regex:/^[\pL\s]+$/u',
+            'referrer' => 'nullable|regex:/^[\pL\s]+$/u',
             'job_location' => 'required|string|max:255',
             'company_id' => 'required|exists:companies,company_id',
             'manager_id' => 'required',
         ],
-        3 =>[
+        3 => [
             'date_of_birth' => 'required|date',
             'blood_group' => 'required',
-            'aadhar_no' => 'required|unique:emp_personal_infos,adhar_no',
-            'religion' => 'required',
-            'nationality' => 'required',
+            'adhar_no' => 'required|size:12|unique:emp_personal_infos,adhar_no',
+            'religion' => 'required|regex:/^[\pL\s]+$/u',
+            'nationality' => 'required|regex:/^[\pL\s]+$/u',
             'marital_status' => 'required',
             'email' => 'required|email|different:company_email',
-            'alternate_mobile_number' => '|different:mobile_number',
+            'pf_no' => 'nullable|size:12',
+            'pan_no' => 'required|size:10',
+            'passport_no' => 'nullable|regex:/^[\pL\s]+$/u_num|max:20',
+            'alternate_mobile_number' => 'nullable|size:10|different:mobile_number',
         ],
         4 => [
             'address' => 'required|string|max:255',
             'present_address' => 'required|string|max:255',
-            'state' => 'required|string|max:255',
-            'postal_code' => 'required|string|max:10',
-            'country' => 'required|string|max:255',
+            'state' => 'required|regex:/^[\pL\s]+$/u|max:255',
+            'postal_code' => 'nullable|size:6',
+            'country' => 'nullable|regex:/^[\pL\s]+$/u|max:255',
         ],
         5 => [
-            'father_first_name' => 'required|string|max:255',
-            'father_last_name' => 'required|string|max:255',
+            'father_first_name' => 'required|regex:/^[\pL\s]+$/u|max:255',
+            'father_last_name' => 'required|regex:/^[\pL\s]+$/u|max:255',
             'father_blood_group' => 'required',
-            'mother_first_name' => 'required|string|max:255',
-            'mother_last_name' => 'required|string|max:255',
+            'father_phone' => 'nullable|size:10',
+            'mother_first_name' => 'required|regex:/^[\pL\s]+$/u|max:255',
+            'mother_last_name' => 'required|regex:/^[\pL\s]+$/u|max:255',
             'mother_blood_group' => 'required',
+            'mother_phone' => 'nullable|size:10',
             // 'father_image' => 'nullable|image|max:1024',
             // 'mother_image' => 'nullable|image|max:1024',
         ],
+        11=> [
+            'father_email' => 'nullable|email',
+            'mother_email' => 'nullable|email',
+            'father_religion' => 'nullable|regex:/^[\pL\s]+$/u',
+            'mother_religion' => 'nullable|regex:/^[\pL\s]+$/u',
+            'father_nationality' => 'nullable|regex:/^[\pL\s]+$/u',
+            'mother_nationality' => 'nullable|regex:/^[\pL\s]+$/u',
+            'father_occupation' => 'nullable|regex:/^[\pL\s]+$/u',
+            'mother_occupation' => 'nullable|regex:/^[\pL\s]+$/u',
+            // 'father_image'=>
+            // 'mother_image'=>
+
+        ],
+        6 => [
+            'spouse_first_name' => 'nullable|regex:/^[\pL\s]+$/u',
+            'spouse_last_name' => 'nullable|regex:/^[\pL\s]+$/u',
+            'spouse_qualification' => 'nullable|regex:/^[\pL\s]+$/u',
+            'spouse_profession' => 'nullable|regex:/^[\pL\s]+$/u',
+            'spouse_nationality' => 'nullable|regex:/^[\pL\s]+$/u',
+            'spouse_adhar_no' => 'nullable|size:12',
+            'spouse_pan_no' => 'nullable|size:10',
+            'spouse_religion' => 'nullable|regex:/^[\pL\s]+$/u',
+            'spouse_email' => 'nullable|email',
+            'children.*.name' => 'nullable|regex:/^[\pL\s]+$/u',
+            //    'children.*.dob'=>
+            //    'children.*.gender'=>
+        ],
+        7 => [
+            'bank_name' => 'required|regex:/^[\pL\s]+$/u',
+            'bank_branch' => 'required|regex:/^[\pL\s]+$/u',
+            'account_number' => 'required|max:20',
+            'ifsc_code' => 'required|max:12',
+            'bank_address' => 'required',
+
+        ],
         8 => [
-            'education.*.level' => 'required|string|in:Bachelors,Masters,Intermediate',
+            'education.*.level' => 'required|regex:/^[\pL\s]+$/u|in:Bachelors,Masters,Intermediate',
             'education.*.institution' => 'required|string|max:255',
             'education.*.year_of_passing' => 'required|digits:4|integer',
-            'education.*.course_name' => 'required|string',
-            'education.*.percentage' => 'nullable|numeric|min:0|max:100',
+            'education.*.course_name' => 'required',
+            'education.*.percentage' => 'required|numeric|min:0|max:100',
         ],
-        9=>[
-            'experience.*.company_name' => 'required|string|max:255',
-            'experience.*.skills' => 'required|string|max:500',
-            'experience.*.start_date' => 'required|date|before_or_equal:today',
+        9 => [
+            'experience.*.company_name' => 'nullable|string|max:255',
+            'experience.*.skills' => 'nullable|string|max:500',
+            'experience.*.start_date' => 'nullable|date|before_or_equal:today',
             'experience.*.end_date' => 'nullable|date|after_or_equal:experience.*.start_date',
             'experience.*.description' => 'nullable|string|max:1000',
         ]
     ];
 
     protected $messages = [
-        'first_name.required' => 'The first name is required.',
-        'first_name.string' => 'The first name must be a valid string.',
-        'last_name.required' => 'The last name is required.',
-        'last_name.string' => 'The last name must be a valid string.',
-        'mobile_number.required' => 'The mobile number is required.',
-        'mobile_number.size' => 'The mobile number must be exactly 10 digits.',
-        'mobile_number.different' => 'The mobile number must be different from the alternate mobile number.',
-        'company_email.required' => 'The company email is required.',
-        'company_email.email' => 'The company email must be a valid email address.',
-        'company_email.different' => 'The company email must be different from the personal email.',
+        'first_name.required' => ' First name is required.',
+        'first_name.alpha' => 'First name must only contain letters.',
+        'last_name.required' => 'Last name is required.',
+        'last_name.alpha' => 'Last name must only contain letters.',
+        'mobile_number.required' => 'Phone number is required.',
+        'mobile_number.size' => 'Phone number must be exactly 10 digits.',
+        'mobile_number.different' => ' Mobile number must be different from the alternate mobile number.',
+        'company_email.required' => 'Company email is required.',
+        'company_email.email' => 'Company email must be a valid email address.',
+        'company_email.different' => 'Company email must be different from the personal email.',
         'gender.required' => 'Please select a gender.',
         'gender.in' => 'The selected gender is invalid.',
-        'hire_date.required' => 'The hire date is required.',
-        'hire_date.date' => 'The hire date must be a valid date.',
+        'hire_date.required' => 'Hire date is required.',
+        'hire_date.date' => 'Hire date must be a valid date.',
         'employee_type.required' => 'Please select an employee type.',
-        'employee_type.in' => 'The selected employee type is invalid.',
+        'employee_type.in' => 'Selected employee type is invalid.',
         'employee_status.required' => 'Please select an employee status.',
-        'employee_status.in' => 'The selected employee status is invalid.',
-        'department_id.required' => 'The department is required.',
-        'department_id.string' => 'The department must be a valid string.',
-        'sub_department_id.required' => 'The sub-department is required.',
-        'sub_department_id.string' => 'The sub-department must be a valid string.',
-        'job_title.required' => 'The job title is required.',
-        'job_title.string' => 'The job title must be a valid string.',
-        'job_location.required' => 'The job location is required.',
-        'job_location.string' => 'The job location must be a valid string.',
-        'company_id.required' => 'The company ID is required.',
-        'company_id.exists' => 'The selected company ID does not exist.',
-        'manager_id.required' => 'The manager ID is required.',
-        'date_of_birth.required' => 'The date of birth is required.',
-        'date_of_birth.date' => 'The date of birth must be a valid date.',
-        'blood_group.required' => 'The blood group is required.',
-        'aadhar_no.required' => 'The Aadhar number is required.',
-        'aadhar_no.unique' => 'This Aadhar number is already taken.',
-        'religion.required' => 'The religion is required.',
-        'nationality.required' => 'The nationality is required.',
-        'marital_status.required' => 'The marital status is required.',
-        'email.required' => 'The email address is required.',
-        'email.email' => 'The email address must be a valid email address.',
-        'email.different' => 'The email address must be different from the company email.',
-        'alternate_mobile_number.different' => 'The alternate mobile number must be different from the mobile number.',
-        'address.required' => 'The address is required.',
-        'present_address.required' => 'The present address is required.',
+        'employee_status.in' => 'Selected employee status is invalid.',
+        'department_id.required' => 'Department is required.',
+        'department_id.string' => 'Department must be a valid string.',
+        'sub_department_id.required' => 'Sub-department is required.',
+        'sub_department_id.string' => 'Sub-department must be a valid string.',
+        'emp_domain.alpha' => 'Employee domain field must only contain letters',
+        'referrer.alpha' => 'Referrer field must only contain letters',
+        'job_title.required' => 'Job title is required.',
+        'job_title.string' => 'Job title must be a valid string.',
+        'job_location.required' => 'Job location is required.',
+        'job_location.alpha' => 'Job location field must only contain letters.',
+        'company_id.required' => 'Please select the company name.',
+        'company_id.exists' => 'The selected company name does not exist.',
+        'manager_id.required' => 'Please select the manager ',
+        'date_of_birth.required' => 'Date of birth is required.',
+        'date_of_birth.date' => 'Date of birth must be a valid date.',
+        'blood_group.required' => 'Blood group is required.',
+        'adhar_no.required' => 'Aadhar number is required.',
+        'adhar_no.unique' => 'This Aadhar number is already taken.',
+        'adhar_no.size' => 'Aadhar number must be exactly 12 digits.',
+        'religion.required' => 'Religion is required.',
+        'religion.alpha' => 'Religion field must only contain letters.',
+        'nationality.required' => 'Nationality is required.',
+        'nationality.alpha' => 'Nationality field must only contain letters.',
+        'marital_status.required' => 'Marital status is required.',
+        'email.required' => 'Personal email is required.',
+        'email.email' => ' Personal email must be a valid email.',
+        'pf_no' => ' PF number must be 12 characters.',
+        'pan_no' => ' PAN number must be 10 characters.',
+        'pan_no.required' => ' PAN number is required.',
+        'email.different' => 'Personal email must be different from the company email.',
+        'alternate_mobile_number.different' => 'The alternate mobile number must be different from the phone number.',
+        'alternate_mobile_number.size' => 'Alternate mobile number must be 10 characters.',
+        'address.required' => 'Permanent address is required.',
+        'present_address.required' => 'Present address is required.',
         'state.required' => 'The state is required.',
-        'postal_code.required' => 'The postal code is required.',
-        'postal_code.string' => 'The postal code must be a valid string.',
-        'country.required' => 'The country is required.',
-        'father_first_name.required' => 'The father\'s first name is required.',
-        'father_last_name.required' => 'The father\'s last name is required.',
-        'father_blood_group.required' => 'The father\'s blood group is required.',
-        'mother_first_name.required' => 'The mother\'s first name is required.',
-        'mother_last_name.required' => 'The mother\'s last name is required.',
-        'mother_blood_group.required' => 'The mother\'s blood group is required.',
-    ];
+        'postal_code.required' => 'Postal code is required.',
+        'postal_code.size' => 'Postal code  must be 6 characters.',
+        'country.required' => 'Country is required.',
+        'father_first_name.required' => 'Father\'s first name is required.',
+        'father_first_name.alpha' => 'Father\'s first  must only contain letters.',
+        'father_last_name.required' => 'Father\'s last name is required.',
+        'father_last_name.alpha' => 'Father\'s last  must only contain letters.',
+        'father_blood_group.required' => 'Father\'s blood group is required.',
+        'father_blood_group.required' => 'Father\'s blood group is required.',
+        'father_phone' => 'Father\'s phone number must be 10 characters.',
+        'mother_phone' => 'Mother\'s phone number must be 10 characters.',
+        'mother_first_name.required' => 'Mother\'s first name is required.',
+        'mother_first_name.alpha' => 'Mother\'s first  must only contain letters.',
+        'mother_last_name.required' => 'Mother\'s last name is required.',
+        'mother_last_name.alpha' => 'Mother\'s lastfield must only contain letters.',
+        'mother_blood_group.required' => 'Mother\'s blood group is required.',
+        'spouse_first_name.alpha' => 'Spouse first name must only contain letters.',
+        'spouse_last_name.alpha' => 'Spouse last name must only contain letters.',
+        'spouse_qualification.alpha' => 'Spouse qualification  must only contain letters.',
+        'spouse_nationality.alpha' => 'Spouse nationality must only contain letters.',
+        'spouse_religion.alpha' => 'Spouse religion must only contain letters.',
+        'father_religion.alpha' => 'Father religion must only contain letters.',
+        'mother_occupation.alpha' => 'Mother occupation must only contain letters.',
+        'father_occupation.alpha' => 'Father occupation must only contain letters.',
+        'mother_nationality.alpha' => 'Mother nationality must only contain letters.',
+        'father_nationality.alpha' => 'Father nationality must only contain letters.',
+        'mother_religion.alpha' => 'Mother religion must only contain letters.',
+        'children.*.name.alpha' => 'Child name must only contain letters.',
+        'spouse_pan_no.size' => 'Spouse PAN number must be 10 characters.',
+        'spouse_adhar_no.size' => 'Spouse Aadhar number must be 12 characters.',
+        'bank_name.required'=> 'Bank name is required.',
+        'bank_name.alpa'=>'Bank name must only contain letters.',
+        'bank_branch.required'=>'Branch name is required.',
+        'bank_branch.required'=>'Branch name is required.',
+        'account_number.required'=>'Account number is required.',
+        'account_number.max'=>'Account number field must not be greater than 20 characters.',
+        'ifsc_code.required'=>'IFSC code is required.',
+        'ifsc_code.size'=>'IFSC code must be 6 characters.',
+        'bank_address.required'=>'Bank address is required.',
+        // 'experience.*.company_name.required' => 'Company name is required.',
+        'experience.*.company_name.string' => 'Company name must be a string.',
+        'experience.*.company_name.max' => 'Company name may not be greater than 255 characters.',
+        // 'experience.*.skills.required' => 'Skills are required.',
+        'experience.*.skills.string' => 'Skills must be a string.',
+        'experience.*.skills.max' => 'Skills may not be greater than 500 characters.',
+        // 'experience.*.start_date.required' => 'Start date is required.',
+        'experience.*.start_date.date' => 'Start date must be a valid date.',
+        'experience.*.start_date.before_or_equal' => 'Start date must be before or equal to today.',
+        // 'experience.*.end_date.date' => 'End date must be a valid date.',
+        'experience.*.end_date.after_or_equal' => 'End date must be after or equal to the start date.',
+        'experience.*.description.string' => 'Description must be a string.',
+        'experience.*.description.max' => 'Description may not be greater than 1000 characters.',
 
+        'education.*.level.required' => 'Please select an education level.',
+        'education.*.level.alpha' => 'Education level must only contain letters.',
+        'education.*.level.in' => 'Education level must be one of: Bachelors, Masters, or Intermediate.',
+
+        'education.*.institution.required' => 'Institution field is required.',
+        'education.*.institution.string' => 'Institution name must be a string.',
+        'education.*.institution.max' => 'Institution name may not be greater than 255 characters.',
+
+        'education.*.year_of_passing.required' => 'Year of passing is required.',
+        'education.*.year_of_passing.digits' => 'Year of passing must be a 4-digit number.',
+        'education.*.year_of_passing.integer' => 'Year of passing must be an integer.',
+
+        'education.*.course_name.required' => 'Course name is required.',
+        'education.*.course_name.alpha' => 'Course name must only contain letters.',
+
+        'education.*.percentage.required' => 'Percentage/CGPA is required.',
+        'education.*.percentage.numeric' => 'The percentage/Cgpa must be a number.',
+        'education.*.percentage.min' => 'The percentage/CGPA must be at least 0.',
+        'education.*.percentage.max' => 'The percentage/CGPA may not be greater than 100.',
+    ];
 
     public function registerEmployeeDetails()
     {
@@ -430,6 +556,7 @@ class AddEmployeeDetails extends Component
 
 
             session()->flash('emp_success', 'Employee registered successfully!');
+            $this->showAlert = true;
 
             // Clear the form fields
             $this->currentStep++;
@@ -441,6 +568,7 @@ class AddEmployeeDetails extends Component
 
     public function registerEmployeeJobDetails()
     {
+
 
         try {
             EmpPersonalInfo::updateorCreate(
@@ -467,8 +595,8 @@ class AddEmployeeDetails extends Component
                     'present_address' => $this->present_address,
                     'permenant_address' => $this->address,
                     'passport_no' => $this->passport_no,
-                    'pan_no' => strtoupper($this->pan_no),
-                    'adhar_no' => $this->aadhar_no,
+                    'pan_no' => strtoupper($this->pan_no)?strtoupper($this->pan_no) : "",
+                    'adhar_no' => $this->adhar_no,
                     'pf_no' => $this->pf_no,
                     'nick_name' => $this->nick_name,
                     'facebook' => $this->facebook,
@@ -480,6 +608,7 @@ class AddEmployeeDetails extends Component
             );
             $this->currentStep++;
             session()->flash('emp_success', 'Employee personal details added successfully!');
+            $this->showAlert = true;
         } catch (Exception $e) {
             throw $e;
         }
@@ -487,6 +616,7 @@ class AddEmployeeDetails extends Component
 
     public function registerEmployeeParentsDetails()
     {
+
         try {
             if ($this->father_image) {
                 $this->father_image_binary = base64_encode(file_get_contents($this->father_image->getRealPath()));
@@ -531,6 +661,7 @@ class AddEmployeeDetails extends Component
             );
             $this->currentStep++;
             session()->flash('emp_success', 'Employee parents details addeed successfully!');
+            $this->showAlert = true;
         } catch (Exception $e) {
             throw $e;
         }
@@ -567,6 +698,7 @@ class AddEmployeeDetails extends Component
             );
             $this->currentStep++;
             session()->flash('emp_success', 'Employee Spouse details addeed successfully!');
+            $this->showAlert = true;
         } catch (Exception $e) {
             throw $e;
         }
@@ -587,8 +719,9 @@ class AddEmployeeDetails extends Component
 
                 ]
             );
-            // $this->currentStep++;
+            $this->currentStep++;
             session()->flash('emp_success', 'Employee Bank details addeed successfully!');
+            $this->showAlert = true;
         } catch (Exception $e) {
             throw $e;
         }
@@ -605,6 +738,7 @@ class AddEmployeeDetails extends Component
             );
             $this->currentStep++;
             session()->flash('emp_success', 'Employee Educational details added successfully!');
+            $this->showAlert = true;
         } catch (Exception $e) {
             throw $e;
         }
@@ -616,11 +750,12 @@ class AddEmployeeDetails extends Component
                 ['emp_id' => $this->emp_id],
                 [
                     // 'qualification' => json_encode($this->education),
-                    'experience'=>json_encode($this->experience),
+                    'experience' => json_encode($this->experience),
                 ]
             );
             // $this->currentStep++;
             session()->flash('emp_success', 'Employee Experience details added successfully!');
+            $this->showAlert = true;
         } catch (Exception $e) {
             throw $e;
         }
@@ -774,7 +909,7 @@ class AddEmployeeDetails extends Component
             $this->education = $employee->education;
             $this->experience = $employee->experience;
             $this->pan_no = $employee->pan_no;
-            $this->aadhar_no = $employee->adhar_no;
+            $this->adhar_no = $employee->adhar_no;
             $this->pf_no = $employee->pf_no;
             $this->nick_name = $employee->nick_name;
             $this->time_zone = $employee->time_zone;
