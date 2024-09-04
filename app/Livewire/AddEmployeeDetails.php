@@ -24,6 +24,7 @@ use App\Models\Company;
 use App\Models\EmpDepartment;
 use App\Models\EmpSubDepartments;
 use App\Models\EmpBankDetail;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Support\Facades\Crypt;
@@ -37,7 +38,7 @@ class AddEmployeeDetails extends Component
     public $first_name;
     public $last_name;
     public $date_of_birth;
-    public $gender;
+    public $gender="Male";
     public $email;
     public $company_name = '';
     public $company_email;
@@ -74,17 +75,19 @@ class AddEmployeeDetails extends Component
         'O-'
     ];
     public $blood_group = '';
-    public $nationality;
+    public $nationality="Indian";
     public $religion;
-    public $marital_status;
+    public $marital_status='married';
     public $spouse;
     public $physically_challenge;
     public $inter_emp;
-    public $job_location;
-    public $education = [
+    public $job_location='Hyderabad';
+    public $education = [];
+    public $newEducation = [
         ['level' => '', 'institution' => '', 'course_name' => '', 'year_of_passing' => '', 'percentage' => '']
     ];
-    public $experience = [
+    public $experience=[];
+    public $newExperience = [
         ['company_name' => '',  'start_date' => '', 'end_date' => '', 'skills' => '', 'description' => '']
     ];
     public $pan_no;
@@ -116,11 +119,14 @@ class AddEmployeeDetails extends Component
     public $selectedId;
     public $companieIds;
     public $referrer;
-    public $probation_period;
+    public $probation_period=30;
+    public $probation_periods=['30','45','60','90','180','none'
+
+    ];
     public $confirmation_date;
     public $notice_period;
     public $emp_domain;
-    public $shift_type;
+    public $shift_type='GS';
     public $shift_start_time;
     public $shift_end_time;
     public $signature_image;
@@ -154,7 +160,7 @@ class AddEmployeeDetails extends Component
     public $mother_nationality;
     public $father_religion;
     public $mother_religion;
-
+    public $imageerror='Preview not available for this file type.';
     public $spouse_first_name;
     public $spouse_last_name;
     public $spouse_gender;
@@ -168,11 +174,11 @@ class AddEmployeeDetails extends Component
     public $spouse_religion;
     public $spouse_email;
     public $spouse_address;
-    public $children = [
-        ['name' => '', 'gender' => '']
+    public $children=[];
+    public $newChildren = [
+        ['name' => '', 'gender' => '' ,'dob']
     ];
     public $spouse_image;
-
     public $bank_name;
     public $bank_branch;
     public $account_number;
@@ -183,6 +189,8 @@ class AddEmployeeDetails extends Component
     public $currentStep = 3;
     public $parentscurrentStep = 1;
     public $showAlert = false;
+    public $successModal=false;
+
 
 
     protected function validationRules()
@@ -190,12 +198,45 @@ class AddEmployeeDetails extends Component
         return $this->rules[$this->currentStep];
     }
 
+    public function updated($propertyName)
+    {
+         if($this->currentStep!=8 && $this->currentStep!=9){
+
+            $this->validateOnly($propertyName, $this->validationRules());
+         }
+
+
+        if (in_array($propertyName, ['first_name', 'last_name','mobile_number'])) {
+            $firstName = explode(' ', trim($this->first_name))[0]; // Take only the first word from the first name
+            $lastname = explode(' ', trim($this->last_name))[0];
+            $mobile= substr($this->mobile_number, 0, 4);
+            $company_email = strtolower($firstName . '.' . $lastname. '@paygdigitals.com');
+            $exists = EmployeeDetails::where('email', $company_email)->exists();
+            if($exists){
+
+                $this->company_email = strtolower($firstName . '.' . $lastname. $mobile. '@paygdigitals.com');
+                $this->validateOnly("company_email", $this->validationRules());
+            }else{
+                $this->company_email = strtolower($firstName . '.' . $lastname. '@paygdigitals.com');
+                $this->validateOnly("company_email", $this->validationRules());
+            }
+        }
+
+    }
+    public function closeModal(){
+        $this->successModal=false;
+    }
+
     public function nextPage()
 
     {
-
+       
+       if($this->currentStep!=8 && $this->currentStep!=9 ){
 
         $this->validate($this->validationRules());
+
+       }
+
 
         if ($this->currentStep == 1) {
 
@@ -211,18 +252,26 @@ class AddEmployeeDetails extends Component
             $this->parentscurrentStep++;
         } elseif ($this->currentStep == 6) {
 
-            $this->registerEmployeeSpouseDetails();
+      $this->registerEmployeeSpouseDetails();
         } elseif ($this->currentStep == 7) {
+            $this->education=[];
+
             $this->registerEmployeeBankDetails();
         } elseif ($this->currentStep == 8) {
+                $this->addEducationDetails();
 
-            $this->addEducationDetails();
         } elseif ($this->currentStep == 9) {
 
             $this->addExperienceDetails();
         } else {
         }
     }
+
+    public function skipPage(){
+
+        $this->currentStep++;
+    }
+
     public function hideAlert()
     {
         $this->showAlert = false;
@@ -244,43 +293,114 @@ class AddEmployeeDetails extends Component
         $this->parentscurrentStep--;
     }
 
-    public function addChild()
+    public function addChildren()
     {
-        $this->children[] = ['name' => '', 'dob' => '', 'gender' => ''];
+
+        $this->validate([
+            'newChildren.name' => 'required',
+            'newChildren.gender' => 'required',
+            'newChildren.dob' => 'required',
+        ],[
+            'newChildren.name.required' => 'Child name is required.',
+            'newChildren.gender.required' => 'Child gender is required.',
+            'newChildren.dob.required' => 'Date of birth is required.',
+        ]);
+
+        $this->children[] = $this->newChildren;
+
+        // Clear the form
+        $this->reset('newChildren');
+    }
+    public function editChildren($index)
+    {
+        $this->newChildren = $this->children[$index];
+        $this->removeChildren($index);
     }
 
-    public function removeChild($index)
+    public function removeChildren($index)
     {
         unset($this->children[$index]);
-        $this->children = array_values($this->children); // Reindex the array
+        $this->children = array_values($this->children); // Re-index the array
     }
-
 
     public function addEducation()
     {
-        $this->education[] = ['level' => '', 'institution' => '', 'course_name' => '', 'year_of_passing' => '', 'percentage_or_cgpa' => ''];
+        // dd($this->newEducation[0]['year_of_passing']);
+        $this->validate([
+            'newEducation.level' => 'required',
+            'newEducation.institution' => 'required',
+            'newEducation.course_name' => 'required',
+            'newEducation.year_of_passing' => 'required',
+            'newEducation.percentage' => 'required|numeric|max:100',
+        ],[
+            'newEducation.level.required' => 'Select the educational level.',
+            'newEducation.institution.required' => 'Enter the name of the institution.',
+            'newEducation.course_name.required' => 'Enter the course name.',
+            'newEducation.year_of_passing.required' => 'Select the year of passing.',
+            'newEducation.percentage.required' => ' Enter the percentage or CGPA.',
+            'newEducation.percentage.numeric' => 'Percentage or CGPA must be a number.',
+            'newEducation.percentage.max' => 'Percentage or CGPA must not exceed 100.',
+        ]);
+
+        $this->education[] = $this->newEducation;
+
+        // Clear the form
+        $this->reset('newEducation');
+
     }
+    public function editEducation($index)
+    {
+        $this->newEducation = $this->education[$index];
+        $this->removeEducation($index);
+    }
+
     public function removeEducation($index)
     {
         unset($this->education[$index]);
-        $this->education = array_values($this->education); // Reindex the array
+        $this->education = array_values($this->education); // Re-index the array
     }
     public function addExperience()
     {
-        $this->experience[] = ['company_name' => '', 'skills' => '', 'start_date' => '', 'end_date' => '', 'description' => ''];
+        // dd($this->newEducation[0]['year_of_passing']);
+        $this->validate([
+            'newExperience.company_name' => 'required',
+            'newExperience.start_date' => 'required',
+            'newExperience.end_date' => 'required',
+            'newExperience.skills' => 'required',
+            'newExperience.description' => 'required|max:1000',
+        ],[
+            'newExperience.company_name.required' => 'Company name is required.',
+            'newExperience.start_date.required' => 'Start date is required.',
+            'newExperience.end_date.required' => 'Last date is required.',
+            'newExperience.skills.required' => 'Skills are required',
+            'newExperience.description.required' => ' Job description is required.',
+        ]);
+
+        $this->experience[] = $this->newExperience;
+
+        // Clear the form
+        $this->reset('newExperience');
+
     }
+
+    public function editExperience($index)
+    {
+        $this->newExperience = $this->experience[$index];
+        $this->removeExperience($index);
+    }
+
     public function removeExperience($index)
     {
         unset($this->experience[$index]);
-        $this->experience = array_values($this->experience); // Reindex the array
+        $this->experience = array_values($this->experience); // Re-index the array
     }
 
     protected $rules = [
         1 => [
-            'first_name' => 'required|regex:/^[\pL\s]+$/u|max:255',
-            'last_name' => 'required|regex:/^[\pL\s]+$/u|max:255',
+            'first_name' => 'required|regex:/^[\pL\s]+$/u|max:100',
+            'last_name' => 'required|regex:/^[\pL\s]+$/u|max:100',
             'mobile_number' => 'required|string|size:10|different:alternate_mobile_number',
-            'company_email' => 'required|email|different:email',
+            'company_email' => 'required|email|different:email|unique:employee_details,email',
             'gender' => 'required|in:Male,Female',
             'image' => 'nullable|image|max:1024',
         ],
@@ -338,8 +458,8 @@ class AddEmployeeDetails extends Component
             'mother_nationality' => 'nullable|regex:/^[\pL\s]+$/u',
             'father_occupation' => 'nullable|regex:/^[\pL\s]+$/u',
             'mother_occupation' => 'nullable|regex:/^[\pL\s]+$/u',
-            // 'father_image'=>
-            // 'mother_image'=>
+            'father_image'=>'nullable|image|max:1024',
+            'mother_image'=>'nullable|image|max:1024'
 
         ],
         6 => [
@@ -352,7 +472,6 @@ class AddEmployeeDetails extends Component
             'spouse_pan_no' => 'nullable|size:10',
             'spouse_religion' => 'nullable|regex:/^[\pL\s]+$/u',
             'spouse_email' => 'nullable|email',
-            'children.*.name' => 'nullable|regex:/^[\pL\s]+$/u',
             //    'children.*.dob'=>
             //    'children.*.gender'=>
         ],
@@ -364,33 +483,23 @@ class AddEmployeeDetails extends Component
             'bank_address' => 'required',
 
         ],
-        8 => [
-            'education.*.level' => 'required|regex:/^[\pL\s]+$/u|in:Bachelors,Masters,Intermediate',
-            'education.*.institution' => 'required|string|max:255',
-            'education.*.year_of_passing' => 'required|digits:4|integer',
-            'education.*.course_name' => 'required',
-            'education.*.percentage' => 'required|numeric|min:0|max:100',
-        ],
-        9 => [
-            'experience.*.company_name' => 'nullable|string|max:255',
-            'experience.*.skills' => 'nullable|string|max:500',
-            'experience.*.start_date' => 'nullable|date|before_or_equal:today',
-            'experience.*.end_date' => 'nullable|date|after_or_equal:experience.*.start_date',
-            'experience.*.description' => 'nullable|string|max:1000',
-        ]
+
     ];
 
     protected $messages = [
         'first_name.required' => ' First name is required.',
         'first_name.alpha' => 'First name must only contain letters.',
+        'first_name.max' => 'First name must only contain 100 leters.',
         'last_name.required' => 'Last name is required.',
         'last_name.alpha' => 'Last name must only contain letters.',
-        'mobile_number.required' => 'Phone number is required.',
-        'mobile_number.size' => 'Phone number must be exactly 10 digits.',
+        'last_name.alpha' => 'Last name mustonly contain 100 leters.',
+        'mobile_number.required' => 'Mobile number is required.',
+        'mobile_number.size' => 'Mobile number must be exactly 10 digits.',
         'mobile_number.different' => ' Mobile number must be different from the alternate mobile number.',
         'company_email.required' => 'Company email is required.',
         'company_email.email' => 'Company email must be a valid email address.',
         'company_email.different' => 'Company email must be different from the personal email.',
+        'company_email.unique' => ' Company email  already used of another employee.',
         'gender.required' => 'Please select a gender.',
         'gender.in' => 'The selected gender is invalid.',
         'hire_date.required' => 'Hire date is required.',
@@ -410,7 +519,7 @@ class AddEmployeeDetails extends Component
         'job_location.required' => 'Job location is required.',
         'job_location.alpha' => 'Job location field must only contain letters.',
         'company_id.required' => 'Please select the company name.',
-        'company_id.exists' => 'The selected company name does not exist.',
+        'company_id.exists' => 'Selected company name does not exist.',
         'manager_id.required' => 'Please select the manager ',
         'date_of_birth.required' => 'Date of birth is required.',
         'date_of_birth.date' => 'Date of birth must be a valid date.',
@@ -473,6 +582,7 @@ class AddEmployeeDetails extends Component
         'ifsc_code.required'=>'IFSC code is required.',
         'ifsc_code.size'=>'IFSC code must be 6 characters.',
         'bank_address.required'=>'Bank address is required.',
+        'education.required'=>'Atleast add one Educational qualification',
         // 'experience.*.company_name.required' => 'Company name is required.',
         'experience.*.company_name.string' => 'Company name must be a string.',
         'experience.*.company_name.max' => 'Company name may not be greater than 255 characters.',
@@ -487,25 +597,25 @@ class AddEmployeeDetails extends Component
         'experience.*.description.string' => 'Description must be a string.',
         'experience.*.description.max' => 'Description may not be greater than 1000 characters.',
 
-        'education.*.level.required' => 'Please select an education level.',
-        'education.*.level.alpha' => 'Education level must only contain letters.',
-        'education.*.level.in' => 'Education level must be one of: Bachelors, Masters, or Intermediate.',
+        'newEducation.*.level.required' => 'Please select an education level.',
+        'newEducation.*.level.alpha' => 'Education level must only contain letters.',
+        'newEducation.*.level.in' => 'Education level must be one of: Bachelors, Masters, or Intermediate.',
 
-        'education.*.institution.required' => 'Institution field is required.',
-        'education.*.institution.string' => 'Institution name must be a string.',
-        'education.*.institution.max' => 'Institution name may not be greater than 255 characters.',
+        'newEducation.*.institution.required' => 'Institution is required.',
+        'newEducation.*.institution.string' => 'Institution name must be a string.',
+        'newEducation.*.institution.max' => 'Institution name may not be greater than 255 characters.',
 
-        'education.*.year_of_passing.required' => 'Year of passing is required.',
-        'education.*.year_of_passing.digits' => 'Year of passing must be a 4-digit number.',
-        'education.*.year_of_passing.integer' => 'Year of passing must be an integer.',
+        'newEducation.*.year_of_passing.required' => 'Year of passing is required.',
+        'newEducation.*.year_of_passing.digits' => 'Year of passing must be a 4-digit number.',
+        'newEducation.*.year_of_passing.integer' => 'Year of passing must be an integer.',
 
-        'education.*.course_name.required' => 'Course name is required.',
-        'education.*.course_name.alpha' => 'Course name must only contain letters.',
+        'newEducation.*.course_name.required' => 'Course name is required.',
+        'newEducation.*.course_name.alpha' => 'Course name must only contain letters.',
 
-        'education.*.percentage.required' => 'Percentage/CGPA is required.',
-        'education.*.percentage.numeric' => 'The percentage/Cgpa must be a number.',
-        'education.*.percentage.min' => 'The percentage/CGPA must be at least 0.',
-        'education.*.percentage.max' => 'The percentage/CGPA may not be greater than 100.',
+        'newEducation.*.percentage.required' => 'Percentage/CGPA is required.',
+        'newEducation.*.percentage.numeric' => 'The percentage/Cgpa must be a number.',
+        'newEducation.*.percentage.min' => 'The percentage/CGPA must be at least 0.',
+        'newEducation.*.percentage.max' => 'The percentage/CGPA may not be greater than 100.',
     ];
 
     public function registerEmployeeDetails()
@@ -525,8 +635,8 @@ class AddEmployeeDetails extends Component
             EmployeeDetails::updateorCreate(
                 ['emp_id' => $this->emp_id],
                 [
-                    'first_name' => $this->first_name,
-                    'last_name' => $this->last_name,
+                    'first_name' => ucfirst(strtolower($this->first_name)),
+                    'last_name' => ucfirst(strtolower($this->last_name)),
                     'gender' => $this->gender,
                     'email' => $this->company_email,
                     'company_id' => $this->company_id,
@@ -555,8 +665,8 @@ class AddEmployeeDetails extends Component
             $this->emp_id = EmployeeDetails::where('email', $this->company_email)->value('emp_id');
 
 
-            session()->flash('emp_success', 'Employee registered successfully!');
-            $this->showAlert = true;
+
+
 
             // Clear the form fields
             $this->currentStep++;
@@ -607,8 +717,8 @@ class AddEmployeeDetails extends Component
                 ]
             );
             $this->currentStep++;
-            session()->flash('emp_success', 'Employee personal details added successfully!');
-            $this->showAlert = true;
+
+
         } catch (Exception $e) {
             throw $e;
         }
@@ -660,8 +770,8 @@ class AddEmployeeDetails extends Component
                 ]
             );
             $this->currentStep++;
-            session()->flash('emp_success', 'Employee parents details addeed successfully!');
-            $this->showAlert = true;
+
+
         } catch (Exception $e) {
             throw $e;
         }
@@ -669,18 +779,23 @@ class AddEmployeeDetails extends Component
     public function registerEmployeeSpouseDetails()
     {
         try {
-            // if ($this->father_image) {
-            //     $this->father_image_binary = base64_encode(file_get_contents($this->father_image->getRealPath()));
-            // } elseif ($this->mother_image) {
-            //     $this->mother_image_binary = base64_encode(file_get_contents($this->mother_image->getRealPath()));
-            // } else {
-            //     $this->father_image_binary = '';
-            //     $this->mother_image_binary = '';
-            // }
+
+            if ($this->father_image) {
+                $this->father_image_binary =file_get_contents($this->father_image->getRealPath());
+            } else {
+                $this->father_image_binary = '';
+
+            }
+            if ($this->mother_image) {
+                $this->mother_image_binary = file_get_contents($this->mother_image->getRealPath());
+            } else {
+                $this->mother_image_binary = '';
+            }
+
             EmpSpouseDetails::updateorCreate(
                 ['emp_id' => $this->emp_id],
                 [
-                    'name' => $this->spouse_first_name & $this->spouse_last_name,
+                    'name' => $this->spouse_first_name ,
                     'gender' => $this->spouse_gender,
                     'qualification' => $this->spouse_qualification,
                     'profession' => $this->spouse_profession,
@@ -693,12 +808,12 @@ class AddEmployeeDetails extends Component
                     'email' => $this->spouse_email,
                     'address' => $this->spouse_address,
                     'children' => json_encode($this->children),
-                    // 'image'=>,
+
                 ]
             );
             $this->currentStep++;
-            session()->flash('emp_success', 'Employee Spouse details addeed successfully!');
-            $this->showAlert = true;
+
+
         } catch (Exception $e) {
             throw $e;
         }
@@ -720,15 +835,22 @@ class AddEmployeeDetails extends Component
                 ]
             );
             $this->currentStep++;
-            session()->flash('emp_success', 'Employee Bank details addeed successfully!');
-            $this->showAlert = true;
+
+
         } catch (Exception $e) {
             throw $e;
         }
     }
     public function addEducationDetails()
     {
+
         try {
+            $this->validate([
+                'education' => 'required|array|min:1',
+            ], [
+                'education.required' => 'At least add one Educational qualification',
+            ]);
+
             EmpPersonalInfo::updateorCreate(
                 ['emp_id' => $this->emp_id],
                 [
@@ -737,8 +859,8 @@ class AddEmployeeDetails extends Component
                 ]
             );
             $this->currentStep++;
-            session()->flash('emp_success', 'Employee Educational details added successfully!');
-            $this->showAlert = true;
+
+
         } catch (Exception $e) {
             throw $e;
         }
@@ -753,9 +875,10 @@ class AddEmployeeDetails extends Component
                     'experience' => json_encode($this->experience),
                 ]
             );
-            // $this->currentStep++;
-            session()->flash('emp_success', 'Employee Experience details added successfully!');
-            $this->showAlert = true;
+
+               $this->successModal=true;
+
+
         } catch (Exception $e) {
             throw $e;
         }
@@ -841,6 +964,7 @@ class AddEmployeeDetails extends Component
         $this->employee_type = $this->employee_type ?? 'full-time';
         $this->physically_challenge = $this->physically_challenge ?? 'No';
         $this->inter_emp = $this->inter_emp ?? 'no';
+        $this->hire_date = Carbon::now()->toDateString();
         $hrId = auth()->guard('hr')->user()->emp_id;
         $employee = EmployeeDetails::find($hrId);
         $empCompanyId = $employee->company_id;
@@ -854,6 +978,11 @@ class AddEmployeeDetails extends Component
             $this->company_id = $this->companieIds->first()->company_id;
         }
         $this->departments = EmpDepartment::where('company_id', $empCompanyId)->get();
+         if($this->shift_type=='GS'){
+          $this->shift_start_time= "10:00";
+          $this->shift_end_time="19:00";
+
+         }
 
         // if ($empId) {
         //     try {
