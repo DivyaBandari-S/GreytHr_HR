@@ -180,7 +180,7 @@ class AddEmployeeDetails extends Component
     public $bank_address;
 
     public  $selectedEmployees;
-    public $currentStep = 1;
+    public $currentStep = 3;
     public $parentscurrentStep = 1;
     public $showAlert = false;
 
