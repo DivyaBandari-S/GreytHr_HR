@@ -22,8 +22,6 @@ class EmployeeLeaveBalances extends Model
     // Cast attributes to JSON
     protected $casts = [
         'leave_type' => 'array',
-        'from_date' => 'array',
-        'to_date' => 'array',
         'leave_balance' => 'array',
     ];
     protected static function boot()
@@ -33,8 +31,8 @@ class EmployeeLeaveBalances extends Model
         static::creating(function ($model) {
             $model->leave_type = $model->leave_type ?: [];
             $model->leave_balance = $model->leave_balance ?: [];
-            $model->from_date = $model->from_date ?: [];
-            $model->to_date = $model->to_date ?: [];
+            $model->from_date = $model->from_date;
+            $model->to_date = $model->to_date;
         });
     }
     /**
