@@ -76,8 +76,8 @@ class GrantLeaveBalance extends Component
                     // Decode JSON data to ensure it's an array
                     $leaveTypes = $leaveBalance->leave_type ?? [];
                     $leaveBalances = $leaveBalance->leave_balance ?? [];
-                    $fromDates = $leaveBalance->from_date ?? [];
-                    $toDates = $leaveBalance->to_date ?? [];
+                    $fromDates = $leaveBalance->from_date;
+                    $toDates = $leaveBalance->to_date;
 
                     // Ensure leaveTypes is an array
                     if (!is_array($leaveTypes)) {
@@ -89,8 +89,8 @@ class GrantLeaveBalance extends Component
                         $leaveTypes[] = $this->leave_type;
                     }
                     $leaveBalances[$this->leave_type] = $this->leave_balance;
-                    $fromDates[] = $this->from_date;
-                    $toDates[] = $this->to_date;
+                    $fromDates = $this->from_date;
+                    $toDates = $this->to_date;
 
                     $leaveBalance->update([
                         'leave_type' => $leaveTypes, // No need to encode manually
@@ -104,14 +104,16 @@ class GrantLeaveBalance extends Component
                         'emp_id' => $emp_id,
                         'leave_type' => [$this->leave_type], // Laravel will encode this as JSON
                         'leave_balance' => [$this->leave_type => $this->leave_balance], // Laravel will encode this as JSON
-                        'from_date' => [$this->from_date], // Laravel will encode this as JSON
-                        'to_date' => [$this->to_date], // Laravel will encode this as JSON
+                        'from_date' => $this->from_date, // Laravel will encode this as JSON
+                        'to_date' => $this->to_date, // Laravel will encode this as JSON
                     ]);
                 }
+                
 
                 // Flash success message
                 session()->flash('success', 'Leave balances added successfully.');
             } catch (QueryException $e) {
+                dd($e);
                 if ($e->errorInfo[1] == 1062) {
                     session()->flash('error', 'Leaves have already been added for the selected employee(s).');
                 } else {

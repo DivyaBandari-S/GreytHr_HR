@@ -1,9 +1,9 @@
 <?php
- 
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
- 
+
 return new class extends Migration
 {
     /**
@@ -17,8 +17,8 @@ return new class extends Migration
             $table->json('leave_type')->nullable(); // Change to JSON
             $table->json('leave_balance');
             $table->string('status')->default('Granted');
-            $table->json('from_date');
-            $table->json('to_date');
+            $table->date('from_date');
+            $table->date('to_date');
             $table->timestamps();
             $table->foreign('emp_id')
             ->references('emp_id')
@@ -28,7 +28,7 @@ return new class extends Migration
             $table->unique(['emp_id']);
         });
     }
- 
+
     /**
      * Reverse the migrations.
      */
