@@ -48,7 +48,7 @@ Route::middleware(['auth:hr'])->group(function () {
                 Route::get('/hello', Dashboard::class)->name('hello');
                 Route::get('/add-employee-details/{employee?}', AddEmployeeDetails::class)->name('add-employee-details');
                 Route::get('/update-employee-details', UpdateEmployeeDetails::class)->name('update-employee-details');
-                Route::get('/update-employee-leaves', GrantLeaveBalance::class)->name('update-employee-leaves');
+                Route::get('/update-employee-leavesa', GrantLeaveBalance::class)->name('update-employee-leaves');
         //HR Employee Related Routes
                Route::get('/hrFeeds', Feeds::class)->name('hrfeeds');
                Route::get('/information', EmployeeProfile::class)->name('employee-profile');

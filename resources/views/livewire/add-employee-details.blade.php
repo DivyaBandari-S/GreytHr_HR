@@ -80,7 +80,7 @@
                             </ol>
                         </nav>
                         <div>
-                            <button class="ilynn-btn"><a href="/update-employee-details" style="text-decoration: none;color:white;font-size:14px;">Employee
+                            <button class="ilynn-btn"><a href="/hr/update-employee-details" style="text-decoration: none;color:white;font-size:14px;">Employee
                                     List</a></button>
                         </div>
                     </div>
@@ -112,7 +112,7 @@
                         <!-- fieldsets -->
                         @if($currentStep==1)
                         <fieldset>
-                            <div class="bg-light m-0 row">
+                            <div class=" m-0 row">
                                 <div class="row m-0 mb-2 mt-3 p-0" style="text-align: center">
                                     <h2 class="fs-subtitle">Employee Details</h2>
                                 </div>
