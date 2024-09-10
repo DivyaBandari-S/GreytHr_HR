@@ -74,26 +74,31 @@ class UpdateEmployeeDetails extends Component
 
     public function render()
     {
+
         try {
-            $hrEmail = auth()->guard('hr')->user()->company_id;
-            $hrCompanies = Company::where('company_id', $hrEmail)->get();
-            $hrDetails = Company::where('company_id', $hrEmail)->first();
+            $hr = auth()->guard('hr')->user();
+            $hr_Id=$hr->emp_id;
+           $hrCompany_id=EmployeeDetails::where('emp_id', $hr_Id)->first()->company_id;
+        //    dd(EmployeeDetails::where('emp_id', $hr_Id)->first());
+            $hrCompanies = Company::where('company_id', $hrCompany_id)->get();
+            $hrDetails = Company::where('company_id', $hrCompany_id)->first();
 
             $this->companies = $hrCompanies;
             $this->hrDetails = $hrDetails;
 
             // Wrapping the database query in a try-catch block
             try {
-                $this->employees = EmployeeDetails::where('company_id', $hrDetails->company_id)
+                $this->employees = EmployeeDetails::where('company_id', $hrCompany_id)
                     ->where(function ($query) {
                         $query->where('first_name', 'like', '%' . $this->search . '%')
                             ->orWhere('last_name', 'like', '%' . $this->search . '%')
                             ->orWhere('email', 'like', '%' . $this->search . '%')
-                            ->orWhere('emp_id', 'like', '%' . $this->search . '%')
-                            ->orWhere('mobile_number', 'like', '%' . $this->search . '%');
+                            ->orWhere('emp_id', 'like', '%' . $this->search . '%');
+                            // ->orWhere('mobile_number', 'like', '%' . $this->search . '%');
                     })
                     ->orderBy('status', 'desc')
                     ->get();
+
             } catch (\Illuminate\Database\QueryException $e) {
                 Log::error('Error fetching Employee details: ' . $e->getMessage());
                 session()->flash('error_message', 'An error occurred while fetching employee details.');
