@@ -999,9 +999,20 @@ input{
 
 /* input[type="radio"] {
     display: none;
+}
+
+/* label {
+    display: inline-block;
+    padding: 10px 20px;
+    margin-right: -1px;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    background-color: #f1f1f1;
+}
+
+label:hover {
+    background-color: #ddd;
 } */
-
-
 
 input[type="radio"]:checked+label {
     background-color: white;

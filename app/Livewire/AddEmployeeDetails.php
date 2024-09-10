@@ -186,7 +186,7 @@ class AddEmployeeDetails extends Component
     public $bank_address;
 
     public  $selectedEmployees;
-    public $currentStep = 8;
+    public $currentStep = 1;
     public $parentscurrentStep = 1;
     public $showAlert = false;
     public $successModal=false;
