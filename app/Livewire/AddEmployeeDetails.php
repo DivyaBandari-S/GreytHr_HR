@@ -186,7 +186,7 @@ class AddEmployeeDetails extends Component
     public $bank_address;
 
     public  $selectedEmployees;
-    public $currentStep = 1;
+    public $currentStep = 8;
     public $parentscurrentStep = 1;
     public $showAlert = false;
     public $successModal=false;
@@ -206,7 +206,7 @@ class AddEmployeeDetails extends Component
          }
 
 
-        if (in_array($propertyName, ['first_name', 'last_name','mobile_number'])) {
+        if (in_array($propertyName, ['last_name','mobile_number'])) {
             $firstName = explode(' ', trim($this->first_name))[0]; // Take only the first word from the first name
             $lastname = explode(' ', trim($this->last_name))[0];
             $mobile= substr($this->mobile_number, 0, 4);
@@ -230,7 +230,7 @@ class AddEmployeeDetails extends Component
     public function nextPage()
 
     {
-       
+
        if($this->currentStep!=8 && $this->currentStep!=9 ){
 
         $this->validate($this->validationRules());
