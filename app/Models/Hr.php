@@ -33,4 +33,8 @@ class Hr extends Authenticatable
     {
         return $this->belongsTo(Company::class, 'company_id', 'company_id');
     }
+    public function emp()
+    {
+        return $this->belongsTo(EmployeeDetails::class, 'emp_id', 'emp_id');
+    }
 }

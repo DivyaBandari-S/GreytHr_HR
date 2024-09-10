@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Livewire\EmployeeProfile;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -55,10 +56,38 @@ class EmployeeDetails extends Authenticatable
         'confirmation_date',
 
     ];
+    public function empBankDetails()
+    {
+        return $this->hasOne(EmpBankDetail::class, 'emp_id', 'emp_id');
+    }
+
+    public function empParentDetails()
+    {
+        return $this->hasOne(EmpParentDetails::class, 'emp_id', 'emp_id');
+    }
+
+    public function empPersonalInfo()
+    {
+        return $this->hasOne(EmpPersonalInfo::class, 'emp_id', 'emp_id');
+    }
+    public function empSpouseDetails()
+    {
+        return $this->hasOne(EmpSpouseDetails::class, 'emp_id', 'emp_id');
+    }
+    public function empDepartment()
+    {
+        return $this->hasOne(EmpDepartment::class, 'dept_id', 'dept_id'); 
+    }
     public function leaveRequests()
     {
         return $this->hasMany(LeaveRequest::class, 'emp_id');
     }
+// In App\Models\EmployeeDetails
+public function getImageUrlAttribute()
+{
+    return 'data:image/jpeg;base64,' . base64_encode($this->attributes['image']);
+}
+
     public function leaveApplies()
     {
         return $this->hasMany(LeaveRequest::class, 'emp_id', 'emp_id');
@@ -84,4 +113,5 @@ class EmployeeDetails extends Authenticatable
         return $this->hasMany(Chating::class,'sender_id')->orWhere('receiver_id',$this->emp_id)->whereNotDeleted();
 
     }
+  
 }
