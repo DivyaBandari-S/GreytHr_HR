@@ -11,7 +11,7 @@
                 <ul>
                     <li wire:click.prevent="setActiveIcon('feed')"
                         class="list {{ $activeIcon === 'feed' || request()->is('*' . 'feed' . '*') ? 'active' : '' }}">
-                        <a class="fa fa-rss mainmenu-icons"></a>
+                        <a href="/hrFeeds"  wire:navigate class="fa fa-rss mainmenu-icons"></a>
                     </li>
                 </ul>
                 <ul>
@@ -119,11 +119,11 @@
 
                                 <!-- Main SubMenues -->
     
-                                <p class="p-0"><a href="/home" class="submenu" wire:navigate>Overview</a></p>
+                                <p class="p-0"><a href="/information" class="submenu" wire:navigate>Employee Profile</a></p>
+                                <p class="p-0"><a href="/asset" class="submenu" wire:navigate>Employee Asset</a></p>
+                                <p class="p-0"><a href="/user" class="submenu" wire:navigate>Bank/PF/ESI</a></p>
     
-                                <p class="p-0"><a href="/user" class="submenu" wire:navigate>Analytics Hub</a></p>
-    
-                                <p class="p-0"><a href="/user" class="submenu" wire:navigate>Employee Directory</a></p>
+                                <p class="p-0"><a href="/user" class="submenu" wire:navigate>Family Details</a></p>
     
                                 <p class="p-0"><a href="/user" class="submenu" wire:navigate>Organization Chart</a></p>
     
