@@ -6,6 +6,7 @@ use App\Livewire\HomeDashboard;
 use App\Livewire\AddEmployeeDetails;
 use App\Livewire\AnalyticsHub;
 use App\Livewire\AnalyticsHubViewAll;
+use App\Livewire\EmployeeAsset;
 use App\Livewire\GrantLeaveBalance;
 use App\Livewire\UpdateEmployeeDetails;
 use App\Livewire\EmployeeDirectory;
@@ -52,6 +53,7 @@ Route::middleware(['auth:hr'])->group(function () {
         //HR Employee Related Routes
                Route::get('/hrFeeds', Feeds::class)->name('hrfeeds');
                Route::get('/information', EmployeeProfile::class)->name('employee-profile');
+               Route::get('/asset', EmployeeAsset::class)->name('employee-asset');
                Route::get('/history', PositionHistory::class)->name('position-history');
                Route::get('/parent', ParentDetails::class)->name('parent-details');
                

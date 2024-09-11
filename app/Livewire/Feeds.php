@@ -146,7 +146,7 @@ class Feeds extends Component
         $this->combinedData = $this->combineAndSortData($this->employees);
 
       $this->loadComments();   
-      $employeeId = Auth::guard('emp')->user()->emp_id;
+      $employeeId = Auth::user()->emp_id;
       $this->isManager = DB::table('employee_details')
           ->where('manager_id', $employeeId)
           ->exists();
@@ -566,9 +566,9 @@ public function loadaddComments()
     private function getEmpCompanyLogoUrl()
     {
         // Get the current authenticated employee's company ID
-        if (auth()->guard('emp')->check()) {
+        if (auth()->check()) {
             // Get the current authenticated employee's company ID
-            $empCompanyId = auth()->guard('emp')->user()->company_id;
+            $empCompanyId = auth()->user()->company_id;
     
             // Assuming you have a Company model with a 'company_logo' attribute
             $company = Company::where('company_id', $empCompanyId)->first();
@@ -595,15 +595,15 @@ public function loadaddComments()
         $this->hr = collect();
         $storedEmojis = collect();
         $emojis = collect();
-        $employeeId = auth()->guard('emp')->user()->emp_id;
+        $employeeId = auth()->user()->emp_id;
         $isManager = DB::table('employee_details')
             ->where('manager_id', $employeeId)
             ->exists();
      
         // Check if 'emp' guard is authenticated
-        if (auth()->guard('emp')->check()) {
+        if (auth()->check()) {
             $this->employeeDetails = EmployeeDetails::with('personalInfo') // Eager load personal info
-                ->where('emp_id', auth()->guard('emp')->user()->emp_id)
+                ->where('emp_id', auth()->user()->emp_id)
                 ->get();
     
             $storedEmojis = Emoji::where('emp_id', auth()->guard('emp')->user()->emp_id)->get();

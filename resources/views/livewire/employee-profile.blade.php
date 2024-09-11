@@ -243,12 +243,7 @@
         </div>
     </div>
 </div>
-@endif
 
-
-
-            
-@if($employee)
 
 
     <div class="row align-items-center">

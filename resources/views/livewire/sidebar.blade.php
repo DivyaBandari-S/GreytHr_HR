@@ -119,8 +119,8 @@
 
                                 <!-- Main SubMenues -->
     
-                                <p class="p-0"><a href="information" class="submenu" wire:navigate>Employee Profile</a></p>
-    
+                                <p class="p-0"><a href="/information" class="submenu" wire:navigate>Employee Profile</a></p>
+                                <p class="p-0"><a href="/asset" class="submenu" wire:navigate>Employee Asset</a></p>
                                 <p class="p-0"><a href="/user" class="submenu" wire:navigate>Bank/PF/ESI</a></p>
     
                                 <p class="p-0"><a href="/user" class="submenu" wire:navigate>Family Details</a></p>
