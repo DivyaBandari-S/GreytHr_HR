@@ -59,6 +59,10 @@ class EmployeeDetails extends Authenticatable
     {
         return $this->hasMany(LeaveRequest::class, 'emp_id');
     }
+    public function empPersonalInfo()
+    {
+        return $this->hasMany(EmpPersonalInfo::class, 'emp_id', 'emp_id',);
+    }
     public function leaveApplies()
     {
         return $this->hasMany(LeaveRequest::class, 'emp_id', 'emp_id');

@@ -1,10 +1,4 @@
 <div>
-    <style>
-       
-
-       
-                 
-    </style>
     <div class="card-container">
         <div class="back" wire:click="goBack">
             <i class="fas fa-arrow-left"></i>

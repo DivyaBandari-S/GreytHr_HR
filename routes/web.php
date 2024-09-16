@@ -9,7 +9,7 @@ use App\Livewire\AnalyticsHubViewAll;
 use App\Livewire\GrantLeaveBalance;
 use App\Livewire\UpdateEmployeeDetails;
 use App\Livewire\EmployeeDirectory;
-use App\Livewire\HrAttendanceOverviewNew;
+use App\Livewire\HrMainOverview;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -49,7 +49,7 @@ Route::middleware(['auth:hr'])->group(function () {
                 Route::get('/user/hremployeedirectory', EmployeeDirectory::class)->name('employee-directory');
                 Route::get('/user/analytics-hub', AnalyticsHub::class)->name('analytics-hub');
                 Route::get('/user/analytics-hub-viewall', AnalyticsHubViewAll::class)->name('analytics-hub-viewall');
-                Route::get('/user/overview', HrAttendanceOverviewNew::class)->name('overview');
+                Route::get('/user/overview', HrMainOverview::class)->name('overview');
 
     });
 

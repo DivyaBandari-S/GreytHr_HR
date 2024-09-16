@@ -151,11 +151,12 @@ body {
 
 }
 
+
 ul {
     list-style-type: none;
     display: flex;
-    justify-content: center;
-    margin: 0px;
+    justify-content: start;
+    margin-top: 10px;
     cursor: pointer;
     padding: 0px;
 }
