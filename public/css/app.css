@@ -548,13 +548,14 @@ input[type="radio"] {
 /*The number of the step and the connector before it = green*/
 #progressbar li.active:before,
 #progressbar li.active:after {
-    background: #26254e;
+    background:#306cc6  ;
     color: white;
 }
 label{
     font-size: 13px;
-    color: rgb(87, 85, 85);
-    font-weight:400;
+
+    color: rgb(135, 129, 129);
+    font-weight:500;
 }
 .onboard-Valid{
     font-size:small;
@@ -1100,3 +1101,164 @@ input[type="radio"]:checked+label {
 }
 
 /* analytics hub view all styles ended */
+
+/* Employee Information started*/
+        /* Basic styles for the tabs */
+        .tab-container {
+            margin-top: 20px;
+        }
+        .tab-buttons {
+            display: flex;
+            font-size: 12px;
+        }
+
+
+
+        .tab-buttons button {
+            padding: 10px 20px;
+            cursor: pointer;
+            background-color: #f1f1f1;
+            border: none;
+            border-bottom: 2px solid transparent;
+            outline: none;
+            transition: 0.3s;
+        }
+        .tab-buttons button.active {
+            background-color: white;
+            border-bottom: 2px solid #007BFF;
+        }
+        .tab-content {
+            display: none;
+            padding: 15px;
+            border: none;
+            background-color: transparent; /* Remove white background */
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .custom-container {
+            border-radius: 5px;
+            background-color: #F1F9FB;
+            border: 1px solid silver;
+            padding: 15px;
+        }
+        .custom-container:hover {
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+
+  transition: opacity 0.1s ease-in-out;
+}
+
+        .main-text {
+            font-size: 12px;
+            width: 85%;
+        }
+
+        .help-text {
+            font-size: 12px;
+            color: blue;
+            cursor: pointer;
+            margin-left: auto;
+        }
+
+        .secondary-text {
+            font-size: 12px;
+            margin-top: 10px;
+            font-weight: 200;
+        }
+        
+        /* Added CSS for the image container */
+        .image-container {
+            height: 180px; /* Fixed height to prevent image movement */
+            align-items: end;
+        }
+ /* Base styles for input and buttons */
+.input-group4 {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.input-group4 input {
+    font-size: 10px;
+    cursor: pointer;
+    border-radius: 5px 0 0 5px;
+    width: 250px;
+    height: 30px;
+    padding: 5px;
+}
+
+.input-group-append {
+    display: flex;
+    align-items: center;
+}
+
+.input-group-append button {
+    height: 30px;
+    border-radius: 0 5px 5px 0;
+    padding: 0 10px;
+}
+
+.input-group-append .btn {
+    background-color: rgb(2, 17, 79);
+    color: #fff;
+    border: none;
+}
+
+.input-group-append .close {
+    background-color: rgb(2,17,79);
+    height: 30px;
+    width: 30px;
+    margin-left: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+    .input-group4 {
+        flex-direction: row; /* Keep items in a row on small screens */
+        align-items: center; /* Center items vertically */
+        width: 100%;
+    }
+
+    .input-group4 input {
+        width: auto; /* Allow input to shrink */
+        margin-bottom: 0; /* Remove space between input and buttons */
+    }
+
+    .input-group-append {
+        flex-direction: row; /* Keep buttons in a row */
+    }
+
+    .input-group-append button {
+        width: auto; /* Allow buttons to shrink */
+        margin-top: 0; /* Remove space between buttons */
+        border-radius: 0; /* Maintain default border radius */
+    }
+
+    .input-group-append .btn, .input-group-append .close {
+        border-radius: 0; /* Maintain default border radius */
+    }
+}
+
+        .container {
+            width: 100%;
+            max-width: none;
+            margin-bottom: 10px;
+        }
+
+        .container img {
+            height: 40px; /* Adjust size for smaller screens */
+            width: 40px;
+        }
+
+        .profile {
+            margin-top: 10px;
+        }
+
+        .profile p {
+            font-size: 14px;
+        }
+  /* Employee Information started*/
