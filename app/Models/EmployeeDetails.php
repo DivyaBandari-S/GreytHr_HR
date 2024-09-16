@@ -92,10 +92,6 @@ public function getImageUrlAttribute()
     return 'data:image/jpeg;base64,' . base64_encode($this->attributes['image']);
 }
 
-    public function empPersonalInfo()
-    {
-        return $this->hasMany(EmpPersonalInfo::class, 'emp_id', 'emp_id',);
-    }
     public function leaveApplies()
     {
         return $this->hasMany(LeaveRequest::class, 'emp_id', 'emp_id');
