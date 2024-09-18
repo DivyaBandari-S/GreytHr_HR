@@ -44,6 +44,8 @@ class PositionHistory extends Component
     public $records;
     public $peopleFound = true;
     public $file_path;
+    public $employeeIds;
+    public $employeess;
     public $justification;
     public $information;
     public $department;
@@ -69,6 +71,7 @@ class PositionHistory extends Component
     public $editingBiography = false;
     public $editingSocialMedia = false;
     public $employees;
+
     public $oldPassword;
     public $newPassword;
     public $confirmNewPassword;
@@ -77,61 +80,7 @@ class PositionHistory extends Component
     
     public $showDetails = true;
     public $editingField = false;
-    public function toggleDetails()
-    {
-        $this->showDetails = !$this->showDetails;
-    }
-    public function filter()
-    {
-        $companyId = Auth::user()->company_id;
-        $trimmedSearchTerm = trim($this->searchTerm);
-
-        $this->filteredPeoples = EmployeeDetails::where('company_id', $companyId)
-            ->where(function ($query) use ($trimmedSearchTerm) {
-                $query->where(DB::raw("CONCAT(first_name, ' ', last_name)"), 'like', '%' . $trimmedSearchTerm . '%')
-                    ->orWhere('emp_id', 'like', '%' . $trimmedSearchTerm . '%');
-            })
-            ->get();
-
-        $this->peopleFound = count($this->filteredPeoples) > 0;
-    }
-
-    public function updatedSelectedPeople()
-    {
-        $this->cc_to = implode(', ', array_unique($this->selectedPeopleNames));
-    }
-
-    public function NamesSearch()
-    {
-        $this->isNames = true;
-        $this->selectedPeopleNames = [];
-        $this->cc_to = '';
-    }
-
-    public function closePeoples()
-    {
-        $this->isNames = false;
-    }
-
-    public function selectPerson($emp_id)
-    {
-        $selectedPerson = EmployeeDetails::find($emp_id);
-    
-        if ($selectedPerson) {
-            $this->employeeDetails[$emp_id] = $selectedPerson;
-    
-            if (!in_array($emp_id, array_keys($this->selectedPeopleNames))) {
-                $this->selectedPeopleNames[$emp_id] = '<img src="' . asset($selectedPerson->image) . '" alt="' . $selectedPerson->first_name . ' ' . $selectedPerson->last_name . '" height="50" width="50">' . ' #(' . $selectedPerson->emp_id . ')';
-            } else {
-                unset($this->selectedPeopleNames[$emp_id]);
-            }
-    
-            $this->cc_to = implode(', ', array_unique($this->selectedPeopleNames));
-          // Set the editingField property
-        }
-    }
-    
-    public function editProfile($emp_id)
+        public function editProfile($emp_id)
     {
        
         $selectedPerson = EmployeeDetails::find($emp_id);
@@ -324,43 +273,7 @@ class PositionHistory extends Component
         }
        
     }
-    public function mount()
-    {
-        $hrempid = auth()->guard('hr')->user()->hr_emp_id;
-       
-        $companyId = auth()->guard('hr')->user()->company_id;
-       
-        
-       
-        $this->peoples = EmployeeDetails::where('company_id', $companyId)
-        ->orderBy('hire_date', 'desc')
-        ->orderBy('created_at', 'desc')
-        ->take(5)
-        ->pluck('hire_date');
-      
-    }
-    public function updateProfile($emp_id)
-    {
-        $selectedPerson = EmployeeDetails::find($emp_id);
-    
-        if ($selectedPerson) {
-            $this->validate([
-                'image' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:1024', // 1024 kilobytes = 1 megabyte
-            ]);
-    
-            if ($this->image) {
-                if ($this->image instanceof \Illuminate\Http\UploadedFile) {
-                    $imagePath = $this->image->store('employee_image', 'public');
-                } else {
-                    $imagePath = $this->image;
-                }
-                $selectedPerson->image = $imagePath;
-                $selectedPerson->save();
-            }
-    
-            $this->showSuccessMessage = true;
-        }
-    }
+
     public function savepersonalProfile($emp_id)
     {
         // No need to query for $selectedPerson here
@@ -377,29 +290,214 @@ class PositionHistory extends Component
         }
     }
     
-    public function render()
+    public function toggleDetails()
     {
-        $hrempid = auth()->guard('hr')->user()->hr_emp_id;
-        $companyId = auth()->guard('hr')->user()->company_id;
+        $this->showDetails = !$this->showDetails;
+    }
 
-        $this->peoples = EmployeeDetails::where('company_id', $companyId)->get();
-        $peopleData = $this->filteredPeoples ?: $this->peoples;
+    public function filter()
+    {
+        $companyId = Auth::user()->company_id;
+        $trimmedSearchTerm = trim($this->searchTerm);
 
-        $this->record = HelpDesks::all();
-        $employeeName = auth()->guard('hr')->user()->employee_name . ' #(' . $hrempid . ')';
-
-        $this->records = HelpDesks::with('emp')
-            ->where(function ($query) use ($hrempid, $employeeName) {
-                $query->where('emp_id', $hrempid)
-                    ->orWhere('cc_to', 'LIKE', "%$employeeName%");
+        $this->filteredPeoples = EmployeeDetails::where('company_id', $companyId)
+            ->where(function ($query) use ($trimmedSearchTerm) {
+                $query->where(DB::raw("CONCAT(first_name, ' ', last_name)"), 'like', '%' . $trimmedSearchTerm . '%')
+                    ->orWhere('emp_id', 'like', '%' . $trimmedSearchTerm . '%');
             })
-            ->orderBy('created_at', 'desc')
             ->get();
 
-        return view('livewire.position-history', [
-            'peopleData' => $peopleData,
-            'records' => $this->records
-        ]);
+        $this->peopleFound = count($this->filteredPeoples) > 0;
     }
+
+    public function updatedSelectedPeople()
+    {
+        $this->cc_to = implode(', ', array_unique($this->selectedPeopleNames));
+    }
+
+    public $selectedPeopleData=[];
+    public function selectPerson($emp_id)
+    {
+        try {
+            // Ensure $this->selectedPeople is initialized as an array
+            if (!is_array($this->selectedPeople)) {
+                $this->selectedPeople = [];
+            }
+    
+            // Find the selected person from the list of employees
+            $selectedPerson = $this->employees->where('emp_id', $emp_id)->first();
+    
+            if ($selectedPerson) {
+                // Create the person's name string
+                $personName = $selectedPerson->first_name . ' ' . $selectedPerson->last_name . ' #(' . $selectedPerson->emp_id . ')';
+    
+                if (in_array($emp_id, $this->selectedPeople)) {
+                    // Person is already selected, so remove them
+                    $this->selectedPeople = array_diff($this->selectedPeople, [$emp_id]);
+    
+                    // Remove the person's entry from the combined data
+                    $this->selectedPeopleData = array_filter(
+                        $this->selectedPeopleData,
+                        fn($data) => $data['emp_id'] !== $emp_id
+                    );
+                } else {
+                    // Person is not selected, so add them
+                    $this->selectedPeople[] = $emp_id;
+    
+                    // Determine the image URL
+                    if ($selectedPerson->image && $selectedPerson->image !== 'null') {
+                        $imageUrl = 'data:image/jpeg;base64,' . base64_encode($selectedPerson->image);
+                    } else {
+                        // Add default image based on gender
+                        if ($selectedPerson->gender == "Male") {
+                            $imageUrl = asset('images/male-default.png');
+                        } elseif ($selectedPerson->gender == "Female") {
+                            $imageUrl = asset('images/female-default.jpg');
+                        } else {
+                            $imageUrl = asset('images/user.jpg');
+                        }
+                    }
+    
+                    // Add the person's data to the combined array
+                    $this->selectedPeopleData[] = [
+                        'name' => $personName,
+                        'image' => $imageUrl,
+                        'emp_id' => $emp_id
+                    ];
+                }
+    
+                // Update the cc_to field with the unique names
+                $this->cc_to = implode(', ', array_unique(array_column($this->selectedPeopleData, 'name')));
+            }
+        } catch (\Exception $e) {
+            // Handle the exception
+            // Optionally, you can log the error or display a user-friendly message
+            $this->dispatchBrowserEvent('error', ['message' => 'An error occurred: ' . $e->getMessage()]);
+        }
+    }
+    
+    
+    public function closeMessage()
+    {
+        $this->showSuccessMessage = false;
+    }
+    public function updateProfile($emp_id)
+    {
+        try {
+            $this->validate([
+                'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:1024', // 1024 kilobytes = 1 megabyte
+            ]);
+    
+            $employee = EmployeeDetails::where('emp_id', $emp_id)->first();
+    
+            if ($this->image) {
+                $imagePath = file_get_contents($this->image->getRealPath());
+                $employee->image = $imagePath;
+                $employee->save();
+            }
+            
+            $this->showSuccessMessage = true;
+        } catch (\Exception $e) {
+            Log::error('Error in updateProfile method: ' . $e->getMessage());
+            session()->flash('error', 'An error occurred while updating the profile. Please try again later.');
+        }
+    }
+    
+
+    
+
+    public function NamesSearch()
+    {
+        $this->isNames = true;
+        $this->selectedPeopleNames = [];
+        $this->cc_to = '';
+    }
+
+    public function closePeoples()
+    {
+        $this->isNames = false;
+    }
+
+ 
+    
+    
+    public $currentEditingProfileId = null; // Track the employee ID for editing profile
+    public $currentEditingPersonalProfileId = null; 
+
+
+    
+    
+    
+  
+    public function mount()
+    {
+        $hrempid = auth()->guard('hr')->user()->emp_id;
+         // Step 1: Retrieve the logged-in user's emp_id
+         $loggedInEmpID = auth()->guard('hr')->user()->emp_id;
+
+         // Step 2: Retrieve the company_id associated with the logged-in emp_id
+         $companyID = EmployeeDetails::where('emp_id', $loggedInEmpID)
+             ->pluck('company_id')
+             ->first(); // Assuming company_id is unique for emp_id
+ 
+         // Step 3: Fetch all emp_id values where company_id matches the logged-in user's company_id
+         $this->employeeIds = EmployeeDetails::where('company_id', $companyID)
+         ->orderBy('first_name')
+         ->orderBy('last_name') ->pluck('emp_id')
+             ->toArray();
+     
+           
+    
+        $companyId = auth()->guard('hr')->user()->company_id;
+    
+        $this->employeess = EmployeeDetails::where('company_id', $companyID)
+        ->orderBy('hire_date', 'desc') // Order by hire_date descending
+      
+        ->take(5) // Limit to 5 records
+        ->get();
+      
+         
+           
+    }
+    
+
+    public function render()
+{
+    $loggedInEmpID = auth()->guard('hr')->user()->emp_id;
+
+    // Retrieve the company_id associated with the logged-in emp_id
+    $companyID = EmployeeDetails::where('emp_id', $loggedInEmpID)
+        ->pluck('company_id')
+        ->first(); // Assuming company_id is unique for emp_id
+
+    // Fetch all employees where company_id matches the logged-in user's company_id
+    $this->employeeIds = EmployeeDetails::where('company_id', $companyID)
+        ->pluck('emp_id')
+        ->toArray();
+      
+    // Fetch employee details based on IDs
+    $this->employees = EmployeeDetails::whereIn('emp_id', $this->employeeIds)->get();
+          $this->employeess = EmployeeDetails::where('company_id', $companyID)
+        ->orderBy('hire_date', 'desc') // Order by hire_date descending
+      
+        ->take(5) // Limit to 5 records
+        ->get();
+    $this->employeeDetails = EmployeeDetails::with(['empBankDetails', 'empParentDetails', 'empPersonalInfo','empSpouseDetails'])
+    ->where('emp_id', $this->employeeIds)
+    ->first();
+  
+    // Ensure $peopleData is set
+    $peopleData = $this->filteredPeoples ?:  $this->employeeIds;
+
+    return view('livewire.position-history', [
+        'employees' => $this->employees,
+        'peopleData' => $peopleData,
+        'records' => $this->records,
+        'selectedPeople' => $this->selectedPeople, // Add selectedPeople to view data
+        'cc_to' => $this->cc_to, // Add cc_to to view data
+    ]);
+}
+
+
 
 }

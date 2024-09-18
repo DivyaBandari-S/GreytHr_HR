@@ -214,54 +214,77 @@ class EmployeeAsset extends Component
     
     public function create()
     {
-      
         $emp_id = $this->selectedPeople[0] ?? null; // or however you are managing selected people
-
+    
         // Check if the selected person exists
- 
         $selectedPerson = EmployeeDetails::find($emp_id);
-       
+    
         $this->validate([
             'asset_type' => 'required',
             'asset_status' => 'required',
             'asset_details' => 'required|string|max:255',
-            'issue_date' => 'required',
-            'asset_id' => 'required',
-            'valid_till' => 'required',
-            'asset_value' => 'required',
-            'returned_on' => 'required',
-            'remarks' => 'required|string|max:255',
+            'issue_date' => 'required|date',
+            'valid_till' => 'nullable|date|after:issue_date',
+            'returned_on' => 'nullable|date|after_or_equal:issue_date',
+            'asset_value' => 'required|numeric',
+            'remarks' => 'nullable|string|max:255',
+        ], [
+            'asset_type.required' => ' Asset type is required.',
+            'asset_status.required' => ' Asset status is required.',
+            'asset_details.required' => ' Asset details are required.',
+            'asset_details.string' => ' Asset details must be a string.',
+            'asset_details.max' => ' Asset details may not be greater than 255 characters.',
+            'issue_date.required' => ' Issue date is required.',
+            'issue_date.date' => ' Issue date is not a valid date.',
+            'valid_till.date' => ' Valid till date is not a valid date.',
+            'valid_till.after' => ' Valid till date must be after the issue date.',
+            'returned_on.date' => ' Returned on date is not a valid date.',
+            'returned_on.after_or_equal' => ' Returned on date must be after or equal to the issue date.',
+            'asset_value.required' => ' Asset value is required.',
+            'asset_value.numeric' => ' Asset value must be a number.',
+            
+            
         ]);
-        
         // Check if the selected person exists
         if ($selectedPerson) {
-            // Create the asset record with the correct emp_id
-            Asset::create([
-                'emp_id' => $emp_id, // Use the provided emp_id
-                'asset_type' => $this->asset_type,
-                'asset_status' => $this->asset_status,
-                'asset_details' => $this->asset_details,
-                'issue_date' => $this->issue_date,
-                'asset_id' => $this->asset_id,
-                'valid_till' => $this->valid_till,
-                'asset_value' => $this->asset_value,
-                'returned_on' => $this->returned_on,
-                'remarks' => $this->remarks,
-            ]);
-  
-            // Debugging statement
-           
-            
-            // Flash a success message
-            session()->flash('message', 'Asset record created successfully.');
-            
-            // Reset form fields
-            $this->reset();
+            try {
+                // Dynamically generate a unique asset_id with "ASS-" prefix
+                $lastAsset = Asset::latest('created_at')->first(); // Using created_at instead of id
+                $nextId = $lastAsset ? ((int)substr($lastAsset->asset_id, 4) + 1) : 1; // Extract numeric part from asset_id
+                $generatedAssetId = 'ASS-' . str_pad($nextId, 3, '0', STR_PAD_LEFT); // Generates 'ASS-001', 'ASS-002', etc.
+    
+                // Create the asset record with the correct emp_id
+                Asset::create([
+                    'emp_id' => $emp_id,
+                    'asset_type' => $this->asset_type,
+                    'asset_status' => $this->asset_status,
+                    'asset_details' => $this->asset_details,
+                    'issue_date' => $this->issue_date,
+                    'asset_id' => $generatedAssetId, // Use the generated asset_id
+                    'valid_till' => $this->valid_till,
+                    'asset_value' => $this->asset_value, // Ensure this value is numeric
+                    'returned_on' => $this->returned_on,
+                    'remarks' => $this->remarks,
+                ]);
+    
+                // Flash a success message
+                session()->flash('message', 'Asset record created successfully.');
+    
+                // Reset form fields
+                $this->reset();
+            } catch (\Exception $e) {
+                // Log the error or handle it accordingly
+                Log::error('Asset creation failed: ' . $e->getMessage());
+    
+                // Display an error message to the user
+                session()->flash('error', 'Failed to create asset record. Please try again.');
+            }
         } else {
-            // If the selected person doesn't exist, handle the error accordingly
-            // For example, you could display an error message or log the error
+            // Handle case where selected person doesn't exist
+            session()->flash('error', 'Selected person not found.');
         }
     }
+    
     
     public function render()
     {
@@ -273,7 +296,7 @@ class EmployeeAsset extends Component
 
         $this->record = HelpDesks::all();
         $employeeName = auth()->guard('hr')->user()->employee_name . ' #(' . $hrempid . ')';
-
+        $this->employees = EmployeeDetails::whereIn('emp_id', $this->employeeIds)->get();
         $this->records = HelpDesks::with('emp')
             ->where(function ($query) use ($hrempid, $employeeName) {
                 $query->where('emp_id', $hrempid)

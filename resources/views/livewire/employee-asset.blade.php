@@ -21,11 +21,13 @@
             margin-top: 10px;
             font-weight: 200;
         }
-        .form-label {
-            width: 120px;
+        .cus-form-label {
+            width: 130px;
+            font-size: 12px;
         }
         .form-control {
             margin-left: 20px;
+            font-size:12px;
         }
         /* Added CSS for the image container */
         .image-container {
@@ -98,27 +100,23 @@
                     <div class="profile" style="margin-top: 10px;">
     <div class="col m-0">
      
-            <div class="row  ">
-            <div>
-    <p style="cursor: pointer;" wire:click="NamesSearch">
-        Search Employee:
-      
+    <div class="row">
+
+
+        <div style="display: flex; flex-wrap: wrap; margin-top: 10px;align-items:center">
+        <p style="cursor: pointer;" wire:click="NamesSearch">
+            Search Employee:
+        </p>
             @foreach($selectedPeopleData as $personData)
-                <div class=" align-items-center" style="margin-right: 15px;display:flex">
-                    <img class="profile-image" src="{{ $personData['image'] }}" style="border-radius:50%; height:30px; width:30px;" alt="Employee Image">
-                    <p style="margin-left: 10px; line-height: 30px; font-size:10px;">{{ $personData['name'] }}</p>
+                <div style="font-size: 12px; color: #778899; margin-right: 10px; margin-bottom: 5px; font-weight: 500;align-items:center">
+                    <p style="line-height: 30px; font-size: 10px; margin: 0;">{{ $personData['name'] }}</p>
                 </div>
             @endforeach
-      
-    </p>
+        </div>
+ 
 </div>
 
 
-
-
-               
-       
-        </div>
        <div class="col-md-6 col-12"> 
 
         @if($isNames)
@@ -242,7 +240,7 @@
         <div class="row justify-content-start">
             <div class="col-md-4 custom-margin-left">
                 <div class="mb-3 d-flex align-items-start">
-                    <label for="assetType" class="col-form-label form-label">Asset Type</label>
+                    <label for="assetType" class="col-cus-form-label cus-form-label">Asset Type</label>
                     <select wire:model="asset_type" class="form-select form-control" id="assetType"  style="font-size: 12px;">
                         <option value="">Asset Type</option>
                         <option value="Laptop">Laptop</option>
@@ -257,7 +255,7 @@
             <!-- Asset Status -->
             <div class="col-md-4 offset-sm-3 custom-margin-left">
                 <div class="mb-3 d-flex align-items-end">
-                    <label for="assetStatus" class="col-form-label form-label">Asset Status</label>
+                    <label for="assetStatus" class="col-cus-form-label cus-form-label">Asset Status</label>
                     <select wire:model="asset_status" class="form-select form-control" id="assetStatus"  style="font-size: 12px;">
                         <option value="">Asset Status</option>
                         <option value="Active">Active</option>
@@ -273,7 +271,7 @@
         <div class="row justify-content-start">
             <div class="col-md-4 custom-margin-left">
                 <div class="mb-3 d-flex align-items-start">
-                    <label for="assetDetails" class="col-form-label form-label">Asset Details</label>
+                    <label for="assetDetails" class="col-cus-form-label cus-form-label">Asset Details</label>
                     <input type="text" class="form-control" id="assetDetails"  wire:model="asset_details">
                 </div>
                 @error('asset_details') <span class="text-danger  mb-5">{{ $message }}</span> @enderror
@@ -281,7 +279,7 @@
 
             <div class="col-md-4 custom-margin-left">
                 <div class="mb-3 d-flex align-items-center">
-                    <label for="issueDate" class="col-form-label form-label">Issue Date</label>
+                    <label for="issueDate" class="col-cus-form-label cus-form-label">Issue Date</label>
                     <input type="date" wire:model="issue_date" class="form-control" id="issueDate"  style="font-size: 12px;">
                 </div>
                 @error('issue_date') <span class="text-danger mb-5">{{ $message }}</span> @enderror
@@ -292,7 +290,7 @@
         <div class="row justify-content-start">
             <div class="col-md-4 custom-margin-left">
                 <div class="mb-3 d-flex align-items-start">
-                    <label for="assetID" class="col-form-label form-label">Asset ID</label>
+                    <label for="assetID" class="col-cus-form-label cus-form-label">Asset ID</label>
                     <input type="text" wire:model="asset_id" class="form-control" id="assetID"  style="font-size: 12px;">
                 </div>
                 @error('asset_id') <span class="text-danger  mb-5">{{ $message }}</span> @enderror
@@ -300,7 +298,7 @@
 
             <div class="col-md-4 custom-margin-left">
                 <div class="mb-3 d-flex align-items-start">
-                    <label for="validTill" class="col-form-label form-label">Valid Till</label>
+                    <label for="validTill" class="col-cus-form-label cus-form-label">Valid Till</label>
                     <input type="date" wire:model="valid_till" class="form-control" id="validTill"  style="font-size: 12px;">
                 </div>
                 @error('valid_till') <span class="text-danger  mb-5">{{ $message }}</span> @enderror
@@ -311,7 +309,7 @@
         <div class="row justify-content-start">
             <div class="col-md-4  custom-margin-left">
                 <div class="mb-3 d-flex align-items-start">
-                    <label for="assetValue" class="col-form-label form-label">Asset Value</label>
+                    <label for="assetValue" class="col-cus-form-label cus-form-label">Asset Value</label>
                     <input type="text" wire:model="asset_value" class="form-control" id="assetValue"  style="font-size: 12px;">
                 </div>
                 @error('asset_value') <span class="text-danger  mb-5">{{ $message }}</span> @enderror
@@ -319,7 +317,7 @@
 
             <div class="col-md-4  custom-margin-left">
                 <div class="mb-3 d-flex align-items-start">
-                    <label for="returnedOn" class="col-form-label form-label">Returned On</label>
+                    <label for="returnedOn" class="col-cus-form-label cus-form-label">Returned On</label>
                     <input type="date" wire:model="returned_on" class="form-control" id="returnedOn"  style="font-size: 12px;">
                 </div>
                 @error('returned_on') <span class="text-danger  mb-5">{{ $message }}</span> @enderror
@@ -330,7 +328,7 @@
         <div class="row justify-content-start">
             <div class="col-md-4 custom-margin-left">
                 <div class="mb-3 d-flex align-items-start">
-                    <label for="remarks" class="col-form-label form-label">Remarks</label>
+                    <label for="remarks" class="col-cus-form-label cus-form-label">Remarks</label>
                     <input type="text" wire:model="remarks" class="form-control" id="remarks"  style="font-size: 12px;">
                 </div>
                 @error('remarks') <span class="text-danger  mb-5">{{ $message }}</span> @enderror
