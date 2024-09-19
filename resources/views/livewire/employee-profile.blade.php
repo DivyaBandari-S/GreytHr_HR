@@ -43,7 +43,7 @@
     <div class="row justify-content-center mt-3 flex-column m-0" style="border-radius: 5px; font-size:12px; width:88%;">
         <div class="col-md-9">
             <div class="row " style="display:flex;">
-                <div class="col-md-10 m-0">
+                <div class="col-md-11 m-0">
                     <b>Start searching to see specific employee details here</b>
                     <div class="col mt-3" style="display: flex;">
              
@@ -80,8 +80,19 @@
         @if($isNames)
         <div class="col-md-6" style="border-radius: 5px; background-color: grey; padding: 8px; width: 330px; margin-top: 10px; height: 250px; overflow-y: auto;">
         <div class="input-group4" style="display: flex; align-items: center; width: 100%;">
-    <input 
-        wire:model="searchTerm" 
+        @php
+        $filteredEmployeeIds = collect($employeeIds)->filter(function($emp_id) use ($employees, $searchTerm) {
+            $employee = $employees->firstWhere('emp_id', $emp_id);
+            return $employee && (
+                str_contains(strtolower($employee->first_name), strtolower($searchTerm)) || 
+                str_contains(strtolower($employee->last_name), strtolower($searchTerm)) || 
+                str_contains(strtolower($emp_id), strtolower($searchTerm))
+            );
+        })->values(); // Get the filtered employee IDs
+    @endphp
+        <input 
+        wire:model="searchTerm"
+      
         style="font-size: 10px; cursor: pointer; border-radius: 5px 0 0 5px; width: 250px; height: 30px; padding: 5px;" 
         type="text" 
         class="form-control" 
@@ -110,47 +121,45 @@
         </button>
     </div>
 </div>
+@if($peopleFound)
 
-        
-        
- 
 
-@foreach($employeeIds as $emp_id)
-                            @php
-                                $employee = $employees->firstWhere('emp_id', $emp_id);
-                            @endphp
-                           
-                            <label wire:click="selectPerson('{{ $emp_id }}')"
- class="container" style="cursor: pointer; background-color: darkgrey; padding: 5px; margin-bottom: 8px; width: 300px; border-radius: 5px; margin-top:5px">
-                                <div class="row align-items-center">
-                                    <div class="col-auto">
-                                        <input type="checkbox" wire:model="selectedPeople" value="{{ $emp_id }}" {{ in_array($emp_id, $selectedPeople) ? 'checked' : '' }}>
-                                    </div>
-                                    <div class="col-auto">
-                                        @if($employee && $employee->image && $employee->image !== 'null')
-                                        <img class="profile-image" src="{{ 'data:image/jpeg;base64,' . base64_encode($employee->image) }}" style="border-radius:50%">
-                                        @else
-                                            @if($employee && $employee->gender == "Male")
-                                                <img style="border-radius: 50%;" height="50" width="50" src="{{ asset('images/male-default.png') }}" alt="Default Male Image">
-                                            @elseif($employee && $employee->gender == "Female")
-                                                <img style="border-radius: 50%;" height="50" width="50" src="{{ asset('images/female-default.jpg') }}" alt="Default Female Image">
-                                            @else
-                                                <img style="border-radius: 50%;" height="50" width="50" src="{{ asset('images/user.jpg') }}" alt="Default Image">
-                                            @endif
-                                        @endif
-                                    </div>
-                                    <div class="col">
-                                        <h6 class="username" style="font-size: 12px; color: white;">
-                                            
-                                            {{ ucwords(strtolower($employee->first_name)) }} {{ ucwords(strtolower($employee->last_name)) }}
-                                        </h6>
-                                        <p class="mb-0" style="font-size: 12px; color: white;">(#{{ $emp_id }})</p>
-                                    </div>
-                                </div>
-                            </label>
-                        @endforeach
+        @foreach($filteredEmployeeIds as $emp_id)
+            @php
+                $employee = $employees->firstWhere('emp_id', $emp_id);
+            @endphp
 
-      
+            <label wire:click="selectPerson('{{ $emp_id }}')" class="container" style="cursor: pointer; background-color: darkgrey; padding: 5px; margin-bottom: 8px; width: 300px; border-radius: 5px; margin-top:5px">
+                <div class="row align-items-center">
+                    <div class="col-auto">
+                        <input type="checkbox" wire:model="selectedPeople" value="{{ $emp_id }}" {{ in_array($emp_id, $selectedPeople) ? 'checked' : '' }}>
+                    </div>
+                    <div class="col-auto">
+                        @if($employee && $employee->image && $employee->image !== 'null')
+                            <img class="profile-image" src="{{ 'data:image/jpeg;base64,' . base64_encode($employee->image) }}" style="border-radius:50%">
+                        @else
+                            @if($employee && $employee->gender == "Male")
+                                <img style="border-radius: 50%;" height="50" width="50" src="{{ asset('images/male-default.png') }}" alt="Default Male Image">
+                            @elseif($employee && $employee->gender == "Female")
+                                <img style="border-radius: 50%;" height="50" width="50" src="{{ asset('images/female-default.jpg') }}" alt="Default Female Image">
+                            @else
+                                <img style="border-radius: 50%;" height="50" width="50" src="{{ asset('images/user.jpg') }}" alt="Default Image">
+                            @endif
+                        @endif
+                    </div>
+                    <div class="col">
+                        <h6 class="username" style="font-size: 12px; color: white;">
+                            {{ ucwords(strtolower($employee->first_name)) }} {{ ucwords(strtolower($employee->last_name)) }}
+                        </h6>
+                        <p class="mb-0" style="font-size: 12px; color: white;">(#{{ $emp_id }})</p>
+                    </div>
+                </div>
+            </label>
+        @endforeach
+    @else
+        <p>No employees found.</p>
+    @endif
+
         </div>
         @endif
         </div>
@@ -278,8 +287,8 @@
                 </div>
             @else
                 <div class="row" style="margin-left:15px;">
-                    <div class="col-md-3" style="font-size: 12px;">{{ $employee->title ?? '-' }}</div>
-                    <div class="col-md-3" style="font-size: 12px;">{{ $employee->nick_name ?? '-' }}</div>
+                    <div class="col-md-3" style="font-size: 12px;">{{$employee->empPersonalInfo->title ?? '-'}} </div>
+                    <div class="col-md-3" style="font-size: 12px;">{{ $employee->empPersonalInfo->nick_name ?? '-' }}</div>
                     <div class="col-md-3" style="font-size: 12px;">{{ $employee->gender ?? '-' }}</div>
                     <div class="col-md-3" style="font-size: 12px;">{{ $employee->first_name }} {{ $employee->last_name }}</div>
                 </div>
@@ -358,9 +367,10 @@
         </div>
     @else
         <div class="row px-3 mt-3 text-black" style="font-size: 12px;">
-            <div class="col-md-3 mb-3">{{ $employee->dob ?? '-' }}</div>
-            <div class="col-md-3 mb-3">{{ $employee->blood_group ?? '-' }}</div>
-            <div class="col-md-3 mb-3">{{ $employee->marital_status ?? '-' }}</div>
+            <div class="col-md-3 mb-3">{{ isset($employee->empPersonalInfo->date_of_birth) ? \Carbon\Carbon::parse($employee->empPersonalInfo->date_of_birth)->format('d/m/Y') : '-' }}
+            </div>
+            <div class="col-md-3 mb-3">{{ $employee->empPersonalInfo->blood_group ?? '-' }}</div>
+            <div class="col-md-3 mb-3">{{ $employee->empPersonalInfo->marital_status ?? '-' }}</div>
         </div>
     @endif
 </div>

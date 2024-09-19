@@ -43,7 +43,7 @@
     <div class="row justify-content-center mt-3 flex-column m-0" style="border-radius: 5px; font-size:12px; width:88%;">
         <div class="col-md-9">
             <div class="row " style="display:flex;">
-                <div class="col-md-10 m-0">
+                <div class="col-md-11 m-0">
                     <b>Start searching to see specific employee details here</b>
                     <div class="col mt-3" style="display: flex;">
              
@@ -306,14 +306,14 @@
              <div class="row" style="margin-right: -5px; margin-left: -5px;">
     <div class="col-auto" style="padding-right: 5px; padding-left: 5px;">
  
-          @if ($editingPersonalProfile )
+    @if($currentEditingdesignationProfileId == $employee->emp_id)
           <div class="col-md-12 mb-3" style="color: black; font-size: 12px;"> 
-          <input style="font-size:12px" type="text" class="form-control" wire:model="Designation" placeholder="Designation">
+          <input style="font-size:12px" type="text" class="form-control" wire:model="designation" placeholder="designation">
                         </div>
                     
                     @else
                     <div class="row m-0" style="margin-top: 10px;">
-                        <div class="col-md-10 mb-3" style="color: black; font-size: 12px;">{{$employeeDetails[$emp_id]->job_title ??'-'}}</div>
+                        <div class="col-md-10 mb-3" style="color: black; font-size: 12px;">{{$employee->empPersonalInfo->designation ??'-'}}</div>
                        
                     </div>
                     @endif
@@ -324,11 +324,11 @@
 
 
 </div>
-<i>                @if($editingPersonalProfile )
-                    <i wire:click="cancelpersonalProfile('{{ $emp_id }}')" class="fas fa-times me-3" style="cursor: pointer;"></i>
-                    <i wire:click="savepersonalProfile('{{ $emp_id }}')" class="fa fa-save" style="cursor: pointer;"></i>
+<i>              @if($currentEditingdesignationProfileId == $employee->emp_id)
+                    <i wire:click="canceldesignationProfile('{{ $emp_id }}')" class="fas fa-times me-3" style="cursor: pointer;"></i>
+                    <i wire:click="savedesignationProfile('{{ $emp_id }}')" class="fa fa-save" style="cursor: pointer;"></i>
                 @else
-                    <i wire:click="editpersonalProfile('{{ $emp_id }}')" class="fas fa-edit ml-auto" style="cursor: pointer;"></i>
+                    <i wire:click="editdesignationProfile('{{ $emp_id }}')" class="fas fa-edit ml-auto" style="cursor: pointer;"></i>
                 @endif
             </i> 
 
@@ -356,15 +356,14 @@
              <div class="column" style="display: flex;">
              <div class="row" style="margin-right: -5px; margin-left: -5px;">
     <div class="col-auto" style="padding-right: 5px; padding-left: 5px;">
- 
-          @if ($editingLocationProfile )
+    @if($currentEditinglocationProfileId == $employee->emp_id)
           <div class="col-md-12 mb-3" style="color: black; font-size: 12px;"> 
           <input style="font-size:12px" type="text" class="form-control" wire:model="Location" placeholder="Location">
                         </div>
                     
                     @else
                     <div class="row m-0" style="margin-top: 10px;">
-                        <div class="col-md-3 mb-3" style="color: black; font-size: 12px;">{{$employeeDetails[$emp_id]->job_location??'-'}}</div>
+                        <div class="col-md-3 mb-3" style="color: black; font-size: 12px;">{{$employee->job_location??'-'}}</div>
                        
                     </div>
                     @endif
@@ -374,12 +373,11 @@
     </div>
 
 
-</div>
-<i>                @if($editingLocationProfile )
-                    <i wire:click="cancelLocationProfile('{{ $emp_id }}')" class="fas fa-times me-3" style="cursor: pointer;"></i>
-                    <i wire:click="saveLocationProfile('{{ $emp_id }}')" class="fa fa-save" style="cursor: pointer;"></i>
+</div>          @if($currentEditinglocationProfileId == $employee->emp_id)
+                    <i wire:click="cancellocationProfile('{{ $emp_id }}')" class="fas fa-times me-3" style="cursor: pointer;"></i>
+                    <i wire:click="savelocationProfile('{{ $emp_id }}')" class="fa fa-save" style="cursor: pointer;"></i>
                 @else
-                    <i wire:click="editLocationProfile('{{ $emp_id }}')" class="fas fa-edit ml-auto" style="cursor: pointer;"></i>
+                    <i wire:click="editlocationProfile('{{ $emp_id }}')" class="fas fa-edit ml-auto" style="cursor: pointer;"></i>
                 @endif
             </i> 
 
@@ -411,14 +409,14 @@
              <div class="row" style="margin-right: -5px; margin-left: -5px;">
     <div class="col-auto" style="padding-right: 5px; padding-left: 5px;">
  
-          @if ($editingProfile )
+    @if($currentEditingProfileId == $employee->emp_id)
           <div class="col-md-12 mb-3" style="color: black; font-size: 12px;"> 
           <input style="font-size:12px" type="text" class="form-control" wire:model="department" placeholder="Department">
                         </div>
                     
                     @else
                     <div class="row m-0" style="margin-top: 10px;">
-                        <div class="col-md-3 mb-3" style="color: black; font-size: 12px;">{{$employeeDetails[$emp_id]->department ??'-'}}</div>
+                        <div class="col-md-3 mb-3" style="color: black; font-size: 12px;">{{$employee->department ??'-'}}</div>
                        
                     </div>
                     @endif
@@ -429,7 +427,7 @@
 
 
 </div>
-<i>                @if($editingProfile )
+<i>                       @if($currentEditingProfileId == $employee->emp_id)
                     <i wire:click="cancelProfile('{{ $emp_id }}')" class="fas fa-times me-3" style="cursor: pointer;"></i>
                     <i wire:click="saveProfile('{{ $emp_id }}')" class="fa fa-save" style="cursor: pointer;"></i>
                 @else
@@ -464,14 +462,14 @@
              <div class="row" style="margin-right: -5px; margin-left: -5px;">
     <div class="col-auto" style="padding-right: 5px; padding-left: 5px;">
  
-          @if ($editingJobProfile )
+    @if($currentEditingJobProfileId == $employee->emp_id)
           <div class="col-md-12 mb-3" style="color: black; font-size: 12px;"> 
           <input style="font-size:12px" type="text" class="form-control" wire:model="Jobmode" placeholder="Jobmode">
                         </div>
                     
                     @else
                     <div class="row m-0" style="margin-top: 10px;">
-                        <div class="col-md-3 mb-3" style="color: black; font-size: 12px;">{{$employeeDetails[$emp_id]->job_mode ?? '-'}}</div>
+                        <div class="col-md-3 mb-3" style="color: black; font-size: 12px;">{{$employee->job_mode ?? '-'}}</div>
                        
                     </div>
                     @endif
@@ -482,11 +480,11 @@
 
 
 </div>
-<i>                @if($editingJobProfile )
-                    <i wire:click="cancelJobProfile('{{ $emp_id }}')" class="fas fa-times me-3" style="cursor: pointer;"></i>
-                    <i wire:click="saveJobProfile('{{ $emp_id }}')" class="fa fa-save" style="cursor: pointer;"></i>
+<i>                  @if($currentEditingJobProfileId == $employee->emp_id)
+                    <i wire:click="cancelProfile('{{ $emp_id }}')" class="fas fa-times me-3" style="cursor: pointer;"></i>
+                    <i wire:click="saveProfile('{{ $emp_id }}')" class="fa fa-save" style="cursor: pointer;"></i>
                 @else
-                    <i wire:click="editJobProfile('{{ $emp_id }}')" class="fas fa-edit ml-auto" style="cursor: pointer;"></i>
+                    <i wire:click="editProfile('{{ $emp_id }}')" class="fas fa-edit ml-auto" style="cursor: pointer;"></i>
                 @endif
             </i> 
 
@@ -517,31 +515,62 @@
         </div>
     </div>
     <div class="row justify-content-center " style="margin-top:10px">
-        <div class="col-lg-3  ">
+    <div class="col-lg-3 ">
             <div class="bg-white p-3 mb-3" style="border-radius: 5px; border: 1px solid silver;height:auto">
              <div class="column" style="display:flex">
              <p style="font-size:12px;font-weight:600">Sub Department</p>
-          
-    <button type="button" class="btn btn-sm ml-auto" style="border-radius: 5px; border: 1px solid blue;height:28px;margin-left:10px;;margin-top:-5px"><p style="color:blue">add</p></button>
+        
+    <button type="button" class="btn btn-sm ml-auto" style="border-radius: 5px; border: 1px solid blue; height: 28px; margin-left:10px;;margin-top:-5px"">
+        <p class="m-0" style="color: blue;">add</p>
+    </button>
+
+
 
 
              </div>
              <div class="column" style="display: flex;">
              <div class="row" style="margin-right: -5px; margin-left: -5px;">
     <div class="col-auto" style="padding-right: 5px; padding-left: 5px;">
-        <p style="font-size: 12px; color: darkcyan; margin-bottom: 0;">{{$employeeDetails[$emp_id]->Department ??'-'}}</p>
+    @if($currentEditingPersonalSubProfileId == $employee->emp_id)
+    <div class="col-md-12 mb-3" style="color: black; font-size: 12px;"> 
+        <input style="font-size: 12px" type="text" class="form-control" wire:model="subDepartment" placeholder="Sub Department">
     </div>
-    <div class="col-auto" style="padding-right: 5px; padding-left: 5px;">
+@else
+    <div class="row m-0" style="margin-top: 10px;">
+      
+
+            <div class="col-md-3 mb-3" style="color: black; font-size: 12px;">
+            {{$employee->empSubDepartment->sub_department ?? '-'}}
+            </div>
+       
+
+        
+    </div>
+@endif
+
+                    <div class="col-auto" style="padding-right: 5px; padding-left: 5px;">
         <p style="font-size: 12px; margin-bottom: 0;">14 Apr 2023</p>
     </div>
+    </div>
+
+
 </div>
+<i>                @if($currentEditingPersonalSubProfileId == $employee->emp_id)
+                    <i wire:click="cancelSubDepartmentProfile('{{ $employee->emp_id }}')" class="fas fa-times me-3" style="cursor: pointer;"></i>
+                    <i wire:click="saveSubDepartmentProfile('{{ $employee->emp_id }}')" class="fa fa-save" style="cursor: pointer;"></i>
+                @else
+                    <i wire:click="editSubDepartmentProfile('{{ $employee->emp_id }}')" class="fas fa-edit ml-auto" style="cursor: pointer;"></i>
+                @endif
+            </i> 
 
              
            
-             <i  class="fas fa-edit ml-auto" style="cursor: pointer;font-size:12px"></i>
+
+         
 
 
              </div>
+             
              
             </div>
           
@@ -571,7 +600,7 @@
       
 
             <div class="col-md-3 mb-3" style="color: black; font-size: 12px;">
-                {{ $employee->companyname ?? '-' }}
+            {{$employee->empPersonalInfo->company_name ?? '-'}}
             </div>
        
 

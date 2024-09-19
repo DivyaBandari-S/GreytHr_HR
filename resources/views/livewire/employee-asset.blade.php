@@ -89,7 +89,7 @@
     <div class="row justify-content-center mt-3 flex-column m-0" style="border-radius: 5px; font-size:12px; width:88%;">
         <div class="col-md-9">
             <div class="row " style="display:flex;">
-                <div class="col-md-10 m-0">
+                <div class="col-md-11 m-0">
                     <b>Start searching to see specific employee details here</b>
                     <div class="col mt-3" style="display: flex;">
              

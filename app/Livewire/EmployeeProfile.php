@@ -16,7 +16,7 @@ class EmployeeProfile extends Component
     use WithFileUploads;
     public $employeeName;
 
-    public $searchTerm = '';
+    public $searchTerm='';
     public $selectedPeopleImages = [];  
     public $selected_equipment;
     public $BloodGroup;
@@ -39,7 +39,7 @@ class EmployeeProfile extends Component
     public $emergency_contact;
     public $cc_to;
     public $peoples;
-    public $peopleData;
+    public $peopleData =[];
     public $filteredPeoples;
     public $selectedPeopleNames = [];
     public $selectedPeople = [];
@@ -75,6 +75,7 @@ class EmployeeProfile extends Component
     public $editingSocialMedia = false;
     public $employees;
     public $oldPassword;
+   
     public $newPassword;
     public $confirmNewPassword;
   
@@ -86,21 +87,13 @@ class EmployeeProfile extends Component
         $this->showDetails = !$this->showDetails;
     }
 
-    public function filter()
-    {
-        $companyId = Auth::user()->company_id;
-        $trimmedSearchTerm = trim($this->searchTerm);
+   
+    
 
-        $this->filteredPeoples = EmployeeDetails::where('company_id', $companyId)
-            ->where(function ($query) use ($trimmedSearchTerm) {
-                $query->where(DB::raw("CONCAT(first_name, ' ', last_name)"), 'like', '%' . $trimmedSearchTerm . '%')
-                    ->orWhere('emp_id', 'like', '%' . $trimmedSearchTerm . '%');
-            })
-            ->get();
-
-        $this->peopleFound = count($this->filteredPeoples) > 0;
-    }
-
+    
+    
+    
+    
     public function updatedSelectedPeople()
     {
         $this->cc_to = implode(', ', array_unique($this->selectedPeopleNames));
@@ -299,10 +292,10 @@ class EmployeeProfile extends Component
                 }
     
                 $this->currentEditingProfileId = null; // Exit edit mode after saving
-                session()->flash('message', 'Profile updated successfully!');
+              
             }
         } catch (\Exception $e) {
-            session()->flash('error', 'An error occurred while updating the profile. Please try again.');
+            session()->flash('error', 'An error occurred while creating new record. Please try again.');
         }
     }
     
@@ -320,18 +313,18 @@ class EmployeeProfile extends Component
         $this->currentEditingPersonalProfileId = $emp_id; // Set current employee for editing
     
         // Fetch employee details from EmployeeDetails table
-        $employee = EmployeeDetails::find($emp_id);
-        $personalInfo = DB::table('emp_personal_infos')->where('emp_id', $emp_id)->first();
+        $employee = EmployeeDetails::with('empPersonalInfo')->find($emp_id);
     
         $this->editingPersonalProfile = true;
     
-        if ($employee && $personalInfo) {
+        if ($employee ) {
+            $personalInfo = $employee->empPersonalInfo;
             $this->dob = $personalInfo->date_of_birth ?? '';
             $this->BloodGroup = $personalInfo->blood_group ?? '';
             $this->MaritalStatus = $personalInfo->marital_status ?? '';
         }
     }
-    
+
     public function savepersonalProfile($emp_id)
     {
         try {
@@ -406,45 +399,68 @@ class EmployeeProfile extends Component
            
     }
  
-
-
+    public function filter()
+    {
+        $companyId = Auth::user()->company_id;
+    
+        // Apply the search filter to EmployeeDetails within the logged-in user's company
+        $this->peopleData = EmployeeDetails::where('company_id', $companyId)
+            ->where(function ($query) {
+                $query->where('first_name', 'like', '%' . $this->searchTerm . '%')
+                      ->orWhere('last_name', 'like', '%' . $this->searchTerm . '%')
+                      ->orWhere('emp_id', 'like', '%' . $this->searchTerm . '%');
+            })
+            ->get();
+    
+        // If no search term is provided, reset the filtered data
+        if (empty($this->searchTerm)) {
+            $this->peopleData = [];
+        }
+    }
+    
+    
     public function render()
-{
-    $loggedInEmpID = auth()->guard('hr')->user()->emp_id;
-
-    // Retrieve the company_id associated with the logged-in emp_id
-    $companyID = EmployeeDetails::where('emp_id', $loggedInEmpID)
-        ->pluck('company_id')
-        ->first(); // Assuming company_id is unique for emp_id
-
-    // Fetch all employees where company_id matches the logged-in user's company_id
-    $this->employeeIds = EmployeeDetails::where('company_id', $companyID)
-        ->pluck('emp_id')
-        ->toArray();
-  
-    $this->employees = EmployeeDetails::whereIn('emp_id', $this->employeeIds)->get();
-          $this->employeess = EmployeeDetails::where('company_id', $companyID)
-        ->orderBy('hire_date', 'desc') // Order by hire_date descending
+    {
+        $loggedInEmpID = auth()->guard('hr')->user()->emp_id;
+    
+        // Retrieve the company_id associated with the logged-in emp_id
+        $companyID = EmployeeDetails::where('emp_id', $loggedInEmpID)
+            ->pluck('company_id')
+            ->first(); // Assuming company_id is unique for emp_id
+    
+        // Fetch all employees where company_id matches the logged-in user's company_id
+        $this->employeeIds = EmployeeDetails::where('company_id', $companyID)
+            ->pluck('emp_id')
+            ->toArray();
       
-        ->take(5) // Limit to 5 records
-        ->get();
-    $this->employeeDetails = EmployeeDetails::with(['empBankDetails', 'empParentDetails', 'empPersonalInfo','empSpouseDetails'])
-    ->where('emp_id', $this->employeeIds)
-    ->first();
-
-   
-    // Ensure $peopleData is set
-    $peopleData = $this->filteredPeoples ?:  $this->employeeIds;
-
-    return view('livewire.employee-profile', [
-        'employees' => $this->employees,
-        'peopleData' => $peopleData,
-        'records' => $this->records,
-        'personalInfo' => $this->personalInfo,
-        'selectedPeople' => $this->selectedPeople, // Add selectedPeople to view data
-        'cc_to' => $this->cc_to, // Add cc_to to view data
-    ]);
-}
+        $this->employees = EmployeeDetails::whereIn('emp_id', $this->employeeIds)->get();
+        if ($this->filteredPeoples) {
+            $this->employees = $this->filteredPeoples;
+        } else {
+            // Fetch all employees if no filter is applied
+            $this->employees = EmployeeDetails::whereIn('emp_id', $this->employeeIds)->get();
+        }
+        // Extract employee IDs for the filtered results if a search term exists
+        if ($this->searchTerm) {
+            $this->filter(); // Call the filter method to update peopleData based on search
+        } else {
+            // Fetch all employees based on company ID when no search term
+            $this->peopleData = EmployeeDetails::where('company_id', $companyID)->get();
+            $this->filteredPeoples = collect($this->peopleData); // Initialize with data or empty collection
+        }
+    
+        // Ensure peopleData is set
+        $peopleData = $this->filteredPeoples ?: $this->employeeIds;
+    
+        return view('livewire.employee-profile', [
+            'employees' => $this->employees,
+            'peopleData' => $peopleData,
+            'searchTerm' => $this->searchTerm,
+            'selectedPeople' => $this->selectedPeople, // Add selectedPeople to view data
+            'cc_to' => $this->cc_to, // Add cc_to to view data
+            'peopleFound' => $this->peopleFound, // Make sure peopleFound is available in view
+        ]);
+    }
 
 
 }
