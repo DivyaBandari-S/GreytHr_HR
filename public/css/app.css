@@ -24,16 +24,15 @@ body {
     --sub-headings-font-size: 0.8rem;
     --main-headings-font-size: 1rem;
 }
-.loginform{
+.loginform {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background-color:white;
+    background-color: white;
     height: 100vh;
-
 }
-.login-form-with-shadow{
+.login-form-with-shadow {
     box-shadow: 0px 0px 5px 1px #e4e3e3;
     width: 80%;
     padding: 30px 40px 30px;
@@ -64,7 +63,7 @@ body {
 .active.carousel-item-left,
 .carousel-item-next {
     transform: rotateY(180deg);
-    backface-visibility:hidden;
+    backface-visibility: hidden;
 }
 
 .active.carousel-item-right,
@@ -75,7 +74,6 @@ body {
 
 .column1 {
     width: 20%;
-
 }
 
 .column2 {
@@ -84,8 +82,6 @@ body {
     overflow-y: auto;
     border: 1px solid rgb(219, 217, 217);
     height: 90vh;
-
-
 }
 
 .navbar-toggler-icon {
@@ -106,7 +102,6 @@ body {
     background-color: white;
     padding: 0px;
     height: 10vh;
-
 }
 
 @media (max-width: 768px) {
@@ -146,16 +141,13 @@ body {
 .main {
     background-color: black;
     color: white;
-
-
-
 }
 
 ul {
     list-style-type: none;
     display: flex;
-    justify-content: center;
-    margin: 0px;
+    justify-content: start;
+    margin-top: 10px;
     cursor: pointer;
     padding: 0px;
 }
@@ -165,7 +157,6 @@ ul {
     display: flex;
     justify-content: center;
     padding: 15px;
-
 }
 
 .mainmenu-icons {
@@ -173,18 +164,14 @@ ul {
     text-decoration: none;
     align-items: center;
     color: white;
-
 }
 
 .col1 {
-
     position: sticky;
     width: 21%;
     background-color: var(--main-button-color);
     padding: 0px;
     margin: 0px;
-
-
 }
 
 .col2 {
@@ -205,7 +192,6 @@ ul {
 .heading {
     font-weight: 600;
     margin-bottom: 0px;
-
 }
 .main-heading {
     font-weight: 600;
@@ -222,7 +208,7 @@ ul {
 .sub-heading.active {
     color: var(--main-button-color);
 }
-.horizontal-line{
+.horizontal-line {
     margin-top: -3px;
 }
 
@@ -239,8 +225,6 @@ ul {
 .submenue {
     display: flex;
     flex-direction: column;
-
-
 }
 
 .main-menu {
@@ -249,7 +233,6 @@ ul {
     background-color: white;
     margin: 7px 5px;
     border-radius: 10px;
-
 }
 
 .fa-chevron-down,
@@ -257,20 +240,18 @@ ul {
     justify-content: end;
     text-decoration: none;
     color: black;
-
-
 }
 
 .arrows {
     justify-content: end;
     margin-left: auto;
 }
-.arrow-icon{
+.arrow-icon {
     font-size: 14px;
     color: var(--sub-heading-color);
     cursor: pointer;
 }
-.arrow-icon-active{
+.arrow-icon-active {
     font-size: 14px;
     color: var(--main-button-color);
     cursor: pointer;
@@ -287,10 +268,9 @@ ul {
     color: var(--label-color);
     text-decoration: none;
     font-size: var(--normal-font-size);
-
 }
 
-.submenu-container{
+.submenu-container {
     margin-left: 20px;
     margin-top: 8px;
 }
@@ -378,7 +358,7 @@ ul {
     margin: 0px 4px 8px 0px;
     display: inline-block;
     cursor: pointer;
-    font-size: var( --normal-font-size);
+    font-size: var(--normal-font-size);
     color: #778899;
 }
 .helpChip:hover {
@@ -453,7 +433,6 @@ ul {
 input[type="radio"] {
     border-radius: 0px;
     padding: 10px;
-
 }
 #msform input,
 #msform textarea {
@@ -547,32 +526,31 @@ input[type="radio"] {
 /*The number of the step and the connector before it = green*/
 #progressbar li.active:before,
 #progressbar li.active:after {
-    background: #26254e;
+    background: #306cc6;
     color: white;
 }
-label{
+label {
     font-size: 13px;
-    color: rgb(87, 85, 85);
-    font-weight:400;
-}
-.onboard-Valid{
-    font-size:small;
-}
 
+    color: rgb(135, 129, 129);
+    font-weight: 500;
+}
+.onboard-Valid {
+    font-size: small;
+}
 
 .ilynn-btn {
     width: fit-content;
     font-weight: 500;
     padding: 7px 15px !important;
     border: none !important;
-    background-color:#306cc6;
+    background-color: #306cc6;
     font-size: 16px !important;
     margin-right: 20px;
     color: white;
     float: inline-end;
     border-radius: 5px;
 }
-
 
 .ilynn-btn:hover {
     cursor: pointer;
@@ -674,22 +652,21 @@ label{
     background-color: rgb(2, 17, 79);
     border: none;
 }
-.form-check-label-options{
+.form-check-label-options {
     font-size: 13px;
     margin-left: 5px;
 }
-.onboarding-check-boxes{
+.onboarding-check-boxes {
     display: flex;
     flex-direction: column;
-
 }
-input{
-    margin-bottom:0px;
+input {
+    margin-bottom: 0px;
 }
-.form-check-label{
+.form-check-label {
     font-size: 10px;
 }
-.custom-select{
+.custom-select {
     font-size: 13px;
 }
 /* end of styles */
@@ -727,7 +704,7 @@ input{
     cursor: pointer;
     font-size: var(--sub-headings-font-size);
 }
-.analytic-left{
+.analytic-left {
     color: var(--main-heading-color);
     font-size: var(--sub-headings-font-size);
     font-weight: 500;
@@ -799,7 +776,6 @@ input{
 }
 
 .analytic-container1 {
-
     margin: 20px;
     background-color: #fff;
     border-radius: 8px;
@@ -811,15 +787,12 @@ input{
     padding: 10px;
     justify-content: space-between;
     align-items: center;
-
 }
 
 .analytic-header-left {
     font-size: 16px;
     font-weight: 400;
 }
-
-
 
 .analytic-search-bar {
     display: flex;
@@ -875,7 +848,7 @@ input{
 .analytic-table {
     width: 100%;
     border-collapse: collapse;
-    background-color: #CFD8DC;
+    background-color: #cfd8dc;
 }
 
 .analytic-table th,
@@ -887,7 +860,7 @@ input{
 }
 
 .analytic-table th {
-    background-color: #CFD8DC;
+    background-color: #cfd8dc;
     color: black;
     font-size: var(--sub-headings-font-size);
     font-weight: 500;
@@ -902,7 +875,7 @@ input{
 
 /* Alternating row colors */
 .analytic-table tr:nth-child(even) {
-    background-color: #F5F5F5;
+    background-color: #f5f5f5;
     /* Grey background for even rows */
 }
 
@@ -911,12 +884,11 @@ input{
     /* White background for odd rows */
 }
 
-
 .analytic-grey-text {
     color: var(--label-color);
     font-size: var(--sub-headings-font-size);
 }
-.analytic-blue-text{
+.analytic-blue-text {
     color: var(--main-button-color);
     font-size: var(--sub-headings-font-size);
 }
@@ -941,13 +913,10 @@ input{
 }
 
 .back {
-
     display: flex;
     align-items: center;
     cursor: pointer;
-
 }
-
 
 .back:hover .analytic-blue-text {
     text-decoration: underline;
@@ -1013,7 +982,7 @@ label:hover {
     background-color: #ddd;
 } */
 
-input[type="radio"]:checked+label {
+input[type="radio"]:checked + label {
     background-color: white;
     border-bottom: 1px solid white;
 }
@@ -1036,12 +1005,11 @@ input[type="radio"]:checked+label {
     margin: 0;
     padding: 0;
     width: 100%;
-}
+}a
 
 .list-group-item {
     width: 100%;
 }
-
 
 .custom-accordion .accordion-button:after {
     display: none;
@@ -1648,3 +1616,163 @@ input[type="date"]::before {
 }
 /*Ending of Who Is In Submodule*/
 /* analytics hub view all styles ended */
+
+/* Employee Information started*/
+/* Basic styles for the tabs */
+.tab-container {
+    margin-top: 20px;
+}
+.tab-buttons {
+    display: flex;
+    font-size: 12px;
+}
+
+.tab-buttons button {
+    padding: 10px 20px;
+    cursor: pointer;
+    background-color: #f1f1f1;
+    border: none;
+    border-bottom: 2px solid transparent;
+    outline: none;
+    transition: 0.3s;
+}
+.tab-buttons button.active {
+    background-color: white;
+    border-bottom: 2px solid #007bff;
+}
+.tab-content {
+    display: none;
+    padding: 15px;
+    border: none;
+    background-color: transparent; /* Remove white background */
+}
+.tab-content.active {
+    display: block;
+}
+.custom-container {
+    border-radius: 5px;
+    background-color: #f1f9fb;
+    border: 1px solid silver;
+    padding: 15px;
+}
+.custom-container:hover {
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+
+    transition: opacity 0.1s ease-in-out;
+}
+
+.main-text {
+    font-size: 12px;
+    width: 85%;
+}
+
+.help-text {
+    font-size: 12px;
+    color: blue;
+    cursor: pointer;
+    margin-left: auto;
+}
+
+.secondary-text {
+    font-size: 12px;
+    margin-top: 10px;
+    font-weight: 200;
+}
+
+/* Added CSS for the image container */
+.image-container {
+    height: 180px; /* Fixed height to prevent image movement */
+    align-items: end;
+}
+/* Base styles for input and buttons */
+.input-group4 {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.input-group4 input {
+    font-size: 10px;
+    cursor: pointer;
+    border-radius: 5px 0 0 5px;
+    width: 250px;
+    height: 30px;
+    padding: 5px;
+}
+
+.input-group-append {
+    display: flex;
+    align-items: center;
+}
+
+.input-group-append button {
+    height: 30px;
+    border-radius: 0 5px 5px 0;
+    padding: 0 10px;
+}
+
+.input-group-append .btn {
+    background-color: rgb(2, 17, 79);
+    color: #fff;
+    border: none;
+}
+
+.input-group-append .close {
+    background-color: rgb(2, 17, 79);
+    height: 30px;
+    width: 30px;
+    margin-left: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+    .input-group4 {
+        flex-direction: row; /* Keep items in a row on small screens */
+        align-items: center; /* Center items vertically */
+        width: 100%;
+    }
+
+    .input-group4 input {
+        width: auto; /* Allow input to shrink */
+        margin-bottom: 0; /* Remove space between input and buttons */
+    }
+
+    .input-group-append {
+        flex-direction: row; /* Keep buttons in a row */
+    }
+
+    .input-group-append button {
+        width: auto; /* Allow buttons to shrink */
+        margin-top: 0; /* Remove space between buttons */
+        border-radius: 0; /* Maintain default border radius */
+    }
+
+    .input-group-append .btn,
+    .input-group-append .close {
+        border-radius: 0; /* Maintain default border radius */
+    }
+}
+
+.container {
+    width: 100%;
+    max-width: none;
+    margin-bottom: 10px;
+}
+
+.container img {
+    height: 40px; /* Adjust size for smaller screens */
+    width: 40px;
+}
+
+.profile {
+    margin-top: 10px;
+}
+
+.profile p {
+    font-size: 14px;
+}
+/* Employee Information started*/
