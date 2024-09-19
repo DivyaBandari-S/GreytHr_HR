@@ -118,7 +118,7 @@
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label class="mt-1" for="first_name">First Name <span class="text-danger onboard-Valid">*</span></label>
-                                    <input type="text" class="form-control onboardinputs  placeholder-small  m-0" placeholder="Enter first name" wire:model="first_name"  pattern="[A-Za-z ]+" title="Only letters and spaces are allowed">
+                                    <input type="text" class="form-control onboardinputs  placeholder-small  m-0" placeholder="Enter first name" wire:model="first_name" pattern="[A-Za-z ]+" title="Only letters and spaces are allowed">
                                     @error('first_name')
                                     <span class="text-danger onboard-Valid">{{ $message }}</span>
                                     @enderror
@@ -176,9 +176,9 @@
 
                                 {{-- Upload Employee Image --}}
 
-                                <div class="form-group col-md-6">
+                                <div class="form-group col-md-6 d-flex" style="flex-direction: column;">
                                     <label class="mt-1" for="image">Employee Image</label>
-                                    <input type="file" wire:model="image" style="font-size:12px;border:none;">
+                                    <input class="onboardinputs" type="file" wire:model="image" accept=".png, .jpg, .jpeg" style="font-size:12px;border:none; width:fit-content">
                                     @error('image')
                                     <span class="text-danger onboard-Valid">{{ $message }}</span>
                                     @enderror
@@ -186,9 +186,12 @@
                                 <div class="form-group col-md-6"></div>
                                 <div class="form-group col-md-6  " style="display: flex;justify-content:start">
                                     @if($image)
+
                                     <img src="{{ is_string($image) ? asset('storage/' . $image) : $image->temporaryUrl() }}" alt="Preview" style='height:100px;width:100px' class="img-thumbnail" />
-                                    @elseif($employee && $employee->image)
-                                    <img src="{{ asset('storage/' . $employee->image) }}" alt="Preview" style='height:100px;width:100px' class="img-thumbnail" />
+                                    @else
+                                    @if(strlen($imageBinary)>10)
+                                    <img src="data:image/jpeg;base64,{{ $imageBinary }}" alt="" style='height:100px;width:100px' class="img-thumbnail" />
+                                    @endif
                                     @endif
                                 </div>
                             </div>
@@ -865,16 +868,17 @@
                                             <label class="mt-1" for="father_image">Father Image</label>
                                             <input type="file" wire:model="father_image" accept=".png, .jpg, .jpeg" style="font-size:12px;border:none;width:100%">
                                             @error('father_image')
-                                            <!-- <span class="text-danger onboard-Valid">{{ $message }}</span> -->
+                                            <span class="text-danger onboard-Valid">{{ $message }}</span>
                                             @enderror
                                         </div>
 
                                         <div class="form-group col-md-12" style="display: flex;justify-content:start">
                                             @if($father_image)
-                                            @if(is_string($father_image) || in_array($father_image->getMimeType(), ['image/jpeg', 'image/png', 'image/jpg']))
-                                            <img src="{{ is_string($father_image) ? asset('storage/' . $father_image) : $father_image->temporaryUrl() }}" alt="Preview" style="height:100px;width:100px" class="img-thumbnail" />
+
+                                            <img src="{{ is_string($father_image) ? asset('storage/' . $father_image) : $father_image->temporaryUrl() }}" alt="Preview" style='height:100px;width:100px' class="img-thumbnail" />
                                             @else
-                                            <!-- <span style="font-size:small;" class="text-danger onboard-Valid">{{$imageerror}}</span> -->
+                                            @if(strlen($father_image_binary)>10)
+                                            <img src="data:image/jpeg;base64,{{ $father_image_binary }}" alt="" style='height:100px;width:100px' class="img-thumbnail" />
                                             @endif
                                             @endif
                                         </div>
@@ -883,7 +887,7 @@
                                     <div class="col-md-6">
                                         <div class="form-group col-md-12">
                                             <label class="mt-1" for="image">Mother Image</label>
-                                            <input type="file" wire:model="mother_image" style="font-size:12px;border:none;width:100%">
+                                            <input type="file" wire:model="mother_image" accept=".png, .jpg, .jpeg" style="font-size:12px;border:none;width:100%">
                                             @error('mother_image')
                                             <span class="text-danger onboard-Valid">{{ $message }}</span>
                                             @enderror
@@ -891,10 +895,10 @@
 
                                         <div class="form-group col-md-12" style="display: flex;justify-content:start">
                                             @if($mother_image)
-                                            @if(is_string($mother_image) || in_array($mother_image->getMimeType(), ['image/jpeg', 'image/png', 'image/jpg']))
-                                            <img src="{{ is_string($mother_image) ? asset('storage/' . $mother_image) : $mother_image->temporaryUrl() }}" alt="Preview" style="height:100px;width:100px" class="img-thumbnail" />
+                                            <img src="{{ is_string($mother_image) ? asset('storage/' . $mother_image) : $mother_image->temporaryUrl() }}" alt="Preview" style='height:100px;width:100px' class="img-thumbnail" />
                                             @else
-                                            <span style="font-size:small;" class="text-danger onboard-Valid">{{$imageerror}}</span>
+                                            @if(strlen($mother_image_binary)>10)
+                                            <img src="data:image/jpeg;base64,{{ $mother_image_binary }}" alt="" style='height:100px;width:100px' class="img-thumbnail" />
                                             @endif
                                             @endif
                                         </div>
@@ -903,7 +907,7 @@
 
                             </div>
                             <hr class="hr-wizard" />
-                            <button type="button" name="next" class="next ilynn-btn" value=" Skip & Next" wire:click="parentsnextPage"> Skip & Next</button>
+                            <button type="button" name="next" class="next ilynn-btn" value=" Skip & Next" wire:click="parentsnextPage"> Save & Next</button>
                             <button type="button" name="previous" class="previous ilynn-btn" value="Back" wire:click="parentspreviousPage">Back </button>
 
                         </div>
@@ -1399,8 +1403,15 @@
                     <h5 class="modal-title ">Success</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" wire:click="closeModal"></button>
                 </div>
-                <div class="modal-body">
-                    <p><strong>{{ucfirst(strtolower($this->first_name))}}{{ucfirst(strtolower($this->last_name))}}</strong> onboarded successful! with <strong>{{$emp_id}}</strong>Id</p>
+                <div class="modal-body d-flex" style="justify-content: center; flex-direction:column;align-items:center">
+
+                   @if($action=='add')
+                    <p style="width: fit-content;" class="text-align-center "><strong>{{ucfirst(strtolower($this->first_name))}} {{ucfirst(strtolower($this->last_name))}}</strong> Onboarded successful! </p>
+                    <p style="width: fit-content;" class="text-align-cente">with <strong>{{$emp_id}} </strong> Id</p>
+                    @elseif($action=='edit')
+                    <p style="width: fit-content;" class="text-align-center "><strong>{{ucfirst(strtolower($this->first_name))}} {{ucfirst(strtolower($this->last_name))}}</strong> details updated successful! </p>
+                    @endif
+
                 </div>
                 <div class="modal-footer justify-content-center">
                     <button type="button" class="ilynn-btn" data-bs-dismiss="modal" wire:click="closeModal">Close</button>
