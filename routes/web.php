@@ -11,8 +11,12 @@ use App\Livewire\EmployeeAsset;
 use App\Livewire\GrantLeaveBalance;
 use App\Livewire\UpdateEmployeeDetails;
 use App\Livewire\EmployeeDirectory;
+use App\Livewire\EmployeeProfile;
+use App\Livewire\Feeds;
 use App\Livewire\HrAttendanceInfo;
 use App\Livewire\HrAttendanceOverviewNew;
+use App\Livewire\ParentDetails;
+use App\Livewire\PositionHistory;
 use App\Livewire\WhoIsInChartHr;
 use Illuminate\Support\Facades\Route;
 
