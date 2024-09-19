@@ -80,16 +80,7 @@
         @if($isNames)
         <div class="col-md-6" style="border-radius: 5px; background-color: grey; padding: 8px; width: 330px; margin-top: 10px; height: 250px; overflow-y: auto;">
         <div class="input-group4" style="display: flex; align-items: center; width: 100%;">
-        @php
-        $filteredEmployeeIds = collect($employeeIds)->filter(function($emp_id) use ($employees, $searchTerm) {
-            $employee = $employees->firstWhere('emp_id', $emp_id);
-            return $employee && (
-                str_contains(strtolower($employee->first_name), strtolower($searchTerm)) || 
-                str_contains(strtolower($employee->last_name), strtolower($searchTerm)) || 
-                str_contains(strtolower($emp_id), strtolower($searchTerm))
-            );
-        })->values(); // Get the filtered employee IDs
-    @endphp
+   
         <input 
         wire:model="searchTerm"
       
