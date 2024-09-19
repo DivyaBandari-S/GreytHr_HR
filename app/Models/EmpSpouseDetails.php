@@ -26,6 +26,9 @@ class EmpSpouseDetails extends Model
         'image',
     ];
 
+    protected $casts = [
+        'children' => 'array',
+    ];
     // Assuming emp_id is not auto-incrementing or not an integer ID
     protected $keyType = 'string';
 
