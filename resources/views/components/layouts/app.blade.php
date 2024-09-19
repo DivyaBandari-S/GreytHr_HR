@@ -28,7 +28,7 @@
                 <livewire:sidebar />
             </div>
             <div class="column2" >
-                    {{ $slot }}
+                 <div>{{ $slot }}</div>
             </div>
         </div>
     </div>
