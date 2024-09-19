@@ -70,6 +70,10 @@ class EmployeeDetails extends Authenticatable
     {
         return $this->hasOne(EmpPersonalInfo::class, 'emp_id', 'emp_id');
     }
+    public function empResignations()
+    {
+        return $this->hasOne(EmpResignations::class, 'emp_id', 'emp_id');
+    }
     public function hrPersonalInfo()
     {
         return $this->hasOne(EmpPersonalInfo::class, 'emp_id', 'hr_emp_id');
