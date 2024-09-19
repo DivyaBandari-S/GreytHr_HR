@@ -195,6 +195,136 @@
                     </div>
 
                 </div>
+            @elseif($activeIcon === 'calendar' || request()->is('*' . 'calendar' . '*'))
+            <h6 class="main-heading">ATTENDANCE</h6>
+                <div class="main-menus">
+                    <!-- Main -->
+                    <div class="row main-menu"wire:key="row-1">
+                        <div class="col">
+                            <div wire:click="toggleSubmenu('row-1')"
+                                style="display: flex;justify-content: space-between; align-items: center;">
+                                <h6 class="sub-heading {{isset($showSubmenu['row-1']) && $showSubmenu['row-1']? 'active' : ''}}" wire:click='testing'>Main</h6>
+                                <div class="arrows">
+                                    @if (isset($showSubmenu['row-1']) && $showSubmenu['row-1'])
+                                        <a class="fa fa-chevron-down arrow-icon-active"> </a>
+                                    @else
+                                        <a class="fa fa-chevron-right arrow-icon"> </a>
+                                    @endif
+                                </div>
+ 
+                            </div>
+ 
+                            @if (isset($showSubmenu['row-1']) && $showSubmenu['row-1'])
+                                <div id="Submenus" class="submenu-container">
+ 
+                                    <!-- Main SubMenues -->
+                                    <p class="p-0"><a href=""  class="submenu" wire:navigate>Leave Overview</a></p>
+                                    <p class="p-0"><a href="/hr/user/overview"  class="submenu" wire:navigate>Attendance Overview</a></p>
+                                    <p class="p-0"><a href="/hr/user/overview"  class="submenu" wire:navigate>Leave Calendar</a></p>
+                                    <p class="p-0"><a href="/hr/user/who-is-in-chart-hr"  class="submenu" wire:navigate>Who is In?</a></p>
+                                    <p class="p-0"><a href="/hr/user/attendance-info"  class="submenu" wire:navigate>Attendance Info</a></p>
+                                   
+ 
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+                    <!-- Information -->
+                    <div class="row  main-menu" wire:key="row-2">
+                        <div class="col">
+ 
+                            <div wire:click="toggleSubmenu('row-2')" style="display: flex;">
+                                <h6 class="sub-heading {{ isset($showSubmenu['row-2']) && $showSubmenu['row-2'] ? 'active' : '' }}">Information</h6>
+                                <div class="arrows">
+                                    @if (isset($showSubmenu['row-2']) && $showSubmenu['row-2'])
+                                        <a class="fa fa-chevron-down arrow-icon-active"> </a>
+                                    @else
+                                        <a class="fa fa-chevron-right arrow-icon"> </a>
+                                    @endif
+                                </div>
+                            </div>
+                            @if (isset($showSubmenu['row-2']) && $showSubmenu['row-2'])
+                            <div id="Submenus" class="submenu-container">
+ 
+                                <!-- Main SubMenues -->
+   
+                                <p class="p-0"><a href="/home" class="submenu" wire:navigate>Overview</a></p>
+   
+                                <p class="p-0"><a href="/user" class="submenu" wire:navigate>Analytics Hub</a></p>
+   
+                                <p class="p-0"><a href="/user" class="submenu" wire:navigate>Employee Directory</a></p>
+   
+                                <p class="p-0"><a href="/user" class="submenu" wire:navigate>Organization Chart</a></p>
+   
+                            </div>
+                            @endif
+                        </div>
+                    </div>
+                    <!-- Admin -->
+                    <div class="row  main-menu" wire:key="row-3">
+                        <div class="col">
+ 
+                            <div wire:click="toggleSubmenu('row-3')" style="display: flex;">
+                                <h6 class="sub-heading {{ isset($showSubmenu['row-3']) && $showSubmenu['row-3'] ? 'active' : '' }}">Admin</h6>
+                                <div class="arrows">
+                                    @if (isset($showSubmenu['row-3']) && $showSubmenu['row-3'])
+                                        <a class="fa fa-chevron-down arrow-icon-active"> </a>
+                                    @else
+                                        <a class="fa fa-chevron-right arrow-icon"> </a>
+                                    @endif
+                                </div>
+                            </div>
+                            @if (isset($showSubmenu['row-3']) && $showSubmenu['row-3'])
+                            <div id="Submenus" class="submenu-container">
+ 
+                                <!-- Main SubMenues -->
+   
+                                <p class="p-0"><a href="/home" class="submenu" wire:navigate>Overview</a></p>
+   
+                                <p class="p-0"><a href="/user" class="submenu" wire:navigate>Analytics Hub</a></p>
+   
+                                <p class="p-0"><a href="/user" class="submenu" wire:navigate>Employee Directory</a></p>
+   
+                                <p class="p-0"><a href="/user" class="submenu" wire:navigate>Organization Chart</a></p>
+   
+                            </div>
+                            @endif
+                        </div>
+                    </div>
+                    <!-- Setup -->
+                    <div class="row  main-menu" wire:key="row-4">
+                        <div class="col">
+ 
+                            <div wire:click="toggleSubmenu('row-4')" style="display: flex;">
+                                <h6 class="sub-heading {{ isset($showSubmenu['row-4']) && $showSubmenu['row-4'] ? 'active' : '' }}">Setup</h6>
+                                <div class="arrows">
+                                    @if (isset($showSubmenu['row-4']) && $showSubmenu['row-4'])
+                                        <a class="fa fa-chevron-down arrow-icon-active"> </a>
+                                    @else
+                                        <a class="fa fa-chevron-right arrow-icon"> </a>
+                                    @endif
+                                </div>
+                            </div>
+                            @if (isset($showSubmenu['row-4']) && $showSubmenu['row-4'])
+                            <div id="Submenus" class="submenu-container">
+ 
+                                <!-- Main SubMenues -->
+   
+                                <p class="p-0"><a href="/home" class="submenu" wire:navigate>Overview</a></p>
+   
+                                <p class="p-0"><a href="/user" class="submenu" wire:navigate>Analytics Hub</a></p>
+   
+                                <p class="p-0"><a href="/hremployeedirectory" class="submenu" wire:navigate>Employee Directory</a></p>
+   
+                                <p class="p-0"><a href="/user" class="submenu" wire:navigate>Organization Chart</a></p>
+   
+                            </div>
+                            @endif
+                        </div>
+                    </div>
+ 
+                </div>
+
             @elseif($activeIcon === 'fa-envelope')
 
             @elseif($activeIcon === 'fa-cog')
