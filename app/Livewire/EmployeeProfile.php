@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\EmployeeDetails;
+use App\Models\EmpPersonalInfo;
 use App\Models\HelpDesks;
 use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
@@ -20,6 +21,7 @@ class EmployeeProfile extends Component
     public $selected_equipment;
     public $BloodGroup;
     public $extension;
+    public $personalInfo;
     public $empId;
     public $employeeId;
     public $MaritalStatus;
@@ -212,91 +214,98 @@ class EmployeeProfile extends Component
     
     public $currentEditingProfileId = null; // Track the employee ID for editing profile
     public $currentEditingPersonalProfileId = null; 
-public function editProfile($emp_id)
-{
-    $this->currentEditingProfileId = $emp_id; // Set current employee for editing
-
-    // Fetch employee details from EmployeeDetails table
-    $employee = EmployeeDetails::find($emp_id);
-    $personalInfo = DB::table('emp_personal_infos')->where('emp_id', $emp_id)->first();
-
-    if ($employee) {
-        $this->title = $personalInfo->title ?? '';
-        $this->nickName = $personalInfo->nick_name ?? '';
-        $this->gender = $employee->gender ?? '';
-        $this->name = $employee->first_name . ' ' . $employee->last_name ?? '';
-        $this->emergency_contact = $employee->emergency_contact ?? '';
-        $this->Email = $employee->email ?? '';
-        $this->extension = $employee->extension ?? '';
-    }
-}
-
+    public function editProfile($emp_id)
+    {
+        $this->currentEditingProfileId = $emp_id; // Set current employee for editing
     
-public function saveProfile($emp_id)
-{
-    try {
-        // Fetch employee details from EmployeeDetails table
-        $employee = EmployeeDetails::find($emp_id);
-    
-        // Fetch personal info from emp_personal_infos table
-        $personalInfo = DB::table('emp_personal_infos')->where('emp_id', $emp_id)->first();
-    
+        // Fetch employee details including related empPersonalInfo
+        $employee = EmployeeDetails::with('empPersonalInfo')->find($emp_id);
+  
         if ($employee) {
-            // Split name into first_name and last_name if necessary
-            $nameParts = explode(' ', $this->name);
-            $firstName = $nameParts[0];
-            $lastName = isset($nameParts[1]) ? $nameParts[1] : '';
+            // Access personalInfo data using the relationship
+            $personalInfo = $employee->empPersonalInfo;
     
-            // Check for duplicate email
-            if ($this->Email !== '') {
-                $existingEmail = EmployeeDetails::where('email', $this->Email)
-                    ->where('emp_id', '!=', $emp_id) // Exclude the current employee
-                    ->first();
-    
-                if ($existingEmail) {
-                    session()->flash('error', 'This email is already taken by another employee.');
-                    return;  // Stop further execution
-                }
-            }
-
-            // Check for duplicate mobile number (emergency_contact)
-            if ($this->emergency_contact !== '') {
-                $existingMobile = EmployeeDetails::where('emergency_contact', $this->emergency_contact)
-                    ->where('emp_id', '!=', $emp_id) // Exclude the current employee
-                    ->first();
-    
-                if ($existingMobile) {
-                    session()->flash('error', 'This mobile number is already taken by another employee.');
-                    return;  // Stop further execution
-                }
-            }
-    
-            // Update EmployeeDetails fields
-            $employee->gender = $this->gender;
-            $employee->first_name = $firstName;
-            $employee->last_name = $lastName;
-            $employee->emergency_contact = $this->emergency_contact;
-            $employee->email = $this->Email === '' ? null : $this->Email; // Temporarily assign null if empty
-            $employee->extension = $this->extension;
-            $employee->save();
-    
-            // Update title in emp_personal_infos table
-            if ($personalInfo) {
-                DB::table('emp_personal_infos')
-                    ->where('emp_id', $emp_id)
-                    ->update([
-                        'title' => $this->title,
-                        'nick_name' => $this->nickName
-                    ]);
-            }
-    
-            $this->currentEditingProfileId = null; // Exit edit mode after saving
-            session()->flash('message', 'Profile updated successfully!');
+            // Set form fields with employee and personal info data
+            $this->title = $personalInfo->title ?? '';  // Use relationship data
+            $this->nickName = $personalInfo->nick_name ?? '';
+            $this->gender = $employee->gender ?? '';
+            $this->name = $employee->first_name . ' ' . $employee->last_name ?? '';
+            $this->emergency_contact = $employee->emergency_contact ?? '';
+            $this->Email = $employee->email ?? '';
+            $this->extension = $employee->extension ?? '';
         }
-    } catch (\Exception $e) {
-        session()->flash('error', 'An error occurred while updating the profile. Please try again.');
     }
-}
+    
+
+    
+    public function saveProfile($emp_id)
+    {
+        try {
+            // Fetch employee details along with empPersonalInfo
+            $employee = EmployeeDetails::with('empPersonalInfo')->find($emp_id);
+    
+            if ($employee) {
+                // Split name into first_name and last_name if necessary
+                $nameParts = explode(' ', $this->name);
+                $firstName = $nameParts[0];
+                $lastName = isset($nameParts[1]) ? $nameParts[1] : '';
+    
+                // Check for duplicate email
+                if ($this->Email !== '') {
+                    $existingEmail = EmployeeDetails::where('email', $this->Email)
+                        ->where('emp_id', '!=', $emp_id) // Exclude the current employee
+                        ->first();
+    
+                    if ($existingEmail) {
+                        session()->flash('error', 'This email is already taken by another employee.');
+                        return;  // Stop further execution
+                    }
+                }
+    
+                // Check for duplicate mobile number (emergency_contact)
+                if ($this->emergency_contact !== '') {
+                    $existingMobile = EmployeeDetails::where('emergency_contact', $this->emergency_contact)
+                        ->where('emp_id', '!=', $emp_id) // Exclude the current employee
+                        ->first();
+    
+                    if ($existingMobile) {
+                        session()->flash('error', 'This mobile number is already taken by another employee.');
+                        return;  // Stop further execution
+                    }
+                }
+    
+                // Update EmployeeDetails fields
+                $employee->gender = $this->gender;
+                $employee->first_name = $firstName;
+                $employee->last_name = $lastName;
+                $employee->emergency_contact = $this->emergency_contact;
+                $employee->email = $this->Email === '' ? null : $this->Email; // Temporarily assign null if empty
+                $employee->extension = $this->extension;
+                $employee->save();
+    
+                // Update empPersonalInfo fields if it exists
+                $personalInfo = $employee->empPersonalInfo;
+                if ($personalInfo) {
+                    $personalInfo->title = $this->title;
+                    $personalInfo->nick_name = $this->nickName;
+                    $personalInfo->save();
+                } else {
+                    // Optionally, create new personal info if it doesn't exist
+                    EmpPersonalInfo::create([
+                        'emp_id' => $emp_id,
+                        'title' => $this->title,
+                        'nick_name' => $this->nickName,
+                    ]);
+                }
+    
+                $this->currentEditingProfileId = null; // Exit edit mode after saving
+                session()->flash('message', 'Profile updated successfully!');
+            }
+        } catch (\Exception $e) {
+            session()->flash('error', 'An error occurred while updating the profile. Please try again.');
+        }
+    }
+    
     
     
     
@@ -305,56 +314,56 @@ public function saveProfile($emp_id)
     {
         $this->currentEditingProfileId = null;// Cancel editing
     }
+    public $dob;
     public function editpersonalProfile($emp_id)
-{
-    $this->currentEditingPersonalProfileId = $emp_id; // Set current employee for editing
-
-    // Fetch employee details from EmployeeDetails table
-    $employee = EmployeeDetails::find($emp_id);
-    $personalInfo = DB::table('emp_personal_infos')->where('emp_id', $emp_id)->first();
-
+    {
+        $this->currentEditingPersonalProfileId = $emp_id; // Set current employee for editing
     
-    $this->editingPersonalProfile= true;
-  
-    if ($employee) {
-      
-       $this->wishMeOn = $personalInfo->date_of_birth ?? '';
-       $this->BloodGroup = $personalInfo->blood_group ?? '';
-       $this->MaritalStatus=$personalInfo->marital_status ?? '';
+        // Fetch employee details from EmployeeDetails table
+        $employee = EmployeeDetails::find($emp_id);
+        $personalInfo = DB::table('emp_personal_infos')->where('emp_id', $emp_id)->first();
     
+        $this->editingPersonalProfile = true;
+    
+        if ($employee && $personalInfo) {
+            $this->dob = $personalInfo->date_of_birth ?? '';
+            $this->BloodGroup = $personalInfo->blood_group ?? '';
+            $this->MaritalStatus = $personalInfo->marital_status ?? '';
+        }
     }
-}
-
     
     public function savepersonalProfile($emp_id)
     {
-        // Fetch employee details from EmployeeDetails table
-        $employee = EmployeeDetails::find($emp_id);
+        try {
+            // Fetch employee details from EmployeeDetails table
+            $employee = EmployeeDetails::find($emp_id);
+            $personalInfo = DB::table('emp_personal_infos')->where('emp_id', $emp_id)->first();
     
-        // Fetch personal info from emp_personal_infos table
-        $personalInfo = DB::table('emp_personal_infos')->where('emp_id', $emp_id)->first();
+            if ($employee && $personalInfo) {
+                // Update employee-related data if necessary (you can add more here)
+                $employee->save();
     
-        if ($employee) {
-            // Split name into first_name and last_name if necessary
-           
-            // Update EmployeeDetails fields
-      
-    
-            // Update title in emp_personal_infos table
-            if ($personalInfo) {
+                // Update personal info in emp_personal_infos table
                 DB::table('emp_personal_infos')
                     ->where('emp_id', $emp_id)
                     ->update([
-                        $personalInfo->date_of_birth = $this->wishMeOn,
-                        $personalInfo->blood_group = $this->BloodGroup,
-                        $personalInfo->marital_status = $this->MaritalStatus
+                        'date_of_birth' => $this->dob,
+                        'blood_group' => $this->BloodGroup,
+                        'marital_status' => $this->MaritalStatus,
                     ]);
+  
+                // Clear the editing mode
+                $this->currentEditingPersonalProfileId = null;
+               
             }
-    
-            $this->currentEditingPersonalProfileId = null; // Exit edit mode after saving
-            session()->flash('message', 'Profile updated successfully!');
+        } catch (\Exception $e) {
+            session()->flash('error', 'An error occurred while updating the profile. Please try again.');
         }
     }
+    
+    
+
+
     
  
     public function cancelpersonalProfile($emp_id)
@@ -396,7 +405,8 @@ public function saveProfile($emp_id)
          
            
     }
-    
+ 
+
 
     public function render()
 {
@@ -411,8 +421,7 @@ public function saveProfile($emp_id)
     $this->employeeIds = EmployeeDetails::where('company_id', $companyID)
         ->pluck('emp_id')
         ->toArray();
-      
-    // Fetch employee details based on IDs
+  
     $this->employees = EmployeeDetails::whereIn('emp_id', $this->employeeIds)->get();
           $this->employeess = EmployeeDetails::where('company_id', $companyID)
         ->orderBy('hire_date', 'desc') // Order by hire_date descending
@@ -422,7 +431,8 @@ public function saveProfile($emp_id)
     $this->employeeDetails = EmployeeDetails::with(['empBankDetails', 'empParentDetails', 'empPersonalInfo','empSpouseDetails'])
     ->where('emp_id', $this->employeeIds)
     ->first();
-  
+
+   
     // Ensure $peopleData is set
     $peopleData = $this->filteredPeoples ?:  $this->employeeIds;
 
@@ -430,6 +440,7 @@ public function saveProfile($emp_id)
         'employees' => $this->employees,
         'peopleData' => $peopleData,
         'records' => $this->records,
+        'personalInfo' => $this->personalInfo,
         'selectedPeople' => $this->selectedPeople, // Add selectedPeople to view data
         'cc_to' => $this->cc_to, // Add cc_to to view data
     ]);

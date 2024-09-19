@@ -51,4 +51,9 @@
         {
             return 'data:image/jpeg;base64,' . base64_encode($this->attributes['image']);
         }
+        public function employee()
+{
+    return $this->belongsTo(EmployeeDetails::class, 'emp_id', 'emp_id');
+}
+
     }

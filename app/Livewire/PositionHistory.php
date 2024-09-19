@@ -80,8 +80,10 @@ class PositionHistory extends Component
     
     public $showDetails = true;
     public $editingField = false;
+    
         public function editProfile($emp_id)
     {
+    
        
         $selectedPerson = EmployeeDetails::find($emp_id);
         $selectedPerson = $this->employeeDetails[$emp_id] ?? null;
@@ -164,48 +166,62 @@ class PositionHistory extends Component
             $this->editingJobProfile = false;
         }
     }
+ // Currently editing profile ID
+    
+    // Fetch employee details and personal info for editing
     public function editCompanyProfile($emp_id)
     {
-       
-        $selectedPerson = EmployeeDetails::find($emp_id);
-        $selectedPerson = $this->employeeDetails[$emp_id] ?? null;
-        $this->editingCompanyProfile= true;
-      
-        if ($selectedPerson) {
-            $this->companyname = $selectedPerson->company_name ?? '';
-         
-          
+        
+        $this->currentEditingPersonalCompanyProfileId = $emp_id; // Set current employee for editing
+        $employee = EmployeeDetails::find($emp_id);
+        $personalInfo = DB::table('emp_personal_infos')->where('emp_id', $emp_id)->first();
+        if ($employee && $personalInfo) {
+            $this->companyname = $personalInfo->company_name ?? '';  // Load current company name
+        } else {
+            $this->companyname = ''; // Fallback if no personal info is found
         }
-     
-       
-    }
-  
-
-    public function cancelCompanyProfile($emp_id)
-    {
-        // No need to query for $selectedPerson here
-        $selectedPerson = EmployeeDetails::find($emp_id);
-        $selectedPerson = $this->employeeDetails[$emp_id] ?? null;
-        if ($selectedPerson) {
-        $this->editingCompanyProfile= false;
-        }
-       
     }
     
+    // Save updated company profile
     public function saveCompanyProfile($emp_id)
     {
-        // No need to query for $selectedPerson here
-        $selectedPerson = EmployeeDetails::find($emp_id);
-        $selectedPerson = $this->employeeDetails[$emp_id] ?? null;
-    
-        if ($selectedPerson) {
-            $selectedPerson->company_name= $this->companyname;
-    
-            $selectedPerson->save();
-         
-            $this->editingCompanyProfile = false;
+     
+        try {
+            // Fetch employee details from EmployeeDetails table
+            $employee = EmployeeDetails::find($emp_id);
+        
+            // Fetch personal info from emp_personal_infos table
+            $personalInfo = DB::table('emp_personal_infos')->where('emp_id', $emp_id)->first();
+        
+            if ($employee) {
+       
+                $employee->save();
+        
+                // Update title in emp_personal_infos table
+                if ($personalInfo) {
+                    DB::table('emp_personal_infos')
+                        ->where('emp_id', $emp_id)
+                        ->update([
+                            'company_name' => $this->companyname,
+                            
+                        ]);
+                }
+        
+                $this->currentEditingPersonalCompanyProfileId = null; // Exit edit mode after saving
+                session()->flash('message', 'Profile updated successfully!');
+            }
+        } catch (\Exception $e) {
+            session()->flash('error', 'An error occurred while updating the profile. Please try again.');
         }
     }
+    
+    // Cancel editing company profile
+    public function cancelCompanyProfile()
+    {
+       
+        $this->currentEditingPersonalCompanyProfileId = null;  // Exit edit mode without saving
+    }
+    
     public function editLocationProfile($emp_id)
     {
        
@@ -376,7 +392,6 @@ class PositionHistory extends Component
         }
     }
     
-    
     public function closeMessage()
     {
         $this->showSuccessMessage = false;
@@ -413,6 +428,16 @@ class PositionHistory extends Component
         $this->cc_to = '';
     }
 
+    public function toggle()
+    {
+
+        $this->isNames = true;
+
+
+        $this->selectedPeopleNames = [];
+
+        $this->cc_to = '';
+    }
     public function closePeoples()
     {
         $this->isNames = false;
@@ -421,8 +446,8 @@ class PositionHistory extends Component
  
     
     
-    public $currentEditingProfileId = null; // Track the employee ID for editing profile
-    public $currentEditingPersonalProfileId = null; 
+    public $currentEditingCompanyProfileId = null; // Track the employee ID for editing profile
+    public $currentEditingPersonalCompanyProfileId = null; 
 
 
     
@@ -440,6 +465,7 @@ class PositionHistory extends Component
              ->pluck('company_id')
              ->first(); // Assuming company_id is unique for emp_id
  
+
          // Step 3: Fetch all emp_id values where company_id matches the logged-in user's company_id
          $this->employeeIds = EmployeeDetails::where('company_id', $companyID)
          ->orderBy('first_name')

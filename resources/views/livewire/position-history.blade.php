@@ -1,82 +1,5 @@
 <div style="color:#778899">
  <style>
-/* General Styles */
-.bg-white {
-    background-color: #ffffff;
-}
-
-.border-silver {
-    border: 1px solid silver;
-}
-
-.border-blue {
-    border: 1px solid blue;
-}
-
-.rounded {
-    border-radius: 5px;
-}
-
-.text-small {
-    font-size: 12px;
-}
-
-.text-blue {
-    color: blue;
-}
-
-.text-darkcyan {
-    color: darkcyan;
-}
-
-.margin-top-sm {
-    margin-top: 10px;
-}
-
-.margin-left-sm {
-    margin-left: 10px;
-}
-
-.margin-right-sm {
-    margin-right: -5px;
-}
-
-.padding-xs {
-    padding: 0 5px;
-}
-
-.align-items-center {
-    align-items: center;
-}
-
-.btn-add {
-    border-radius: 5px;
-    border: 1px solid blue;
-    height: 28px;
-}
-
-.btn-add p {
-    color: blue;
-}
-
-.btn-edit {
-    cursor: pointer;
-    font-size: 12px;
-}
-
-.column {
-    display: flex;
-    justify-content: space-between;
-}
-
-.card-content {
-    height: auto;
-}
-
-.card-header p {
-    font-size: 12px;
-    font-weight: 600;
-}
 
 
     </style>
@@ -269,262 +192,435 @@
 
 @if($employee)
 <div class="container-fluid">
-    <div class="row justify-content-center margin-top-sm">
+    <div class="row justify-content-center" style="margin-top:10px">
+        <div class="col-lg-3 ">
+            <div class="bg-white p-3 mb-3" style="border-radius: 5px; border: 1px solid silver;height:auto">
+             <div class="column" style="display:flex">
+             <p style="font-size:12px;font-weight:600">Division</p>
+          
+    <button type="button" class="btn btn-sm ml-auto" style="border-radius: 5px; border: 1px solid blue;height:28px;margin-top:-5px;margin-left:10px"><p style="color:blue">add</p></button>
 
-        <!-- Division Section -->
-        <div class="col-lg-3">
-            <div class="bg-white p-3 mb-3 rounded border-silver card-content">
-                <div class="column">
-                    <p class="card-header">Division</p>
-                    <button type="button" class="btn btn-sm btn-add">
-                        <p class="m-0">add</p>
-                    </button>
-                </div>
-                <div class="column">
-                    <div class="row mx-n2">
-                        <div class="col-auto padding-xs">
-                            @if ($editingProfile)
-                                <div class="col-md-12 mb-3 text-black text-small">
-                                    <input type="text" class="form-control text-small" wire:model="department" placeholder="Department">
-                                </div>
-                            @else
-                                <div class="row m-0 margin-top-sm">
-                                    <div class="col-md-3 mb-3 text-black text-small">
-                                        {{$employeeDetails[$emp_id]->department ?? '-'}}
-                                    </div>
-                                </div>
-                            @endif
-                            <div class="col-auto padding-xs">
-                                <p class="text-small m-0">14 Apr 2023</p>
-                            </div>
+
+             </div>
+             <div class="column" style="display: flex;">
+             <div class="row" style="margin-right: -5px; margin-left: -5px;">
+    <div class="col-auto" style="padding-right: 5px; padding-left: 5px;">
+ 
+          @if ($editingProfile )
+          <div class="col-md-12 mb-3" style="color: black; font-size: 12px;"> 
+          <input style="font-size:12px" type="text" class="form-control" wire:model="division" placeholder="Division">
                         </div>
+                    
+                    @else
+                    <div class="row m-0" style="margin-top: 10px;">
+                        <div class="col-md-3 mb-3" style="color: black; font-size: 12px;">{{$employeeDetails[$emp_id]->department??'-'}}</div>
+                       
                     </div>
-                    <i>
-                        @if($editingProfile)
-                            <i wire:click="cancelProfile('{{ $emp_id }}')" class="fas fa-times me-3 btn-edit"></i>
-                            <i wire:click="saveProfile('{{ $emp_id }}')" class="fa fa-save btn-edit"></i>
-                        @else
-                            <i wire:click="editProfile('{{ $emp_id }}')" class="fas fa-edit ml-auto btn-edit"></i>
-                        @endif
-                    </i>
-                </div>
-            </div>
-        </div>
-
-        <!-- Cost Center Section -->
-        <div class="col-lg-3">
-            <div class="bg-white p-3 mb-3 rounded border-silver card-content">
-                <div class="column">
-                    <p class="card-header">CostCenter</p>
-                    <button type="button" class="btn btn-sm btn-add">
-                        <p class="m-0">add</p>
-                    </button>
-                </div>
-                <div class="column mt-1">
-                    <div class="row mx-n2 mt-1">
-                        <div class="col-auto padding-xs">
-                            <p class="text-small text-darkcyan m-0">Social App</p>
-                        </div>
-                        <div class="col-auto padding-xs">
-                            <p class="text-small m-0">14 Apr 2023</p>
-                        </div>
-                    </div>
-                    <i class="fas fa-edit ml-auto btn-edit"></i>
-                </div>
-            </div>
-        </div>
-
-        <!-- Grade Section -->
-        <div class="col-lg-3">
-            <div class="bg-white p-3 mb-3 rounded border-silver card-content">
-                <div class="column">
-                    <p class="card-header">Grade</p>
-                    <button type="button" class="btn btn-sm btn-add">
-                        <p class="m-0">add</p>
-                    </button>
-                </div>
-                <div class="column">
-                    <!-- Add content for Grade section if needed -->
-                </div>
-            </div>
-        </div>
-
-        <!-- Designation Section -->
-        <div class="col-lg-3">
-            <div class="bg-white p-3 mb-3 rounded border-silver card-content">
-                <div class="column">
-                    <p class="card-header">Designation</p>
-                    <button type="button" class="btn btn-sm btn-add">
-                        <p class="m-0">add</p>
-                    </button>
-                </div>
-                <div class="column">
-                    <div class="row mx-n2">
-                        <div class="col-auto padding-xs">
-                            @if ($editingPersonalProfile)
-                                <div class="col-md-12 mb-3 text-black text-small">
-                                    <input type="text" class="form-control text-small" wire:model="Designation" placeholder="Designation">
-                                </div>
-                            @else
-                                <div class="row m-0 margin-top-sm">
-                                    <div class="col-md-10 mb-3 text-black text-small">
-                                        {{$employeeDetails[$emp_id]->job_title ?? '-'}}
-                                    </div>
-                                </div>
-                            @endif
-                            <div class="col-auto padding-xs">
-                                <p class="text-small m-0">14 Apr 2023</p>
-                            </div>
-                        </div>
-                    </div>
-                    <i>
-                        @if($editingPersonalProfile)
-                            <i wire:click="cancelpersonalProfile('{{ $emp_id }}')" class="fas fa-times me-3 btn-edit"></i>
-                            <i wire:click="savepersonalProfile('{{ $emp_id }}')" class="fa fa-save btn-edit"></i>
-                        @else
-                            <i wire:click="editpersonalProfile('{{ $emp_id }}')" class="fas fa-edit ml-auto btn-edit"></i>
-                        @endif
-                    </i>
-                </div>
-            </div>
-        </div>
-
+                    @endif
+                    <div class="col-auto" style="padding-right: 5px; padding-left: 5px;">
+        <p style="font-size: 12px; margin-bottom: 0;">14 Apr 2023</p>
+    </div>
     </div>
 
-    <div class="row justify-content-center margin-top-sm">
 
-        <!-- Location Section -->
-        <div class="col-lg-3">
-            <div class="bg-white p-3 mb-3 rounded border-silver card-content">
-                <div class="column">
-                    <p class="card-header">Location</p>
-                    <button type="button" class="btn btn-sm btn-add">
-                        <p class="m-0">add</p>
-                    </button>
-                </div>
-                <div class="column">
-                    <div class="row mx-n2">
-                        <div class="col-auto padding-xs">
-                            @if ($editingLocationProfile)
-                                <div class="col-md-12 mb-3 text-black text-small">
-                                    <input type="text" class="form-control text-small" wire:model="Location" placeholder="Location">
-                                </div>
-                            @else
-                                <div class="row m-0 margin-top-sm">
-                                    <div class="col-md-3 mb-3 text-black text-small">
-                                        {{$employeeDetails[$emp_id]->job_location ?? '-'}}
-                                    </div>
-                                </div>
-                            @endif
-                            <div class="col-auto padding-xs">
-                                <p class="text-small m-0">14 Apr 2023</p>
-                            </div>
-                        </div>
-                    </div>
-                    <i>
-                        @if($editingLocationProfile)
-                            <i wire:click="cancelLocationProfile('{{ $emp_id }}')" class="fas fa-times me-3 btn-edit"></i>
-                            <i wire:click="saveLocationProfile('{{ $emp_id }}')" class="fa fa-save btn-edit"></i>
-                        @else
-                            <i wire:click="editLocationProfile('{{ $emp_id }}')" class="fas fa-edit ml-auto btn-edit"></i>
-                        @endif
-                    </i>
-                </div>
+</div>
+<i>                @if($editingProfile )
+                    <i wire:click="cancelProfile('{{ $emp_id }}')" class="fas fa-times me-3" style="cursor: pointer;"></i>
+                    <i wire:click="saveProfile('{{ $emp_id }}')" class="fa fa-save" style="cursor: pointer;"></i>
+                @else
+                    <i wire:click="editProfile('{{ $emp_id }}')" class="fas fa-edit ml-auto" style="cursor: pointer;"></i>
+                @endif
+            </i> 
+
+             
+           
+
+         
+
+
+             </div>
+             
             </div>
+          
         </div>
+        <div class="col-lg-3 ">
+            <div class="bg-white p-3 mb-3" style="border-radius: 5px; border: 1px solid silver;height:auto">
+             <div class="column" style="display:flex">
+             <p style="font-size:12px;font-weight:600">CostCenter</p>
+        
+    <button type="button" class="btn btn-sm ml-auto" style="border-radius: 5px; border: 1px solid blue; height: 28px; margin-top: -5px;margin-left:10px">
+        <p class="m-0" style="color: blue;">add</p>
+    </button>
 
-        <!-- Department Section -->
-        <div class="col-lg-3">
-            <div class="bg-white p-3 mb-3 rounded border-silver card-content">
-                <div class="column">
-                    <p class="card-header">Department</p>
-                    <button type="button" class="btn btn-sm btn-add">
-                        <p class="m-0">add</p>
-                    </button>
-                </div>
-                <div class="column">
-                    <div class="row mx-n2">
-                        <div class="col-auto padding-xs">
-                            @if ($editingProfile)
-                                <div class="col-md-12 mb-3 text-black text-small">
-                                    <input type="text" class="form-control text-small" wire:model="department" placeholder="Department">
-                                </div>
-                            @else
-                                <div class="row m-0 margin-top-sm">
-                                    <div class="col-md-3 mb-3 text-black text-small">
-                                        {{$employeeDetails[$emp_id]->department ?? '-'}}
-                                    </div>
-                                </div>
-                            @endif
-                            <div class="col-auto padding-xs">
-                                <p class="text-small m-0">14 Apr 2023</p>
-                            </div>
-                        </div>
-                    </div>
-                    <i>
-                        @if($editingProfile)
-                            <i wire:click="cancelProfile('{{ $emp_id }}')" class="fas fa-times me-3 btn-edit"></i>
-                            <i wire:click="saveProfile('{{ $emp_id }}')" class="fa fa-save btn-edit"></i>
-                        @else
-                            <i wire:click="editProfile('{{ $emp_id }}')" class="fas fa-edit ml-auto btn-edit"></i>
-                        @endif
-                    </i>
-                </div>
+
+
+
+             </div>
+             <div class="column" style="display: flex;">
+             <div class="row" style="margin-right: -5px; margin-left: -5px;">
+    <div class="col-auto" style="padding-right: 5px; padding-left: 5px;">
+        <p style="font-size: 12px; color: darkcyan; margin-bottom: 0;">Social App</p>
+    </div>
+    <div class="col-auto" style="padding-right: 5px; padding-left: 5px;">
+        <p style="font-size: 12px; margin-bottom: 0;">14 Apr 2023</p>
+    </div>
+</div>
+
+             
+         
+             <i  class="fas fa-edit ml-auto" style="cursor: pointer;font-size:12px"></i>
+
+
+             </div>
+             
             </div>
+          
         </div>
+        <div class="col-lg-3 ">
+            <div class="bg-white p-3 mb-3" style="border-radius: 5px; border: 1px solid silver;height:auto">
+             <div class="column" style="display:flex">
+             <p style="font-size:12px;font-weight:600">Grade</p>
+        
+    <button type="button" class="btn btn-sm ml-auto" style="border-radius: 5px; border: 1px solid blue; height: 28px; margin-top: -5px;margin-left:10px;">
+        <p class="m-0" style="color: blue;">add</p>
+    </button>
 
-        <!-- Job Mode Section -->
-        <div class="col-lg-3">
-            <div class="bg-white p-3 mb-3 rounded border-silver card-content">
-                <div class="column">
-                    <p class="card-header">Job Mode</p>
-                    <button type="button" class="btn btn-sm btn-add">
-                        <p class="m-0">add</p>
-                    </button>
-                </div>
-                <div class="column">
-                    <div class="row mx-n2">
-                        <div class="col-auto padding-xs">
-                            @if ($editingJobProfile)
-                                <div class="col-md-12 mb-3 text-black text-small">
-                                    <input type="text" class="form-control text-small" wire:model="JobMode" placeholder="Job Mode">
-                                </div>
-                            @else
-                                <div class="row m-0 margin-top-sm">
-                                    <div class="col-md-3 mb-3 text-black text-small">
-                                        {{$employeeDetails[$emp_id]->job_mode ?? '-'}}
-                                    </div>
-                                </div>
-                            @endif
-                            <div class="col-auto padding-xs">
-                                <p class="text-small m-0">14 Apr 2023</p>
-                            </div>
+
+
+
+
+
+             </div>
+        </div>
+        </div>
+        <div class="col-lg-3 ">
+            <div class="bg-white p-3 mb-3" style="border-radius: 5px; border: 1px solid silver;height:auto">
+             <div class="column" style="display:flex">
+             <p style="font-size:12px;font-weight:600">Designation</p>
+          
+    <button type="button" class="btn btn-sm ml-auto" style="border-radius: 5px; border: 1px solid blue;height:28px;margin-left:10px;;margin-top:-5px"><p style="color:blue">add</p></button>
+
+
+             </div>
+             <div class="column" style="display: flex;">
+             <div class="row" style="margin-right: -5px; margin-left: -5px;">
+    <div class="col-auto" style="padding-right: 5px; padding-left: 5px;">
+ 
+          @if ($editingPersonalProfile )
+          <div class="col-md-12 mb-3" style="color: black; font-size: 12px;"> 
+          <input style="font-size:12px" type="text" class="form-control" wire:model="Designation" placeholder="Designation">
                         </div>
+                    
+                    @else
+                    <div class="row m-0" style="margin-top: 10px;">
+                        <div class="col-md-10 mb-3" style="color: black; font-size: 12px;">{{$employeeDetails[$emp_id]->job_title ??'-'}}</div>
+                       
                     </div>
-                    <i>
-                        @if($editingJobProfile)
-                            <i wire:click="cancelJobProfile('{{ $emp_id }}')" class="fas fa-times me-3 btn-edit"></i>
-                            <i wire:click="saveJobProfile('{{ $emp_id }}')" class="fa fa-save btn-edit"></i>
-                        @else
-                            <i wire:click="editJobProfile('{{ $emp_id }}')" class="fas fa-edit ml-auto btn-edit"></i>
-                        @endif
-                    </i>
-                </div>
-            </div>
-        </div>
+                    @endif
+                    <div class="col-auto" style="padding-right: 5px; padding-left: 5px;">
+        <p style="font-size: 12px; margin-bottom: 0;">14 Apr 2023</p>
+    </div>
+    </div>
 
+
+</div>
+<i>                @if($editingPersonalProfile )
+                    <i wire:click="cancelpersonalProfile('{{ $emp_id }}')" class="fas fa-times me-3" style="cursor: pointer;"></i>
+                    <i wire:click="savepersonalProfile('{{ $emp_id }}')" class="fa fa-save" style="cursor: pointer;"></i>
+                @else
+                    <i wire:click="editpersonalProfile('{{ $emp_id }}')" class="fas fa-edit ml-auto" style="cursor: pointer;"></i>
+                @endif
+            </i> 
+
+             
+           
+
+         
+
+
+             </div>
+            </div>
+          
+        </div>
+    </div>
+    <div class="row justify-content-center" style="margin-top:10px">
+        <div class="col-lg-3 ">
+            <div class="bg-white p-3 mb-3" style="border-radius: 5px; border: 1px solid silver;height:auto">
+             <div class="column" style="display:flex">
+             <p style="font-size:12px;font-weight:600">Location</p>
+          
+    <button type="button" class="btn btn-sm ml-auto" style="border-radius: 5px; border: 1px solid blue;height:28px;margin-left:10px;;margin-top:-5px"><p style="color:blue">add</p></button>
+
+
+             </div>
+             <div class="column" style="display: flex;">
+             <div class="row" style="margin-right: -5px; margin-left: -5px;">
+    <div class="col-auto" style="padding-right: 5px; padding-left: 5px;">
+ 
+          @if ($editingLocationProfile )
+          <div class="col-md-12 mb-3" style="color: black; font-size: 12px;"> 
+          <input style="font-size:12px" type="text" class="form-control" wire:model="Location" placeholder="Location">
+                        </div>
+                    
+                    @else
+                    <div class="row m-0" style="margin-top: 10px;">
+                        <div class="col-md-3 mb-3" style="color: black; font-size: 12px;">{{$employeeDetails[$emp_id]->job_location??'-'}}</div>
+                       
+                    </div>
+                    @endif
+                    <div class="col-auto" style="padding-right: 5px; padding-left: 5px;">
+        <p style="font-size: 12px; margin-bottom: 0;">14 Apr 2023</p>
+    </div>
+    </div>
+
+
+</div>
+<i>                @if($editingLocationProfile )
+                    <i wire:click="cancelLocationProfile('{{ $emp_id }}')" class="fas fa-times me-3" style="cursor: pointer;"></i>
+                    <i wire:click="saveLocationProfile('{{ $emp_id }}')" class="fa fa-save" style="cursor: pointer;"></i>
+                @else
+                    <i wire:click="editLocationProfile('{{ $emp_id }}')" class="fas fa-edit ml-auto" style="cursor: pointer;"></i>
+                @endif
+            </i> 
+
+             
+           
+
+         
+
+
+             </div>
+             
+            </div>
+          
+        </div>
+        <div class="col-lg-3">
+            <div class="bg-white p-3 mb-3" style="border-radius: 5px; border: 1px solid silver;height:auto">
+             <div class="column" style="display:flex">
+             <p style="font-size:12px;font-weight:600">Department</p>
+        
+    <button type="button" class="btn btn-sm ml-auto" style="border-radius: 5px; border: 1px solid blue; height: 28px; margin-left:10px;;margin-top:-5px">
+        <p class="m-0" style="color: blue;">add</p>
+    </button>
+
+
+
+
+             </div>
+             <div class="column" style="display: flex;">
+             <div class="row" style="margin-right: -5px; margin-left: -5px;">
+    <div class="col-auto" style="padding-right: 5px; padding-left: 5px;">
+ 
+          @if ($editingProfile )
+          <div class="col-md-12 mb-3" style="color: black; font-size: 12px;"> 
+          <input style="font-size:12px" type="text" class="form-control" wire:model="department" placeholder="Department">
+                        </div>
+                    
+                    @else
+                    <div class="row m-0" style="margin-top: 10px;">
+                        <div class="col-md-3 mb-3" style="color: black; font-size: 12px;">{{$employeeDetails[$emp_id]->department ??'-'}}</div>
+                       
+                    </div>
+                    @endif
+                    <div class="col-auto" style="padding-right: 5px; padding-left: 5px;">
+        <p style="font-size: 12px; margin-bottom: 0;">14 Apr 2023</p>
+    </div>
+    </div>
+
+
+</div>
+<i>                @if($editingProfile )
+                    <i wire:click="cancelProfile('{{ $emp_id }}')" class="fas fa-times me-3" style="cursor: pointer;"></i>
+                    <i wire:click="saveProfile('{{ $emp_id }}')" class="fa fa-save" style="cursor: pointer;"></i>
+                @else
+                    <i wire:click="editProfile('{{ $emp_id }}')" class="fas fa-edit ml-auto" style="cursor: pointer;"></i>
+                @endif
+            </i> 
+
+             
+           
+
+         
+
+
+             </div>
+            </div>
+          
+        </div>
+        <div class="col-lg-3 ">
+            <div class="bg-white p-3 mb-3" style="border-radius: 5px; border: 1px solid silver;height:auto">
+             <div class="column" style="display:flex">
+             <p style="font-size:12px;font-weight:600">Job Mode</p>
+        
+    <button type="button" class="btn btn-sm ml-auto align-items-end mb-3" style="border-radius: 5px; border: 1px solid blue; height: 28px; margin-left: 10px;;margin-top:-5px">
+        <p class="m-0" style="color: blue;">add</p>
+    </button>
+
+
+
+
+             </div>
+             <div class="column" style="display: flex;">
+             <div class="row" style="margin-right: -5px; margin-left: -5px;">
+    <div class="col-auto" style="padding-right: 5px; padding-left: 5px;">
+ 
+          @if ($editingJobProfile )
+          <div class="col-md-12 mb-3" style="color: black; font-size: 12px;"> 
+          <input style="font-size:12px" type="text" class="form-control" wire:model="Jobmode" placeholder="Jobmode">
+                        </div>
+                    
+                    @else
+                    <div class="row m-0" style="margin-top: 10px;">
+                        <div class="col-md-3 mb-3" style="color: black; font-size: 12px;">{{$employeeDetails[$emp_id]->job_mode ?? '-'}}</div>
+                       
+                    </div>
+                    @endif
+                    <div class="col-auto" style="padding-right: 5px; padding-left: 5px;">
+        <p style="font-size: 12px; margin-bottom: 0;">14 Apr 2023</p>
+    </div>
+    </div>
+
+
+</div>
+<i>                @if($editingJobProfile )
+                    <i wire:click="cancelJobProfile('{{ $emp_id }}')" class="fas fa-times me-3" style="cursor: pointer;"></i>
+                    <i wire:click="saveJobProfile('{{ $emp_id }}')" class="fa fa-save" style="cursor: pointer;"></i>
+                @else
+                    <i wire:click="editJobProfile('{{ $emp_id }}')" class="fas fa-edit ml-auto" style="cursor: pointer;"></i>
+                @endif
+            </i> 
+
+             
+           
+
+         
+
+
+             </div>
+             
+            </div>
+          
+        </div>
+        <div class="col-lg-3">
+            <div class="bg-white p-3 mb-3" style="border-radius: 5px; border: 1px solid silver;height:auto">
+             <div class="column" style="display:flex">
+             <p style="font-size:12px;font-weight:600">Resident</p>
+          
+    <button type="button" class="btn btn-sm ml-auto" style="border-radius: 5px; border: 1px solid blue;height:28px;margin-left:10px;margin-top:-5px"><p style="color:blue">add</p></button>
+
+
+             </div>
+          
+             
+            </div>
+          
+        </div>
+    </div>
+    <div class="row justify-content-center " style="margin-top:10px">
+        <div class="col-lg-3  ">
+            <div class="bg-white p-3 mb-3" style="border-radius: 5px; border: 1px solid silver;height:auto">
+             <div class="column" style="display:flex">
+             <p style="font-size:12px;font-weight:600">Sub Department</p>
+          
+    <button type="button" class="btn btn-sm ml-auto" style="border-radius: 5px; border: 1px solid blue;height:28px;margin-left:10px;;margin-top:-5px"><p style="color:blue">add</p></button>
+
+
+             </div>
+             <div class="column" style="display: flex;">
+             <div class="row" style="margin-right: -5px; margin-left: -5px;">
+    <div class="col-auto" style="padding-right: 5px; padding-left: 5px;">
+        <p style="font-size: 12px; color: darkcyan; margin-bottom: 0;">{{$employeeDetails[$emp_id]->Department ??'-'}}</p>
+    </div>
+    <div class="col-auto" style="padding-right: 5px; padding-left: 5px;">
+        <p style="font-size: 12px; margin-bottom: 0;">14 Apr 2023</p>
+    </div>
+</div>
+
+             
+           
+             <i  class="fas fa-edit ml-auto" style="cursor: pointer;font-size:12px"></i>
+
+
+             </div>
+             
+            </div>
+          
+        </div>
+        <div class="col-lg-3 ">
+            <div class="bg-white p-3 mb-3" style="border-radius: 5px; border: 1px solid silver;height:auto">
+             <div class="column" style="display:flex">
+             <p style="font-size:12px;font-weight:600">Company Name</p>
+        
+    <button type="button" class="btn btn-sm ml-auto" style="border-radius: 5px; border: 1px solid blue; height: 28px; margin-left:10px;;margin-top:-5px"">
+        <p class="m-0" style="color: blue;">add</p>
+    </button>
+
+
+
+
+             </div>
+             <div class="column" style="display: flex;">
+             <div class="row" style="margin-right: -5px; margin-left: -5px;">
+    <div class="col-auto" style="padding-right: 5px; padding-left: 5px;">
+    @if($currentEditingPersonalCompanyProfileId == $employee->emp_id)
+    <div class="col-md-12 mb-3" style="color: black; font-size: 12px;"> 
+        <input style="font-size: 12px" type="text" class="form-control" wire:model="companyname" placeholder="Company Name">
+    </div>
+@else
+    <div class="row m-0" style="margin-top: 10px;">
+      
+
+            <div class="col-md-3 mb-3" style="color: black; font-size: 12px;">
+                {{ $employee->companyname ?? '-' }}
+            </div>
+       
+
+        
+    </div>
+@endif
+
+                    <div class="col-auto" style="padding-right: 5px; padding-left: 5px;">
+        <p style="font-size: 12px; margin-bottom: 0;">14 Apr 2023</p>
+    </div>
+    </div>
+
+
+</div>
+<i>                @if($currentEditingPersonalCompanyProfileId == $employee->emp_id)
+                    <i wire:click="cancelCompanyProfile('{{ $employee->emp_id }}')" class="fas fa-times me-3" style="cursor: pointer;"></i>
+                    <i wire:click="saveCompanyProfile('{{ $employee->emp_id }}')" class="fa fa-save" style="cursor: pointer;"></i>
+                @else
+                    <i wire:click="editCompanyProfile('{{ $employee->emp_id }}')" class="fas fa-edit ml-auto" style="cursor: pointer;"></i>
+                @endif
+            </i> 
+
+             
+           
+
+         
+
+
+             </div>
+             
+             
+            </div>
+          
+        </div>
+        <div class="col-lg-3  ">
+            </div>
+            <div class="col-lg-3 ">
+            </div>
     </div>
 </div>
 
 
-
-          
+            </div>
             <div class="col-md-2"></div>
         </div>
 
        
     
-         
+            </div>
             <div class="col-md-2"></div>
         </div>
 
