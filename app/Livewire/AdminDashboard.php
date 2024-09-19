@@ -24,16 +24,20 @@ class AdminDashboard extends Component
     public $femaleCount = 0;
     public $employeeCountsByLocation;
     public $loginEmployee;
+    public $activeTab = 'summary';
+    public function setActiveTab($tab)
+    {
+            $this->activeTab = $tab;
+    }
 
 
     public function mount()
     {
         try {
-           
+            $this->setActiveTab($this->tab);
             $employeeId = auth()->guard('hr')->user()->emp_id;
             $this->loginEmployee = Hr::where('emp_id',$employeeId)->select('emp_id', 'employee_name')->first();
             $companyId = Auth::user()->company_id;
-
             // Count total employees
             $this->totalEmployeeCount = EmployeeDetails::where('company_id', $companyId)->count();
 
