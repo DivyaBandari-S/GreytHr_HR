@@ -1,5 +1,6 @@
 <?php
 
+use App\Livewire\AdminDashboard;
 use App\Livewire\Dashboard;
 use App\Livewire\HrLogin;
 use App\Livewire\HomeDashboard;

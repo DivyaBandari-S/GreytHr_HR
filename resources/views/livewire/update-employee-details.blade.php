@@ -85,14 +85,25 @@
                         <tr>
                             <td class="whitespace-nowrap">{{ $counter++ }}</td>
                             <td>
-                                @if(trim($employee->image))
-                                <img src="{{ asset('storage/' . trim($employee->image)) }}" style="height:50px;width:50px" class="img-thumbnail" />
-                                @else
-                                @php
-                                $defaultImageUrl = "https://th.bing.com/th/id/OIP.vwP9cMIiXIK1N3mPuqvxSgHaHa?w=1024&h=1024&rs=1&pid=ImgDetMain";
-                                @endphp
-                                <img src="{{ $defaultImageUrl }}" width="50" height="50" class="img-thumbnail" />
-                                @endif
+                                @if(strlen($employee->image)>10)
+                                <!-- <p>{{strlen($employee->image)}}</p> -->
+                                <img src="data:image/jpeg;base64,{{ $employee->image }}" alt=" image" style='height:50px;width:50px' class="img-thumbnail" />
+                                @elseif(strlen($employee->image)<=10 || $employee->image==Null )
+                                    @if($employee->gender=='Male')
+                                    <div class="employee-profile-image-container mb-2" >
+
+                                        <img src="{{ asset('images/male-default.png') }}" class="employee-profile-image-placeholder" style='height:50px;width:50px' alt="Default Image">
+                                    </div>
+                                    @elseif($employee->gender=='Female')
+                                    <div class="employee-profile-image-container mb-2" >
+                                        <img src="{{ asset('images/female-default.jpg') }}" class="employee-profile-image-placeholder" style='height:50px;width:50px' alt="Default Image">
+                                    </div>
+                                    @else
+                                    <div class="employee-profile-image-container mb-2" >
+                                        <img src="{{ asset('images/user.jpg') }}" class="employee-profile-image-placeholder" style='height:50px;width:50px' alt="Default Image">
+                                    </div>
+                                    @endif
+                                    @endif
 
                             </td>
                             <td class="whitespace-nowrapp">{{ $employee->emp_id }}</td>
@@ -110,7 +121,7 @@
                             <td>
                                 <div style="display:flex;flex-direction:row;gap:5px;border:0px;align-items:center;justify-content:center">
                                     <div style="background-color: #306cc6;border-radius:5px;">
-                                        <a href="{{ route('add-employee-details', ['emp_id' => $employee->encrypted_emp_id]) }}" class="btn btn  btn-xs" >
+                                        <a href="{{ route('add-employee-details', ['emp_id' => $employee->encrypted_emp_id]) }}" class="btn btn  btn-xs">
                                             <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> <i style="color:#f0f4f8" class='far fa-edit'></i>
                                         </a>
                                     </div>
@@ -118,12 +129,12 @@
                                         @if ($employee->status == 1)
                                         <button class="btn btn-danger " wire:click="deleteEmp('{{ $employee->emp_id }}')">
 
-                                        <i class="fa-solid fa-trash-can"></i>
+                                            <i class="fa-solid fa-trash-can"></i>
                                         </button>
                                         @else
                                         <button class="btn btn-danger " wire:click="deleteEmp('{{ $employee->emp_id }}')" style="background-color: lightcoral;">
 
-                                        <i class="fa-solid fa-trash-can"></i>
+                                            <i class="fa-solid fa-trash-can"></i>
                                         </button>
                                         @endif
                                     </div>
