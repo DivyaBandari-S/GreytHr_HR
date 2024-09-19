@@ -1,7 +1,8 @@
 <div>
 
     <div>
-    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
         <style>
              .attendance-overview-help {
                 position: relative;
@@ -12,6 +13,7 @@
                 padding: 10px; /* Add padding if needed */
                 margin: 20px 10px; /* Add margin if needed */
                 background-color: #f3faff; /* Set background color if needed */
+                font-size: 12px;
             }
             .hide-attendance-help {
                 margin-top:40px;
@@ -80,15 +82,15 @@
        
                 <div class="col-sm-12">
                     
-                        <h4 style="text-align:left;font-weight:600;">Access Card Details
-                                                        <button style="border: 1px solid #0000FF; color: #0000FF; float:right; background-color: transparent; padding: 5px; border-radius: 5px; font-size: 13px;"wire:click="downloadexcelForNotAssigned">
+                        <h4 style="text-align:left;font-weight:600;font-size:14px;">Access Card Details
+                                                        <button style="border: 1px solid #0000FF; color: #0000FF; float:right; background-color: transparent; padding: 5px; border-radius: 5px; font-size: 13px;margin-top:-10px;"wire:click="downloadexcelForNotAssigned">
                                                            <i class="fas fa-download"></i>  Download  
                                                         </button>
                         </h4>
                 </div>
                 <div class="row"style="justify-content:space-between;">
                             <div class="col-sm-6 mb-3" style="border: 1px solid #dddddd; padding: 5px; border-radius: 5px;">
-                                        <h4 style="text-align:left; font-weight:600; color: rgba(103,122,142,1);">Not Assigned</h4>
+                                        <h4 style="text-align:left; font-weight:600; color: rgba(103,122,142,1);font-size:14px;">Not Assigned</h4>
                     <!-- Table for the first container goes here -->
                                                     <div style="overflow-y:auto;max-height:210px;overflow-x:hidden;">
                                                         <table class="table">
@@ -96,11 +98,11 @@
                                                             @foreach($totalemployees as $te)    
                                                             <tr>
                                                                 <td>
-                                                                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQNWoZhTRyuOwc2TBBgSHMzxK1Oj4KQInvuMBCSGeMJCNnGoRaH_RExpbQ5RaMJPxibMjQ&usqp=CAU" alt="User Icon" style="width: 50px; height: 50px; border-radius: 50%;">
+                                                                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQNWoZhTRyuOwc2TBBgSHMzxK1Oj4KQInvuMBCSGeMJCNnGoRaH_RExpbQ5RaMJPxibMjQ&usqp=CAU" alt="User Icon" style="width: 30px; height: 30px; border-radius: 50%;margin-top:10px;">
     
                                                                 </td>
                                                                 <td style="vertical-align: middle;padding-right:220px;">
-                                                                    <span style="color: rgba(103,122,142,1);">{{ ucfirst($te->first_name)}}&nbsp;{{ucfirst($te->last_name)}}  <br/>({{$te->emp_id}})</span><!-- Replace with the actual name -->
+                                                                    <span style="color: rgba(103,122,142,1);font-size:10px;">{{ ucwords(strtolower($te->first_name))}}&nbsp;{{ucwords(strtolower($te->last_name))}}  <br/>({{$te->emp_id}})</span><!-- Replace with the actual name -->
                                                                 </td>
                         
                                                             </tr>   
@@ -112,9 +114,9 @@
                             </div>
                 <!-- Second Container -->
                             <div class="col-sm-6"style="border: 1px solid #dddddd; padding: 5px; border-radius: 5px;margin-right:-40px;">
-                                <h4 style="text-align:left; font-weight:600;color: rgba(103,122,142,1);border-bottom: 1px solid #dddddd; padding-bottom: 5px;">Validity Expired</h4>
+                                <h4 style="text-align:left; font-weight:600;color: rgba(103,122,142,1);border-bottom: 1px solid #dddddd; padding-bottom: 5px;font-size:14px;">Validity Expired</h4>
                                 <div style="text-align: center; margin-top: 100px;">
-                                    <p style="color: rgba(103,122,142,1);">No records found</p>
+                                    <p style="color: rgba(103,122,142,1);font-size:14px;">No records found</p>
                                 </div>
                                 <!-- Content for the second container goes here -->
                             </div>
@@ -127,7 +129,7 @@
                 
                 <div class="row"style="justify-content:space-between;">
                 <div class="col-sm-6 mb-3" style="border: 1px solid #dddddd; padding: 5px; border-radius: 5px;">
-                                        <h4 style="text-align:left; font-weight:600; color: rgba(103,122,142,1);">Who's In?</h4>
+                                        <h6 style="text-align:left; font-weight:600; color: rgba(103,122,142,1);">Who's In?</h6>
                     <!-- Table for the first container goes here -->
                            <div style="display:flex;flex-direction:row;justify-content:space-between">
                                                         <div class="input-group" style="width: 200px;">
@@ -162,13 +164,13 @@
                                 <li><p style="color:rgba(103,122,142,1);">On Time:<span style="font-weight:bold;color:black;margin-left: 5px;">{{$earlyemployeescount}}</span></p></li>
                                 <li><p style="color:rgba(103,122,142,1);">Late In:<span style="font-weight:bold;color:black;margin-left: 5px;">{{$lateemployeescount}}</span></p></li>
                            </ul>
-                           <canvas id="myChart" style="width:100%;max-width:600px"></canvas>                   
+                                             
                 </div>
                 <div class="col-sm-6 mb-3" style="border: 1px solid #dddddd; padding: 5px; border-radius: 5px;margin-right:-40px;">
                                                         <button style="border: 1px solid #0000FF; color: #0000FF; float:right; font-weight:bold;background-color: transparent; padding: 5px; border-radius: 5px; font-size: 13px;"wire:click="downloadexcelForAttendanceType">
                                                            <i class="fas fa-download"></i>  Download  
                                                         </button>
-                                        <h4 style="text-align:left; font-weight:600; color: rgba(103,122,142,1);">Attendance Type</h4>
+                                        <h4 style="text-align:left; font-weight:600; color: rgba(103,122,142,1);font-size:14px;">Attendance Type</h4>
                                         
                     <!-- Table for the first container goes here -->
                            <div style="display:flex;flex-direction:row;justify-content:space-between">
@@ -228,7 +230,7 @@
       </div>
     </div>
     <!---Close Modal--->
-    <canvas id="myChart1" width="800" height="400" style="max-width:100%;"></canvas>                  
+    <!-- <canvas id="myChart1" width="800" height="400" style="max-width:100%;"></canvas>                   -->
                 </div>
         </div>
         <!-- Trigger for Modal -->
@@ -238,92 +240,7 @@
     
     
     </div> 
-    <script>
-    var xValues = ["Not Yet In", "On Time", "Late In"];
-    var yValues = [
-            {{ $absentemployeescount }},
-            {{ $earlyemployeescount }},
-            {{ $lateemployeescount }}
-        ];
-    var barColors = [
-      "#3498db",
-      "#2ecc71",
-      "#e74c3c",
-      
-    ];
-    new Chart("myChart", {
-      type: "pie",
-      data: {
-        labels: xValues,
-        datasets: [{
-          backgroundColor: barColors,
-          data: yValues
-        }]
-      },
-      options: {
-        title: {
-          display: true,
-         
-        },
-        tooltips: {
-          callbacks: {
-            label: function (tooltipItem, data) {
-              var dataset = data.datasets[tooltipItem.datasetIndex];
-              var label = data.labels[tooltipItem.index] || '';
-              var value = dataset.data[tooltipItem.index];
-              return label + ': ' + value;
-            }
-          }
-        },
-        legend: {
-          display: true,
-          position: 'bottom', // Adjust position as needed
-        }
-      }
-    });
-    var x1Values = ["Mobile Sign In", "Web Sign In", "Astra"];
-    var y1Values = [
-        {{$mobileEmployeeCount}},
-        {{$laptopEmployeeCount}},
-         0
-    ];
-    var bar1Colors = [
-        "#3498db",
-        "#2ecc71",
-        "#e74c3c",
-    ];
     
-    new Chart("myChart1", {
-        type: "doughnut", // Change the chart type to 'doughnut'
-        data: {
-            labels: x1Values,
-            datasets: [{
-                backgroundColor: bar1Colors,
-                data: y1Values
-            }]
-        },
-        options: {
-            title: {
-                display: true,
-            },
-            tooltips: {
-                callbacks: {
-                    label: function (tooltipItem, data) {
-                        var dataset = data.datasets[tooltipItem.datasetIndex];
-                        var label = data.labels[tooltipItem.index] || '';
-                        var value = dataset.data[tooltipItem.index];
-                        return label + ': ' + value;
-                    }
-                }
-            },
-            legend: {
-                display: true,
-                position: 'bottom',
-            }
-        }
-    });
-    
-    </script>
     
     </div>
     

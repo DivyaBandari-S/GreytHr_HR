@@ -1098,4 +1098,553 @@ input[type="radio"]:checked+label {
     margin-right: 0.5rem;
 }
 
+/*Starting of Who Is In Submodule*/
+@media screen and (max-height: 320px) {
+    .form-group-who-is-in{
+
+        margin-right: 70px;
+    }
+}
+.arrow-btn {
+    color: var(--label-color);
+    height: 22px;
+    width: 22px;
+    display: flex;
+    margin-right: 10px;
+    cursor: pointers;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    border: 1px solid #dcdcdc;
+    margin-right: 10px;
+}
+.cancel-btn:hover {
+    background-color: rgb(2, 17, 79);
+    color: white;
+}
+.toggle-box-container-who-is-in {
+    float: right;
+    display: flex;
+    align-items: center;
+}
+.checkbox-label-who-is-in {
+    font-size: var(--normal-font-size);
+    /* Text size */
+    /* Text color */
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    /* Center items vertically */
+}
+
+.checkbox-label-who-is-in input {
+    margin-right: 5px;
+    /* Space between checkbox and text */
+}
+
+.wide-short-container-who-is-in {
+    width: 100%;
+    /* Adjust width as needed */
+    height: 80px;
+    /* Adjust height as needed */
+    background-color: transparent;
+    /* Background color */
+    border: 1px solid rgb(211, 211, 211);
+    /* Border */
+    border-radius: 5px;
+    /* Rounded corners */
+    margin-top: 50px;
+    /* Adjust spacing as needed */
+    padding: 10px;
+    /* Padding inside the container */
+}
+
+.switch-who-is-in {
+    position: relative;
+    display: inline-block;
+    width: 40px;
+    /* Reduced width */
+    height: 20px;
+    /* Reduced height */
+}
+.switch-who-is-in input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    border: 1px solid #666;
+    -webkit-transition: 0.4s;
+    transition: 0.4s;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 12px;
+    /* Reduced height */
+    width: 12px;
+    /* Reduced width */
+    left: 4px;
+    /* Adjusted to fit smaller slider */
+    bottom: 4px;
+    /* Adjusted to fit smaller slider */
+    background-color: #666;
+    -webkit-transition: 0.4s;
+    transition: 0.4s;
+}
+input:checked + .slider {
+    background-color: #2196f3;
+    border: 1px solid #2196f3;
+}
+
+input:focus + .slider {
+    box-shadow: 0 0 1px #2196f3;
+}
+
+input:checked + .slider:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
+    background-color: white;
+}
+
+.slider.round {
+    border-radius: 34px;
+}
+
+.slider.round:before {
+    border-radius: 50%;
+}
+
+.total-employee-count-who-is-in {
+    font-size: var(--normal-font-size);
+    /* Text size */
+    color: #059212;
+    /* Text color */
+    padding-bottom: 10px;
+}
+.time-range-who-is-in {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.time-range-who-is-in .start-time-who-is-in,
+.time-range-who-is-in .end-time-who-is-in {
+    font-size: var(--normal-font-size);
+    /* Text size */
+    color: var(--label-color);
+    /* Text color */
+    margin: 0 10px;
+    /* Adjust spacing as needed */
+}
+.time-separator-who-is-in {
+    width: 100%;
+    /* Full width */
+    height: 1px;
+    /* Height of the line */
+    background-color: var(--label-color);
+    /* Line color */
+    margin: 0 10px;
+    /* Adjust spacing as needed */
+}
+.save-selectshift-button-who-is-in {
+    background-color: transparent;
+    border: 1px solid rgb(2, 17, 79);
+    color: rgb(2, 17, 79);
+}
+
+.save-selectshift-button-who-is-in:hover {
+    background-color: rgb(2, 17, 79);
+    border: 1px solid rgb(2, 17, 79);;
+    color: white;
+}
+
+.container-box-for-employee-information-who-is-in {
+    width: 85%;
+    display: flex;
+    flex-direction: column;
+    margin-top: 30px;
+    margin-left: 60px;
+    align-items: center;
+    justify-content: center;
+    background-color: transparent;
+    border: 1px solid #52afe9;
+    flex: 1;
+}
+
+.field-for-employee-who-is-in {
+    text-align: center;
+    width: 100%;
+    align-items: center;
+    background-color: #ffffff;
+    flex: 1;
+    border-top: 1px solid #52afe9;
+    border-right: 1px solid #52afe9;
+}
+
+.field-for-employee-who-is-in {
+    border-right: 1px solid #52afe9;
+}
+
+.field-for-employee-who-is-in:first-child {
+    border-left: 1px solid #52afe9;
+}
+.percentage-who-is-in {
+    font-size: 18px;
+}
+
+.employee-count-who-is-in {
+    font-size: var(--normal-font-size);
+
+    padding-top: 5px;
+}
+
+.heading-who-is-in {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 15px;
+    border-bottom: 1px solid #ddd;
+}
+
+.heading-who-is-in i {
+    color: var(--label-color);
+}
+
+.heading-who-is-in h3 {
+    color: var(--label-color);
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.container3-who-is-in {
+    background-color: #ffffff;
+    margin-top: 10px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    /* Border style for the container */
+}
+.container5-who-is-in-absent
+{
+    background-color: #ffffff;
+    margin-top: 30px;
+
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    width:230px;
+    margin-left: -18px;
+}
+.container5-who-is-in {
+    /* Adjust the width as needed */
+
+    background-color: #ffffff;
+    margin-top: 30px;
+
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    /* Border style for the container */
+}
+
+.container6-who-is-in {
+    background-color: #ffffff;
+    margin-top: 10px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    /* Border style for the container */
+}
+
+.container4-who-is-in {
+    background-color: #ffffff;
+    margin-top: 10px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    /* Border style for the container */
+}
+
+.search-text::placeholder {
+    font-weight: 60;
+    /* Change the font weight */
+    font-size: var(--normal-font-size);
+    /* Change the font size */
+    color: #6c757d;
+}
+
+.who-is-in-table {
+    border-collapse: collapse;
+    width: 100%;
+}
+.who-is-in-table-late-employee {
+    border-collapse: collapse;
+
+    /* Set the max height you prefer */
+
+    display: block;
+}
+.who-is-in-table-for-early-employee {
+    border-collapse: collapse;
+
+    /* Set the max height you prefer */
+
+    display: block;
+}
+.who-is-in-table-for-early-employee thead {
+    background-color: #ebf5ff;
+    color: white;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    margin-left: 10px;
+}
+.who-is-in-table-for-late-employee thead {
+    background-color: #ebf5ff;
+    color: white;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    margin-right: 3px;
+}
+.who-is-in-table-for-late-employee th {
+    font-size: 0.7rem;
+    font-weight: normal;
+    color: #6c757d;
+}
+.content-who-is-in {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+/* CSS for the table header (thead) */
+.who-is-in-table thead {
+    border-top: 1px solid #ddd;
+    background-color: #ebf5ff;
+    color: white;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    margin-right: 3px;
+}
+
+input::placeholder {
+    font: 0.85rem/3 sans-serif;
+}
+
+/* CSS for the table header cells (th) */
+.who-is-in-table th {
+    font-size: 0.7rem;
+    font-weight: normal;
+    color: #6c757d;
+}
+
+.who-is-in-table td {
+    padding: 5px 20px;
+    color: #3b4452;
+}
+
+input[type="date"]::before {
+    content: attr(placeholder);
+    color: var(--label-color);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: -1;
+}
+
+.date-form-who-is-in {
+    display: flex;
+    align-items: end;
+    justify-content: end;
+    width: 200px;
+}
+
+.shift-selector-container-who-is-in {
+    position: relative;
+    width: 200px;
+    margin-top: 30px;
+}
+
+.shift-selector-who-is-in {
+    width: 100%;
+    height: 70px;
+    padding: 10px;
+    padding-top: 8px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-color: white;
+    cursor: pointer;
+    position: relative;
+}
+
+.search-container-who-is-in {
+    display: flex;
+    margin-top: -90px;
+}
+
+.form-group-who-is-in {
+    margin-right: 10px;
+}
+.form-group label {
+    font-size: var(--normal-font-size);
+    color: var(--label-color);
+    font-weight: 500;
+}
+.search-input-who-is-in {
+    border: none;
+    position: relative;
+    margin-top:50px;
+}
+
+.search-input-who-is-in input[type="text"] {
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 200px;
+}
+
+.search-icon-who-is-in {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    color: var(--label-color);
+    transform: translateY(-50%);
+    cursor: pointer;
+}
+
+.search-icon-who-is-in::before {
+    font-size: 16px;
+}
+
+.filter-container1-who-is-in {
+    display: flex;
+    background: #fff;
+    align-items: center;
+    justify-content: center;
+    height: 35px;
+    width: 35px;
+    margin-left: 5px;
+    padding: 3px;
+    border: 1px solid #ccc;
+}
+
+.filter-group-who-is-in {
+    display: flex;
+    align-items: center;
+}
+
+/* Styles for the Font Awesome icon */
+.fa-icon {
+    font-size: 14px;
+    color: var(--label-color);
+    /* Add spacing between icon and text */
+}
+
+.search-results-who-is-in {
+    position: fixed;
+    background: white;
+    margin-top: -13px;
+    overflow-y: scroll;
+    max-height: 200px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 195px;
+    /* Adjust the width as needed */
+    z-index: 999;
+}
+
+.shift-selector-who-is-in::placeholder {
+    font-size: var(--normal-font-size);
+    /* Adjust font size as needed */
+    font-weight: 500;
+    /* Adjust font weight as needed */
+    vertical-align: top;
+}
+
+.search-results-who-is-in ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.search-results-who-is-in li {
+    padding: 5px;
+    border-bottom: 1px solid #eee;
+}
+
+.arrow-who-is-in {
+    position: absolute;
+    top: 20%;
+    right: 10px;
+    width: 10px;
+    /* Adjust the width of the arrow line */
+    height: 0.8px;
+    /* Adjust the height of the arrow line */
+    transform: translateY(-90%) rotate(-45deg);
+    background-color: black;
+}
+
+.arrow-who-is-in::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    right: 0;
+    transform: translateY(-60%) rotate(45deg);
+    width: 5px;
+    /* Adjust the size of the arrowhead */
+    height: 5px;
+    /* Adjust the size of the arrowhead */
+    border-right: 1px solid black;
+    /* Adjust the thickness and color of the arrowhead */
+    border-top: 1px solid black;
+    /* Adjust the thickness and color of the arrowhead */
+}
+.row-for-absent-employee
+{
+    border-bottom: 1px solid #ddd;
+}
+@media screen and (max-width:320px){
+    .container5-who-is-in-absent
+    {
+        margin-left: 50px;
+    }
+    .content-who-is-in
+    {
+        display: flex;
+        flex-direction: column;
+    }
+    .search-input-who-is-in
+    {
+        margin-top: 120px;
+        margin-right: 20px;
+    }
+    .container-box-for-employee-information-who-is-in
+    {
+        width: 80%;
+    }
+    .container5-who-is-in
+    {
+        width: 85%;
+        margin-left: 50px;
+    }
+    .shift-selector-container-who-is-in
+    {
+        margin-left: 65px;
+    }
+    .date-form-who-is-in
+    {
+        margin-left: 65px;
+    }
+}
+/*Ending of Who Is In Submodule*/
 /* analytics hub view all styles ended */
