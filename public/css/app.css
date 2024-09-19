@@ -739,7 +739,7 @@ input {
 .analytic-content-box {
     background-color: white;
     flex: 1;
-    min-width: 200px;
+    min-width: 172px;
     /* Ensures the boxes stack on smaller screens */
     padding: 10px;
     display: flex;
@@ -796,7 +796,7 @@ input {
 
 .analytic-search-bar {
     display: flex;
-    padding: 10px;
+    padding: 0px 10px;
     justify-content: space-between;
     /* Adjust spacing between items */
     align-items: center;
@@ -809,14 +809,21 @@ input {
     display: flex;
     align-items: center;
 }
+.analytic-search{
+    font-size: var(--normal-font-size);
+}
+.analytic-search::placeholder {
+    font-size: var(--normal-font-size);
+}
 
 .analytic-search-bar input[type="text"] {
     width: 180px;
-    padding: 6px 28px 6px 10px;
+    padding: 6px 10px 9px 10px;
     /* Adjust padding for right space */
     border: 1px solid #ccc;
     border-radius: 15px;
     position: relative;
+    height: 30px;
 }
 
 .analytic-search-icon {
@@ -824,6 +831,7 @@ input {
     right: 10px;
     color: #666;
     pointer-events: none;
+    cursor: pointer;
 }
 
 .analytic-restore-text {
@@ -842,7 +850,9 @@ input {
 
 /* Adjusted CSS for alternating row colors */
 .analytic-table-container {
-    overflow-x: auto;
+    overflow-y: auto;
+    height: 300px;
+    overflow-x: hidden; 
 }
 
 .analytic-table {
@@ -885,13 +895,20 @@ input {
 }
 
 .analytic-grey-text {
-    color: var(--label-color);
+    color: var(--main-heading-color);
     font-size: var(--sub-headings-font-size);
+    font-weight: 500;
 }
 .analytic-blue-text {
     color: var(--main-button-color);
     font-size: var(--sub-headings-font-size);
 }
+.analytic-red-text{
+    color: var(--requiredAlert);
+    font-size: var(--sub-headings-font-size);
+}
+
+
 
 .analytic-table th:nth-child(2) {
     width: 300px;
@@ -1223,7 +1240,197 @@ input[type="radio"]:checked + label {
     margin-top: 10px;
 }
 
-.profile p {
-    font-size: 14px;
+        .profile p {
+            font-size: 14px;
+        }
+  /* Employee Information started*/
+
+  /* Hr Main Overview Styles Started */
+  .main-overview-container {
+    padding-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
-/* Employee Information started*/
+
+.main-overview-help {
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    padding: 5px 5px;
+    margin: 10px 0px 30px 0px;
+    background-color: #f3faff;
+}
+
+.hide-main-overview-help {
+    color: var(--main-button-color);
+    font-size: var(--normal-font-size);
+    cursor: pointer;
+    white-space: nowrap;
+    font-weight: 600;
+}
+
+@media (max-width: 455px) {
+    .hide-main-overview-help {
+        white-space: normal;
+    }
+}
+
+.main-overview-text {
+    font-size: var(--normal-font-size);
+    color: var(--label-color);
+}
+
+.main-overview-custom-border {
+    position: relative;
+    margin-left: 10px;
+}
+
+.main-overview-title {
+    font-size: var(--sub-headings-font-size);
+    color: var(--main-heading-color);
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.main-overview-custom-border::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 3px;
+    height: 18%;
+    background-color: #ccc;
+}
+
+.main-overview-custom-solved-border {
+    position: relative;
+    margin-left: 10px;
+}
+
+.main-overview-custom-solved-border::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 3px;
+    height: 18%;
+    background-color: green;
+}
+
+.main-overview-profile-image {
+    height: 33px;
+
+    width: 33px;
+
+    background-color: lightgray;
+
+    border-radius: 50%;
+}
+
+.main-overview-text-truncate {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+    max-width: 200px;
+    margin-bottom: 0;
+    color: #000;
+    font-size: 10px;
+}
+
+
+.main-overview-list-overview-container {
+    transition: background-color 0.3s ease;
+    margin: 0px;
+}
+
+.main-overview-list-overview-container:hover {
+    background-color: #f0f8ff;
+    margin: 0px;
+}
+
+.main-overview-chart-container {
+    width: 100px;
+    height: 105px;
+    position: relative;
+    margin-top: 10px;
+}
+.main-overview-highlited-text{
+    color: #1fb6ff;
+    cursor:pointer;
+}
+.main-overview-graphs-container{
+    border-radius: 5px; 
+    background-color: white; 
+    margin-bottom: 10px;
+}
+.main-overview-heading-text{
+    font-size: var(--sub-headings-font-size); 
+    color: var(--label-color);
+}
+.main-overview-subheading-text{
+    font-size: var(--normal-font-size); 
+    color: var(--label-color);
+}
+.main-overview-red-text{
+    color: var(--requiredAlert);
+}
+.main-overview-requests-container{
+    height: 220px;
+}
+.main-overview-count-text{
+    font-size: var(--main-headings-font-size); 
+    font-weight: 500; 
+    color: var(--main-heading-color);
+}
+.main-overview-green-text{
+    color: green;
+}
+.main-overview-count-container{
+    margin-top: 30px;
+}
+.main-overview-tickets-count{
+    color: var(--main-heading-color); 
+    font-size: var(--normal-font-size);
+    margin-top: -1px;
+}
+.main-overview-add{
+    font-size: var(--sub-headings-font-size);
+    color: var(--main-button-color);
+    font-weight: 500;
+    cursor: pointer;
+}
+.main-overview-hr-line{
+    border: 1px solid grey; 
+    width: 100%; 
+    margin-top: 10px;
+}
+.main-overview-no-records-img{
+    width: 5em; 
+    margin: 10px 0px;
+}
+.main-overview-no-records-text{
+    font-size: 12px;
+}
+.main-overview-scroll-container{
+    height: 160px; 
+    overflow-y: auto; 
+    overflow-x: hidden;
+}
+.main-overview-list-div-container{
+    gap: 10px;
+}
+.main-overview-mobile-users-count{
+    font-size: var(--normal-font-size); 
+    color: var(--main-heading-color);
+    font-weight: 500;
+}
+.main-overview-invite-text{
+    font-size: var(--normal-font-size); 
+    color: var(--main-button-color); 
+    text-decoration: none; 
+    font-weight: 500;
+}
+
+
+  /* Hr Main Overview Styles Ended */
