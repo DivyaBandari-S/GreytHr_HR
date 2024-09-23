@@ -5,7 +5,9 @@ namespace App\Livewire;
 use App\Models\EmployeeDetails;
 use App\Models\Hr;
 use App\Models\SwipeRecord;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use Spatie\SimpleExcel\SimpleExcelWriter;
 
@@ -29,11 +31,29 @@ class HrAttendanceOverviewNew extends Component
        [ 'Label'=>'Late In','Value'=>45],
        [ 'Label'=>'On Time','Value'=>47]
     ];
+    public function mount()
+    {
+        $currentDate = now()->toDateString();
+        $currentDate = Carbon::today();
+        $today = $currentDate->toDateString(); // Get today's date in 'Y-m-d' format
+        $month = $currentDate->format('n');
+        $year = $currentDate->format('Y');
+ 
+        // Construct the table name for SQL Server
+        $tableName = 'DeviceLogs_' . $month . '_' . $year;
+        $employeeSwipeLog = DB::connection('sqlsrv')
+        ->table($tableName)
+        ->select('UserId', 'logDate', 'Direction')
+        
+        ->get();        
+        dd($employeeSwipeLog);
+    }
     public function hideHelp()
     {
    
          $this->showHelp=true;
     }
+
     public function showhelp()
     {
         $this->showHelp=false;
@@ -96,19 +116,21 @@ class HrAttendanceOverviewNew extends Component
     {
        
         // $companyName = $yourModels->com->company_name;
-        $companyId = Auth::user()->company_id;
-        
+        $companyId =auth()->guard('hr')->user()->emp_id;
+        $employeeCompanyId=EmployeeDetails::where('emp_id',$companyId)->value('company_id');
+       
         $currentDate1=now()->toDateString();
 
         $this->absentemployeescount = EmployeeDetails::select('emp_id', 'first_name', 'last_name')
-        ->where('company_id', '=', $companyId) // Replace $yourCompanyId with the actual company_id you are filtering
+        ->where('company_id', '=', $employeeCompanyId) // Replace $yourCompanyId with the actual company_id you are filtering
         ->whereNotIn('emp_id', function ($query) use ($currentDate1) {
             $query->select('emp_id')
                 ->from('swipe_records')
                 ->whereDate('created_at', $currentDate1);
         })
         ->count();
-        $this->lateemployeescount = EmployeeDetails::where('company_id', '=', $companyId) // Replace $yourCompanyId with the actual company_id you are filtering
+        
+        $this->lateemployeescount = EmployeeDetails::where('company_id', '=', $employeeCompanyId) // Replace $yourCompanyId with the actual company_id you are filtering
         ->whereExists(function ($query) use ($currentDate1) {
             $query->select('emp_id')
                 ->from('swipe_records')
@@ -137,6 +159,11 @@ class HrAttendanceOverviewNew extends Component
         ->count();
         
         $this->totalemployees = EmployeeDetails::select('emp_id', 'first_name', 'last_name')->orderBy('first_name')->get();
+        foreach($this->totalemployees as $employee)
+        {
+            $normalizedEmployeeId = str_replace('-', '', $employee->emp_id);
+            
+        }
         $employees = EmployeeDetails::join('swipe_records', 'employee_details.emp_id', '=', 'swipe_records.emp_id')
     ->select('employee_details.emp_id', 'employee_details.first_name', 'employee_details.last_name',  'swipe_records.in_or_out', 'swipe_records.swipe_time')
     ->where('swipe_records.in_or_out', 'IN')

@@ -21,11 +21,19 @@
 <livewire:hrlogin/>
 @else
 <body>
-
-    <section>
-        @livewire('main-layout')
-        
-    </section>
+    <div class="container-fluid " style="width: 100%; display: flex;flex-direction: column; height:100vh; ">
+        <div class="row">
+        <livewire:header />
+        </div>
+        <div class="row" style="display: flex; flex: 1 1 auto; overflow: hidden;">
+            <div class="column1">
+                <livewire:sidebar />
+            </div>
+            <div class="column2" >
+                 <div>{{ $slot }}</div>
+            </div>
+        </div>
+    </div>
     @livewireScripts
     <script src="{{ asset('js/admin-dash.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>

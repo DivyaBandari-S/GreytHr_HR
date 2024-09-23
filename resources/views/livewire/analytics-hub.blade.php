@@ -5,21 +5,30 @@
             <span class="analytic-right" wire:click="analyticsHubList">View All</span>
         </div>
         <div class="analytic-content-row">
-            <div class="analytic-content-box @if($selectedCard == 'Basic Information') analytic-highlighted @endif" wire:click="selectCard('Basic Information')">
+            <div class="analytic-content-box @if ($selectedCard == 'Basic Information') analytic-highlighted @endif"
+                wire:click="selectCard('Basic Information')">
                 <span class="analytic-icon">&#9734;</span>
                 <span class="analytic-text">Basic Information</span>
             </div>
-            <div class="analytic-content-box @if($selectedCard == 'Personal Information(PII Data)') analytic-highlighted @endif" wire:click="selectCard('Personal Information(PII Data)')">
+            <div class="analytic-content-box @if ($selectedCard == 'Personal Information(PII Data)') analytic-highlighted @endif"
+                wire:click="selectCard('Personal Information(PII Data)')">
                 <span class="analytic-icon">&#9734;</span>
                 <span class="analytic-text">Personal Information(PII Data)</span>
             </div>
-            <div class="analytic-content-box @if($selectedCard == 'All Employee Info') analytic-highlighted @endif" wire:click="selectCard('All Employee Info')">
+            <div class="analytic-content-box @if ($selectedCard == 'All Employee Info') analytic-highlighted @endif"
+                wire:click="selectCard('All Employee Info')">
                 <span class="analytic-icon">&#9734;</span>
                 <span class="analytic-text">All Employee Info</span>
             </div>
-            <div class="analytic-content-box @if($selectedCard == 'Gender-wise Headcount') analytic-highlighted @endif" wire:click="selectCard('Gender-wise Headcount')">
+            <div class="analytic-content-box @if ($selectedCard == 'Gender-wise Headcount') analytic-highlighted @endif"
+                wire:click="selectCard('Gender-wise Headcount')">
                 <span class="analytic-icon">&#9734;</span>
                 <span class="analytic-text">Gender-wise Headcount</span>
+            </div>
+            <div class="analytic-content-box @if ($selectedCard == 'Recent Resignees') analytic-highlighted @endif"
+                wire:click="selectCard('Recent Resignees')">
+                <span class="analytic-icon">&#9734;</span>
+                <span class="analytic-text">Recent Resignees</span>
             </div>
         </div>
     </div>
@@ -33,114 +42,274 @@
             </div>
         </div>
         <hr>
-        <div class="analytic-search-bar">
-            <div class="analytic-search-wrapper">
-                <input type="text" placeholder="Search...">
-                <i class="analytic-search-icon fas fa-search"></i>
-            </div>
-            <div>
-                <span class="analytic-restore-text">Restore</span>
-                <i class="analytic-restore-icon fas fa-cloud"></i>
-            </div>
-        </div>
+        
 
-        <div class="analytic-table-container">
-            @if($selectedCard == 'Basic Information')
+        <div >
+            @if ($selectedCard == 'Basic Information')
+            <div class="analytic-search-bar">
+                <div class="analytic-search-wrapper">
+                    <input type="text" wire:input="filterBasicInformation"  class="analytic-search" wire:model="basicSearch" placeholder="Search...">
+                    <i class="analytic-search-icon fas fa-search" wire:click="filterBasicInformation"></i>
+                </div>
+                <div>
+                    <span class="analytic-restore-text">Restore</span>
+                    <i class="analytic-restore-icon fas fa-cloud"></i>
+                </div>
+            </div>
+            <div class="analytic-table-container">
+                <table class="analytic-table">
+                    <thead>
+                        <tr>
+                            <th>Emp ID <i class="fa-sharp fa-solid fa-arrow-up"></i></th>
+                            <th>Emp Name</th>
+                            <th>DOJ</th>
+                            <th>Gender</th>
+                            <th>Email ID</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <!-- Rows will be dynamically generated -->
+                        @foreach ($employeesData as $employee)
+                            <tr>
+                                <td class="analytic-grey-text">{{ $employee->emp_id }}</td>
+                                <td class="analytic-blue-text"> {{ ucfirst(strtolower($employee->first_name)) }}
+                                    {{ ucfirst(strtolower($employee->last_name)) }}</td>
+                                <td class="analytic-grey-text">
+                                    @if ($employee->hire_date)
+                                        {{ \Carbon\Carbon::parse($employee->hire_date)->format('d M Y') }}
+                                    @else
+                                    @endif
+                                </td>
+                                <td class="analytic-grey-text">{{ $employee->gender }}</td>
+                                <td class="analytic-grey-text">{{ $employee->email }}</td>
+                            </tr>
+                        @endforeach
+                        <!-- More rows as needed -->
+                    </tbody>
+                </table>
+            </div>
+            @elseif($selectedCard == 'Personal Information(PII Data)')
+            <div class="analytic-search-bar">
+                <div class="analytic-search-wrapper">
+                    <input type="text" wire:input="filterPersonalInformation"  class="analytic-search" wire:model="piSearch" placeholder="Search...">
+                    <i class="analytic-search-icon fas fa-search" wire:click="filterPersonalInformation"></i>
+                </div>
+                <div>
+                    <span class="analytic-restore-text">Restore</span>
+                    <i class="analytic-restore-icon fas fa-cloud"></i>
+                </div>
+            </div>
+            <div class="analytic-table-container">
+                <table class="analytic-table">
+                    <thead>
+                        <tr>
+                            <th>Emp Id <i class="fa-sharp fa-solid fa-arrow-up"></i></th>
+                            <th>Emp Name</th>
+                            <th>DOJ</th>
+                            <th>Gender</th>
+                            <th>DOB</th>
+                            <th>Age Range</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Rows will be dynamically generated -->
+                        @foreach ($personalInformationData as $employee)
+                            @php
+                                $personalInfo = $employee->empPersonalInfo; // Access the relationship once
+                            @endphp
+                            <tr>
+                                <td class="analytic-grey-text">{{ $employee->emp_id }}</td>
+                                    <td class="analytic-blue-text">{{ ucfirst(strtolower($employee->first_name)) }}
+                                        {{ ucfirst(strtolower($employee->last_name)) }}</td>
+                                <td class="analytic-grey-text">
+                                    @if ($employee->hire_date)
+                                        {{ \Carbon\Carbon::parse($employee->hire_date)->format('d M Y') }}
+                                    @else
+                                    @endif
+                                </td>
+                                <td class="analytic-grey-text">{{ $employee->gender ?? '' }}</td>
+                                <td class="analytic-grey-text">
+                                    @if ($personalInfo && $personalInfo->date_of_birth)
+                                        {{ \Carbon\Carbon::parse($personalInfo->date_of_birth)->format('d M Y') }}
+                                    @else
+                                    @endif
+                                </td>
+                                
+                                <td class="analytic-grey-text">
+                                    @if ($personalInfo && $personalInfo->date_of_birth)
+                                        @php
+                                            $dateOfBirth = \Carbon\Carbon::parse($personalInfo->date_of_birth);
+                                            $age = $dateOfBirth->age; // Calculate age
+                                
+                                            // Determine age range
+                                            if ($age >= 55) {
+                                                $ageRange = '>= 55';
+                                            } elseif ($age >= 45) {
+                                                $ageRange = '>= 45';
+                                            } elseif ($age >= 35) {
+                                                $ageRange = '>= 35';
+                                            } elseif ($age >= 25) {
+                                                $ageRange = '>= 25';
+                                            } else {
+                                                $ageRange = '< 25';
+                                            }
+                                        @endphp
+                                
+                                        {{ $ageRange }}
+                                    @else
+                                        
+                                    @endif
+                                </td>
+                            </tr>
+                        @endforeach
+                        <!-- More rows as needed -->
+                    </tbody>
+                </table>
+            </div>
+            @elseif($selectedCard == 'All Employee Info')
+            <div class="analytic-search-bar">
+                <div class="analytic-search-wrapper">
+                    <input type="text" wire:input="filterAllInfo" class="analytic-search" wire:model="allInfoSearch" placeholder="Search...">
+                    <i class="analytic-search-icon fas fa-search" wire:click="filterAllInfo"></i>
+                </div>
+                <div>
+                    <span class="analytic-restore-text">Restore</span>
+                    <i class="analytic-restore-icon fas fa-cloud"></i>
+                </div>
+            </div>
+            <div class="analytic-table-container">
             <table class="analytic-table">
                 <thead>
                     <tr>
                         <th>Emp ID <i class="fa-sharp fa-solid fa-arrow-up"></i></th>
                         <th>Emp Name</th>
-                        <th>Date of Joining</th>
+                        <th>DOJ</th>
                         <th>Gender</th>
+                        <th>DOB</th>
                         <th>Email ID</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Rows will be dynamically generated -->
-                    <tr>
-                        <td class="analytic-grey-text">T0001</td>
-                        <td class="analytic-blue-text">John Doe</td>
-                        <td class="analytic-grey-text">2023-01-01</td>
-                        <td class="analytic-grey-text">Male</td>
-                        <td class="analytic-grey-text">john.doe@example.com</td>
-                    </tr>
-                    <tr>
-                        <td class="analytic-grey-text">T00012</td>
-                        <td class="analytic-blue-text">Jane Smith</td>
-                        <td class="analytic-grey-text">2023-02-15</td>
-                        <td class="analytic-grey-text">Female</td>
-                        <td class="analytic-grey-text">jane.smith@example.com</td>
-                    </tr>
-                    <tr>
-                        <td class="analytic-grey-text">T00012</td>
-                        <td class="analytic-blue-text">Jane Smith</td>
-                        <td class="analytic-grey-text">2023-02-15</td>
-                        <td class="analytic-grey-text">Female</td>
-                        <td class="analytic-grey-text">jane.smith@example.com</td>
-                    </tr>
-                    <tr>
-                        <td class="analytic-grey-text">T00012</td>
-                        <td class="analytic-blue-text">Jane Smith</td>
-                        <td class="analytic-grey-text">2023-02-15</td>
-                        <td class="analytic-grey-text">Female</td>
-                        <td class="analytic-grey-text">jane.smith@example.com</td>
-                    </tr>
+
+                    @foreach ($allInfoData as $employee)
+                    @php
+                        $personalInfo = $employee->empPersonalInfo; // Access the relationship once
+                    @endphp
+                        <tr>
+                            <td class="analytic-grey-text">{{ $employee->emp_id }}</td>
+                            <td class="analytic-blue-text"> {{ ucfirst(strtolower($employee->first_name)) }}
+                                {{ ucfirst(strtolower($employee->last_name)) }}</td>
+                            <td class="analytic-grey-text">
+                                @if ($employee->hire_date)
+                                    {{ \Carbon\Carbon::parse($employee->hire_date)->format('d M Y') }}
+                                @else
+                                @endif
+                            </td>
+                            <td class="analytic-grey-text">{{ $employee->gender }}</td>
+                            <td class="analytic-grey-text">
+                                @if ($personalInfo && $personalInfo->date_of_birth)
+                                    {{ \Carbon\Carbon::parse($personalInfo->date_of_birth)->format('d M Y') }}
+                                @else
+                                @endif
+                            </td>
+                            <td class="analytic-grey-text">{{ $employee->email }}</td>
+                        </tr>
+                    @endforeach
                     <!-- More rows as needed -->
                 </tbody>
             </table>
-            @elseif($selectedCard == 'Personal Information(PII Data)')
+        </div>
+            @elseif($selectedCard == 'Gender-wise Headcount')
+            <div class="analytic-search-bar">
+                <div class="analytic-search-wrapper">
+                    <input type="text" wire:input="filterGenderWise" class="analytic-search" wire:model="genderSearch" placeholder="Search...">
+                    <i class="analytic-search-icon fas fa-search" wire:click="filterGenderWise"></i>
+                </div>
+                <div>
+                    <span class="analytic-restore-text">Restore</span>
+                    <i class="analytic-restore-icon fas fa-cloud"></i>
+                </div>
+            </div>
+            <div class="analytic-table-container">
             <table class="analytic-table">
                 <thead>
                     <tr>
-                        <th>Name <i class="fa-sharp fa-solid fa-arrow-up"></i></th>
-                        <th>Date of Birth</th>
-                        <th>Mobile No</th>
-                        <th>Address</th>
-                        <th>Blood Group</th>
+                        <th>Group <i class="fa-sharp fa-solid fa-arrow-up"></i></th>
+                        <th>Count(Emp ID) <i class="fa-sharp fa-solid fa-arrow-up"></i></th>
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Rows will be dynamically generated -->
                     <tr>
-                        <td class="analytic-grey-text">John Doe</td>
-                        <td class="analytic-blue-text">1999-01-09</td>
-                        <td class="analytic-grey-text">9876543210</td>
-                        <td class="analytic-grey-text">Hyderabad</td>
-                        <td class="analytic-grey-text">o+</td>
+                        <td class="analytic-grey-text">Others</td>
+                        <td class="analytic-grey-text">{{ $genderCounts['Others'] }}</td>
                     </tr>
                     <tr>
-                        <td class="analytic-grey-text">John Doe</td>
-                        <td class="analytic-blue-text">1999-01-09</td>
-                        <td class="analytic-grey-text">9876543210</td>
-                        <td class="analytic-grey-text">Hyderabad</td>
-                        <td class="analytic-grey-text">AB+</td>
+                        <td class="analytic-grey-text">Male</td>
+                        <td class="analytic-grey-text">{{ $genderCounts['Male'] }}</td>
                     </tr>
                     <tr>
-                        <td class="analytic-grey-text">John Doe</td>
-                        <td class="analytic-blue-text">1999-01-09</td>
-                        <td class="analytic-grey-text">9876543210</td>
-                        <td class="analytic-grey-text">Hyderabad</td>
-                        <td class="analytic-grey-text">B+</td>
+                        <td class="analytic-grey-text">Female</td>
+                        <td class="analytic-grey-text">{{ $genderCounts['Female'] }}</td>
                     </tr>
+                </tbody>
+            </table>
+        </div>
+            @elseif($selectedCard == 'Recent Resignees')
+            <div class="analytic-search-bar">
+                <div class="analytic-search-wrapper">
+                    <input type="text" wire:input="filterResignees" class="analytic-search" wire:model="resigneesSearch" placeholder="Search...">
+                    <i class="analytic-search-icon fas fa-search" wire:click="filterResignees"></i>
+                </div>
+                <div>
+                    <span class="analytic-restore-text">Restore</span>
+                    <i class="analytic-restore-icon fas fa-cloud"></i>
+                </div>
+            </div>
+            <div class="analytic-table-container">
+            <table class="analytic-table">
+                <thead>
                     <tr>
-                        <td class="analytic-grey-text">John Doe</td>
-                        <td class="analytic-blue-text">1999-01-09</td>
-                        <td class="analytic-grey-text">9876543210</td>
-                        <td class="analytic-grey-text">Hyderabad</td>
-                        <td class="analytic-grey-text">o+</td>
+                        <th>Emp ID <i class="fa-sharp fa-solid fa-arrow-up"></i></th>
+                        <th>Emp Name</th>
+                        <th>DOJ</th>
+                        <th>Gender</th>
+                        <th>LWD</th>
+                        <th>Status</th>
+                        <th>Manager ID</th>
                     </tr>
+                </thead>
+                <tbody>
+
+                    @foreach ($resigneesData as $employee)
+                    @php
+                        $empResignations = $employee->empResignations; // Access the relationship once
+                    @endphp
+                        <tr>
+                            <td class="analytic-grey-text">{{ $employee->emp_id }}</td>
+                            <td class="analytic-red-text"> {{ ucfirst(strtolower($employee->first_name)) }}
+                                {{ ucfirst(strtolower($employee->last_name)) }}</td>
+                            <td class="analytic-grey-text">
+                                @if ($employee->hire_date)
+                                    {{ \Carbon\Carbon::parse($employee->hire_date)->format('d M Y') }}
+                                @else
+                                @endif
+                            </td>
+                            <td class="analytic-grey-text">{{ $employee->gender }}</td>
+                            <td class="analytic-grey-text">
+                                @if ($empResignations && $empResignations->last_working_day)
+                                    {{ \Carbon\Carbon::parse($empResignations->last_working_day)->format('d M Y') }}
+                                @else
+                                @endif
+                            </td>
+                            <td class="analytic-grey-text">{{ $empResignations->status }}</td>
+                            <td class="analytic-grey-text">{{ $employee->manager_id }}</td>
+                        </tr>
+                    @endforeach
                     <!-- More rows as needed -->
                 </tbody>
             </table>
-            @elseif($selectedCard == 'All Employee Info')
-            <div class="p-3">
-                <p>This is All Employee Info Section</p>
-            </div>
-            @elseif($selectedCard == 'Gender-wise Headcount')
-            <div class="p-3">
-                <p>This is Gender-wise Headcount section</p>
-            </div>
+        </div>
             @endif
         </div>
     </div>
