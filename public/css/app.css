@@ -130,9 +130,9 @@ body {
     }
 }
 
-.active {
+/* .active {
     background-color: white;
-}
+} */
 
 .active a {
     color: rgb(1, 1, 20);
@@ -144,10 +144,11 @@ body {
 }
 
 ul {
-    list-style-type: none;
     display: flex;
+    list-style-type: none;
     justify-content: start;
     margin-top: 10px;
+    margin: 0px;
     cursor: pointer;
     padding: 0px;
 }
@@ -1047,7 +1048,7 @@ input[type="radio"]:checked + label {
 .tab-content {
     border: 1px solid #dee2e6;
     border-top: none;
-    padding: 1rem;
+    /* padding: 1rem; */
 }
 
 .nav-tabs .nav-link.active {
@@ -1658,7 +1659,7 @@ input[type="date"]::before {
     border-bottom: 2px solid #007bff;
 }
 .tab-content {
-    display: none;
+    /* display: none; */
     padding: 15px;
     border: none;
     background-color: transparent; /* Remove white background */
