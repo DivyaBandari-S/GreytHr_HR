@@ -131,6 +131,20 @@
                                     <span class="text-danger onboard-Valid">{{ $message }}</span>
                                     @enderror
                                 </div>
+                                <div class="form-group col-md-6">
+                                    <label class="mt-1" for="company_id">Company Name <span class="text-danger onboard-Valid">*</span></label>
+                                    <select wire:change="selectedCompany" class="form-control onboardinputs custom-select   placeholder-small m-0" wire:model="company_id" style="margin-bottom: 10px;">
+                                        <option disabled value="">Select Company</option>
+                                        <!-- Add a default option -->
+                                        @foreach ($companieIds as $id)
+                                        <option value="{{ $id->company_id }}">{{ $id->company_name }}</option>
+                                        @endforeach
+                                    </select>
+
+                                    @error('company_id')
+                                    <span class="text-danger onboard-Valid">{{ $message }}</span>
+                                    @enderror
+                                </div>
 
                                 <div class="form-group col-md-6">
                                     <label class="mt-1" for="mobile_number">Mobile Number <span class="text-danger onboard-Valid">*</span></label>
@@ -139,6 +153,7 @@
                                     <span class="text-danger onboard-Valid">{{ $message }}</span>
                                     @enderror
                                 </div>
+
 
                                 <div class="form-group col-md-6">
                                     <label class="mt-1" for="email">Company Email <span class="text-danger onboard-Valid">*</span></label>
@@ -163,6 +178,11 @@
                                                 <input type="radio" class="form-check-input" wire:model="gender" value="Female" id="femaleRadio" name="gender">
                                                 <label class="form-check-label-options mt-1 mb-0" for="femaleRadio">Female</label>
                                             </div>
+                                            <div class="form-check form-check-inline mb-0 mx-2">
+                                                <input type="radio" class="form-check-input" wire:model="gender" value="Others" id="othersRadio" name="gender">
+                                                <label class="form-check-label-options mt-1 mb-0" for="femaleRadio">Others</label>
+                                            </div>
+
                                         </div>
                                     </div>
                                     <div>
@@ -177,9 +197,9 @@
                                 {{-- Upload Employee Image --}}
 
                                 <div class="form-group col-md-6 d-flex" style="flex-direction: column;">
-                                    <label class="mt-1" for="image">Employee Image</label>
+                                    <label class="mt-1" for="image">Employee Image <span class="text-danger onboard-Valid">*</span></label>
                                     <input class="onboardinputs" type="file" wire:model="image" accept=".png, .jpg, .jpeg" style="font-size:12px;border:none; width:fit-content">
-                                    @error('image')
+                                    @error('imageBinary')
                                     <span class="text-danger onboard-Valid">{{ $message }}</span>
                                     @enderror
                                 </div>
@@ -235,20 +255,7 @@
                                     @enderror
                                 </div>
 
-                                <div class="form-group col-md-6">
-                                    <label class="mt-1" for="company_id">Company Name <span class="text-danger onboard-Valid">*</span></label>
-                                    <select wire:click="selectedCompany" class="form-control onboardinputs custom-select   placeholder-small m-0" wire:model="company_id" style="margin-bottom: 10px;">
-                                        <option disabled value="">Select Company</option>
-                                        <!-- Add a default option -->
-                                        @foreach ($companieIds as $id)
-                                        <option value="{{ $id->company_id }}">{{ $id->company_name }}</option>
-                                        @endforeach
-                                    </select>
 
-                                    @error('company_id')
-                                    <span class="text-danger onboard-Valid">{{ $message }}</span>
-                                    @enderror
-                                </div>
 
 
                                 <div class="form-group col-md-6">
@@ -441,11 +448,15 @@
                                         <div>
                                             <div class="form-check form-check-inline mb-0 mx-2 ">
                                                 <input class="form-check-input " type="radio" wire:model="job_mode" value="Office" id="OfficeRadio" name="job_mode">
-                                                <label class="form-check-label-options mt-1 mb-0" for="maleRadio">Office</label>
+                                                <label class="form-check-label-options mt-1 mb-0" for="officeRadio">Office</label>
                                             </div>
                                             <div class="form-check form-check-inline mb-0 mx-2">
                                                 <input class="form-check-input " type="radio" wire:model="job_mode" value="Remote" id="RemoteRadio" name="job_mode">
-                                                <label class="form-check-label-options mt-1 mb-0" for="femaleRadio">Remote</label>
+                                                <label class="form-check-label-options mt-1 mb-0" for="remoteRadio">Remote</label>
+                                            </div>
+                                            <div class="form-check form-check-inline mb-0 mx-2">
+                                                <input class="form-check-input " type="radio" wire:model="job_mode" value="Remote" id="HybridRadio" name="job_mode">
+                                                <label class="form-check-label-options mt-1 mb-0" for="hybridRadio">Hybrid</label>
                                             </div>
                                         </div>
                                     </div>
@@ -506,8 +517,8 @@
                                     @enderror
                                 </div>
                                 <div class="form-group col-md-6">
-                                    <label class="mt-1" for="alternate_mobile_number">Alternate Phone Number </label>
-                                    <input type="text" class="form-control onboardinputs  placeholder-small m-0" placeholder="Enter alternate phone number" wire:model="alternate_mobile_number">
+                                    <label class="mt-1" for="alternate_mobile_number">Emergency Phone Number </label>
+                                    <input type="text" class="form-control onboardinputs  placeholder-small m-0" placeholder="Enter emergency phone number" wire:model="alternate_mobile_number">
                                     @error('alternate_mobile_number')
                                     <span class="text-danger onboard-Valid">{{ $message }}</span>
                                     @enderror
