@@ -113,9 +113,13 @@ class AnalyticsHub extends Component
         $empCompanyId = $employee->company_id;
         $this->filteredResignees = EmployeeDetails::with('empResignations')
         ->whereHas('empResignations', function($query) {
-           $query->whereColumn('employee_details.emp_id', 'emp_resignations.emp_id');
-       })
-           ->where('company_id', $empCompanyId)
+            $lastMonthStart = Carbon::now()->subMonth()->startOfMonth();
+            $currentDate = Carbon::now();
+    
+            $query->whereBetween('emp_resignations.last_working_day', [$lastMonthStart, $currentDate])
+                  ->whereColumn('employee_details.emp_id', 'emp_resignations.emp_id');
+        })
+        ->where('company_id', $empCompanyId)
         ->when($this->resigneesSearch, function ($query) {
             $query->where(function ($subQuery) {
                 $subQuery->where('emp_id', 'like', "%{$this->resigneesSearch}%")
@@ -159,13 +163,17 @@ class AnalyticsHub extends Component
             }
         }
  
-
     $resigneeEmployees = EmployeeDetails::with('empResignations')
-     ->whereHas('empResignations', function($query) {
-        $query->whereColumn('employee_details.emp_id', 'emp_resignations.emp_id');
+    ->whereHas('empResignations', function($query) {
+        $lastMonthStart = Carbon::now()->subMonth()->startOfMonth();
+        $currentDate = Carbon::now();
+
+        $query->whereBetween('emp_resignations.last_working_day', [$lastMonthStart, $currentDate])
+              ->whereColumn('employee_details.emp_id', 'emp_resignations.emp_id');
     })
-        ->where('company_id', $empCompanyId)
-        ->get();
+    ->where('company_id', $empCompanyId)
+    ->get();
+
 
         $employeesData = $this->filteredEmployees ? $this->filteredEmployees : $employees;
         $personalInformationData = $this->filteredPI ? $this->filteredPI : $employeesPersonal;
