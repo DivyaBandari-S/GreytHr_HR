@@ -118,15 +118,15 @@
                             <div id="Submenus" class="submenu-container">
 
                                 <!-- Main SubMenues -->
-    
+
                                 <p class="p-0"><a href="/hr/information" class="submenu" wire:navigate>Employee Profile</a></p>
                                 <p class="p-0"><a href="/hr/asset" class="submenu" wire:navigate>Employee Asset</a></p>
                                 <p class="p-0"><a href="/user" class="submenu" wire:navigate>Bank/PF/ESI</a></p>
-    
+
                                 <p class="p-0"><a href="/user" class="submenu" wire:navigate>Family Details</a></p>
-    
+
                                 <p class="p-0"><a href="/user" class="submenu" wire:navigate>Organization Chart</a></p>
-    
+
                             </div>
                             @endif
                         </div>
@@ -149,15 +149,15 @@
                             <div id="Submenus" class="submenu-container">
 
                                 <!-- Main SubMenues -->
-    
+
                                 <p class="p-0"><a href="/home" class="submenu" wire:navigate>Overview</a></p>
-    
+
                                 <p class="p-0"><a href="/user" class="submenu" wire:navigate>Analytics Hub</a></p>
-    
+
                                 <p class="p-0"><a href="/user" class="submenu" wire:navigate>Employee Directory</a></p>
-    
+
                                 <p class="p-0"><a href="/user" class="submenu" wire:navigate>Organization Chart</a></p>
-    
+
                             </div>
                             @endif
                         </div>
@@ -180,15 +180,15 @@
                             <div id="Submenus" class="submenu-container">
 
                                 <!-- Main SubMenues -->
-    
+
                                 <p class="p-0"><a href="/home" class="submenu" wire:navigate>Overview</a></p>
-    
+
                                 <p class="p-0"><a href="/user" class="submenu" wire:navigate>Analytics Hub</a></p>
-    
+
                                 <p class="p-0"><a href="/hremployeedirectory" class="submenu" wire:navigate>Employee Directory</a></p>
-    
+
                                 <p class="p-0"><a href="/user" class="submenu" wire:navigate>Organization Chart</a></p>
-    
+
                             </div>
                             @endif
                         </div>
@@ -211,20 +211,20 @@
                                         <a class="fa fa-chevron-right arrow-icon"> </a>
                                     @endif
                                 </div>
- 
+
                             </div>
- 
+
                             @if (isset($showSubmenu['row-1']) && $showSubmenu['row-1'])
                                 <div id="Submenus" class="submenu-container">
- 
+
                                     <!-- Main SubMenues -->
                                     <p class="p-0"><a href=""  class="submenu" wire:navigate>Leave Overview</a></p>
                                     <p class="p-0"><a href="/hr/user/overview"  class="submenu" wire:navigate>Attendance Overview</a></p>
                                     <p class="p-0"><a href="/hr/user/overview"  class="submenu" wire:navigate>Leave Calendar</a></p>
                                     <p class="p-0"><a href="/hr/user/who-is-in-chart-hr"  class="submenu" wire:navigate>Who is In?</a></p>
                                     <p class="p-0"><a href="/hr/user/attendance-info"  class="submenu" wire:navigate>Attendance Info</a></p>
-                                   
- 
+
+
                                 </div>
                             @endif
                         </div>
@@ -232,7 +232,7 @@
                     <!-- Information -->
                     <div class="row  main-menu" wire:key="row-2">
                         <div class="col">
- 
+
                             <div wire:click="toggleSubmenu('row-2')" style="display: flex;">
                                 <h6 class="sub-heading {{ isset($showSubmenu['row-2']) && $showSubmenu['row-2'] ? 'active' : '' }}">Information</h6>
                                 <div class="arrows">
@@ -245,17 +245,17 @@
                             </div>
                             @if (isset($showSubmenu['row-2']) && $showSubmenu['row-2'])
                             <div id="Submenus" class="submenu-container">
- 
+
                                 <!-- Main SubMenues -->
-   
-                                <p class="p-0"><a href="/home" class="submenu" wire:navigate>Overview</a></p>
-   
+
+                                <p class="p-0"><a href="/hr/calendar/information/employee-leave" class="submenu" wire:navigate>Employee Leave</a></p>
+
                                 <p class="p-0"><a href="/user" class="submenu" wire:navigate>Analytics Hub</a></p>
-   
+
                                 <p class="p-0"><a href="/user" class="submenu" wire:navigate>Employee Directory</a></p>
-   
+
                                 <p class="p-0"><a href="/user" class="submenu" wire:navigate>Organization Chart</a></p>
-   
+
                             </div>
                             @endif
                         </div>
@@ -263,7 +263,7 @@
                     <!-- Admin -->
                     <div class="row  main-menu" wire:key="row-3">
                         <div class="col">
- 
+
                             <div wire:click="toggleSubmenu('row-3')" style="display: flex;">
                                 <h6 class="sub-heading {{ isset($showSubmenu['row-3']) && $showSubmenu['row-3'] ? 'active' : '' }}">Admin</h6>
                                 <div class="arrows">
@@ -276,17 +276,17 @@
                             </div>
                             @if (isset($showSubmenu['row-3']) && $showSubmenu['row-3'])
                             <div id="Submenus" class="submenu-container">
- 
+
                                 <!-- Main SubMenues -->
-   
+
                                 <p class="p-0"><a href="/home" class="submenu" wire:navigate>Overview</a></p>
-   
+
                                 <p class="p-0"><a href="/user" class="submenu" wire:navigate>Analytics Hub</a></p>
-   
+
                                 <p class="p-0"><a href="/user" class="submenu" wire:navigate>Employee Directory</a></p>
-   
+
                                 <p class="p-0"><a href="/user" class="submenu" wire:navigate>Organization Chart</a></p>
-   
+
                             </div>
                             @endif
                         </div>
@@ -294,7 +294,7 @@
                     <!-- Setup -->
                     <div class="row  main-menu" wire:key="row-4">
                         <div class="col">
- 
+
                             <div wire:click="toggleSubmenu('row-4')" style="display: flex;">
                                 <h6 class="sub-heading {{ isset($showSubmenu['row-4']) && $showSubmenu['row-4'] ? 'active' : '' }}">Setup</h6>
                                 <div class="arrows">
@@ -307,22 +307,22 @@
                             </div>
                             @if (isset($showSubmenu['row-4']) && $showSubmenu['row-4'])
                             <div id="Submenus" class="submenu-container">
- 
+
                                 <!-- Main SubMenues -->
-   
+
                                 <p class="p-0"><a href="/home" class="submenu" wire:navigate>Overview</a></p>
-   
+
                                 <p class="p-0"><a href="/user" class="submenu" wire:navigate>Analytics Hub</a></p>
-   
+
                                 <p class="p-0"><a href="/hremployeedirectory" class="submenu" wire:navigate>Employee Directory</a></p>
-   
+
                                 <p class="p-0"><a href="/user" class="submenu" wire:navigate>Organization Chart</a></p>
-   
+
                             </div>
                             @endif
                         </div>
                     </div>
- 
+
                 </div>
 
             @elseif($activeIcon === 'fa-envelope')

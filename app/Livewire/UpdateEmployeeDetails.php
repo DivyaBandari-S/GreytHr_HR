@@ -79,6 +79,8 @@ class UpdateEmployeeDetails extends Component
             $hr = auth()->guard('hr')->user();
             $hr_Id=$hr->emp_id;
            $hrCompany_id=EmployeeDetails::where('emp_id', $hr_Id)->first()->company_id;
+        //    dd( $hrCompany_id);
+
         //    dd(EmployeeDetails::where('emp_id', $hr_Id)->first());
             $hrCompanies = Company::where('company_id', $hrCompany_id)->get();
             $hrDetails = Company::where('company_id', $hrCompany_id)->first();
@@ -88,7 +90,11 @@ class UpdateEmployeeDetails extends Component
 
             // Wrapping the database query in a try-catch block
             try {
-                $this->employees = EmployeeDetails::where('company_id', $hrCompany_id)
+                $this->employees = EmployeeDetails::where(function ($query) use ($hrCompany_id) {
+                    foreach ($hrCompany_id as $companyId) {
+                        $query->orWhereRaw("JSON_CONTAINS(company_id, '\"$companyId\"')");
+                    }
+                })
                     ->where(function ($query) {
                         $query->where('first_name', 'like', '%' . $this->search . '%')
                             ->orWhere('last_name', 'like', '%' . $this->search . '%')
@@ -98,6 +104,8 @@ class UpdateEmployeeDetails extends Component
                     })
                     ->orderBy('status', 'desc')
                     ->get();
+                    // dd( $this->employees[104]->image);
+// dd( $this->employees);
 
             } catch (\Illuminate\Database\QueryException $e) {
                 Log::error('Error fetching Employee details: ' . $e->getMessage());
