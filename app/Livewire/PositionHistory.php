@@ -185,10 +185,11 @@ class PositionHistory extends Component
     // Fetch employee details and personal info for editing
 
     public $currentEditingPersonalSubProfileId=null;
+    public $currentEditingPersonalProfileId=null;
     public $subDepartment;
-    public function editSubDepartmentProfile($emp_id)
+    public function editDepartmentProfile($emp_id)
     {
-        $this->currentEditingPersonalSubProfileId = $emp_id; // Set current employee for editing
+        $this->currentEditingPersonalProfileId = $emp_id; // Set current employee for editing
     
         // Fetch employee details including related empPersonalInfo and empSubDepartment
         $employee = EmployeeDetails::with('empSubDepartment')->find($emp_id);
@@ -204,7 +205,7 @@ class PositionHistory extends Component
     }
     
     // Save updated company profile
-    public function saveSubDepartmentProfile($emp_id)
+    public function saveDepartmentProfile($emp_id)
     {
         try {
             // Fetch employee details from EmployeeDetails table
@@ -236,7 +237,7 @@ class PositionHistory extends Component
                     }
                 }
     
-                $this->currentEditingPersonalSubProfileId = null; // Exit edit mode after saving
+                $this->currentEditingPersonalProfileId = null; // Exit edit mode after saving
                 session()->flash('message', 'Profile updated successfully!');
             }
         } catch (\Exception $e) {
@@ -244,6 +245,60 @@ class PositionHistory extends Component
         }
     }
     
+    
+    // Cancel editing company profile
+    public function cancelDepartmentProfile()
+    {
+       
+        $this->currentEditingPersonalProfileId = null;  // Exit edit mode without saving
+    }
+    public function editSubDepartmentProfile($emp_id)
+    {
+        $this->currentEditingPersonalSubProfileId = $emp_id; // Set the current employee for editing
+    
+        // Fetch employee details including related empSubDepartment
+        $employee = EmployeeDetails::with('empSubDepartment')->find($emp_id);
+    
+        if ($employee) {
+            // Access the subDepartment data using the relationship
+            $subDepartment = $employee->empSubDepartment;
+    
+            // Set the form field with the sub-department's name or ID
+            $this->subDepartment = $subDepartment ? $subDepartment->sub_department : ''; // Use the sub-department name
+        }
+    }
+    
+    public $empSubDepartment;
+    // Save updated company profile
+    public function saveSubDepartmentProfile($emp_id)
+    {
+        try {
+            // Fetch employee details from EmployeeDetails table
+            $employee = EmployeeDetails::with('empSub')->find($emp_id);
+    
+            if ($employee) {
+                // Split name into first_name and last_name if necessary
+                $nameParts = explode(' ', $this->name);
+                $firstName = $nameParts[0];
+                $lastName = isset($nameParts[1]) ? $nameParts[1] : '';
+    
+             
+                $employee->job_location = $this->Location ?? '';
+                // Update EmployeeDetails fields
+              
+                $employee->save();
+    
+                // Update empPersonalInfo fields if it exists
+               
+    
+                $this->currentEditinglocationProfileId = null; // Exit edit mode after saving
+              
+            } 
+        }catch (\Exception $e) {
+            session()->flash('error', 'An error occurred while updating the profile. Please try again.');
+        }
+    }
+
     
     // Cancel editing company profile
     public function cancelSubDepartmentProfile()

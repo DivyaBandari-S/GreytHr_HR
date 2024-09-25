@@ -54,17 +54,23 @@
                     <div class="profile" style="margin-top: 10px;">
     <div class="col m-0">
      
-            <div class="row  ">
-            <div>
+            <div class="row d-flex" >
+        
     <p style="cursor: pointer;" wire:click="NamesSearch">
         Search Employee:
-      
-            @foreach($selectedPeopleData as $personData)
-                <div class=" align-items-center" style="margin-right: 15px;display:flex">
-                    <img class="profile-image" src="{{ $personData['image'] }}" style="border-radius:50%; height:30px; width:30px;" alt="Employee Image">
-                    <p style="margin-left: 10px; line-height: 30px; font-size:10px;">{{ $personData['name'] }}</p>
-                </div>
+
+      @foreach($selectedPeopleData as $personData)
+      <div class="column d-flex align-items-center" style="display:flex; align-items:center; border:1px solid blue; border-radius:50px; padding: 5px;width:fit-content;margin-left:5px;margin-top:5px">
+    <img class="profile-image-selected" src="{{ $personData['image'] }}"  alt="Employee Image">
+    <p style="margin-left: 10px; line-height: 40px; font-size:12px; margin-bottom: 0;">{{ $personData['name'] }}</p>
+    <svg class="close-icon-person" style="margin-left:15px;cursor:pointer" wire:click="removePerson('{{ $personData['emp_id'] }}')" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20">
+        <path d="M6 18L18 6M6 6l12 12" stroke="#778899" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+</div>
+
             @endforeach
+ 
+      
       
     </p>
 </div>
@@ -74,86 +80,116 @@
 
                
        
-        </div>
-       <div class="col-md-6 col-12"> 
+    
+        <div class="col-md-6 col-12"> 
 
-        @if($isNames)
-        <div class="col-md-6" style="border-radius: 5px; background-color: grey; padding: 8px; width: 330px; margin-top: 10px; height: 250px; overflow-y: auto;">
-        <div class="input-group4" style="display: flex; align-items: center; width: 100%;">
-   
-        <input 
-        wire:model="searchTerm"
-      
-        style="font-size: 10px; cursor: pointer; border-radius: 5px 0 0 5px; width: 250px; height: 30px; padding: 5px;" 
-        type="text" 
-        class="form-control" 
-        placeholder="Search for Emp.Name or ID" 
-        aria-label="Search" 
-        aria-describedby="basic-addon1"
-    >
-    <div class="input-group-append" style="display: flex; align-items: center;">
-        <button 
-            wire:click="filter" 
-            style="height: 30px; border-radius: 0 5px 5px 0; background-color: rgb(2, 17, 79); color: #fff; border: none; padding: 0 10px;" 
-            class="btn" 
-            type="button"
-        >
-            <i style="text-align: center;" class="fa fa-search"></i>
-        </button>
+@if($isNames)
+<div class="col-md-6" style="border-radius: 5px; background-color: grey; padding: 8px; width: 330px; margin-top: 10px; height: 250px; overflow-y: auto;">
+<div class="input-group4" style="display: flex; align-items: center; width: 100%;">
 
-        <button 
-            wire:click="closePeoples"  
-            type="button" 
-            class="close rounded px-1 py-0" 
-            aria-label="Close" 
-            style="background-color: rgb(2,17,79); height: 30px; width: 30px; margin-left: 5px; display: flex; align-items: center; justify-content: center;"
-        >
-            <span aria-hidden="true" style="color: white; font-size: 24px; line-height: 0;">×</span>
-        </button>
-    </div>
+<input 
+wire:model.debounce.500ms="searchTerm" placeholder="Search employees..."
+style="font-size: 10px; cursor: pointer; border-radius: 5px 0 0 5px; width: 250px; height: 30px; padding: 5px;" 
+type="text" 
+class="form-control" 
+placeholder="Search for Emp.Name or ID" 
+aria-label="Search" 
+aria-describedby="basic-addon1"
+/>
+
+<div class="input-group-append" style="display: flex; align-items: center;">
+<button 
+  
+ wire:click="searchforEmployee"  wire:model.debounce.500ms="searchTerm"  style="<?php echo ($searchEmployee) ? 'display: block;' : ''; ?>height: 30px; border-radius: 0 5px 5px 0; background-color: rgb(2, 17, 79); color: #fff; border: none; padding: 0 10px;" 
+    class="btn" 
+    type="button" 
+>
+    <i style="text-align: center;" class="fa fa-search"></i>
+</button>
+
+<button 
+    wire:click="closePeoples"  
+    type="button" 
+    class="close rounded px-1 py-0" 
+    aria-label="Close" 
+    style="background-color: rgb(2,17,79); height: 30px; width: 30px; margin-left: 5px; display: flex; align-items: center; justify-content: center;"
+>
+    <span aria-hidden="true" style="color: white; font-size: 24px; line-height: 0;">×</span>
+</button>
 </div>
-@if($peopleFound)
+</div>
+<div>
 
 
-        @foreach($filteredEmployeeIds as $emp_id)
-            @php
-                $employee = $employees->firstWhere('emp_id', $emp_id);
-            @endphp
-
-            <label wire:click="selectPerson('{{ $emp_id }}')" class="container" style="cursor: pointer; background-color: darkgrey; padding: 5px; margin-bottom: 8px; width: 300px; border-radius: 5px; margin-top:5px">
-                <div class="row align-items-center">
-                    <div class="col-auto">
-                        <input type="checkbox" wire:model="selectedPeople" value="{{ $emp_id }}" {{ in_array($emp_id, $selectedPeople) ? 'checked' : '' }}>
-                    </div>
-                    <div class="col-auto">
-                        @if($employee && $employee->image && $employee->image !== 'null')
-                            <img class="profile-image" src="{{ 'data:image/jpeg;base64,' . base64_encode($employee->image) }}" style="border-radius:50%">
-                        @else
-                            @if($employee && $employee->gender == "Male")
-                                <img style="border-radius: 50%;" height="50" width="50" src="{{ asset('images/male-default.png') }}" alt="Default Male Image">
-                            @elseif($employee && $employee->gender == "Female")
-                                <img style="border-radius: 50%;" height="50" width="50" src="{{ asset('images/female-default.jpg') }}" alt="Default Female Image">
-                            @else
-                                <img style="border-radius: 50%;" height="50" width="50" src="{{ asset('images/user.jpg') }}" alt="Default Image">
-                            @endif
-                        @endif
-                    </div>
-                    <div class="col">
-                        <h6 class="username" style="font-size: 12px; color: white;">
-                            {{ ucwords(strtolower($employee->first_name)) }} {{ ucwords(strtolower($employee->last_name)) }}
-                        </h6>
-                        <p class="mb-0" style="font-size: 12px; color: white;">(#{{ $emp_id }})</p>
-                    </div>
+<!-- Display the Search Results -->
+@if ($peopleData && $peopleData->isEmpty())
+                                    <div class="search-container">
+                                        No People Found
+                                    </div>
+                                    @else
+                                 
+                                    @foreach($peopleData as $employee)
+        @if(stripos($employee->first_name . ' ' . $employee->last_name, $searchTerm) !== false)
+        <label wire:click="selectPerson('{{ $employee->emp_id }}')" class="search-container">
+            <div class="row align-items-center">
+                <div class="col-auto">
+                    <input type="checkbox" 
+                           wire:click="updateselectedEmployee('{{ $employee->emp_id }}')" 
+                           wire:model="selectedPeople" 
+                           value="{{ $employee->emp_id }}" 
+                           {{ in_array($employee->emp_id, $selectedPeople) || $employee->isChecked ? 'checked' : '' }}>
                 </div>
-            </label>
-        @endforeach
+                <div class="col-auto">
+    @if($employee->image && $employee->image !== 'null')
+        <img class="profile-image" src="{{ 'data:image/jpeg;base64,' . base64_encode($employee->image) }}" >
     @else
-        <p>No employees found.</p>
-    @endif
-
-        </div>
+        @if($employee->gender == "Male")
+            <img class="profile-image"src="{{ asset('images/male-default.png') }}" alt="Default Male Image">
+        @elseif($employee->gender == "Female")
+            <img class="profile-image" src="{{ asset('images/female-default.jpg') }}" alt="Default Female Image">
+        @else
+            <img class="profile-image" src="{{ asset('images/user.jpg') }}" alt="Default Image">
         @endif
-        </div>
+    @endif
+</div>
+
+                <div class="col">
+                    <h6 class="username" style="font-size: 12px; color: white;">
+                        {{ ucwords(strtolower($employee->first_name)) }} {{ ucwords(strtolower($employee->last_name)) }}
+                    </h6>
+                    <p class="mb-0" style="font-size: 12px; color: white;">(#{{ $employee->emp_id }})</p>
+                </div>
+            </div>
+        </label>
+        @endif
+    @endforeach
+
+@endif
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+
+
+
+
+
+</div>
+@endif
+</div> 
  
     </div>
 </div>
@@ -217,11 +253,11 @@
                 <img class="profile-image" src="{{ 'data:image/jpeg;base64,' . base64_encode($employee->image) }}" style="border-radius:50%; height:50px; width:50px;" alt="Employee Image">
             @else
                 @if($employee->gender == "Male")
-                    <img style="border-radius: 50%;" height="40" width="40" src="{{ asset('images/male-default.png') }}" alt="Default Male Image">
+                    <img class="profile-image" src="{{ asset('images/male-default.png') }}" alt="Default Male Image">
                 @elseif($employee->gender == "Female")
-                    <img style="border-radius: 50%;" height="40" width="40" src="{{ asset('images/female-default.jpg') }}" alt="Default Female Image">
+                    <img class="profile-image" src="{{ asset('images/female-default.jpg') }}" alt="Default Female Image">
                 @else
-                    <img style="border-radius: 50%;" height="40" width="40" src="{{ asset('images/user.jpg') }}" alt="Default Image">
+                    <img class="profile-image" height="40" width="40" src="{{ asset('images/user.jpg') }}" alt="Default Image">
                 @endif
             @endif
 
@@ -261,47 +297,7 @@
                     </i>
                 </p>
             </div>
-            <div class="row" style="color: #778899; margin-top: 10px; margin-left:10px; height:auto;">
-                <div class="col-md-3" style="font-size: 12px;">Title</div>
-                <div class="col-md-3" style="font-size: 12px;">Nick Name</div>
-                <div class="col-md-3" style="font-size: 12px;">Gender</div>
-                <div class="col-md-3" style="font-size: 12px;">Name</div>
-            </div>
-
-            @if($currentEditingProfileId == $employee->emp_id)
- 
-                <div class="row" style="margin-top: 10px; margin-left:5px;">
-                    <div class="col-md-3 mb-3"><input style="font-size:12px" type="text" class="form-control" wire:model="title" placeholder="Title"></div>
-                    <div class="col-md-3 mb-3"><input style="font-size:12px" type="text" class="form-control" wire:model="nickName" placeholder="Nickname"></div>
-                    <div class="col-md-3 mb-3"><input style="font-size:12px" type="text" class="form-control" wire:model="gender" placeholder="Gender"></div>
-                    <div class="col-md-3 mb-3"><input style="font-size:12px" type="text" class="form-control" wire:model="name" placeholder="Name"></div>
-                </div>
-            @else
-                <div class="row" style="margin-left:15px;">
-                    <div class="col-md-3" style="font-size: 12px;">{{$employee->empPersonalInfo->title ?? '-'}} </div>
-                    <div class="col-md-3" style="font-size: 12px;">{{ $employee->empPersonalInfo->nick_name ?? '-' }}</div>
-                    <div class="col-md-3" style="font-size: 12px;">{{ $employee->gender ?? '-' }}</div>
-                    <div class="col-md-3" style="font-size: 12px;">{{ $employee->first_name }} {{ $employee->last_name }}</div>
-                </div>
-            @endif
-            <div class="row" style="color: #778899; margin-top: 10px; margin-left:10px; height:auto;">
-            <div class="col-md-3 mb-3" style="font-size: 12px;">Mobile</div>
-                    <div class="col-md-3 mb-3" style="font-size: 12px;">Email</div>
-                    <div class="col-md-3 mb-3" style="font-size: 12px;">Extension</div>
-              
-            </div>
-
-            @if($currentEditingProfileId == $employee->emp_id)
-            @if (session()->has('message'))
-    <div class="alert alert-success alert-dismissible fade show" role="alert" style="font-size: 12px; padding: 5px 10px; width: 100%; max-width: 500px; margin: 10px auto;">
-        {{ session('message') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" style="margin-left: 2px; font-size: 8px;">
-            &times;
-        </button>
-    </div>
-@endif
-
-@if (session()->has('error'))
+            @if (session()->has('error'))
     <div class="alert alert-danger alert-dismissible fade show" role="alert" style="font-size: 12px; padding: 5px 10px; width: 100%; max-width: 500px; margin: 10px auto;">
         {{ session('error') }}
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" style="margin-left: 2px; font-size: 8px;">
@@ -309,19 +305,80 @@
         </button>
     </div>
 @endif
-                <div class="row" style="margin-top: 5px; margin-left:5px;">
-                    <div class="col-md-3 mb-3"><input style="font-size:12px" type="text" class="form-control" wire:model="emergency_contact" placeholder="Mobile"></div>
-                    <div class="col-md-3 mb-3"><input style="font-size:12px" type="text" class="form-control" wire:model="Email" placeholder="Email"></div>
-                    <div class="col-md-3 mb-3"><input style="font-size:12px" type="text" class="form-control" wire:model="extension" placeholder="Extension"></div>
+@if (session()->has('message'))
+    <div class="alert alert-success alert-dismissible fade show" role="alert" style="font-size: 12px; padding: 5px 10px; width: 100%; max-width: 500px; margin: 10px auto;">
+        {{ session('message') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" style="margin-left: 2px; font-size: 8px;">
+            &times;
+        </button>
+    </div>
+@endif
+            <div class="row" style="color: #778899; margin-top: 10px; margin-left:10px; height:auto;">
+                <div class="col-md-3" style="font-size: 12px;">Title
+                @if($currentEditingProfileId == $employee->emp_id)
+
+
+
+                <div><input style="font-size:12px" type="text" class="form-control mt-2" wire:model="title" placeholder="Title"></div>
+                @else
+                <div class="editprofile " >{{$employee->empPersonalInfo->title ?? '-'}} </div>
+                @endif
+                </div>
+
+                <div class="col-md-3" style="font-size: 12px;">Nick Name
+                @if($currentEditingProfileId == $employee->emp_id)
+
+                <div ><input style="font-size:12px" type="text" class="form-control mt-2" wire:model="nickName" placeholder="Nickname"></div>
+                @else
+                <div class="editprofile " >{{$employee->empPersonalInfo->nick_name ?? '-'}} </div>
+                @endif
+                </div>
+                <div class="col-md-3" style="font-size: 12px;">Gender
+                @if($currentEditingProfileId == $employee->emp_id)
+                <div><input style="font-size:12px" type="text" class="form-control mt-2" wire:model="gender" placeholder="Gender"></div>
+                @else
+                <div class="editprofile" >{{$employee->gender ?? '-'}} </div>
+                @endif
+                </div>
+                <div class="col-md-3" style="font-size: 12px;">Name
+                @if($currentEditingProfileId == $employee->emp_id)
+                <div class=" mb-3"><input style="font-size:12px" type="text" class="form-control mt-2" wire:model="name" placeholder="Name"></div>
+                @else
+                <div class="editprofile">{{ $employee->first_name }} {{ $employee->last_name }}</div>
+                @endif
+                </div>
+            </div>
+
+
+            <div class="row" style="color: #778899; margin-top: 10px; margin-left:10px; height:auto;">
+
+            <div class="col-md-3" style="font-size: 12px;">Mobile
+
+            @if($currentEditingProfileId == $employee->emp_id)
+                <div class="mb-2"><input style="font-size:12px" type="text" class="form-control" wire:model="emergency_contact" placeholder="Mobile"></div>
+                @else
+                <div class="editprofile mb-3" >{{$employee->emergency_contact ?? '-'}} </div>
+                @endif
+                </div>
+                <div class="col-md-3" style="font-size: 12px;">Email
+                @if($currentEditingProfileId == $employee->emp_id)
+                <div class="mb-2"><input style="font-size:12px" type="text" class="form-control" wire:model="Email" placeholder="Email"></div>
+                @else
+                <div class="editprofile mb-3" >{{$employee->email ?? '-'}} </div>
+                @endif
+                </div>
+                <div class="col-md-3" style="font-size: 12px;">Extension
+                @if($currentEditingProfileId == $employee->emp_id)
+                <div class="mb-2"><input style="font-size:12px" type="text" class="form-control" wire:model="extension" placeholder="Extension"></div>
+                @else
+                <div class="editprofile mb-3">{{ $employee->extension }} </div>
+                @endif
+                </div>
+
+              
+            </div>
+
       
-                </div>
-            @else
-                <div class="row" style="margin-left:15px;">
-                <div class="col-md-3 mb-3" style="color: black; font-size: 12px;">{{$employee->emergency_contact ?? '-'}}</div>
-                        <div class="col-md-3 mb-3" style="color: black; font-size: 12px;">{{$employee->email ?? '-'}}</div>
-                        <div class="col-md-3 mb-3" style="color: black; font-size: 12px;">{{$employee->extension ?? '-'}}</div>
-                </div>
-            @endif
         </div>
         <div class="card mx-auto mt-3" style="width: 90%; height: auto;">
     <div class="card-header d-flex justify-content-between align-items-center" style="font-size: 15px; background:white;">
@@ -339,31 +396,30 @@
     </div>
 
     <div class="row px-3 mt-2 text-muted" style="font-size: 12px;">
-        <div class="col-md-3">DOB</div>
-        <div class="col-md-3">Blood Group</div>
-        <div class="col-md-3">Marital Status</div>
+        <div class="col-md-3">DOB
+        @if($currentEditingPersonalProfileId == $employee->emp_id)
+                <div class="mb-2">   <input type="date" class="form-control" wire:model="dob" style="font-size:12px"></div>
+                @else
+                <div class="editprofile mb-3" >{{ isset($employee->empPersonalInfo->date_of_birth) ? \Carbon\Carbon::parse($employee->empPersonalInfo->date_of_birth)->format('d/m/Y') : '-' }}</div>
+                @endif
+                </div>
+                <div class="col-md-3" style="font-size: 12px;">Blood Group
+                @if($currentEditingPersonalProfileId == $employee->emp_id)
+                <div class="mb-2">      <input type="text" class="form-control" wire:model="BloodGroup" placeholder="Blood Group" style="font-size:12px"></div>
+                @else
+                <div class="editprofile mb-3" >{{ $employee->empPersonalInfo->blood_group ?? '-' }} </div>
+                @endif
+                </div>
+                <div class="col-md-3" style="font-size: 12px;">Marital Status
+                @if($currentEditingPersonalProfileId == $employee->emp_id)
+                <div class="mb-2"> <input type="text" class="form-control" wire:model="MaritalStatus" placeholder="Marital Status" style="font-size:12px"></div>
+                @else
+                <div class="editprofile mb-3">{{ $employee->empPersonalInfo->marital_status ?? '-' }}</div>
+                @endif
+     
     </div>
 
-    @if($currentEditingPersonalProfileId == $employee->emp_id)
-        <div class="row px-3 mt-2">
-            <div class="col-md-3 mb-3">
-                <input type="date" class="form-control" wire:model="dob" style="font-size:12px">
-            </div>
-            <div class="col-md-3 mb-3">
-                <input type="text" class="form-control" wire:model="blood_group" placeholder="Blood Group" style="font-size:12px">
-            </div>
-            <div class="col-md-3 mb-3">
-                <input type="text" class="form-control" wire:model="marital_status" placeholder="Marital Status" style="font-size:12px">
-            </div>
-        </div>
-    @else
-        <div class="row px-3 mt-3 text-black" style="font-size: 12px;">
-            <div class="col-md-3 mb-3">{{ isset($employee->empPersonalInfo->date_of_birth) ? \Carbon\Carbon::parse($employee->empPersonalInfo->date_of_birth)->format('d/m/Y') : '-' }}
-            </div>
-            <div class="col-md-3 mb-3">{{ $employee->empPersonalInfo->blood_group ?? '-' }}</div>
-            <div class="col-md-3 mb-3">{{ $employee->empPersonalInfo->marital_status ?? '-' }}</div>
-        </div>
-    @endif
+
 </div>
 
     </div>
@@ -386,24 +442,7 @@
         <div class="row mt-3 ml-3" style="font-size:12px">
       
         <div id="employee-container">
-        @foreach($employeess as $employee)
-    <span style="font-weight:600">
-        Added New Employee: ({{ $employee->emp_id }}) {{ $employee->first_name }} {{ $employee->last_name }}
-    </span>
-    @if (!$loop->first)<br>@endif
-    <p>
-        Hire Date: 
-        @if($employee->hire_date)
-            @php
-                $hireDate = \Carbon\Carbon::parse($employee->hire_date);
-            @endphp
-            ({{ $hireDate->format('M d, Y') }})
-        @else
-            N/A
-        @endif
-    </p>
-    @if (!$loop->first)<br>@endif
-@endforeach
+
 
 </div>
 

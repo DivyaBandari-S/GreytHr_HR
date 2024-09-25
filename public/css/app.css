@@ -1773,18 +1773,39 @@ input[type="date"]::before {
         border-radius: 0; /* Maintain default border radius */
     }
 }
+.editprofile{
+    font-size: 12px;
+    margin-top:5px
 
-.container {
-    width: 100%;
+}
+.editprofilerow{
+    color: #778899; 
+    margin-top: 10px;
+     margin-left:10px; 
+     height:auto;
+}
+.search-container {
+ 
     max-width: none;
     margin-bottom: 10px;
+    cursor: pointer;
+     background-color:darkgrey; 
+     padding: 5px; 
+      width: 300px; 
+      border-radius: 5px; 
+      margin-top:5px
 }
 
-.container img {
-    height: 40px; /* Adjust size for smaller screens */
-    width: 40px;
+.profile-image{
+    border-radius:50%; 
+    width: 50px; 
+    height: 50px;
 }
-
+.profile-image-selected{
+    border-radius:50%; 
+    width: 35px; 
+    height: 35px; 
+}
 .profile {
     margin-top: 10px;
 }

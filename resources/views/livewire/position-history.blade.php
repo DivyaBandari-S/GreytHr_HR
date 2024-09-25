@@ -533,7 +533,7 @@
     <div class="col-auto" style="padding-right: 5px; padding-left: 5px;">
     @if($currentEditingPersonalSubProfileId == $employee->emp_id)
     <div class="col-md-12 mb-3" style="color: black; font-size: 12px;"> 
-        <input style="font-size: 12px" type="text" class="form-control" wire:model="subDepartment" placeholder="Sub Department">
+    <input style="font-size: 12px" type="text" class="form-control" wire:model="subDepartment" placeholder="Sub Department">
     </div>
 @else
     <div class="row m-0" style="margin-top: 10px;">

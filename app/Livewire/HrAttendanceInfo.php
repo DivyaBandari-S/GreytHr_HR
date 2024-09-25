@@ -1536,11 +1536,12 @@ class HrAttendanceInfo extends Component
     public function searchforEmployee()
     {
           $this->searchEmployee=1;
+       
     }
     public function updatesearchTerm()
     {
         $this->searchTerm=$this->searchTerm;
-       
+       dd( $this->searchTerm);
     }
     public function updateselectedEmployee($empId)
     {
