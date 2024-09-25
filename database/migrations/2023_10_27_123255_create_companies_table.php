@@ -21,6 +21,8 @@ return new class extends Migration
             $table->string('company_logo');
             $table->string('password');
             $table->string('contact_email');
+            $table->string('email_domain');
+            $table->string('parent_company_id')->nullable();
             $table->string('contact_phone');
             $table->timestamps(); // Created_at and updated_at columns
         });

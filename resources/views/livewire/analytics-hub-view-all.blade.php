@@ -349,7 +349,7 @@ input[type="radio"]:checked + label {
                         <div class="accordion-item">
                             <h2 class="accordion-header" id="headingOne">
                                 <button class="accordion-button {{ !$isOpenEventList ? 'collapsed' : '' }}" type="button" wire:click="toggleAccordion('eventList')" aria-expanded="{{ $isOpenEventList ? 'true' : 'false' }}" aria-controls="collapseOne">
-                                    <i class="fas fa-folder folder-icon"></i> Event List (6)
+                                    <i class="fas fa-folder folder-icon"></i> Event List (1)
                                 </button>
                             </h2>
                             <div id="collapseOne" class="accordion-collapse collapse {{ $isOpenEventList ? 'show' : '' }}" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
