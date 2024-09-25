@@ -22,6 +22,7 @@ class Company extends Authenticatable
         'company_logo',
         'password',
         'contact_email',
+        'email_domain',
         'contact_phone'
         // Add other fields that you want to be fillable here
     ];

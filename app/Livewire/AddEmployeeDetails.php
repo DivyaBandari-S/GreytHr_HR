@@ -198,7 +198,8 @@ class AddEmployeeDetails extends Component
     public $parentscurrentStep = 1;
     public $showAlert = false;
     public $successModal = false;
-    public $action='add';
+    public $action = 'add';
+    public $email_domain = '';
 
 
 
@@ -229,14 +230,14 @@ class AddEmployeeDetails extends Component
             $firstName = explode(' ', trim($this->first_name))[0]; // Take only the first word from the first name
             $lastname = explode(' ', trim($this->last_name))[0];
             $mobile = substr($this->mobile_number, 0, 4);
-            $company_email = strtolower($firstName . '.' . $lastname . '@paygdigitals.com');
+            $company_email = strtolower($firstName . '.' . $lastname.'@'.$this->email_domain);
             $exists = EmployeeDetails::where('email', $company_email)->exists();
             if ($exists) {
 
-                $this->company_email = strtolower($firstName . '.' . $lastname . $mobile . '@paygdigitals.com');
+                $this->company_email = strtolower($firstName . '.' . $lastname . $mobile.'@'.$this->email_domain );
                 $this->validateOnly("company_email", $this->validationRules());
             } else {
-                $this->company_email = strtolower($firstName . '.' . $lastname . '@paygdigitals.com');
+                $this->company_email = strtolower($firstName . '.' . $lastname.'@'.$this->email_domain );
                 $this->validateOnly("company_email", $this->validationRules());
             }
         }
@@ -249,45 +250,56 @@ class AddEmployeeDetails extends Component
     public function nextPage()
 
     {
+
         if ($this->currentStep != 8 && $this->currentStep != 9) {
 
             $this->validate($this->validationRules());
         }
 
+
         if ($this->currentStep == 1) {
             $existingEmployee = EmployeeDetails::where('email', $this->company_email)
-            ->where('emp_id', '!=', $this->emp_id)
-            ->first();
+                ->where('emp_id', '!=', $this->emp_id)
+                ->first();
+            $existingPhoneNumber = EmployeeDetails::where('emergency_contact', $this->mobile_number)
+                ->where('emp_id', '!=', $this->emp_id)
+                ->first();
 
             // dd( $existingEmployee);
-        if ($existingEmployee) {
-            // Add custom error message for email
-            $this->addError('company_email', ' Company email already used of another employee.');
-            return;
-        }
+            if ($existingEmployee) {
+                // Add custom error message for email
+                $this->addError('company_email', ' Company email already used for another employee.');
+                return;
+            }
+            if ($existingPhoneNumber) {
+                // Add custom error message for email
+                $this->addError('mobile_number', ' Mobile number already used for another employee.');
+                return;
+            }
+
             $this->currentStep++;
         } elseif ($this->currentStep == 2) {
 
             $this->registerEmployeeDetails();
         } elseif ($this->currentStep == 3) {
             $existingEmployee = EmpPersonalInfo::where('adhar_no', $this->adhar_no)
-            ->where('emp_id', '!=', $this->emp_id)
-            ->first();
+                ->where('emp_id', '!=', $this->emp_id)
+                ->first();
             $existingpan = EmpPersonalInfo::where('pan_no', $this->pan_no)
-            ->where('emp_id', '!=', $this->emp_id)
-            ->first();
+                ->where('emp_id', '!=', $this->emp_id)
+                ->first();
 
             // dd( $existingEmployee);
-        if ($existingEmployee) {
-            // Add custom error message for email
-            $this->addError('adhar_no', ' Aadhar number already used of another employee.');
-            return;
-        }
-        if ($existingpan) {
-            // Add custom error message for email
-            $this->addError('pan_no', ' PAN number already used of another employee.');
-            return;
-        }
+            if ($existingEmployee) {
+                // Add custom error message for email
+                $this->addError('adhar_no', ' Aadhar number already used of another employee.');
+                return;
+            }
+            if ($existingpan) {
+                // Add custom error message for email
+                $this->addError('pan_no', ' PAN number already used of another employee.');
+                return;
+            }
             $this->currentStep++;
         } elseif ($this->currentStep == 4) {
             $this->registerEmployeeJobDetails();
@@ -440,12 +452,14 @@ class AddEmployeeDetails extends Component
 
     protected $rules = [
         1 => [
-            'first_name' => 'required|alpha|max:100',
-            'last_name' => 'required|alpha|max:100',
+            'first_name' => 'required|regex:/^[a-zA-Z\s]+$/|max:100',
+            'last_name' => 'required|regex:/^[a-zA-Z\s]+$/|max:100',
             'mobile_number' => 'required|string|size:10|different:alternate_mobile_number',
             'company_email' => 'required|email|different:email',
-            'gender' => 'required|in:Male,Female',
-            'image' => 'nullable|image|max:1024',
+            'gender' => 'required|in:Male,Female,Others',
+            'imageBinary' => 'required|max:1024',
+            'company_id' => 'required|exists:companies,company_id',
+
         ],
         2 => [
             'hire_date' => 'required|date',
@@ -457,8 +471,9 @@ class AddEmployeeDetails extends Component
             'emp_domain' => 'nullable|string',
             'referrer' => 'nullable|string',
             'job_location' => 'required|string|max:255',
-            'company_id' => 'required|exists:companies,company_id',
             'manager_id' => 'required',
+            'job_mode' => 'required|in:Office,Remote,Hybrid',
+            'employee_type' => 'required|in:full-time,part-time,contract',
         ],
         3 => [
             'date_of_birth' => 'required|date',
@@ -535,15 +550,16 @@ class AddEmployeeDetails extends Component
         'first_name.max' => 'First name must only contain 100 leters.',
         'last_name.required' => 'Last name is required.',
         'last_name.alpha' => 'Last name must only contain letters.',
-        'last_name.alpha' => 'Last name mustonly contain 100 leters.',
+        'last_name.max' => 'Last name must only contain 100 leters.',
         'mobile_number.required' => 'Mobile number is required.',
         'mobile_number.size' => 'Mobile number must be exactly 10 digits.',
-        'mobile_number.different' => ' Mobile number must be different from the alternate mobile number.',
+        'mobile_number.different' => ' Mobile number must be different from the emergency mobile number.',
         'company_email.required' => 'Company email is required.',
         'company_email.email' => 'Company email must be a valid email address.',
         'company_email.different' => 'Company email must be different from the personal email.',
         'company_email.unique' => ' Company email  already used of another employee.',
         'gender.required' => 'Please select a gender.',
+        'image.required' => 'Employee image is required.',
         'image.max' => ' Selected image exceeds 1MB and cannot be uploaded.',
         'gender.in' => 'Selected gender is invalid.',
         'hire_date.required' => 'Hire date is required.',
@@ -582,8 +598,8 @@ class AddEmployeeDetails extends Component
         'pan_no' => ' PAN number must be 10 characters.',
         'pan_no.required' => ' PAN number is required.',
         'email.different' => 'Personal email must be different from the company email.',
-        'alternate_mobile_number.different' => 'The alternate mobile number must be different from the phone number.',
-        'alternate_mobile_number.size' => 'Alternate mobile number must be 10 characters.',
+        'alternate_mobile_number.different' => 'The Emergency mobile number must be different from the phone number.',
+        'alternate_mobile_number.size' => 'Emergency mobile number must be 10 characters.',
         'address.required' => 'Permanent address is required.',
         'present_address.required' => 'Present address is required.',
         'state.required' => 'The state is required.',
@@ -672,7 +688,8 @@ class AddEmployeeDetails extends Component
                 $this->imageBinary = base64_encode(file_get_contents($this->image->getRealPath()));
             }
 
-            $report_to = EmployeeDetails::where('emp_id', $this->manager_id)->value('manager_id');
+           $report_to = EmployeeDetails::where('emp_id', $this->manager_id)->value('manager_id');
+
 
 
             EmployeeDetails::updateorCreate(
@@ -682,7 +699,7 @@ class AddEmployeeDetails extends Component
                     'last_name' => ucfirst(strtolower($this->last_name)),
                     'gender' => $this->gender,
                     'email' => $this->company_email,
-                    'company_id' => $this->company_id,
+                    'company_id' =>[$this->company_id],
                     'hire_date' => $this->hire_date,
                     'employee_type' => $this->employee_type,
                     'manager_id' => $this->manager_id,
@@ -690,6 +707,7 @@ class AddEmployeeDetails extends Component
                     'dept_id' => $this->department_id,
                     'sub_dept_id' => $this->sub_department_id,
                     'job_role' => $this->job_title,
+                    'job_mode' => $this->job_mode,
                     'employee_status' => $this->employee_status,
                     'emergency_contact' => $this->mobile_number,
                     'inter_emp' => $this->inter_emp,
@@ -916,10 +934,15 @@ class AddEmployeeDetails extends Component
 
     public function selectedCompany()
     {
+
         if ($this->company_id) {
             $this->selectedId = Company::find($this->company_id);
             $this->company_name = $this->selectedId->company_name;
             $this->companyName = $this->company_name;
+            $this->email_domain=$this->selectedId->email_domain;
+            $trimmedEmail = substr($this->company_email, 0, strpos($this->company_email, '@'));
+            $this->company_email=$trimmedEmail.'@'. $this->email_domain;
+
             // $this->selectedEmployees = EmployeeDetails::where('company_id', $this->company_id)->get();
             // dd( $this->selectedEmployees);
             // if ($this->selectedEmployees->isNotEmpty()) {
@@ -989,13 +1012,11 @@ class AddEmployeeDetails extends Component
         $this->hire_date = Carbon::now()->toDateString();
         $hrId = auth()->guard('hr')->user()->emp_id;
         $employee = EmployeeDetails::find($hrId);
+
         $empCompanyId = $employee->company_id;
-        $employeeCompanyName = Company::find($empCompanyId)->company_name;
 
+        $this->companieIds = Company::wherein('company_id', $empCompanyId)->select('company_id', 'company_name')->get();
 
-
-        $this->companieIds = Company::where('company_id', $empCompanyId)->get();
-        //    dd( $this->companieIds);
         $companieIdsLength = count($this->companieIds);
         if ($companieIdsLength == 1) {
             $this->company_id = $this->companieIds->first()->company_id;
@@ -1028,21 +1049,25 @@ class AddEmployeeDetails extends Component
             // Assign fetched employee details to the respective properties
             try {
 
-                $this->action='edit';
+                $this->action = 'edit';
                 // Employee job Details
 
                 // Decrypt the ID
                 $this->emp_id = Crypt::decrypt($id);
                 $empdetails = EmployeeDetails::where('emp_id', $this->emp_id)->first();
+                // dd( $empdetails);
                 $this->first_name = $empdetails->first_name;
                 $this->last_name = $empdetails->last_name;
                 $this->company_email = $empdetails->email;
+                $this->email_domain = substr($this->company_email, strpos($this->company_email, '@') + 1);
                 $this->gender = $empdetails->gender;
                 $this->mobile_number = $empdetails->emergency_contact;
                 $this->imageBinary = $empdetails->image;
-                // dd(strlen($empdetails->image));
+
+                // dd(($empdetails->image));
                 $this->hire_date = $empdetails->hire_date;
                 $this->company_id = $empdetails->company_id;
+                // dd( $this->company_id);
                 $this->employee_type = $empdetails->employee_type;
                 $this->manager_id = $empdetails->manager_id;
                 $this->department_id = $empdetails->dept_id;
@@ -1078,46 +1103,45 @@ class AddEmployeeDetails extends Component
 
                 // Employee Personal details
                 $empPersonalDetails = EmpPersonalInfo::where('emp_id', $this->emp_id)->first();
-             if($empPersonalDetails!=null){
-                $this->date_of_birth = $empPersonalDetails->date_of_birth;
-                $this->blood_group = $empPersonalDetails->blood_group;
-                $this->nationality = $empPersonalDetails->nationality;
-                $this->religion = $empPersonalDetails->religion;
-                $this->marital_status = $empPersonalDetails->marital_status;
-                $this->physically_challenge = $empPersonalDetails->physically_challenge;
-                $this->email = $empPersonalDetails->email;
-                $this->alternate_mobile_number = $empPersonalDetails->alternate_mobile_number;
-                $this->city = $empPersonalDetails->city;
-                $this->state = $empPersonalDetails->state;
-                $this->postal_code = $empPersonalDetails->postal_code;
-                $this->country = $empPersonalDetails->country;
-                $this->present_address = $empPersonalDetails->present_address;
-                $this->address = $empPersonalDetails->permenant_address;
-                $this->passport_no = $empPersonalDetails->passport_no;
-                $this->pan_no = $empPersonalDetails->pan_no;
-                $this->adhar_no = $empPersonalDetails->adhar_no;
-                $this->pf_no = $empPersonalDetails->pf_no;
-                $this->facebook = $empPersonalDetails->facebook;
-                $this->twitter = $empPersonalDetails->twitter;
-                $this->linked_in = $empPersonalDetails->linked_in;
+                if ($empPersonalDetails != null) {
+                    $this->date_of_birth = $empPersonalDetails->date_of_birth;
+                    $this->blood_group = $empPersonalDetails->blood_group;
+                    $this->nationality = $empPersonalDetails->nationality;
+                    $this->religion = $empPersonalDetails->religion;
+                    $this->marital_status = $empPersonalDetails->marital_status;
+                    $this->physically_challenge = $empPersonalDetails->physically_challenge;
+                    $this->email = $empPersonalDetails->email;
+                    $this->alternate_mobile_number = $empPersonalDetails->alternate_mobile_number;
+                    $this->city = $empPersonalDetails->city;
+                    $this->state = $empPersonalDetails->state;
+                    $this->postal_code = $empPersonalDetails->postal_code;
+                    $this->country = $empPersonalDetails->country;
+                    $this->present_address = $empPersonalDetails->present_address;
+                    $this->address = $empPersonalDetails->permenant_address;
+                    $this->passport_no = $empPersonalDetails->passport_no;
+                    $this->pan_no = $empPersonalDetails->pan_no;
+                    $this->adhar_no = $empPersonalDetails->adhar_no;
+                    $this->pf_no = $empPersonalDetails->pf_no;
+                    $this->facebook = $empPersonalDetails->facebook;
+                    $this->twitter = $empPersonalDetails->twitter;
+                    $this->linked_in = $empPersonalDetails->linked_in;
 
-                // Educational Details
-                if ($empPersonalDetails->qualification != null) {
-                    $this->education =json_decode($empPersonalDetails->qualification, true);
+                    // Educational Details
+                    if ($empPersonalDetails->qualification != null) {
+                        $this->education = json_decode($empPersonalDetails->qualification, true);
+                    }
+
+
+                    // Experience Details
+                    if ($empPersonalDetails->experience != null) {
+                        $this->experience = json_decode($empPersonalDetails->experience, true);
+                    }
                 }
-
-
-                // Experience Details
-                if ($empPersonalDetails->experience != null) {
-                    $this->experience = json_decode($empPersonalDetails->experience, true);
-                }
-
-             }
 
 
                 //  Employee Parents Details
                 $empParentDetails = EmpParentDetails::where('emp_id', $this->emp_id)->first();
-                if( $empParentDetails!=null){
+                if ($empParentDetails != null) {
                     $this->father_first_name = $empParentDetails->father_first_name;
                     $this->father_last_name = $empParentDetails->father_last_name;
                     $this->mother_first_name = $empParentDetails->mother_first_name;
@@ -1140,7 +1164,6 @@ class AddEmployeeDetails extends Component
                     $this->mother_phone = $empParentDetails->mother_phone;
                     $this->father_image_binary = $empParentDetails->father_image;
                     $this->mother_image_binary = $empParentDetails->mother_image;
-
                 }
 
                 //Employee Spouse Details
@@ -1174,7 +1197,6 @@ class AddEmployeeDetails extends Component
                     $this->account_number = $empBankDetails->account_number;
                     $this->ifsc_code = $empBankDetails->ifsc_code;
                     $this->bank_address = $empBankDetails->bank_address;
-
                 }
             } catch (\Illuminate\Contracts\Encryption\DecryptException $e) {
                 // Handle the case where decryption fails

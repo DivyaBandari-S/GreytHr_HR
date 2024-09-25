@@ -56,6 +56,10 @@ class EmployeeDetails extends Authenticatable
         'confirmation_date',
 
     ];
+    protected $casts = [
+        'company_id' => 'array',
+
+    ];
     public function empBankDetails()
     {
         return $this->hasOne(EmpBankDetail::class, 'emp_id', 'emp_id');
@@ -80,7 +84,7 @@ class EmployeeDetails extends Authenticatable
     }
     public function empDepartment()
     {
-        return $this->hasOne(EmpDepartment::class, 'dept_id', 'dept_id'); 
+        return $this->hasOne(EmpDepartment::class, 'dept_id', 'dept_id');
     }
     public function empSubDepartment()
     {
@@ -123,5 +127,5 @@ public function getImageUrlAttribute()
         return $this->hasMany(Chating::class,'sender_id')->orWhere('receiver_id',$this->emp_id)->whereNotDeleted();
 
     }
-  
+
 }

@@ -85,10 +85,10 @@
                         <tr>
                             <td class="whitespace-nowrap">{{ $counter++ }}</td>
                             <td>
-                                @if(strlen($employee->image)>10)
+                                @if($employee->image !== null && $employee->image != "null" && $employee->image != "Null" && $employee->image != "")
                                 <!-- <p>{{strlen($employee->image)}}</p> -->
                                 <img src="data:image/jpeg;base64,{{ $employee->image }}" alt=" image" style='height:50px;width:50px' class="img-thumbnail" />
-                                @elseif(strlen($employee->image)<=10 || $employee->image==Null )
+                                @else
                                     @if($employee->gender=='Male')
                                     <div class="employee-profile-image-container mb-2" >
 
@@ -114,7 +114,7 @@
                             <td class="whitespace-nowrapp">
                                 {{ \Carbon\Carbon::parse($employee->date_of_birth)->format('d M Y') }}
                             </td>
-                            <td class="whitespace-nowrap">{{ $employee->mobile_number }}</td>
+                            <td class="whitespace-nowrap">{{ $employee->emergency_contact }}</td>
                             <td class="whitespace-nowrap">
                                 {{ ucwords(str_replace(['-', '_'], ' ', $employee->employee_type)) }}
                             </td>

@@ -11,6 +11,7 @@ use App\Livewire\EmployeeAsset;
 use App\Livewire\GrantLeaveBalance;
 use App\Livewire\UpdateEmployeeDetails;
 use App\Livewire\EmployeeDirectory;
+use App\Livewire\EmployeeLeave;
 use App\Livewire\EmployeeProfile;
 use App\Livewire\Feeds;
 use App\Livewire\HrAttendanceInfo;
@@ -59,14 +60,15 @@ Route::middleware(['auth:hr'])->group(function () {
                Route::get('/employee-asset', EmployeeAsset::class)->name('employee-asset');
                Route::get('/position-history', PositionHistory::class)->name('position-history');
                Route::get('/parent', ParentDetails::class)->name('parent-details');
-               
-            
+
+
                 Route::get('/user/hremployeedirectory', EmployeeDirectory::class)->name('employee-directory');
                 Route::get('/user/analytics-hub', AnalyticsHub::class)->name('analytics-hub');
                 Route::get('/user/analytics-hub-viewall', AnalyticsHubViewAll::class)->name('analytics-hub-viewall');
                 Route::get('/user/overview', HrAttendanceOverviewNew::class)->name('overview');
                 Route::get('/user/who-is-in-chart-hr', WhoIsInChartHr::class)->name('who-is-in-chart-hr');
                 Route::get('/user/attendance-info', HrAttendanceInfo::class)->name('attendance-info');
+                Route::get('/calendar/information/employee-leave', EmployeeLeave::class)->name('employee-leave');
     });
 
 

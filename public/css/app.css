@@ -130,9 +130,9 @@ body {
     }
 }
 
-.active {
+/* .active {
     background-color: white;
-}
+} */
 
 .active a {
     color: rgb(1, 1, 20);
@@ -144,10 +144,11 @@ body {
 }
 
 ul {
-    list-style-type: none;
     display: flex;
+    list-style-type: none;
     justify-content: start;
     margin-top: 10px;
+    margin: 0px;
     cursor: pointer;
     padding: 0px;
 }
@@ -852,7 +853,7 @@ input {
 .analytic-table-container {
     overflow-y: auto;
     height: 300px;
-    overflow-x: hidden; 
+    overflow-x: hidden;
 }
 
 .analytic-table {
@@ -1047,7 +1048,7 @@ input[type="radio"]:checked + label {
 .tab-content {
     border: 1px solid #dee2e6;
     border-top: none;
-    padding: 1rem;
+    /* padding: 1rem; */
 }
 
 .nav-tabs .nav-link.active {
@@ -1658,7 +1659,7 @@ input[type="date"]::before {
     border-bottom: 2px solid #007bff;
 }
 .tab-content {
-    display: none;
+    /* display: none; */
     padding: 15px;
     border: none;
     background-color: transparent; /* Remove white background */
@@ -1930,16 +1931,16 @@ input[type="date"]::before {
     cursor:pointer;
 }
 .main-overview-graphs-container{
-    border-radius: 5px; 
-    background-color: white; 
+    border-radius: 5px;
+    background-color: white;
     margin-bottom: 10px;
 }
 .main-overview-heading-text{
-    font-size: var(--sub-headings-font-size); 
+    font-size: var(--sub-headings-font-size);
     color: var(--label-color);
 }
 .main-overview-subheading-text{
-    font-size: var(--normal-font-size); 
+    font-size: var(--normal-font-size);
     color: var(--label-color);
 }
 .main-overview-red-text{
@@ -1949,8 +1950,8 @@ input[type="date"]::before {
     height: 220px;
 }
 .main-overview-count-text{
-    font-size: var(--main-headings-font-size); 
-    font-weight: 500; 
+    font-size: var(--main-headings-font-size);
+    font-weight: 500;
     color: var(--main-heading-color);
 }
 .main-overview-green-text{
@@ -1960,7 +1961,7 @@ input[type="date"]::before {
     margin-top: 30px;
 }
 .main-overview-tickets-count{
-    color: var(--main-heading-color); 
+    color: var(--main-heading-color);
     font-size: var(--normal-font-size);
     margin-top: -1px;
 }
@@ -1971,36 +1972,137 @@ input[type="date"]::before {
     cursor: pointer;
 }
 .main-overview-hr-line{
-    border: 1px solid grey; 
-    width: 100%; 
+    border: 1px solid grey;
+    width: 100%;
     margin-top: 10px;
 }
 .main-overview-no-records-img{
-    width: 5em; 
+    width: 5em;
     margin: 10px 0px;
 }
 .main-overview-no-records-text{
     font-size: 12px;
 }
 .main-overview-scroll-container{
-    height: 160px; 
-    overflow-y: auto; 
+    height: 160px;
+    overflow-y: auto;
     overflow-x: hidden;
 }
 .main-overview-list-div-container{
     gap: 10px;
 }
 .main-overview-mobile-users-count{
-    font-size: var(--normal-font-size); 
+    font-size: var(--normal-font-size);
     color: var(--main-heading-color);
     font-weight: 500;
 }
 .main-overview-invite-text{
-    font-size: var(--normal-font-size); 
-    color: var(--main-button-color); 
-    text-decoration: none; 
+    font-size: var(--normal-font-size);
+    color: var(--main-button-color);
+    text-decoration: none;
     font-weight: 500;
 }
 
 
   /* Hr Main Overview Styles Ended */
+
+
+  /* Calendar->Information->Employee leave styles start  */
+
+  .employee-leave-hr-main{
+    margin: 10px;
+  }
+
+  .employee-leave-searchrow{
+    background-color: white;
+    border-radius: 2px;
+  }
+  .employee-leave-start-para{
+    color: #2d2b2b;
+    font-weight: 600;
+    font-size: 15px;
+    padding:5px 10px;
+    margin-bottom: 0px;
+  }
+  .employee-search-hr{
+    padding: 5px 10px;
+  }
+  .Employee-select-leave{
+    border: 0px;
+    width: fit-content;
+    margin-left: 5px;
+    font-weight: 600;
+    margin-right: 5px;
+    padding-bottom:5px ;
+    color: var(--label-color);
+  }
+  .search-employee-type-leave{
+    align-items: center;
+    padding-bottom:10px ;
+    display: flex;
+    margin-right: 5px;
+    color: var(--label-color);
+  }
+  .Employee-details-hr{
+    border: 1px solid rgb(80, 80, 218);
+    width:200px ;
+    align-items: center;
+    border-radius: 30px;
+    padding: 5px 10px;
+    margin: 0px 0px 10px 10px;
+
+  }
+  .Employee-details-img-details-hr{
+    width: fit-content;
+    align-items: center;
+  }
+  .Emp-name-leave-details{
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 0px;
+  }
+  .Emp-id-leave-details{
+    font-size: 10px;
+    margin-bottom: 0px;
+  }
+
+  .Employee-leave-table-header{
+
+    border-bottom: 1px  solid rgb(199, 196, 196);
+    height: fit-content;
+  }
+  .leave-balance-lave-types {
+    width: fit-content;
+    align-items: end;
+    margin-top: 0px;
+
+  }
+  .leave-balance-lave-types  button {
+    padding: 0px 10px ;
+    font-size: 13px;
+    color: var(--main-button-color);
+    border: 0px;
+    background-color: white;
+    height: max-content;
+    height: 30px;
+
+  }
+  .Leave-balance-buttons{
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+  }
+  .Leave-balance-buttons button{
+    color: var(--main-button-color);
+    background-color: white;
+    border: 0.5px solid var(--main-button-color);
+    height: fit-content;
+    font-size: 13px;
+    font-weight: 500;
+    border-radius: 5px;
+  }
+.Employee-leave-table-maindiv{
+    border: 0.5px solid  rgb(199, 196, 196) ;
+}
