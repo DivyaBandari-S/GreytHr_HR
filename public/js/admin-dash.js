@@ -1,5 +1,6 @@
 // SIDEBAR: SUBMENU
 const allSidebarSubmenu = document.querySelectorAll('#sidebar .sidebar__submenu')
+const mainSection = document.querySelector('#main')
 
 allSidebarSubmenu.forEach(item => {
     const a = item.previousElementSibling
@@ -10,6 +11,7 @@ allSidebarSubmenu.forEach(item => {
         if (this.classList.contains('clicked')) {
             this.classList.remove('clicked')
             item.classList.remove('active')
+            mainSection.classList.remove('openLeftSubMenu')
         } else {
             allSidebarSubmenu.forEach(i => {
                 i.previousElementSibling.classList.remove('clicked')
@@ -18,9 +20,11 @@ allSidebarSubmenu.forEach(item => {
 
             this.classList.add('clicked')
             item.classList.add('active')
+            mainSection.classList.add('openLeftSubMenu')
         }
     })
 })
+
 
 
 
@@ -59,10 +63,10 @@ allSidebarDropdownMenu.forEach(item => {
 
 
 // SIDEBAR MOBILE: TOGGLE SIDEBAR
-const toggleSidebar = document.querySelector('#sidebar-mobile .toggle-sidebar')
+const toggleSidebar1 = document.querySelector('#sidebar-mobile .toggle-sidebar')
 const sidebar = document.querySelector('#sidebar')
 
-toggleSidebar.addEventListener('click', function() {
+toggleSidebar1.addEventListener('click', function() {
     sidebar.classList.add('active')
 })
 
@@ -130,6 +134,7 @@ document.addEventListener('click', function(e) {
         allSidebarSubmenu.forEach(item => {
             item.previousElementSibling.classList.remove('clicked')
             item.classList.remove('active')
+            mainSection.classList.remove('openLeftSubMenu')
         })
     }
 
@@ -186,8 +191,8 @@ var options = {
     },
 };
 
-var chart = new ApexCharts(document.querySelector("#chart"), options);
-chart.render();
+// var chart = new ApexCharts(document.querySelector("#chart"), options);
+// chart.render();
 
 // start: Tab
 function tabToggle () {

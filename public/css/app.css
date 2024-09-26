@@ -144,9 +144,7 @@ body {
 }
 
 ul {
-    display: flex;
     list-style-type: none;
-    justify-content: start;
     margin-top: 10px;
     margin: 0px;
     cursor: pointer;
