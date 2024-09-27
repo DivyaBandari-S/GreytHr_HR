@@ -1709,6 +1709,7 @@ input[type="date"]::before {
  margin-top: 10px; 
  margin-left:10px; 
  height:auto;
+
  display: flex;
 }
 .profile-header{
@@ -1718,18 +1719,48 @@ input[type="date"]::before {
     display:flex;
      padding: 10px; 
  margin-top:10px;
-     align-items:center; 
-     justify-content:space-between; 
-     width:90%;
+     align-items:center;
+     justify-content: center; 
+  
+     width:80%;
   
 }
 .profile-header-row{
     display:flex;
      justify-content: center;
-      width:100%;
+      width:80%;
        align-items:center;
 }
+.search-btn {
+    background-color:var(--main-button-color);
+    border-radius: 0 5px 5px 0;
+    color: #fff !important;
+    width: 45px;
+    height:32px;
+    border: none;
+    align-items: center;
+    display: flex;
+}
+.close-btn{
+   background-color: var(--main-button-color);
+    height: 30px; 
+    width: 30px; margin-left: 5px; 
+    display: flex; align-items: center
+    ; justify-content: center;
+    border: none;
+}
+.position-row{
+display: flex;
 
+background-color: white;
+
+font-size: 12px;
+width: 80%;
+
+}
+.search-btn i {
+    color: white; /* Ensures the icon color is white */
+}
 .emp-heading{
     font-size: 14px;
     font-weight: 500;

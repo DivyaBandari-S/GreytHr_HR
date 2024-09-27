@@ -51,11 +51,13 @@
 					<li>
 						<a href="#">Information <i class="ph-caret-right-fill"></i></a>
 						<ul class="sidebar__dropdown-menu">
-							<li><a href="/home">Employee Profile</a></li>
+							<li><a href="/hr/employee-profile">Employee Profile</a></li>
+							<li><a href="/hr/position-history">Postion History</a></li>
+							<li><a href="/hr/employee-asset">Assets</a></li>
 							<li><a href="/user">Bank/PF/ESI</a></li>
 							<li><a href="/user">Family Details</a></li>
-							<li><a href="/user">Assets</a></li>
-							<li><a href="/home">Postion History</a></li>
+							
+						
 							<li><a href="/user">Previous Employement</a></li>
 							<li><a href="/user">Separration</a></li>
 							<li><a href="/user">Acess card details</a></li>

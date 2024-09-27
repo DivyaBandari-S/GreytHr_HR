@@ -755,7 +755,6 @@ class PositionHistory extends Component
             $this->dispatchBrowserEvent('error', ['message' => 'An error occurred: ' . $e->getMessage()]);
         }
     }
-    
     public function closeMessage()
     {
         $this->showSuccessMessage = false;

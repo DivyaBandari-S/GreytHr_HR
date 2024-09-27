@@ -66,9 +66,9 @@ Route::middleware(['auth:hr'])->group(function () {
 
 
         Route::get('/hrFeeds', Feeds::class)->name('hrfeeds');
-        Route::get('/information', EmployeeProfile::class)->name('employee-profile');
-        Route::get('/asset', EmployeeAsset::class)->name('employee-asset');
-        Route::get('/history', PositionHistory::class)->name('position-history');
+        Route::get('/employee-profile', EmployeeProfile::class)->name('employee-profile');
+        Route::get('/employee-asset', EmployeeAsset::class)->name('employee-asset');
+        Route::get('/position-history', PositionHistory::class)->name('position-history');
         Route::get('/parent', ParentDetails::class)->name('parent-details');
         Route::get('/user/hremployeedirectory', EmployeeDirectory::class)->name('employee-directory');
         Route::get('/user/attendance-overview', HrAttendanceOverviewNew::class)->name('attendance-overview');

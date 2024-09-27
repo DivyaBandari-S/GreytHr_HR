@@ -1,16 +1,31 @@
 <div >
 
-
+<div class="main__body">
        <div class="tab-container">
-       <div class="tab-buttons">
-    <button class="tab-button active" onclick="showTab(0)">Main</button>
-    <button class="tab-button" onclick="showTab(1)">Activity</button>
-</div>
+       <div class="tab-pane">
+                    <button
+                        type="button"
+                        data-tab-pane="active"
+                        class="tab-pane-item active"
+                        onclick="tabToggle()">
+                        <span class="tab-pane-item-title">01</span>
+                        <span class="tab-pane-item-subtitle">main</span>
+                    </button>
+                    <button
+                        type="button"
+                        data-tab-pane="in-review"
+                        class="tab-pane-item after"
+                        onclick="tabToggle()">
+                        <span class="tab-pane-item-title">02</span>
+                        <span class="tab-pane-item-subtitle">Activity</span>
+                    </button>
+                   
+                </div>
 
 <!-- Tab Content -->
-<div class="tab-content-custom active" id="tab-0">
+<div class="tab-page active" data-tab-page="active">
 <div class="row justify-content-center"  >
-                        <div class="col-md-10 custom-container d-flex flex-column">
+                        <div class="col-md-8 custom-container d-flex flex-column">
                         <div class="d-flex align-items-center mb-2">
     <p class="main-text mb-0" style="width:88%">
         This page allows you to add/edit the profile details of an employee. The page helps you to keep the employee information up to date.
@@ -36,7 +51,7 @@
                  
 
                 <div class="row justify-content-center mt-2 "  >
-                <div class="col-md-10 custom-container d-flex flex-column bg-white">
+                <div class="col-md-8 custom-container d-flex flex-column bg-white">
     <div class="row justify-content-center mt-3 flex-column m-0" style="border-radius: 5px; font-size:12px; width:88%;">
         <div class="col-md-9">
             <div class="row " style="display:flex;">
@@ -108,21 +123,21 @@ aria-describedby="basic-addon1"
 />
 
 <div class="input-group-append" style="display: flex; align-items: center;">
+
 <button 
   
- wire:click="searchforEmployee"  wire:model.debounce.500ms="searchTerm"  style="<?php echo ($searchEmployee) ? 'display: block;' : ''; ?>height: 30px; border-radius: 0 5px 5px 0; background-color: rgb(2, 17, 79); color: #fff; border: none; padding: 0 10px;" 
-    class="btn" 
-    type="button" 
->
-    <i style="text-align: center;" class="fa fa-search"></i>
+ wire:click="searchforEmployee"  wire:model.debounce.500ms="searchTerm"  style="<?php echo ($searchEmployee) ? 'display: block;' : ''; ?>" 
+    class="search-btn" 
+    type="button" >
+<i class='bx bx-search' style="color:white"></i>
 </button>
 
 <button 
     wire:click="closePeoples"   
     type="button" 
-    class="close rounded px-1 py-0" 
+    class="close-btn rounded px-1 py-0" 
     aria-label="Close" 
-    style="background-color: rgb(2,17,79); height: 30px; width: 30px; margin-left: 5px; display: flex; align-items: center; justify-content: center;"
+   
 >
     <span aria-hidden="true" style="color: white; font-size: 24px; line-height: 0;">×</span>
 </button>
@@ -249,8 +264,8 @@ aria-describedby="basic-addon1"
 
 
 @if($employee)
-
-    <div class="profile-header-row" >
+<div class="card mx-auto" style="margin-top: 20px; height:auto; width:70%;background:#98CBBA">
+  
         <div class="profile-header " >
             
             {{-- Employee Image --}}
@@ -282,25 +297,24 @@ aria-describedby="basic-addon1"
                 <span class="text-danger">{{ $errors->first('image') }}</span><br>
             @endif
         </div>
-    </div>
+  
+</div>
 
+    <div class="row align-items-center bg-white">
+        <div class="card mx-auto" style="margin-top: 20px; height:auto; width:70%;">
+        <div class="card-header">
+    <p style="color:#3b4452; font-weight: 500;">Employee Information</p>
 
+  <i style="color:#3b4452">
+  @if($currentEditingProfileId == $employee->emp_id)
+        <i wire:click="cancelProfile()" class="bi bi-x-circle me-3" style="cursor: pointer; color: black;"></i>
+        <i wire:click="saveProfile('{{ $employee->emp_id }}')" class="bi bi-save" style="cursor: pointer; color: black;"></i>
+    @else
+        <i wire:click="editProfile('{{ $employee->emp_id }}')" class="bi bi-pencil" style="cursor: pointer; color: black;"></i>
+    @endif
+  </i> 
+</div>
 
-    <div class="row align-items-center">
-        <div class="card mx-auto" style="margin-top: 20px; height:auto; width:90%;">
-            <div class="card-header" >
-                <p style="color:#3b4452;font-weight: 500;">Employee Information</p>
-                <p style="text-align: end; font-size:  14px;">
-                    <i>
-                        @if($currentEditingProfileId == $employee->emp_id)
-                            <i wire:click="cancelProfile()" class="fas fa-times me-3" style="cursor: pointer;"></i>
-                            <i wire:click="saveProfile('{{ $employee->emp_id }}')" class="fa fa-save" style="cursor: pointer;"></i>
-                        @else
-                            <i wire:click="editProfile('{{ $employee->emp_id }}')" class="fas fa-edit" style="cursor: pointer;"></i>
-                        @endif
-                    </i>
-                </p>
-            </div>
             @if (session()->has('error'))
     <div class="alert alert-danger alert-dismissible fade show" role="alert" style="font-size: 12px; padding: 5px 10px; width: 100%; max-width: 500px; margin: 10px auto;">
         {{ session('error') }}
@@ -384,20 +398,21 @@ aria-describedby="basic-addon1"
 
       
         </div>
-        <div class="card mx-auto mt-3" style="width: 90%; height: auto;">
-    <div class="card-header d-flex justify-content-between align-items-center" style="font-size: 15px; background:white;">
-        <p class="mb-0" style=" font-weight: 500;">Personal Information</p>
-        <div style="font-size: 14px;">
-            <i>
-            @if($currentEditingPersonalProfileId == $employee->emp_id)
-                    <i wire:click="cancelpersonalProfile('{{ $emp_id }}')" class="fas fa-times me-3" style="cursor: pointer;"></i>
-                    <i wire:click="savepersonalProfile('{{ $emp_id }}')" class="fas fa-save" style="cursor: pointer;"></i>
-                @else
-                    <i wire:click="editpersonalProfile('{{ $emp_id }}')" class="fas fa-edit" style="cursor: pointer;"></i>
-                @endif
-            </i>
-        </div>
+        <div class="card mx-auto mt-3" style="width: 70%; height: auto;">
+        <div class="card-header d-flex justify-content-between align-items-center" style="font-size: 15px; background:white;">
+    <p class="mb-0" style=" font-weight: 500;">Personal Information</p>
+    <div style="font-size: 14px;">
+   <i> @if($currentEditingPersonalProfileId == $employee->emp_id)
+    <i wire:click="cancelpersonalProfile('{{ $emp_id }}')" class="bi bi-x-circle me-3" style="cursor: pointer;"></i>
+    <i wire:click="savepersonalProfile('{{ $emp_id }}')" class="bi bi-save" style="cursor: pointer;"></i>
+@else
+    <i wire:click="editpersonalProfile('{{ $emp_id }}')" class="bi bi-pencil" style="cursor: pointer;"></i>
+@endif
+</i>
+
     </div>
+</div>
+
 
     <div class="card-row" >
         <div class="col-md-3 edit-headings">DOB
@@ -434,7 +449,7 @@ aria-describedby="basic-addon1"
 @endif
 
 </div>
-<div class="tab-content-custom" id="tab-1">
+<div class="tab-page" data-tab-page="in-review">
 <div class="row mt-3 ml-3" style="font-size:12px">
       
       <div id="employee-container">
@@ -474,27 +489,10 @@ aria-describedby="basic-addon1"
                 </div>
 </div>
        </div> <!-- Tab buttons -->
+</div>
 
 
 
-
-    <script>
-function showTab(index) {
-    // Remove the 'active' class from all buttons
-    var buttons = document.querySelectorAll('.tab-button');
-    buttons.forEach(button => button.classList.remove('active'));
-
-    // Add 'active' class to the clicked button
-    buttons[index].classList.add('active');
-
-    // Hide all tab contents
-    var tabs = document.querySelectorAll('.tab-content-custom');
-    tabs.forEach(tab => tab.classList.remove('active'));
-
-    // Show the selected tab content
-    document.getElementById('tab-' + index).classList.add('active');
-}
-</script>
 
 
     </div>

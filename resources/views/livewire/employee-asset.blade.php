@@ -1,26 +1,31 @@
 <div >
 
-
+<div class="main__body">
        <div class="tab-container">
-       <div class="tab-buttons">
-    <button class="tab-button active" onclick="showTab(0)">Main</button>
-    <button class="tab-button" onclick="showTab(1)">Activity</button>
-</div>
+       <div class="tab-pane">
+                    <button
+                        type="button"
+                        data-tab-pane="active"
+                        class="tab-pane-item active"
+                        onclick="tabToggle()">
+                        <span class="tab-pane-item-title">01</span>
+                        <span class="tab-pane-item-subtitle">main</span>
+                    </button>
+                    <button
+                        type="button"
+                        data-tab-pane="in-review"
+                        class="tab-pane-item after"
+                        onclick="tabToggle()">
+                        <span class="tab-pane-item-title">02</span>
+                        <span class="tab-pane-item-subtitle">Activity</span>
+                    </button>
+                   
+                </div>
 
 <!-- Tab Content -->
-<div class="tab-content-custom active" id="tab-0">
-@if (session('message'))
-<div class="alert alert-success alert-dismissible fade show" role="alert" style="max-width: 500px; margin: auto;height:30px">
-        {{ session('message') }}
-        <button type="button" class="btn-close btn-close-sm" data-bs-dismiss="alert" aria-label="Close"
-                    style="font-size: 0.75rem; padding: 0.2rem 0.4rem; margin-top: 4px;"></button>
-         
-    </div>
-@endif
-
-
-<div class="row justify-content-center mt-2"  >
-                        <div class="col-md-10 custom-container d-flex flex-column">
+<div class="tab-page active" data-tab-page="active">
+<div class="row justify-content-center"  >
+                        <div class="col-md-8 custom-container d-flex flex-column">
                         <div class="d-flex align-items-center mb-2">
     <p class="main-text mb-0" style="width:88%">
         This page allows you to add/edit the profile details of an employee. The page helps you to keep the employee information up to date.
@@ -46,7 +51,7 @@
                  
 
                 <div class="row justify-content-center mt-2 "  >
-                <div class="col-md-10 custom-container d-flex flex-column bg-white">
+                <div class="col-md-8 custom-container d-flex flex-column bg-white">
     <div class="row justify-content-center mt-3 flex-column m-0" style="border-radius: 5px; font-size:12px; width:88%;">
         <div class="col-md-9">
             <div class="row " style="display:flex;">
@@ -71,9 +76,20 @@
             <img class="profile-image-selected" src="{{ $personData['image'] }}" alt="Employee Image">
            
            
-            <p class="selected-name" >
-                {{ $personData['name'] }}
-            </p>
+            <p class="selected-name">
+    @php
+        // Split the name into parts
+        $nameParts = explode(' ', $personData['name']);
+
+        // Capitalize the first letter of the first name
+        $firstName = isset($nameParts[0]) ? ucfirst(strtolower($nameParts[0])) : '';
+
+        // Capitalize each part of the last name (all parts except the first)
+        $lastNameParts = array_slice($nameParts, 1);
+        $formattedLastName = implode(' ', array_map('ucfirst', array_map('strtolower', $lastNameParts)));
+    @endphp
+    {{ $firstName }} {{ $formattedLastName }}
+</p>
             <svg class="close-icon-person"  
                  wire:click="removePerson('{{ $personData['emp_id'] }}')" 
                  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20">
@@ -107,21 +123,21 @@ aria-describedby="basic-addon1"
 />
 
 <div class="input-group-append" style="display: flex; align-items: center;">
+
 <button 
   
- wire:click="searchforEmployee"  wire:model.debounce.500ms="searchTerm"  style="<?php echo ($searchEmployee) ? 'display: block;' : ''; ?>height: 30px; border-radius: 0 5px 5px 0; background-color: rgb(2, 17, 79); color: #fff; border: none; padding: 0 10px;" 
-    class="btn" 
-    type="button" 
->
-    <i style="text-align: center;" class="fa fa-search"></i>
+ wire:click="searchforEmployee"  wire:model.debounce.500ms="searchTerm"  style="<?php echo ($searchEmployee) ? 'display: block;' : ''; ?>" 
+    class="search-btn" 
+    type="button" >
+<i class='bx bx-search' style="color:white"></i>
 </button>
 
 <button 
     wire:click="closePeoples"   
     type="button" 
-    class="close rounded px-1 py-0" 
+    class="close-btn rounded px-1 py-0" 
     aria-label="Close" 
-    style="background-color: rgb(2,17,79); height: 30px; width: 30px; margin-left: 5px; display: flex; align-items: center; justify-content: center;"
+   
 >
     <span aria-hidden="true" style="color: white; font-size: 24px; line-height: 0;">×</span>
 </button>
@@ -139,7 +155,7 @@ aria-describedby="basic-addon1"
                                     @else
                                  
                                     @foreach($peopleData as $employee)
-        @if(stripos($employee->first_name . ' ' . $employee->last_name, $searchTerm) !== false)
+    @if(stripos($employee->first_name . ' ' . $employee->last_name, $searchTerm) !== false)
         <label wire:click="selectPerson('{{ $employee->emp_id }}')" class="search-container">
             <div class="row align-items-center">
                 <div class="col-auto"> 
@@ -150,29 +166,37 @@ aria-describedby="basic-addon1"
                            {{ in_array($employee->emp_id, $selectedPeople) || $employee->isChecked ? 'checked' : '' }}>
                 </div>
                 <div class="col-auto">
-    @if($employee->image && $employee->image !== 'null')
-        <img class="profile-image" src="{{ 'data:image/jpeg;base64,' . base64_encode($employee->image) }}" >
-    @else
-        @if($employee->gender == "Male")
-            <img class="profile-image"src="{{ asset('images/male-default.png') }}" alt="Default Male Image">
-        @elseif($employee->gender == "Female")
-            <img class="profile-image" src="{{ asset('images/female-default.jpg') }}" alt="Default Female Image">
-        @else
-            <img class="profile-image" src="{{ asset('images/user.jpg') }}" alt="Default Image">
-        @endif
-    @endif
-</div>
+                    @if($employee->image && $employee->image !== 'null')
+                        <img class="profile-image" src="{{ 'data:image/jpeg;base64,' . base64_encode($employee->image) }}" >
+                    @else
+                        @if($employee->gender == "Male")
+                            <img class="profile-image" src="{{ asset('images/male-default.png') }}" alt="Default Male Image">
+                        @elseif($employee->gender == "Female")
+                            <img class="profile-image" src="{{ asset('images/female-default.jpg') }}" alt="Default Female Image">
+                        @else
+                            <img class="profile-image" src="{{ asset('images/user.jpg') }}" alt="Default Image">
+                        @endif
+                    @endif
+                </div>
 
                 <div class="col">
-                    <h6 class="username" style="font-size: 12px; color: white;">
-                        {{ ucwords(strtolower($employee->first_name)) }} {{ ucwords(strtolower($employee->last_name)) }}
+                    <h6 class="name" class="mb-0" style="font-size: 12px; color: white;">
+                        @php
+                            // Capitalize the first letter of the first name
+                            $formattedFirstName = ucfirst(strtolower($employee->first_name));
+
+                            // Capitalize each part of the last name
+                            $lastNameParts = explode(' ', strtolower($employee->last_name));
+                            $formattedLastName = implode(' ', array_map('ucfirst', $lastNameParts));
+                        @endphp
+                        {{ $formattedFirstName }} {{ $formattedLastName }}
                     </h6>
                     <p class="mb-0" style="font-size: 12px; color: white;">(#{{ $employee->emp_id }})</p>
                 </div>
             </div>
         </label>
-        @endif
-    @endforeach
+    @endif
+@endforeach
 
 @endif
 
@@ -210,7 +234,6 @@ aria-describedby="basic-addon1"
                 
         </div>
     </div>
-
  
     @if(!empty($selectedPeople))
     <div class="row mt-3 p-0 justify-content-center">
@@ -353,8 +376,7 @@ aria-describedby="basic-addon1"
            
 
           
-
-                    <div class="tab-content-custom" id="tab-1">
+                    <div class="tab-page" data-tab-page="in-review">
         <div class="row mt-3 ml-3" style="font-size:12px">
       
         <div id="employee-container">
@@ -380,22 +402,7 @@ aria-describedby="basic-addon1"
 
     </div>
 
-    <script>
-        // JavaScript to handle tab switching
-        function showTab(index) {
-            // Hide all tab contents
-            const contents = document.querySelectorAll('.tab-content-custom');
-            contents.forEach(content => content.classList.remove('active'));
-
-            // Remove active class from all buttons
-            const buttons = document.querySelectorAll('.tab-button');
-            buttons.forEach(button => button.classList.remove('active'));
-
-            // Show the selected tab content and mark the button as active
-            contents[index].classList.add('active');
-            buttons[index].classList.add('active');
-        }
-    </script>
+</div>
 
 
     </div>
