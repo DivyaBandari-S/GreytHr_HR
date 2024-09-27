@@ -8,7 +8,7 @@
     <title>Document</title>
     @livewireStyles
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-    crossorigin="anonymous">
+        crossorigin="anonymous">
     <!-- <script src="https://kit.fontawesome.com/YOUR_KIT_URL.js" crossorigin="anonymous"></script> -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
     <link rel="stylesheet" href="{{ asset('css/app.css?v=' . filemtime(public_path('css/app.css'))) }}">
@@ -18,19 +18,19 @@
 </head>
 
 @guest
-<livewire:hrlogin/>
+<livewire:hrlogin />
 @else
-<body>
 
-    <section>
+<body>
+    <section id="main">
         @livewire('main-layout')
-        
+        <div> {{$slot}} </div>
     </section>
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     @livewireScripts
     <script src="{{ asset('js/admin-dash.js') }}"></script>
-   
+
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" crossorigin="anonymous">
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous">
@@ -43,5 +43,5 @@
 </body>
 
 @endguest
+
 </html>
-a
