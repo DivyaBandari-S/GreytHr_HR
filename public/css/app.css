@@ -1639,10 +1639,7 @@ input[type="date"]::before {
 
   /* Hr Main Overview Styles Started */
   .main-overview-container {
-    padding-top: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    overflow-x: hidden;
 }
 
 .main-overview-help {
