@@ -15,12 +15,15 @@ use Livewire\WithFileUploads;
 class PositionHistory extends Component
 {
     use WithFileUploads;
+    public $peopleData;
+    public $selectedEmployeeId='';
+    public $present_address;
 
     public $searchTerm = '';
     public $editingJobProfile=false;
     public $editingCompanyProfile=false;
     public $Jobmode;
-    public $Designation;
+    public $designation;
     public $selected_equipment;
     public $BloodGroup;
     public $MaritalStatus;
@@ -38,6 +41,9 @@ class PositionHistory extends Component
     public $activeTab = 'active';
     public $image;
     public $selectedPerson = null;
+    public $selectedEmployeeFirstName;
+    public $selectedEmployeeLastName;
+    public $searchEmployee;
     public $cc_to;
     public $peoples;
     public $filteredPeoples;
@@ -84,6 +90,8 @@ class PositionHistory extends Component
     public $editingField = false;
     public $currentEditingProfileId=null;
     public $currentEditingJobProfileId=null;
+    public $currentEditingDomainProfileId=null;
+    public $Domain;
     public function editProfile($emp_id)
     {
         $this->currentEditingJobProfileId = $emp_id; // Set current employee for editing
@@ -92,12 +100,11 @@ class PositionHistory extends Component
         $employee = EmployeeDetails::with('empPersonalInfo')->find($emp_id);
   
         if ($employee) {
-            // Access personalInfo data using the relationship
-            $personalInfo = $employee->empPersonalInfo;
+      
     
             // Set form fields with employee and personal info data
-            $this->Location = $personalInfo->job_location ?? '';  // Use relationship data
-            $this->Jobmode = $employee->job_mode ?? '';
+            $this->Location = $employee->job_location ?? '-';  // Use relationship data
+            $this->Jobmode = $employee->job_mode ?? '-';
           
         }
     }
@@ -123,14 +130,66 @@ class PositionHistory extends Component
     
              
                 $employee->job_mode = $this->Jobmode ?? '';
+                $employee->job_location = $this->Location ?? '-';
+           
                 // Update EmployeeDetails fields
               
                 $employee->save();
     
-                // Update empPersonalInfo fields if it exists
-               
     
                 $this->currentEditingJobProfileId = null; // Exit edit mode after saving
+              
+            }
+        } catch (\Exception $e) {
+            session()->flash('error', 'An error occurred while creating new record. Please try again.');
+        }
+    }
+    public function editDomainProfile($emp_id)
+    {
+        $this->currentEditingDomainProfileId = $emp_id; // Set current employee for editing
+    
+        // Fetch employee details including related empPersonalInfo
+        $employee = EmployeeDetails::with('empPersonalInfo')->find($emp_id);
+  
+        if ($employee) {
+      
+    
+            // Set form fields with employee and personal info data
+            $this->Domain = $employee->emp_domain ?? '-';  // Use relationship data
+           
+          
+        }
+    }
+    public function cancelDomainProfile($emp_id)
+    {
+        // No need to query for $selectedPerson here
+        $this->currentEditingDomainProfileId = null;
+       
+    }
+
+    
+    public function saveDomainProfile($emp_id)
+    {
+        try {
+            // Fetch employee details along with empPersonalInfo
+            $employee = EmployeeDetails::with('empPersonalInfo')->find($emp_id);
+    
+            if ($employee) {
+                // Split name into first_name and last_name if necessary
+                $nameParts = explode(' ', $this->name);
+                $firstName = $nameParts[0];
+                $lastName = isset($nameParts[1]) ? $nameParts[1] : '';
+    
+             
+            
+                $employee->emp_domain = $this->Domain ?? '-';
+           
+                // Update EmployeeDetails fields
+              
+                $employee->save();
+    
+    
+                $this->currentEditingDomainProfileId = null; // Exit edit mode after saving
               
             }
         } catch (\Exception $e) {
@@ -185,60 +244,51 @@ class PositionHistory extends Component
     // Fetch employee details and personal info for editing
 
     public $currentEditingPersonalSubProfileId=null;
+    public $currentEditingDepPersonalProfileId=null;
     public $currentEditingPersonalProfileId=null;
     public $subDepartment;
     public function editDepartmentProfile($emp_id)
     {
-        $this->currentEditingPersonalProfileId = $emp_id; // Set current employee for editing
+        $this->currentEditingDepPersonalProfileId = $emp_id; // Set current employee for editing
     
         // Fetch employee details including related empPersonalInfo and empSubDepartment
-        $employee = EmployeeDetails::with('empSubDepartment')->find($emp_id);
+        $employee = EmployeeDetails::with('empDepartment')->find($emp_id);
     
         if ($employee) {
-            // Access personalInfo and subDepartment data using the relationships
-   
-            $subDepartment = $employee->empSubDepartment;
+            // Access the subDepartment data using the relationship
+            $department = $employee->empDepartment;
     
-            // Set form fields with employee and personal info data
-            $this->subDepartment = $subDepartment ? $subDepartment->id : '';  // Use relationship data
-        }
+            // Set the form field with the sub-department's name or ID
+            $this->department = $department ? $department->department : '';
     }
-    
+}
     // Save updated company profile
     public function saveDepartmentProfile($emp_id)
     {
         try {
-            // Fetch employee details from EmployeeDetails table
-            $employee = EmployeeDetails::find($emp_id);
-            
-            // Fetch personal info from emp_personal_infos table
-            $personalInfo = DB::table('emp_personal_infos')->where('emp_id', $emp_id)->first();
+            // Fetch employee details along with empSubDepartment
+            $employee = EmployeeDetails::with('empSubDepartment')->find($emp_id);
     
             if ($employee) {
-                // Update employee details if needed
-                $employee->save();
+                // Check if employee has a sub-department associated
+                $department = $employee->empDepartment;
     
-                // Update personal info in emp_personal_infos table
-                if ($personalInfo) {
-                    DB::table('emp_personal_infos')
-                        ->where('emp_id', $emp_id)
-                        ->update([
-                            'sub_dept_id' => $this->subDepartment,
-                            'company_name' => $this->companyname,
-                        ]);
+                if ($department) {
+                    // Update the sub-department with new data
+                    $department->department = $this->department ?? ''; // Update with new sub-department name
+                    $department->save();
+                } else {
+                    // If no sub-department exists, create a new one
+                    $employee->empSubDepartment()->create([
+                        'department' => $this->department ?? '', // Set the new sub-department name
+                    ]);
                 }
     
-                // Save or update the sub-department relationship
-                if ($this->subDepartment) {
-                    $subDepartment = EmpSubDepartments::find($this->subDepartment);
-                    if ($subDepartment) {
-                        $employee->sub_dept_id = $subDepartment->id;
-                        $employee->save();
-                    }
-                }
+              
+                // Exit edit mode after saving
+                $this->currentEditingDepPersonalProfileId = null;
     
-                $this->currentEditingPersonalProfileId = null; // Exit edit mode after saving
-                session()->flash('message', 'Profile updated successfully!');
+                session()->flash('success', 'Sub-department updated successfully.');
             }
         } catch (\Exception $e) {
             session()->flash('error', 'An error occurred while updating the profile. Please try again.');
@@ -250,7 +300,7 @@ class PositionHistory extends Component
     public function cancelDepartmentProfile()
     {
        
-        $this->currentEditingPersonalProfileId = null;  // Exit edit mode without saving
+        $this->currentEditingDepPersonalProfileId = null;  // Exit edit mode without saving
     }
     public function editSubDepartmentProfile($emp_id)
     {
@@ -269,32 +319,59 @@ class PositionHistory extends Component
     }
     
     public $empSubDepartment;
+    public function removePerson($empId)
+    {
+        // Remove the person from the selectedPeople array
+        if (($key = array_search($empId, $this->selectedPeople)) !== false) {
+            unset($this->selectedPeople[$key]);
+        }
+        
+        // Reindex the array to avoid gaps in the index
+        $this->selectedPeople = array_values($this->selectedPeople);
+    
+        // Update the selectedPeopleData array to remove the person
+        $this->selectedPeopleData = collect($this->selectedPeopleData)->filter(function ($person) use ($empId) {
+            return $person['emp_id'] !== $empId;
+        })->values()->toArray(); // Reindexing the selectedPeopleData
+    
+        // Optionally, update the employees list or other data if necessary
+        $this->employees = $this->employees->filter(function ($employee) use ($empId) {
+            return $employee->emp_id !== $empId;
+        });
+     
+    }
     // Save updated company profile
     public function saveSubDepartmentProfile($emp_id)
     {
         try {
-            // Fetch employee details from EmployeeDetails table
-            $employee = EmployeeDetails::with('empSub')->find($emp_id);
+            // Fetch employee details along with empSubDepartment
+            $employee = EmployeeDetails::with('empSubDepartment')->find($emp_id);
     
             if ($employee) {
-                // Split name into first_name and last_name if necessary
-                $nameParts = explode(' ', $this->name);
-                $firstName = $nameParts[0];
-                $lastName = isset($nameParts[1]) ? $nameParts[1] : '';
+                // Check if employee has a sub-department associated
+                $subDepartment = $employee->empSubDepartment;
     
-             
+                if ($subDepartment) {
+                    // Update the sub-department with new data
+                    $subDepartment->sub_department = $this->subDepartment ?? ''; // Update with new sub-department name
+                    $subDepartment->save();
+                } else {
+                    // If no sub-department exists, create a new one
+                    $employee->empSubDepartment()->create([
+                        'sub_department' => $this->subDepartment ?? '', // Set the new sub-department name
+                    ]);
+                }
+    
+                // Update other employee details if needed
                 $employee->job_location = $this->Location ?? '';
-                // Update EmployeeDetails fields
-              
                 $employee->save();
     
-                // Update empPersonalInfo fields if it exists
-               
+                // Exit edit mode after saving
+                $this->currentEditingPersonalSubProfileId = null;
     
-                $this->currentEditinglocationProfileId = null; // Exit edit mode after saving
-              
-            } 
-        }catch (\Exception $e) {
+                session()->flash('success', 'Sub-department updated successfully.');
+            }
+        } catch (\Exception $e) {
             session()->flash('error', 'An error occurred while updating the profile. Please try again.');
         }
     }
@@ -362,6 +439,62 @@ class PositionHistory extends Component
        
         $this->currentEditingPersonalCompanyProfileId = null;  // Exit edit mode without saving
     }
+    public $currentEditingAddressProfileId=null;
+    public function editAddressProfile($emp_id)
+    {
+        $this->currentEditingAddressProfileId = $emp_id; // Set current employee for editing
+    
+        // Fetch employee details including related empPersonalInfo
+        $employee = EmployeeDetails::with('empPersonalInfo')->find($emp_id);
+  
+        if ($employee) {
+            // Access personalInfo data using the relationship
+            $personalInfo = $employee->empPersonalInfo;
+    
+            // Set form fields with employee and personal info data
+            $this->present_address = $personalInfo->present_address ?? '';  // Use relationship data
+        
+        }
+    }
+    // Save updated company profile
+    public function saveAddressProfile($emp_id)
+    {
+     
+        try {
+            // Fetch employee details from EmployeeDetails table
+            $employee = EmployeeDetails::find($emp_id);
+        
+            // Fetch personal info from emp_personal_infos table
+            $personalInfo = DB::table('emp_personal_infos')->where('emp_id', $emp_id)->first();
+        
+            if ($employee) {
+       
+                $employee->save();
+        
+                // Update title in emp_personal_infos table
+                if ($personalInfo) {
+                    DB::table('emp_personal_infos')
+                        ->where('emp_id', $emp_id)
+                        ->update([
+                            'present_address' => $this->present_address,
+                            
+                        ]);
+                }
+        
+                $this->currentEditingAddressProfileId = null; // Exit edit mode after saving
+                session()->flash('message', 'Profile updated successfully!');
+            }
+        } catch (\Exception $e) {
+            session()->flash('error', 'An error occurred while updating the profile. Please try again.');
+        }
+    }
+    
+    // Cancel editing company profile
+    public function cancelAddressProfile()
+    {
+       
+        $this->currentEditingAddressProfileId = null;  // Exit edit mode without saving
+    }
     public $currentEditinglocationProfileId;
     public function editlocationProfile($emp_id)
     {
@@ -417,24 +550,24 @@ class PositionHistory extends Component
         }
     }  
     public $currentEditingdesignationProfileId=null;
-    public $designation;
+  
+
     public function editdesignationProfile($emp_id)
     {
         $this->currentEditingdesignationProfileId = $emp_id; // Set current employee for editing
     
         // Fetch employee details including related empPersonalInfo
         $employee = EmployeeDetails::with('empPersonalInfo')->find($emp_id);
-  
+    
         if ($employee) {
             // Access personalInfo data using the relationship
             $personalInfo = $employee->empPersonalInfo;
     
             // Set form fields with employee and personal info data
-            $this->designation = $empPersonalInfo->designation ?? '';  // Use relationship data
-         
-          
+            $this->designation = $personalInfo->designation ?? '';  // Use relationship data
         }
     }
+    
     public function canceldesignationProfile($emp_id)
     {
         // No need to query for $selectedPerson here
@@ -476,74 +609,90 @@ class PositionHistory extends Component
         }
     }  
     
-    public function editpersonalProfile($emp_id)
-    {
-        $selectedPerson = EmployeeDetails::find($emp_id);
-        $selectedPerson = $this->employeeDetails[$emp_id] ?? null;
-        $this->editingPersonalProfile= true;
-      
-        if ($selectedPerson) {
-          
-           $this->Designation = $selectedPerson->job_title ?? '';
-         
-        }
-      
-       
-    }
-    
-    public function cancelpersonalProfile($emp_id)
-    {
-        // No need to query for $selectedPerson here
-        $selectedPerson = EmployeeDetails::find($emp_id);
-        $selectedPerson = $this->employeeDetails[$emp_id] ?? null;
-        if ($selectedPerson) {
-        $this->editingPersonalProfile= false;
-        }
-       
-    }
 
-    public function savepersonalProfile($emp_id)
-    {
-        // No need to query for $selectedPerson here
-        $selectedPerson = EmployeeDetails::find($emp_id);
-        $selectedPerson = $this->employeeDetails[$emp_id] ?? null;
-    
-        if ($selectedPerson) {
-        
-              $selectedPerson->job_title = $this->Designation;
-           
-            $selectedPerson->save();
-         
-            $this->editingPersonalProfile = false;
-        }
-    }
-    
     public function toggleDetails()
     {
         $this->showDetails = !$this->showDetails;
     }
 
-    public function filter()
+    public function updatesearchTerm()
     {
-        $companyId = Auth::user()->company_id;
-        $trimmedSearchTerm = trim($this->searchTerm);
-
-        $this->filteredPeoples = EmployeeDetails::where('company_id', $companyId)
-            ->where(function ($query) use ($trimmedSearchTerm) {
-                $query->where(DB::raw("CONCAT(first_name, ' ', last_name)"), 'like', '%' . $trimmedSearchTerm . '%')
-                    ->orWhere('emp_id', 'like', '%' . $trimmedSearchTerm . '%');
-            })
-            ->get();
-
-        $this->peopleFound = count($this->filteredPeoples) > 0;
+        $this->searchTerm= $this->searchTerm;
+       
+       
     }
-
     public function updatedSelectedPeople()
     {
         $this->cc_to = implode(', ', array_unique($this->selectedPeopleNames));
     }
+    public function updateselectedEmployee($empId)
+    {
+        $this->selectedEmployeeId = $empId;
+        $this->selectedEmployeeFirstName = EmployeeDetails::where('emp_id', $empId)->value('first_name');
+        $this->selectedEmployeeLastName = EmployeeDetails::where('emp_id', $empId)->value('last_name');
+    }
+    
+    public function searchforEmployee()
+    {
+        if (!empty($this->searchTerm)) {
+            // Fetch employees matching the search term
+            $this->employees = EmployeeDetails::where(function ($query) {
+                $query->where('first_name', 'like', '%' . $this->searchTerm . '%')
+                      ->orWhere('last_name', 'like', '%' . $this->searchTerm . '%')
+                      ->orWhere('emp_id', 'like', '%' . $this->searchTerm . '%');
+            })->get();
+    
+            // Include previously selected employees not currently displayed in the search
+            foreach ($this->selectedPeople as $selectedEmpId) {
+                // Check if selected employee is in the current employees
+                if (!$this->employees->contains('emp_id', $selectedEmpId)) {
+                    $selectedEmployee = EmployeeDetails::where('emp_id', $selectedEmpId)->first();
+                    if ($selectedEmployee) {
+                        // Ensure it's marked as checked
+                        $selectedEmployee->isChecked = true;
+                        $this->employees->push($selectedEmployee);
+                    }
+                }
+            }
+    
+            // Set isChecked for employees in the current search results
+            foreach ($this->employees as $employee) {
+                $employee->isChecked = in_array($employee->emp_id, $this->selectedPeople);
+   
+            }
+        } else {
+            $this->employees = collect(); // Reset employees if no search term
+        }
+    }
+    
 
     public $selectedPeopleData=[];
+    public function filter()
+    {
+
+        $employeeId = auth()->user()->emp_id;
+
+        $companyId = Auth::user()->company_id;
+
+
+        $this->peopleData = EmployeeDetails::where('first_name', 'like', '%' . $this->searchTerm . '%')
+            ->orWhere('last_name', 'like', '%' . $this->searchTerm . '%')
+            ->orWhere('emp_id', 'like', '%' . $this->searchTerm . '%')
+            ->get();
+
+        $this->filteredPeoples = $this->searchTerm ? $this->employees : null;
+
+        // Filter records based on category and search term
+        $this->records = HelpDesks::with('emp')
+            ->whereHas('emp', function ($query) {
+                $query->where('first_name', 'like', '%' . $this->searchTerm . '%')
+                    ->orWhere('last_name', 'like', '%' . $this->searchTerm . '%');
+            })
+
+            ->orderBy('created_at', 'desc')
+            ->get();
+    }
+
     public function selectPerson($emp_id)
     {
         try {
@@ -556,14 +705,14 @@ class PositionHistory extends Component
             $selectedPerson = $this->employees->where('emp_id', $emp_id)->first();
     
             if ($selectedPerson) {
-                // Create the person's name string
-                $personName = $selectedPerson->first_name . ' ' . $selectedPerson->last_name . ' #(' . $selectedPerson->emp_id . ')';
-    
+                // Check if person is already selected
                 if (in_array($emp_id, $this->selectedPeople)) {
                     // Person is already selected, so remove them
+    
+                    // Remove from selectedPeople array
                     $this->selectedPeople = array_diff($this->selectedPeople, [$emp_id]);
     
-                    // Remove the person's entry from the combined data
+                    // Remove the person's entry from the selectedPeopleData array
                     $this->selectedPeopleData = array_filter(
                         $this->selectedPeopleData,
                         fn($data) => $data['emp_id'] !== $emp_id
@@ -571,6 +720,9 @@ class PositionHistory extends Component
                 } else {
                     // Person is not selected, so add them
                     $this->selectedPeople[] = $emp_id;
+    
+                    // Create the person's name string
+                    $personName = $selectedPerson->first_name . ' ' . $selectedPerson->last_name . ' #(' . $selectedPerson->emp_id . ')';
     
                     // Determine the image URL
                     if ($selectedPerson->image && $selectedPerson->image !== 'null') {
@@ -668,28 +820,70 @@ class PositionHistory extends Component
   
     public function mount()
     {
-        $hrempid = auth()->guard('hr')->user()->emp_id;
-         // Step 1: Retrieve the logged-in user's emp_id
-         $loggedInEmpID = auth()->guard('hr')->user()->emp_id;
-
+        if (auth()->guard('hr')->check()) {
+            $loggedInEmpID = auth()->guard('hr')->user()->emp_id;
+        } else {
+            // Debug if user is not authenticated
+        
+            return;
+        }
+    
+        // Retrieve the company_id associated with the logged-in emp_id
+        $employeeDetails = EmployeeDetails::where('emp_id', $loggedInEmpID)->first();
+        
+        if (!$employeeDetails) {
+            // Debug if no employee details are found for this emp_id
+      
+            return;
+        }
+    
+        $companyID = $employeeDetails->company_id;
+    
+        if (!$companyID) {
+            // Handle the case where companyID is null
+        
+            $this->employeeIds = [];
+            return;
+        }
+    
+        // Fetch all emp_id values where company_id matches the logged-in user's company_id
+        $this->employeeIds = EmployeeDetails::whereJsonContains('company_id', $companyID)->pluck('emp_id')->toArray();
+    
+        if (empty($this->employeeIds)) {
+            // Handle the case where no employees are found
          
-         // Step 2: Retrieve the company_id associated with the logged-in emp_id
-         $companyID = EmployeeDetails::where('emp_id', $loggedInEmpID)
-             ->pluck('company_id')
-             ->first(); // Assuming company_id is unique for emp_id
- 
-
-         // Step 3: Fetch all emp_id values where company_id matches the logged-in user's company_id
-         $this->employeeIds = EmployeeDetails::where('company_id', $companyID)
-         ->orderBy('first_name')
-         ->orderBy('last_name') ->pluck('emp_id')
-             ->toArray();
+            return;
+        }
+    
+        // Initialize employees based on search term and company_id
+        $employeesQuery = EmployeeDetails::whereJsonContains('company_id', $companyID)
+            ->where(function ($query) {
+                $query->where('first_name', 'like', '%' . $this->searchTerm . '%')
+                      ->orWhere('last_name', 'like', '%' . $this->searchTerm . '%')
+                      ->orWhere('emp_id', 'like', '%' . $this->searchTerm . '%');
+            })
+            ->orderBy('first_name')
+            ->orderBy('last_name');
+    
+        // Fetch the employees
+        $employees = $employeesQuery->get();
+  
+        if ($employees->isEmpty()) {
+            // Handle the case where no employees match the search term
+         
+        }
+    
+        // Debug output for fetched employees
      
-           
     
-        $companyId = auth()->guard('hr')->user()->company_id;
+        // Set the component's employee data
+        $this->employees = $employees;
     
-        $this->employeess = EmployeeDetails::where('company_id', $companyID)
+        // Initialize other properties
+        $this->peopleData = $this->filteredPeoples ? $this->filteredPeoples : $this->employees;
+        $this->selectedPeople = [];
+        $this->selectedPeopleNames = [];
+        $this->employeess = EmployeeDetails::whereJsonContains('company_id', $companyID)
         ->orderBy('hire_date', 'desc') // Order by hire_date descending
       
         ->take(5) // Limit to 5 records
@@ -703,17 +897,21 @@ class PositionHistory extends Component
     public function render()
 {
     $loggedInEmpID = auth()->guard('hr')->user()->emp_id;
+    $employeeId = auth()->user()->emp_id;
+    $companyId = auth()->user()->company_id;
 
     // Retrieve the company_id associated with the logged-in emp_id
     $companyID = EmployeeDetails::where('emp_id', $loggedInEmpID)
         ->pluck('company_id')
         ->first(); // Assuming company_id is unique for emp_id
 
-    // Fetch all employees where company_id matches the logged-in user's company_id
-    $this->employeeIds = EmployeeDetails::where('company_id', $companyID)
-        ->pluck('emp_id')
-        ->toArray();
-      
+    // If no search term, fetch all employees for the logged-in user's company
+    if (empty($this->searchTerm)) {
+        $this->employees = EmployeeDetails::whereJsonContains('company_id', $companyID)->get();
+    }
+
+    // Determine if there are people found
+    $peopleFound = $this->employees->count() > 0;
     // Fetch employee details based on IDs
     $this->employees = EmployeeDetails::whereIn('emp_id', $this->employeeIds)->get();
           $this->employeess = EmployeeDetails::where('company_id', $companyID)

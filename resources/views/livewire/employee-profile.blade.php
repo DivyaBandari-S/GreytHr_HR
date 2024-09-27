@@ -1,36 +1,33 @@
-<div style="color:#778899">
- <style>
+<div >
 
 
-    </style>
+       <div class="tab-container">
+       <div class="tab-buttons">
+    <button class="tab-button active" onclick="showTab(0)">Main</button>
+    <button class="tab-button" onclick="showTab(1)">Activity</button>
+</div>
 
-
-    <div class="tab-container">
-        <!-- Tab buttons -->
-        <div class="tab-buttons">
-            <button class="tab-button active" onclick="showTab(0)">Main</button>
-            <button class="tab-button" onclick="showTab(1)">Activity</button>
-          
-        </div>
-
-        <!-- Tab contents -->
-        <div class="tab-content active">
-        <div class="row justify-content-center"  >
+<!-- Tab Content -->
+<div class="tab-content-custom active" id="tab-0">
+<div class="row justify-content-center"  >
                         <div class="col-md-10 custom-container d-flex flex-column">
-                            <div class="d-flex align-items-center mb-2">
-                                <p class="main-text mb-0">This page allows you to add/edit the profile details of an employee. The page helps you to keep the employee information up to date.</p>
-                                <p style="font-size: 12px; cursor: pointer;color:blue;font-weight:500;" wire:click="toggleDetails">
+                        <div class="d-flex align-items-center mb-2">
+    <p class="main-text mb-0" style="width:88%">
+        This page allows you to add/edit the profile details of an employee. The page helps you to keep the employee information up to date.
+    </p>
+    <p class="hide-text" style="cursor: pointer;" wire:click="toggleDetails">
         {{ $showDetails ? 'Hide Details' : 'Info' }}
     </p>
-                            </div>
+</div>
+
                             @if ($showDetails)
                                 
                            
                             <div class="secondary-text">
     Explore greytHR by 
-    <span style="color:blue">Help-Doc</span>, watching How-to 
-    <span style="color:blue">Videos</span> and 
-    <span style="color:blue">FAQ</span>
+    <span class="hide-text">Help-Doc</span>, watching How-to 
+    <span class="hide-text">Videos</span> and 
+    <span class="hide-text">FAQ</span>
 </div>
 @endif
 
@@ -44,36 +41,49 @@
         <div class="col-md-9">
             <div class="row " style="display:flex;">
                 <div class="col-md-11 m-0">
-                    <b>Start searching to see specific employee details here</b>
+                    <p class="emp-heading" >Start searching to see specific employee details here</p>
                     <div class="col mt-3" style="display: flex;">
              
-                        <p style="font-size: 12px; font-weight:260">Employee Type:</p>
-                        <p>Current Employees</p>
+                        <p class="main-text">Employee Type:</p>
+                        <p  class="edit-heading ml-2">Current Employees</p>
                     </div>
                  
-                    <div class="profile" style="margin-top: 10px;">
+                    <div class="profile" >
     <div class="col m-0">
      
-            <div class="row d-flex" >
-        
-    <p style="cursor: pointer;" wire:click="NamesSearch">
+    <div class="row d-flex align-items-center">
+    <p class="main-text "  style="cursor:pointer" wire:click="NamesSearch">
         Search Employee:
-
-      @foreach($selectedPeopleData as $personData)
-      <div class="column d-flex align-items-center" style="display:flex; align-items:center; border:1px solid blue; border-radius:50px; padding: 5px;width:fit-content;margin-left:5px;margin-top:5px">
-    <img class="profile-image-selected" src="{{ $personData['image'] }}"  alt="Employee Image">
-    <p style="margin-left: 10px; line-height: 40px; font-size:12px; margin-bottom: 0;">{{ $personData['name'] }}</p>
-    <svg class="close-icon-person" style="margin-left:15px;cursor:pointer" wire:click="removePerson('{{ $personData['emp_id'] }}')" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20">
-        <path d="M6 18L18 6M6 6l12 12" stroke="#778899" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-    </svg>
-</div>
-
-            @endforeach
- 
-      
-      
     </p>
+
+    @foreach($selectedPeopleData as $personData)
+        <span class="selected-person d-flex align-items-center">
+            <img class="profile-image-selected" src="{{ $personData['image'] }}" alt="Employee Image">
+           
+           
+            <p class="selected-name">
+    @php
+        // Split the name into parts
+        $nameParts = explode(' ', $personData['name']);
+
+        // Capitalize the first letter of the first name
+        $firstName = isset($nameParts[0]) ? ucfirst(strtolower($nameParts[0])) : '';
+
+        // Capitalize each part of the last name (all parts except the first)
+        $lastNameParts = array_slice($nameParts, 1);
+        $formattedLastName = implode(' ', array_map('ucfirst', array_map('strtolower', $lastNameParts)));
+    @endphp
+    {{ $firstName }} {{ $formattedLastName }}
+</p>
+            <svg class="close-icon-person"  
+                 wire:click="removePerson('{{ $personData['emp_id'] }}')" 
+                 xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20">
+                <path d="M6 18L18 6M6 6l12 12" stroke="#3b4452" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </span>
+    @endforeach
 </div>
+
 
 
 
@@ -108,7 +118,7 @@ aria-describedby="basic-addon1"
 </button>
 
 <button 
-    wire:click="closePeoples"  
+    wire:click="closePeoples"   
     type="button" 
     class="close rounded px-1 py-0" 
     aria-label="Close" 
@@ -116,6 +126,7 @@ aria-describedby="basic-addon1"
 >
     <span aria-hidden="true" style="color: white; font-size: 24px; line-height: 0;">×</span>
 </button>
+
 </div>
 </div>
 <div>
@@ -129,56 +140,50 @@ aria-describedby="basic-addon1"
                                     @else
                                  
                                     @foreach($peopleData as $employee)
-        @if(stripos($employee->first_name . ' ' . $employee->last_name, $searchTerm) !== false)
+    @if(stripos($employee->first_name . ' ' . $employee->last_name, $searchTerm) !== false)
         <label wire:click="selectPerson('{{ $employee->emp_id }}')" class="search-container">
             <div class="row align-items-center">
-                <div class="col-auto">
-                    <input type="checkbox" 
-                           wire:click="updateselectedEmployee('{{ $employee->emp_id }}')" 
+                <div class="col-auto"> 
+                    <input type="checkbox" id="employee-{{ $employee->emp_id }}" 
+                           wire:click="updateselectedEmployee('{{ $employee->emp_id }}')"  
                            wire:model="selectedPeople" 
                            value="{{ $employee->emp_id }}" 
                            {{ in_array($employee->emp_id, $selectedPeople) || $employee->isChecked ? 'checked' : '' }}>
                 </div>
                 <div class="col-auto">
-    @if($employee->image && $employee->image !== 'null')
-        <img class="profile-image" src="{{ 'data:image/jpeg;base64,' . base64_encode($employee->image) }}" >
-    @else
-        @if($employee->gender == "Male")
-            <img class="profile-image"src="{{ asset('images/male-default.png') }}" alt="Default Male Image">
-        @elseif($employee->gender == "Female")
-            <img class="profile-image" src="{{ asset('images/female-default.jpg') }}" alt="Default Female Image">
-        @else
-            <img class="profile-image" src="{{ asset('images/user.jpg') }}" alt="Default Image">
-        @endif
-    @endif
-</div>
+                    @if($employee->image && $employee->image !== 'null')
+                        <img class="profile-image" src="{{ 'data:image/jpeg;base64,' . base64_encode($employee->image) }}" >
+                    @else
+                        @if($employee->gender == "Male")
+                            <img class="profile-image" src="{{ asset('images/male-default.png') }}" alt="Default Male Image">
+                        @elseif($employee->gender == "Female")
+                            <img class="profile-image" src="{{ asset('images/female-default.jpg') }}" alt="Default Female Image">
+                        @else
+                            <img class="profile-image" src="{{ asset('images/user.jpg') }}" alt="Default Image">
+                        @endif
+                    @endif
+                </div>
 
                 <div class="col">
-                    <h6 class="username" style="font-size: 12px; color: white;">
-                        {{ ucwords(strtolower($employee->first_name)) }} {{ ucwords(strtolower($employee->last_name)) }}
+                    <h6 class="name" class="mb-0" style="font-size: 12px; color: white;">
+                        @php
+                            // Capitalize the first letter of the first name
+                            $formattedFirstName = ucfirst(strtolower($employee->first_name));
+
+                            // Capitalize each part of the last name
+                            $lastNameParts = explode(' ', strtolower($employee->last_name));
+                            $formattedLastName = implode(' ', array_map('ucfirst', $lastNameParts));
+                        @endphp
+                        {{ $formattedFirstName }} {{ $formattedLastName }}
                     </h6>
                     <p class="mb-0" style="font-size: 12px; color: white;">(#{{ $employee->emp_id }})</p>
                 </div>
             </div>
         </label>
-        @endif
-    @endforeach
+    @endif
+@endforeach
 
 @endif
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 </div>
@@ -244,9 +249,9 @@ aria-describedby="basic-addon1"
 
 
 @if($employee)
-<div class="d-flex justify-content-center" style="width: 100%;flex-direction:row">
-    <div class="row" style="display:flex; justify-content: center; width:90%; align-items:center;">
-        <div class="col" style="background:#98CBBA; border-radius:5px; height:60px; display:flex; padding: 10px; margin-top:10px; align-items:center; justify-content:space-between; width:100%;">
+
+    <div class="profile-header-row" >
+        <div class="profile-header " >
             
             {{-- Employee Image --}}
             @if($employee->image && $employee->image !== 'null')
@@ -278,13 +283,12 @@ aria-describedby="basic-addon1"
             @endif
         </div>
     </div>
-</div>
 
 
 
     <div class="row align-items-center">
         <div class="card mx-auto" style="margin-top: 20px; height:auto; width:90%;">
-            <div class="card-header" style="font-size: 15px; background:white; width:100%; display:flex; justify-content:space-between;">
+            <div class="card-header" >
                 <p style="color:#3b4452;font-weight: 500;">Employee Information</p>
                 <p style="text-align: end; font-size:  14px;">
                     <i>
@@ -313,36 +317,36 @@ aria-describedby="basic-addon1"
         </button>
     </div>
 @endif
-            <div class="row" style="color: #778899; margin-top: 10px; margin-left:10px; height:auto;">
-                <div class="col-md-3" style="font-size: 12px;">Title
+            <div class="card-row">
+                <div class="col-md-3  edit-headings" >Title
                 @if($currentEditingProfileId == $employee->emp_id)
 
 
 
-                <div><input style="font-size:12px" type="text" class="form-control mt-2" wire:model="title" placeholder="Title"></div>
+                <div><input type="text" class="form-control mt-2 input-width" wire:model="title" placeholder="Title"></div>
                 @else
                 <div class="editprofile " >{{$employee->empPersonalInfo->title ?? '-'}} </div>
                 @endif
                 </div>
 
-                <div class="col-md-3" style="font-size: 12px;">Nick Name
+                <div class="col-md-3  edit-headings" >Nick Name
                 @if($currentEditingProfileId == $employee->emp_id)
 
-                <div ><input style="font-size:12px" type="text" class="form-control mt-2" wire:model="nickName" placeholder="Nickname"></div>
+                <div ><input  type="text" class="form-control mt-2 input-width" wire:model="nickName" placeholder="Nickname"></div>
                 @else
                 <div class="editprofile " >{{$employee->empPersonalInfo->nick_name ?? '-'}} </div>
                 @endif
                 </div>
-                <div class="col-md-3" style="font-size: 12px;">Gender
+                <div class="col-md-3  edit-headings" >Gender
                 @if($currentEditingProfileId == $employee->emp_id)
-                <div><input style="font-size:12px" type="text" class="form-control mt-2" wire:model="gender" placeholder="Gender"></div>
+                <div > <input type="text" class="form-control mt-2 input-width" wire:model="gender" placeholder="Gender"></div>
                 @else
                 <div class="editprofile" >{{$employee->gender ?? '-'}} </div>
                 @endif
                 </div>
-                <div class="col-md-3" style="font-size: 12px;">Name
+                <div class="col-md-3 edit-headings" >Name
                 @if($currentEditingProfileId == $employee->emp_id)
-                <div class=" mb-3"><input style="font-size:12px" type="text" class="form-control mt-2" wire:model="name" placeholder="Name"></div>
+                <div class=" mb-3"><input  type="text" class="form-control mt-2 input-width" wire:model="name" placeholder="Name"></div>
                 @else
                 <div class="editprofile">{{ $employee->first_name }} {{ $employee->last_name }}</div>
                 @endif
@@ -350,26 +354,26 @@ aria-describedby="basic-addon1"
             </div>
 
 
-            <div class="row" style="color: #778899; margin-top: 10px; margin-left:10px; height:auto;">
+            <div class="card-row" >
 
-            <div class="col-md-3" style="font-size: 12px;">Mobile
+            <div class="col-md-3 edit-headings" >Mobile
 
             @if($currentEditingProfileId == $employee->emp_id)
-                <div class="mb-2"><input style="font-size:12px" type="text" class="form-control" wire:model="emergency_contact" placeholder="Mobile"></div>
+                <div class="mb-2"><input type="text" class="form-control mt-1 input-width" wire:model="emergency_contact" placeholder="Mobile"></div>
                 @else
                 <div class="editprofile mb-3" >{{$employee->emergency_contact ?? '-'}} </div>
                 @endif
                 </div>
-                <div class="col-md-3" style="font-size: 12px;">Email
+                <div class="col-md-3 edit-headings">Email
                 @if($currentEditingProfileId == $employee->emp_id)
-                <div class="mb-2"><input style="font-size:12px" type="text" class="form-control" wire:model="Email" placeholder="Email"></div>
+                <div class="mb-2"><input  type="text" class="form-control mt-1 input-width" wire:model="Email" placeholder="Email"></div>
                 @else
                 <div class="editprofile mb-3" >{{$employee->email ?? '-'}} </div>
                 @endif
                 </div>
-                <div class="col-md-3" style="font-size: 12px;">Extension
+                <div class="col-md-3 edit-headings">Extension
                 @if($currentEditingProfileId == $employee->emp_id)
-                <div class="mb-2"><input style="font-size:12px" type="text" class="form-control" wire:model="extension" placeholder="Extension"></div>
+                <div class="mb-2"><input  type="text" class="form-control mt-1 input-width" wire:model="extension" placeholder="Extension"></div>
                 @else
                 <div class="editprofile mb-3">{{ $employee->extension }} </div>
                 @endif
@@ -395,24 +399,24 @@ aria-describedby="basic-addon1"
         </div>
     </div>
 
-    <div class="row px-3 mt-2 text-muted" style="font-size: 12px;">
-        <div class="col-md-3">DOB
+    <div class="card-row" >
+        <div class="col-md-3 edit-headings">DOB
         @if($currentEditingPersonalProfileId == $employee->emp_id)
-                <div class="mb-2">   <input type="date" class="form-control" wire:model="dob" style="font-size:12px"></div>
+                <div class="mb-2">   <input type="date" class="form-control mt-1 input-width" wire:model="dob" ></div>
                 @else
                 <div class="editprofile mb-3" >{{ isset($employee->empPersonalInfo->date_of_birth) ? \Carbon\Carbon::parse($employee->empPersonalInfo->date_of_birth)->format('d/m/Y') : '-' }}</div>
                 @endif
                 </div>
-                <div class="col-md-3" style="font-size: 12px;">Blood Group
+                <div class="col-md-3 edit-headings" >Blood Group
                 @if($currentEditingPersonalProfileId == $employee->emp_id)
-                <div class="mb-2">      <input type="text" class="form-control" wire:model="BloodGroup" placeholder="Blood Group" style="font-size:12px"></div>
+                <div class="mb-2">      <input type="text" class="form-control mt-1 input-width" wire:model="BloodGroup" placeholder="Blood Group" ></div>
                 @else
                 <div class="editprofile mb-3" >{{ $employee->empPersonalInfo->blood_group ?? '-' }} </div>
                 @endif
                 </div>
-                <div class="col-md-3" style="font-size: 12px;">Marital Status
+                <div class="col-md-3 edit-headings" >Marital Status
                 @if($currentEditingPersonalProfileId == $employee->emp_id)
-                <div class="mb-2"> <input type="text" class="form-control" wire:model="MaritalStatus" placeholder="Marital Status" style="font-size:12px"></div>
+                <div class="mb-2"> <input type="text" class="form-control mt-1 input-width" wire:model="MaritalStatus" placeholder="Marital Status" ></div>
                 @else
                 <div class="editprofile mb-3">{{ $employee->empPersonalInfo->marital_status ?? '-' }}</div>
                 @endif
@@ -423,26 +427,35 @@ aria-describedby="basic-addon1"
 </div>
 
     </div>
+    </div>
 @endif
 
     @endforeach
 @endif
 
-
-
-
-
-                    </div>
-              
-           
-
-          
-
-        <div class="tab-content">
-        <div class="row mt-3 ml-3" style="font-size:12px">
+</div>
+<div class="tab-content-custom" id="tab-1">
+<div class="row mt-3 ml-3" style="font-size:12px">
       
-        <div id="employee-container">
-
+      <div id="employee-container">
+      @foreach($employeess as $employee)
+  <span style="font-weight:600">
+      Added New Employee: ({{ $employee->emp_id }}) {{ $employee->first_name }} {{ $employee->last_name }}
+  </span>
+  @if (!$loop->first)<br>@endif
+  <p class="main-text">
+      Hire Date: 
+      @if($employee->hire_date)
+          @php
+              $hireDate = \Carbon\Carbon::parse($employee->hire_date);
+          @endphp
+          ({{ $hireDate->format('M d, Y') }})
+      @else
+          N/A
+      @endif
+  </p>
+  @if (!$loop->first)<br>@endif
+@endforeach
 
 </div>
 
@@ -450,36 +463,38 @@ aria-describedby="basic-addon1"
 
 
 
-      
-      
-      
-              <br>
-          
-      
-      
-       
-                  </div>
-      
-        </div>
+    
+    
+    
+            <br>
+        
+    
+    
+     
+                </div>
+</div>
+       </div> <!-- Tab buttons -->
 
-    </div>
+
+
 
     <script>
-        // JavaScript to handle tab switching
-        function showTab(index) {
-            // Hide all tab contents
-            const contents = document.querySelectorAll('.tab-content');
-            contents.forEach(content => content.classList.remove('active'));
+function showTab(index) {
+    // Remove the 'active' class from all buttons
+    var buttons = document.querySelectorAll('.tab-button');
+    buttons.forEach(button => button.classList.remove('active'));
 
-            // Remove active class from all buttons
-            const buttons = document.querySelectorAll('.tab-button');
-            buttons.forEach(button => button.classList.remove('active'));
+    // Add 'active' class to the clicked button
+    buttons[index].classList.add('active');
 
-            // Show the selected tab content and mark the button as active
-            contents[index].classList.add('active');
-            buttons[index].classList.add('active');
-        }
-    </script>
+    // Hide all tab contents
+    var tabs = document.querySelectorAll('.tab-content-custom');
+    tabs.forEach(tab => tab.classList.remove('active'));
+
+    // Show the selected tab content
+    document.getElementById('tab-' + index).classList.add('active');
+}
+</script>
 
 
     </div>

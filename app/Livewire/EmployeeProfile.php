@@ -41,6 +41,7 @@ class EmployeeProfile extends Component
     public $cc_to;
     public $peoples;
     public $peopleData =[];
+    public $employee;
     public $filteredPeoples;
     public $selectedPeopleNames = [];
     public $selectedPeople = [];
@@ -110,7 +111,7 @@ class EmployeeProfile extends Component
     
     public function updatesearchTerm()
     {
-        $this->searchTerm=$this->searchTerm;
+        $this->searchTerm= $this->searchTerm;
        
        
     }
@@ -262,7 +263,7 @@ class EmployeeProfile extends Component
     
         // Fetch employee details including related empPersonalInfo
         $employee = EmployeeDetails::with('empPersonalInfo')->find($emp_id);
-  
+    
         if ($employee) {
             // Access personalInfo data using the relationship
             $personalInfo = $employee->empPersonalInfo;
@@ -271,7 +272,7 @@ class EmployeeProfile extends Component
             $this->title = $personalInfo->title ?? '';  // Use relationship data
             $this->nickName = $personalInfo->nick_name ?? '';
             $this->gender = $employee->gender ?? '';
-            $this->name = $employee->first_name . ' ' . $employee->last_name ?? '';
+            $this->name = $employee->first_name . ' ' . $employee->last_name ?? ''; // Combine first and last name
             $this->emergency_contact = $employee->emergency_contact ?? '';
             $this->Email = $employee->email ?? '';
             $this->extension = $employee->extension ?? '';
@@ -281,72 +282,72 @@ class EmployeeProfile extends Component
 
     
     public function saveProfile($emp_id)
-    {
-        try {
-            // Fetch employee details along with empPersonalInfo
-            $employee = EmployeeDetails::with('empPersonalInfo')->find($emp_id);
-    
-            if ($employee) {
-                // Split name into first_name and last_name if necessary
-                $nameParts = explode(' ', $this->name);
-                $firstName = $nameParts[0];
-                $lastName = isset($nameParts[1]) ? $nameParts[1] : '';
-    
-                // Check for duplicate email
-                if ($this->Email !== '') {
-                    $existingEmail = EmployeeDetails::where('email', $this->Email)
-                        ->where('emp_id', '!=', $emp_id) // Exclude the current employee
-                        ->first();
-    
-                    if ($existingEmail) {
-                        session()->flash('error', 'This email is already taken by another employee.');
-                        return;  // Stop further execution
-                    }
+{
+    try {
+        // Fetch employee details along with empPersonalInfo
+        $employee = EmployeeDetails::with('empPersonalInfo')->find($emp_id);
+
+        if ($employee) {
+            // Split name into first_name and last_name (handling multiple last name parts)
+            $nameParts = explode(' ', $this->name);
+            $firstName = ucfirst(strtolower(array_shift($nameParts))); // First name is the first part
+            $lastName = implode(' ', array_map('ucfirst', array_map('strtolower', $nameParts))); // Remaining parts as last name
+
+            // Check for duplicate email
+            if ($this->Email !== '') {
+                $existingEmail = EmployeeDetails::where('email', $this->Email)
+                    ->where('emp_id', '!=', $emp_id) // Exclude the current employee
+                    ->first();
+
+                if ($existingEmail) {
+                    session()->flash('error', 'This email is already taken by another employee.');
+                    return;  // Stop further execution
                 }
-    
-                // Check for duplicate mobile number (emergency_contact)
-                if ($this->emergency_contact !== '') {
-                    $existingMobile = EmployeeDetails::where('emergency_contact', $this->emergency_contact)
-                        ->where('emp_id', '!=', $emp_id) // Exclude the current employee
-                        ->first();
-    
-                    if ($existingMobile) {
-                        session()->flash('error', 'This mobile number is already taken by another employee.');
-                        return;  // Stop further execution
-                    }
-                }
-    
-                // Update EmployeeDetails fields
-                $employee->gender = $this->gender;
-                $employee->first_name = $firstName;
-                $employee->last_name = $lastName;
-                $employee->emergency_contact = $this->emergency_contact;
-                $employee->email = $this->Email === '' ? null : $this->Email; // Temporarily assign null if empty
-                $employee->extension = $this->extension;
-                $employee->save();
-    
-                // Update empPersonalInfo fields if it exists
-                $personalInfo = $employee->empPersonalInfo;
-                if ($personalInfo) {
-                    $personalInfo->title = $this->title;
-                    $personalInfo->nick_name = $this->nickName;
-                    $personalInfo->save();
-                } else {
-                    // Optionally, create new personal info if it doesn't exist
-                    EmpPersonalInfo::create([
-                        'emp_id' => $emp_id,
-                        'title' => $this->title,
-                        'nick_name' => $this->nickName,
-                    ]);
-                }
-    
-                $this->currentEditingProfileId = null; // Exit edit mode after saving
-              
             }
-        } catch (\Exception $e) {
-            session()->flash('error', 'An error occurred while creating new record. Please try again.');
+
+            // Check for duplicate mobile number (emergency_contact)
+            if ($this->emergency_contact !== '') {
+                $existingMobile = EmployeeDetails::where('emergency_contact', $this->emergency_contact)
+                    ->where('emp_id', '!=', $emp_id) // Exclude the current employee
+                    ->first();
+
+                if ($existingMobile) {
+                    session()->flash('error', 'This mobile number is already taken by another employee.');
+                    return;  // Stop further execution
+                }
+            }
+
+            // Update EmployeeDetails fields
+            $employee->gender = $this->gender;
+            $employee->first_name = $firstName;
+            $employee->last_name = $lastName;
+            $employee->emergency_contact = $this->emergency_contact;
+            $employee->email = $this->Email === '' ? null : $this->Email; // Temporarily assign null if empty
+            $employee->extension = $this->extension;
+            $employee->save();
+
+            // Update empPersonalInfo fields if it exists
+            $personalInfo = $employee->empPersonalInfo;
+            if ($personalInfo) {
+                $personalInfo->title = $this->title;
+                $personalInfo->nick_name = $this->nickName;
+                $personalInfo->save();
+            } else {
+                // Optionally, create new personal info if it doesn't exist
+                EmpPersonalInfo::create([
+                    'emp_id' => $emp_id,
+                    'title' => $this->title,
+                    'nick_name' => $this->nickName,
+                ]);
+            }
+
+            $this->currentEditingProfileId = null; // Exit edit mode after saving
         }
+    } catch (\Exception $e) {
+        session()->flash('error', 'An error occurred while creating new record. Please try again.');
     }
+}
+
     
     
     
@@ -373,35 +374,29 @@ class EmployeeProfile extends Component
             $this->MaritalStatus = $personalInfo->marital_status ?? '';
         }
     }
-    public function removePerson($personId)
+    public function removePerson($empId)
     {
+        // Remove the person from the selectedPeople array
+        if (($key = array_search($empId, $this->selectedPeople)) !== false) {
+            unset($this->selectedPeople[$key]);
+        }
         
+        // Reindex the array to avoid gaps in the index
+        $this->selectedPeople = array_values($this->selectedPeople);
     
-        // Remove from the selectedPeople array
-        $this->selectedPeople = array_diff($this->selectedPeople, [$personId]);
-
-        // Debug: Log selectedPeople after removal
-        logger('selectedPeople after removal:', $this->selectedPeople);
+        // Update the selectedPeopleData array to remove the person
+        $this->selectedPeopleData = collect($this->selectedPeopleData)->filter(function ($person) use ($empId) {
+            return $person['emp_id'] !== $empId;
+        })->values()->toArray(); // Reindexing the selectedPeopleData
     
-        // Remove from the selectedPeopleData array
-        $this->selectedPeopleData = array_filter($this->selectedPeopleData, function($person) use ($personId) {
-            // Debug: Log each person being checked
-            logger('Checking person:', ['person' => $person]);
-            return $person['emp_id'] !== $personId;
+        // Optionally, update the employees list or other data if necessary
+        $this->employees = $this->employees->filter(function ($employee) use ($empId) {
+            return $employee->emp_id !== $empId;
         });
-    
-        // Debug: Log the state of selectedPeopleData after filtering
-        logger('selectedPeopleData after removal:', $this->selectedPeopleData);
-    
-        // Update the cc_to field with the unique names after removal
-        $this->cc_to = implode(', ', array_unique(array_column($this->selectedPeopleData, 'name')));
-    
-        // Debug: Check if cc_to is being updated correctly
-        logger('Updated cc_to field:', ['cc_to' => $this->cc_to]);
-    
-        // Optional: Use dd to see the final result if necessary
-        dd($this->cc_to);
+     
     }
+    
+    
     
     
     
@@ -497,7 +492,7 @@ class EmployeeProfile extends Component
         }
     
         // Fetch all emp_id values where company_id matches the logged-in user's company_id
-        $this->employeeIds = EmployeeDetails::where('company_id', $companyID)->pluck('emp_id')->toArray();
+        $this->employeeIds = EmployeeDetails::whereJsonContains('company_id', $companyID)->pluck('emp_id')->toArray();
     
         if (empty($this->employeeIds)) {
             // Handle the case where no employees are found
@@ -506,7 +501,7 @@ class EmployeeProfile extends Component
         }
     
         // Initialize employees based on search term and company_id
-        $employeesQuery = EmployeeDetails::where('company_id', $companyID)
+        $employeesQuery = EmployeeDetails::whereJsonContains('company_id', $companyID)
             ->where(function ($query) {
                 $query->where('first_name', 'like', '%' . $this->searchTerm . '%')
                       ->orWhere('last_name', 'like', '%' . $this->searchTerm . '%')
@@ -517,7 +512,7 @@ class EmployeeProfile extends Component
     
         // Fetch the employees
         $employees = $employeesQuery->get();
-    
+  
         if ($employees->isEmpty()) {
             // Handle the case where no employees match the search term
          
@@ -528,7 +523,11 @@ class EmployeeProfile extends Component
     
         // Set the component's employee data
         $this->employees = $employees;
-    
+        $this->employeess = EmployeeDetails::whereJsonContains('company_id', $companyID)
+        ->orderBy('hire_date', 'desc') // Order by hire_date descending
+      
+        ->take(5) // Limit to 5 records
+        ->get();
         // Initialize other properties
         $this->peopleData = $this->filteredPeoples ? $this->filteredPeoples : $this->employees;
         $this->selectedPeople = [];
@@ -610,10 +609,10 @@ class EmployeeProfile extends Component
         $companyID = EmployeeDetails::where('emp_id', $loggedInEmpID)
             ->pluck('company_id')
             ->first(); // Assuming company_id is unique for emp_id
-    
+  
         // If no search term, fetch all employees for the logged-in user's company
         if (empty($this->searchTerm)) {
-            $this->employees = EmployeeDetails::where('company_id', $companyID)->get();
+            $this->employees = EmployeeDetails::whereJsonContains('company_id', $companyID)->get();
         }
     
         // Determine if there are people found
