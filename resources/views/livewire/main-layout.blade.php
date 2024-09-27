@@ -184,7 +184,7 @@
 		<!-- start: MAIN TOP -->
 		<div class="main__top">
 			<div class="main__top__title">
-				<h3>Dashboard</h3>
+				<h3>Admin Dashboard</h3>
 				<ul class="breadcrumbs">
 					<li><a href="/hr/dashboard">Home</a></li>
 					<li class="divider">/</li>
@@ -313,20 +313,40 @@
 				</li>
 				<li class="profile">
 					<a href="#">
-						<img class="clientImg" src="https://xsilica.com/images/xsilica_broucher_final_modified_05082016-2.png">
-						<img src="https://images.unsplash.com/photo-1564564321837-a57b7070ac4f?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8bWFufGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60" alt="">
+						<img class="clientImg" src="{{ $companiesLogo->company_logo }}">
+						@if ($loginAdminDetails->image !== null && $loginAdminDetails->image != "null" && $loginAdminDetails->image != "Null" && $loginAdminDetails->image != "")
+						<img src="data:image/jpeg;base64,{{($loginAdminDetails->image)}} " alt="">
+						@else
+						@if($loginAdminDetails->gender=='Female')
+						<img src="{{ asset('images/female-default.jpg') }}" alt="">
+						@elseif($loginAdminDetails->gender=='Male')
+						<img src="{{ asset('images/male-default.png') }}" alt="">
+						@else
+						<img src="{{ asset('images/user.jpg') }}" alt="">
+						@endif
+						@endif
 					</a>
 					<div class="main__dropdown">
 						<div class="profile__top">
-							<img src="https://images.unsplash.com/photo-1564564321837-a57b7070ac4f?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8bWFufGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60" alt="">
+							@if ($loginAdminDetails->image !== null && $loginAdminDetails->image != "null" && $loginAdminDetails->image != "Null" && $loginAdminDetails->image != "")
+							<img src="data:image/jpeg;base64,{{($loginAdminDetails->image)}} " alt="">
+							@else
+							@if($loginAdminDetails->gender=='Female')
+							<img src="{{ asset('images/female-default.jpg') }}" alt="">
+							@elseif($loginAdminDetails->gender=='Male')
+							<img src="{{ asset('images/male-default.png') }}" alt="">
+							@else
+							<img src="{{ asset('images/user.jpg') }}" alt="">
+							@endif
+							@endif
 							<div class="name">
-								<h5>John Doe</h5>
-								<p>Web Developer</p>
+								<h6>{{ ucwords(strtolower(($loginAdminDetails->first_name))) }} {{ ucwords(strtolower(($loginAdminDetails->last_name))) }}</h6>
+								<p>{{ ucwords(strtolower(($loginAdminDetails->job_role))) }}</p>
 							</div>
 						</div>
 						<ul class="profile__menu">
 							<li><a href="#"><i class="ph-user-circle-fill"></i> Edit profile</a></li>
-							<li><a href="#"><i class="pwh-gear-fill"></i> Settings</a></li>
+							<li><a href="#"><i class="ph-gear-fill"></i> Settings</a></li>
 						</ul>
 					</div>
 				</li>

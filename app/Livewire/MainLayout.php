@@ -2,6 +2,8 @@
 
 namespace App\Livewire;
 
+use App\Models\Company;
+use App\Models\EmployeeDetails;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Livewire\Component;
@@ -10,6 +12,7 @@ class MainLayout extends Component
 {
     public $showLogoutModal = false;
 
+    public $companiesLogo;
     public function handleLogout()
     {
         $this->showLogoutModal = true;
@@ -24,7 +27,7 @@ class MainLayout extends Component
 
         try {
             // Logout the user from all guards
-        Auth::logout();
+            Auth::logout();
 
             // Clear session data
             session()->flush();
@@ -43,8 +46,37 @@ class MainLayout extends Component
         }
     }
 
+    //company logo for login admin
+    public function getCompanyLogo()
+    {
+
+    }
+
+
     public function render()
     {
-        return view('livewire.main-layout');
+        $loggedInEmpID = auth()->guard('hr')->user()->emp_id;
+
+        // Step 2: Find the employee's details
+        $employeeDetails = EmployeeDetails::where('emp_id', $loggedInEmpID)->first();
+
+        if (!$employeeDetails) {
+            return response()->json(['error' => 'Employee not found.'], 404);
+        }
+
+        // Step 3: Decode the company_id if it's in JSON format
+        $companyIds = $employeeDetails->company_id;
+        if (is_array($companyIds)) {
+            // Step 4: Fetch company logo and name for each company_id
+            $this->companiesLogo = Company::whereIn('company_id', $companyIds)->select('company_logo')->first();
+        }
+
+        //login admin profile
+        $loginAdminDetails = EmployeeDetails::where('emp_id', $loggedInEmpID)->first();
+
+        return view('livewire.main-layout', [
+            'companiesLogo' => $this->companiesLogo,
+            'loginAdminDetails' => $loginAdminDetails
+        ]);
     }
 }
