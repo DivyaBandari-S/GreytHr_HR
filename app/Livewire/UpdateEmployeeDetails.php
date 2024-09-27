@@ -20,12 +20,16 @@ use Illuminate\Support\Facades\Session;
 
 class UpdateEmployeeDetails extends Component
 {
-    public $employees;
-    public $employeeId;
+    // public $employees;
+    // public $employeeId;
     public $companies;
     public $hrDetails;
     public $counter = 1;
     public $search = '';
+    public $sortBy = 'status'; // Default sorting column
+    public $sortDirection = 'asc'; // Default sorting direction
+    public $employees = [];
+    public $hrCompany_id;
 
     //logic for logout
     public function logout()
@@ -72,6 +76,20 @@ class UpdateEmployeeDetails extends Component
         }
     }
 
+    public function sortBy($column)
+    {
+        if ($this->sortBy === $column) {
+            // Toggle direction if the same column is clicked
+            $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
+        } else {
+            // Set new column for sorting and reset to ascending order
+            $this->sortBy = $column;
+            $this->sortDirection = 'asc';
+        }
+
+        $this->fetchEmployees(); // Re-fetch employees after sorting
+    }
+
     public function render()
     {
 
@@ -102,10 +120,9 @@ class UpdateEmployeeDetails extends Component
                             ->orWhere('emp_id', 'like', '%' . $this->search . '%');
                             // ->orWhere('mobile_number', 'like', '%' . $this->search . '%');
                     })
-                    ->orderBy('status', 'desc')
+                    ->orderBy('status', 'asc')
                     ->get();
-                    // dd( $this->employees[104]->image);
-// dd( $this->employees);
+                    // dd( $this->employees);
 
             } catch (\Illuminate\Database\QueryException $e) {
                 Log::error('Error fetching Employee details: ' . $e->getMessage());

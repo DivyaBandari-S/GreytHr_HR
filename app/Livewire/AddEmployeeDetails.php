@@ -83,7 +83,8 @@ class AddEmployeeDetails extends Component
     public $spouse;
     public $physically_challenge;
     public $inter_emp;
-    public $job_location = 'Hyderabad';
+    public $job_location = '';
+    public $job_locations_array = [];
     public $education = [];
     public $newEducation = [
         ['level' => '', 'institution' => '', 'course_name' => '', 'year_of_passing' => '', 'percentage' => '']
@@ -104,7 +105,8 @@ class AddEmployeeDetails extends Component
     public $facebook;
     public $twitter;
     public $linked_in;
-    public $company_id = '';
+    public $company_id = [];
+    public $com_id = '';
     public $is_starred;
     public $skill_set;
     public $savedImage;
@@ -195,6 +197,7 @@ class AddEmployeeDetails extends Component
 
     public  $selectedEmployees;
     public $currentStep = 1;
+
     public $parentscurrentStep = 1;
     public $showAlert = false;
     public $successModal = false;
@@ -207,37 +210,66 @@ class AddEmployeeDetails extends Component
     {
         return $this->rules[$this->currentStep];
     }
+
     public function updatedImage()
     {
+        $this->validateImageType();
+    }
 
-        // Check if the file size exceeds 1MB
-        if ($this->image->getSize() > 1048576) {
-            // Display an error message or handle the validation
-            // $this->addError('image', 'The selected image exceeds 1MB and cannot be uploaded.');
-            $this->image = null; // Clear the file
+    public $imageValidation = false;
+    public $imageValidationmsg = '';
+
+    public function validateImageType()
+    {
+
+        // Get file extension
+        $extension = $this->image->extension();
+
+        // Custom validation logic to check for valid image types
+        $validExtensions = ['jpg', 'jpeg', 'png'];
+
+        if (!in_array(strtolower($extension), $validExtensions)) {
+            $this->imageValidation = true;
+              $this->imageBinary='';
+            $this->imageValidationmsg = 'Please select only an image file.';
+        } else {
+            if ($this->image->getSize() > 1048576) {
+                $this->imageBinary='';
+
+                $this->imageValidationmsg = 'Please select only an image size less than 1MB.';
+                $this->image = null; // Clear the file
+            } else {
+                $this->imageValidationmsg = '';
+
+                $this->imageBinary = base64_encode(file_get_contents($this->image->getRealPath()));
+                $this->imageValidation = false;
+                $this->validateOnly('imageBinary', $this->validationRules());
+            }
         }
     }
+
 
     public function updated($propertyName)
     {
         if ($this->currentStep != 8 && $this->currentStep != 9) {
-
-            $this->validateOnly($propertyName, $this->validationRules());
+            if ($propertyName != 'image') {
+                $this->validateOnly($propertyName, $this->validationRules());
+            }
         }
 
 
-        if (in_array($propertyName, ['last_name', 'mobile_number'])) {
+        if (in_array($propertyName, ['first_name', 'last_name', 'mobile_number'])) {
             $firstName = explode(' ', trim($this->first_name))[0]; // Take only the first word from the first name
             $lastname = explode(' ', trim($this->last_name))[0];
             $mobile = substr($this->mobile_number, 0, 4);
-            $company_email = strtolower($firstName . '.' . $lastname.'@'.$this->email_domain);
+            $company_email = strtolower($firstName . '.' . $lastname . '@' . $this->email_domain);
             $exists = EmployeeDetails::where('email', $company_email)->exists();
             if ($exists) {
 
-                $this->company_email = strtolower($firstName . '.' . $lastname . $mobile.'@'.$this->email_domain );
+                $this->company_email = strtolower($firstName . '.' . $lastname . $mobile . '@' . $this->email_domain);
                 $this->validateOnly("company_email", $this->validationRules());
             } else {
-                $this->company_email = strtolower($firstName . '.' . $lastname.'@'.$this->email_domain );
+                $this->company_email = strtolower($firstName . '.' . $lastname . '@' . $this->email_domain);
                 $this->validateOnly("company_email", $this->validationRules());
             }
         }
@@ -258,6 +290,8 @@ class AddEmployeeDetails extends Component
 
 
         if ($this->currentStep == 1) {
+
+
             $existingEmployee = EmployeeDetails::where('email', $this->company_email)
                 ->where('emp_id', '!=', $this->emp_id)
                 ->first();
@@ -277,6 +311,7 @@ class AddEmployeeDetails extends Component
                 return;
             }
 
+            // dd($this->company_email);
             $this->currentStep++;
         } elseif ($this->currentStep == 2) {
 
@@ -314,6 +349,7 @@ class AddEmployeeDetails extends Component
 
             $this->registerEmployeeBankDetails();
         } elseif ($this->currentStep == 8) {
+
             $this->addEducationDetails();
         } elseif ($this->currentStep == 9) {
 
@@ -457,8 +493,9 @@ class AddEmployeeDetails extends Component
             'mobile_number' => 'required|string|size:10|different:alternate_mobile_number',
             'company_email' => 'required|email|different:email',
             'gender' => 'required|in:Male,Female,Others',
-            'imageBinary' => 'required|max:1024',
-            'company_id' => 'required|exists:companies,company_id',
+            'imageBinary' => 'required',
+            'image' => 'nullable',
+            'com_id' => 'required',
 
         ],
         2 => [
@@ -559,7 +596,7 @@ class AddEmployeeDetails extends Component
         'company_email.different' => 'Company email must be different from the personal email.',
         'company_email.unique' => ' Company email  already used of another employee.',
         'gender.required' => 'Please select a gender.',
-        'image.required' => 'Employee image is required.',
+        'imageBinary.required' => 'Employee image is required.',
         'image.max' => ' Selected image exceeds 1MB and cannot be uploaded.',
         'gender.in' => 'Selected gender is invalid.',
         'hire_date.required' => 'Hire date is required.',
@@ -578,7 +615,7 @@ class AddEmployeeDetails extends Component
         'job_title.string' => 'Job title must be a valid string.',
         'job_location.required' => 'Job location is required.',
         'job_location.alpha' => 'Job location field must only contain letters.',
-        'company_id.required' => 'Please select the company name.',
+        'com_id.required' => 'Please select the company name.',
         'company_id.exists' => 'Selected company name does not exist.',
         'manager_id.required' => 'Please select the manager ',
         'date_of_birth.required' => 'Date of birth is required.',
@@ -688,7 +725,7 @@ class AddEmployeeDetails extends Component
                 $this->imageBinary = base64_encode(file_get_contents($this->image->getRealPath()));
             }
 
-           $report_to = EmployeeDetails::where('emp_id', $this->manager_id)->value('manager_id');
+            $report_to = EmployeeDetails::where('emp_id', $this->manager_id)->value('manager_id');
 
 
 
@@ -699,7 +736,7 @@ class AddEmployeeDetails extends Component
                     'last_name' => ucfirst(strtolower($this->last_name)),
                     'gender' => $this->gender,
                     'email' => $this->company_email,
-                    'company_id' =>[$this->company_id],
+                    'company_id' => $this->company_id,
                     'hire_date' => $this->hire_date,
                     'employee_type' => $this->employee_type,
                     'manager_id' => $this->manager_id,
@@ -934,35 +971,36 @@ class AddEmployeeDetails extends Component
 
     public function selectedCompany()
     {
+        if (is_string($this->com_id)) {
+            $this->company_id = [$this->com_id];
+        }
 
-        if ($this->company_id) {
-            $this->selectedId = Company::find($this->company_id);
-            $this->company_name = $this->selectedId->company_name;
-            $this->companyName = $this->company_name;
-            $this->email_domain=$this->selectedId->email_domain;
-            $trimmedEmail = substr($this->company_email, 0, strpos($this->company_email, '@'));
-            $this->company_email=$trimmedEmail.'@'. $this->email_domain;
+        if (is_array($this->company_id)) {
+            $this->selectedId = Company::whereIn('company_id', $this->company_id)->first();
 
-            // $this->selectedEmployees = EmployeeDetails::where('company_id', $this->company_id)->get();
-            // dd( $this->selectedEmployees);
-            // if ($this->selectedEmployees->isNotEmpty()) {
-            //     foreach ($this->selectedEmployees as $employee) {
+            if ($this->selectedId) {
+                $this->company_name = $this->selectedId->company_name;
+                $this->job_locations_array = $this->selectedId->branch_locations;
+                $this->email_domain = $this->selectedId->email_domain;
 
-            //         if (!in_array($employee->manager_id, $this->managerIds)) {
-            //             $this->managerIds[] = $employee->manager_id;
-            //         }
-            //     }
-            // }
-            $managers = EmployeeDetails::where('dept_id', $this->department_id)
-                ->pluck('manager_id')
-                ->unique()
-                ->toArray();
+                $trimmedEmail = substr($this->company_email, 0, strpos($this->company_email, '@'));
+                $this->company_email = $trimmedEmail . '@' . $this->email_domain;
 
-            $this->managerIds = EmployeeDetails::whereIn('emp_id', $managers)
-                ->get(['emp_id', 'first_name', 'last_name', 'manager_id']);
+                // Validate company email
+                $this->validateOnly('company_email', $this->validationRules());
 
-            //  dd( $this->managerIds);
+                // Fetch departments based on the selected company
+                $this->departments = EmpDepartment::whereIn('company_id', $this->company_id)->get();
 
+                // Fetch managers for the department
+                $managers = EmployeeDetails::where('dept_id', $this->department_id)
+                    ->pluck('manager_id')
+                    ->unique()
+                    ->toArray();
+
+                $this->managerIds = EmployeeDetails::whereIn('emp_id', $managers)
+                    ->get(['emp_id', 'first_name', 'last_name', 'manager_id']);
+            }
         }
     }
 
@@ -1010,18 +1048,21 @@ class AddEmployeeDetails extends Component
         $this->physically_challenge = $this->physically_challenge ?? 'No';
         $this->inter_emp = $this->inter_emp ?? 'no';
         $this->hire_date = Carbon::now()->toDateString();
-        $hrId = auth()->guard('hr')->user()->emp_id;
-        $employee = EmployeeDetails::find($hrId);
+        $hr = auth()->guard('hr')->user()->emp_id;
+        $employee = EmployeeDetails::find($hr);
+
 
         $empCompanyId = $employee->company_id;
 
         $this->companieIds = Company::wherein('company_id', $empCompanyId)->select('company_id', 'company_name')->get();
-
+        // dd(  $this->companieIds);
         $companieIdsLength = count($this->companieIds);
         if ($companieIdsLength == 1) {
             $this->company_id = $this->companieIds->first()->company_id;
         }
-        $this->departments = EmpDepartment::where('company_id', $empCompanyId)->get();
+
+        $this->departments = EmpDepartment::whereIn('company_id', $empCompanyId)->get();
+
         if ($this->shift_type == 'GS') {
             $this->shift_start_time = "10:00";
             $this->shift_end_time = "19:00";
@@ -1045,7 +1086,9 @@ class AddEmployeeDetails extends Component
 
 
         $id = request()->query('emp_id') ? request()->query('emp_id') : '';
+
         if ($id) {
+
             // Assign fetched employee details to the respective properties
             try {
 
@@ -1056,13 +1099,17 @@ class AddEmployeeDetails extends Component
                 $this->emp_id = Crypt::decrypt($id);
                 $empdetails = EmployeeDetails::where('emp_id', $this->emp_id)->first();
                 // dd( $empdetails);
+                // dd($empdetails->image);
                 $this->first_name = $empdetails->first_name;
                 $this->last_name = $empdetails->last_name;
                 $this->company_email = $empdetails->email;
                 $this->email_domain = substr($this->company_email, strpos($this->company_email, '@') + 1);
                 $this->gender = $empdetails->gender;
                 $this->mobile_number = $empdetails->emergency_contact;
+
                 $this->imageBinary = $empdetails->image;
+
+
 
                 // dd(($empdetails->image));
                 $this->hire_date = $empdetails->hire_date;
@@ -1126,14 +1173,18 @@ class AddEmployeeDetails extends Component
                     $this->twitter = $empPersonalDetails->twitter;
                     $this->linked_in = $empPersonalDetails->linked_in;
 
+
                     // Educational Details
-                    if ($empPersonalDetails->qualification != null) {
+                    if (json_decode($empPersonalDetails->qualification, true) != [] && json_decode($empPersonalDetails->qualification, true) != null) {
+
                         $this->education = json_decode($empPersonalDetails->qualification, true);
                     }
 
 
+
                     // Experience Details
-                    if ($empPersonalDetails->experience != null) {
+                    if (json_decode($empPersonalDetails->experience, true) != [] && json_decode($empPersonalDetails->experience, true) != null) {
+
                         $this->experience = json_decode($empPersonalDetails->experience, true);
                     }
                 }
@@ -1185,7 +1236,13 @@ class AddEmployeeDetails extends Component
                     $this->spouse_email = $empSpouseDetails->email;
                     $this->spouse_address = $empSpouseDetails->adhar_no;
                     // $this->children = $empSpouseDetails->children;
-                    $this->children = json_decode($empSpouseDetails->children, true);
+                    // dd(json_decode($empSpouseDetails->children,true));
+                    // dd( $this->children);
+                    if (json_decode($empSpouseDetails->children, true) != [] && json_decode($empSpouseDetails->children, true) != null) {
+
+
+                        $this->children = json_decode($empSpouseDetails->children, true);
+                    }
                 }
 
                 //Employee Bank Details
