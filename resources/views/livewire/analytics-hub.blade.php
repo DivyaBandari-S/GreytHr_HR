@@ -38,7 +38,7 @@
                 {{ $selectedCard }}
             </div>
             <div class="analytic-header-right">
-                <button class="submit-btn">Add Employee</button>
+                <button class="submit-btn" wire:click="addEmployee">Add Employee</button>
             </div>
         </div>
         <hr>
@@ -68,8 +68,17 @@
                         </tr>
                     </thead>
                     <tbody>
+                        @if ($employeesData->isEmpty())
+                                <tr>
+                                    <td colspan="5" class="text-center">
+                                        <img class="analytic-no-items-found"
+                                            src="https://media.istockphoto.com/id/1357284048/vector/no-item-found-vector-flat-icon-design-illustration-web-and-mobile-application-symbol-on.jpg?s=612x612&w=0&k=20&c=j0V0ww6uBl1LwQLH0U9L7Zn81xMTZCpXPjH5qJo5QyQ="
+                                            alt="No items found">
+                                    </td>
+                                </tr>
 
                         <!-- Rows will be dynamically generated -->
+                        @else
                         @foreach ($employeesData as $employee)
                             <tr>
                                 <td class="analytic-grey-text">{{ $employee->emp_id }}</td>
@@ -85,6 +94,7 @@
                                 <td class="analytic-grey-text">{{ $employee->email }}</td>
                             </tr>
                         @endforeach
+                        @endif
                         <!-- More rows as needed -->
                     </tbody>
                 </table>
@@ -113,6 +123,16 @@
                         </tr>
                     </thead>
                     <tbody>
+                        @if ($personalInformationData->isEmpty())
+                        <tr>
+                            <td colspan="6" class="text-center">
+                                <img class="analytic-no-items-found"
+                                    src="https://media.istockphoto.com/id/1357284048/vector/no-item-found-vector-flat-icon-design-illustration-web-and-mobile-application-symbol-on.jpg?s=612x612&w=0&k=20&c=j0V0ww6uBl1LwQLH0U9L7Zn81xMTZCpXPjH5qJo5QyQ="
+                                    alt="No items found">
+                            </td>
+                        </tr>
+
+                @else
                         <!-- Rows will be dynamically generated -->
                         @foreach ($personalInformationData as $employee)
                             @php
@@ -163,6 +183,7 @@
                                 </td>
                             </tr>
                         @endforeach
+                        @endif
                         <!-- More rows as needed -->
                     </tbody>
                 </table>
@@ -191,6 +212,17 @@
                     </tr>
                 </thead>
                 <tbody>
+                    @if ($allInfoData->isEmpty())
+                    <tr>
+                        <td colspan="6" class="text-center">
+                            <img class="analytic-no-items-found"
+                                src="https://media.istockphoto.com/id/1357284048/vector/no-item-found-vector-flat-icon-design-illustration-web-and-mobile-application-symbol-on.jpg?s=612x612&w=0&k=20&c=j0V0ww6uBl1LwQLH0U9L7Zn81xMTZCpXPjH5qJo5QyQ="
+                                alt="No items found">
+                        </td>
+                    </tr>
+
+            <!-- Rows will be dynamically generated -->
+            @else
 
                     @foreach ($allInfoData as $employee)
                     @php
@@ -216,6 +248,7 @@
                             <td class="analytic-grey-text">{{ $employee->email }}</td>
                         </tr>
                     @endforeach
+                    @endif
                     <!-- More rows as needed -->
                 </tbody>
             </table>
@@ -280,6 +313,17 @@
                     </tr>
                 </thead>
                 <tbody>
+                    @if ($resigneesData->isEmpty())
+                    <tr>
+                        <td colspan="7" class="text-center">
+                            <img class="analytic-no-items-found"
+                                src="https://media.istockphoto.com/id/1357284048/vector/no-item-found-vector-flat-icon-design-illustration-web-and-mobile-application-symbol-on.jpg?s=612x612&w=0&k=20&c=j0V0ww6uBl1LwQLH0U9L7Zn81xMTZCpXPjH5qJo5QyQ="
+                                alt="No items found">
+                        </td>
+                    </tr>
+
+            <!-- Rows will be dynamically generated -->
+            @else
 
                     @foreach ($resigneesData as $employee)
                     @php
@@ -307,6 +351,7 @@
                         </tr>
                     @endforeach
                     <!-- More rows as needed -->
+                    @endif
                 </tbody>
             </table>
         </div>

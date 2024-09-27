@@ -7,6 +7,7 @@ use App\Models\EmployeeDetails;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Redirect; 
 
 class AnalyticsHub extends Component
 {
@@ -41,7 +42,7 @@ class AnalyticsHub extends Component
         $hrId = auth()->guard('hr')->user()->emp_id;
         $employee = EmployeeDetails::find($hrId);
         $empCompanyId = $employee->company_id;
-        $this->filteredEmployees = EmployeeDetails::where('company_id', $empCompanyId)
+        $this->filteredEmployees = EmployeeDetails::whereJsonContains('company_id', $empCompanyId)
         ->where('employee_status', 'active')
         ->when($this->basicSearch, function ($query) {
             $query->where(function ($subQuery) {
@@ -60,7 +61,7 @@ class AnalyticsHub extends Component
         $empCompanyId = $employee->company_id;
        
         $this->filteredPI =  EmployeeDetails::with('empPersonalInfo')
-        ->where('company_id', $empCompanyId)
+        ->whereJsonContains('company_id', $empCompanyId)
         ->where('employee_status','active')
         ->when($this->piSearch, function ($query) {
             $query->where(function ($subQuery) {
@@ -77,7 +78,7 @@ class AnalyticsHub extends Component
         $employee = EmployeeDetails::find($hrId);
         $empCompanyId = $employee->company_id;
         $this->filteredAllInfo = EmployeeDetails::with('empPersonalInfo')
-        ->where('company_id', $empCompanyId)
+        ->whereJsonContains('company_id', $empCompanyId)
         ->where('employee_status','active')
         ->when($this->allInfoSearch, function ($query) {
             $query->where(function ($subQuery) {
@@ -94,7 +95,7 @@ class AnalyticsHub extends Component
         $hrId = auth()->guard('hr')->user()->emp_id;
         $employee = EmployeeDetails::find($hrId);
         $empCompanyId = $employee->company_id;
-        $this->filteredGenderWise = EmployeeDetails::where('company_id', $empCompanyId)
+        $this->filteredGenderWise = EmployeeDetails::whereJsonContains('company_id', $empCompanyId)
         ->where('employee_status', 'active')
         ->when($this->genderSearch, function ($query) {
             $query->where(function ($subQuery) {
@@ -119,7 +120,7 @@ class AnalyticsHub extends Component
             $query->whereBetween('emp_resignations.last_working_day', [$lastMonthStart, $currentDate])
                   ->whereColumn('employee_details.emp_id', 'emp_resignations.emp_id');
         })
-        ->where('company_id', $empCompanyId)
+        ->whereJsonContains('company_id', $empCompanyId)
         ->when($this->resigneesSearch, function ($query) {
             $query->where(function ($subQuery) {
                 $subQuery->where('emp_id', 'like', "%{$this->resigneesSearch}%")
@@ -138,14 +139,14 @@ class AnalyticsHub extends Component
         $employee = EmployeeDetails::find($hrId);
         $empCompanyId = $employee->company_id;
 
-        $employees = EmployeeDetails::where('company_id', $empCompanyId)
+        $employees = EmployeeDetails::whereJsonContains('company_id', $empCompanyId)
         ->where('employee_status','active')->get();
 
         $employeesPersonal = EmployeeDetails::with('empPersonalInfo')
-        ->where('company_id', $empCompanyId)
+        ->whereJsonContains('company_id', $empCompanyId)
         ->where('employee_status','active')->get();
 
-        $genderWiseCount =EmployeeDetails::where('company_id', $empCompanyId)
+        $genderWiseCount =EmployeeDetails::whereJsonContains('company_id', $empCompanyId)
         ->selectRaw('gender, COUNT(*) as count')
     ->groupBy('gender')
         ->where('employee_status','active')->get();
@@ -171,7 +172,7 @@ class AnalyticsHub extends Component
         $query->whereBetween('emp_resignations.last_working_day', [$lastMonthStart, $currentDate])
               ->whereColumn('employee_details.emp_id', 'emp_resignations.emp_id');
     })
-    ->where('company_id', $empCompanyId)
+    ->whereJsonContains('company_id', $empCompanyId)
     ->get();
 
 
@@ -188,5 +189,9 @@ class AnalyticsHub extends Component
         'allInfoData' => $allInfoData,
         'genderWiseData' => $genderWiseData,
     ]);
+    }
+    public function addEmployee()
+    {
+        return Redirect::route('add-employee-details');
     }
 }
