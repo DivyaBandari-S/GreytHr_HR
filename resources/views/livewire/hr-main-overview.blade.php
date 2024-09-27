@@ -1,4 +1,4 @@
-<div class="main-overview-container">
+<div class="p-2 m-0 main-overview-container">
 
     <div>
         @if ($showHelp == false)
