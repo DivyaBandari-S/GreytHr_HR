@@ -676,14 +676,11 @@ input {
     border: 1px solid var(--main-button-color);
     font-weight: 500;
     border-radius: 5px;
-    padding: 6px 12px;
+    padding: 7px 12px;
     font-size: var(--normal-font-size);
     border: none;
 }
-.submit-btn:hover {
-    background-color: var(--main-button-color);
-    color: #fff;
-}
+
 
 .cancel-btn {
     background-color: white;
@@ -919,168 +916,18 @@ input {
     background-color: #e1e5f6;
     border: 1px solid var(--main-button-color);
 }
+.analytic-no-items-found {
+    width: 10em;
+    margin: 20px;
+}
+.analytic-folder-label{
+    font-size: var(--normal-font-size);
+    color: var(--label-color);
+}
 
 /* analytics hub styles ended */
 
-/* analytics hub view all styles started */
 
-.card-container {
-    margin: 15px 30px;
-}
-
-.back {
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-}
-
-.back:hover .analytic-blue-text {
-    text-decoration: underline;
-    /* Change this to your desired hover color */
-}
-
-.back i {
-    color: var(--main-button-color);
-    margin-right: 10px;
-    font-size: var(--sub-headings-font-size);
-}
-
-.search-bar {
-    display: flex;
-    padding: 20px 0px;
-    justify-content: space-between;
-    /* Adjust spacing between items */
-    align-items: center;
-    margin-bottom: 10px;
-    margin-top: 10px;
-}
-
-.search-wrapper {
-    position: relative;
-    display: flex;
-    align-items: center;
-}
-
-.search-bar input[type="text"] {
-    width: 280px;
-    padding: 6px 28px 6px 10px;
-    /* Adjust padding for right space */
-    border: 1px solid #ccc;
-    border-radius: 18px;
-    position: relative;
-}
-
-.search-icon {
-    position: absolute;
-    right: 10px;
-    color: #666;
-    pointer-events: none;
-}
-
-.tab-container {
-    margin-bottom: 48px;
-}
-
-/* input[type="radio"] {
-    display: none;
-}
-
-/* label {
-    display: inline-block;
-    padding: 10px 20px;
-    margin-right: -1px;
-    border: 1px solid #ccc;
-    cursor: pointer;
-    background-color: #f1f1f1;
-}
-
-label:hover {
-    background-color: #ddd;
-} */
-
-input[type="radio"]:checked + label {
-    background-color: white;
-    border-bottom: 1px solid white;
-}
-
-.accordion-item {
-    width: 100%;
-}
-
-.accordion-button {
-    width: 100%;
-    color: black;
-    font-size: var(--sub-headings-font-size);
-}
-
-.accordion-collapse {
-    width: 100%;
-}
-
-.accordion-body {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-}a
-
-.list-group-item {
-    width: 100%;
-}
-
-.custom-accordion .accordion-button:after {
-    display: none;
-}
-
-.custom-accordion .accordion-button {
-    padding-left: 1.5rem;
-}
-
-.custom-accordion .accordion-item {
-    border: none;
-}
-
-.custom-accordion .accordion-body {
-    padding-left: 3rem;
-}
-
-.tab-content {
-    border: 1px solid #dee2e6;
-    border-top: none;
-    /* padding: 1rem; */
-}
-
-.nav-tabs .nav-link.active {
-    background-color: #ffffff;
-    border-color: #dee2e6 #dee2e6 #ffffff;
-    color: var(--main-button-color);
-}
-.nav-tabs .nav-link {
-    font-size: var(--sub-headings-font-size);
-    color: black;
-}
-.nav-tabs .nav-link.folder-active {
-    font-size: var(--sub-headings-font-size);
-    color: var(--main-button-color);
-}
-
-.nav-link {
-    border: 1px solid transparent;
-}
-
-.list-group-item {
-    padding: 0.5rem 1rem;
-    color: var(--main-button-color);
-    font-size: var(--sub-headings-font-size);
-}
-
-.star-icon {
-    color: #c0c0c0;
-    margin-right: 0.5rem;
-}
-
-.folder-icon {
-    margin-right: 0.5rem;
-}
 
 /*Starting of Who Is In Submodule*/
 @media screen and (max-height: 320px) {
@@ -1102,10 +949,7 @@ input[type="radio"]:checked + label {
     border: 1px solid #dcdcdc;
     margin-right: 10px;
 }
-.cancel-btn:hover {
-    background-color: rgb(2, 17, 79);
-    color: white;
-}
+
 .toggle-box-container-who-is-in {
     float: right;
     display: flex;
@@ -1795,10 +1639,7 @@ input[type="date"]::before {
 
   /* Hr Main Overview Styles Started */
   .main-overview-container {
-    padding-top: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    overflow-x: hidden;
 }
 
 .main-overview-help {
@@ -2082,4 +1923,29 @@ input[type="date"]::before {
   }
 .Employee-leave-table-maindiv{
     border: 0.5px solid  rgb(199, 196, 196) ;
+}
+.modal-title {
+    color: #fff;
+    font-weight: 600;
+    font-size: var(--home-headings-font-size);
+}
+.modal-header {
+    background-color: var(--main-button-color);
+    color: white;
+    height: 50px;
+}
+.btn-close {
+    background-color: white;
+    height: 7px;
+    font-size: var(--normal-font-size);
+    width: 7px;
+}
+.placeholder-small {
+    color: var(--label-color); /* Placeholder text color */
+    font-size: var(--normal-font-size);
+    font-family: "Montserrat", sans-serif;
+    font-weight: normal;
+}
+.error-text {
+    font-size: var(--normal-font-size);
 }

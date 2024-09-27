@@ -42,7 +42,7 @@
 					<li>
 						<a href="#">Main <i class="ph-caret-right-fill"></i></a>
 						<ul class="sidebar__dropdown-menu">
-							<li><a href="/hr/user/overview">Overview</a></li>
+							<li><a href="/hr/user/main-overview">Overview</a></li>
 							<li><a href="/hr/user/analytics-hub">Analytics Hub</a></li>
 							<li><a href="/hr/user/hremployeedirectory">Employee Directory</a></li>
 							<li><a href="/user">Organization Chart</a></li>
