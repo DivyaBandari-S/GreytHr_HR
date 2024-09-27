@@ -50,7 +50,6 @@ Route::middleware(['auth:hr'])->group(function () {
     // Group routes under the 'hr' prefix
     Route::prefix('hr')->group(function () {
         //like this  Route: /hr/hello
-        Route::get('/hello', Dashboard::class)->name('hello');
         Route::get('/add-employee-details/{employee?}', AddEmployeeDetails::class)->name('add-employee-details');
         Route::get('/update-employee-details', UpdateEmployeeDetails::class)->name('update-employee-details');
         Route::get('/update-employee-leavesa', GrantLeaveBalance::class)->name('update-employee-leaves');

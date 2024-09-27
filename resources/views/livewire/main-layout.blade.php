@@ -11,8 +11,7 @@
 				<a href="#" class="active"><i class="ph-house-fill"></i></a>
 				<ul class="sidebar__submenu">
 					<li class="title">Home</li>
-					<!-- <li><a href="#">Sales</a></li>
-					<li><a href="#">Analytics</a></li> -->
+					<li><a href="/hr/dashboard">Home</a></li>
 				</ul>
 			</li>
 			<li>
@@ -185,7 +184,7 @@
 			<div class="main__top__title">
 				<h3>Dashboard</h3>
 				<ul class="breadcrumbs">
-					<li><a href="#">Home</a></li>
+					<li><a href="/hr/dashboard">Home</a></li>
 					<li class="divider">/</li>
 					<li><a href="#" class="active">Dashboard</a></li>
 				</ul>
