@@ -51,11 +51,13 @@
 					<li>
 						<a href="#">Information <i class="ph-caret-right-fill"></i></a>
 						<ul class="sidebar__dropdown-menu">
-							<li><a href="/home">Employee Profile</a></li>
+							<li><a href="/hr/employee-profile">Employee Profile</a></li>
+							<li><a href="/hr/position-history">Postion History</a></li>
+							<li><a href="/hr/employee-asset">Assets</a></li>
 							<li><a href="/user">Bank/PF/ESI</a></li>
 							<li><a href="/user">Family Details</a></li>
-							<li><a href="/user">Assets</a></li>
-							<li><a href="/home">Postion History</a></li>
+							
+						
 							<li><a href="/user">Previous Employement</a></li>
 							<li><a href="/user">Separration</a></li>
 							<li><a href="/user">Acess card details</a></li>
@@ -157,7 +159,7 @@
 			<li>
 				<a href="#"><i class="ph-gear-fill"></i></a>
 			</li>
-			<li>
+			<li wire:click="handleLogout">
 				<a href="#" class="logout"><i class="ph-sign-out-fill"></i></a>
 			</li>
 		</ul>
@@ -182,7 +184,7 @@
 		<!-- start: MAIN TOP -->
 		<div class="main__top">
 			<div class="main__top__title">
-				<h3>Dashboard</h3>
+				<h3>Admin Dashboard</h3>
 				<ul class="breadcrumbs">
 					<li><a href="/hr/dashboard">Home</a></li>
 					<li class="divider">/</li>
@@ -311,25 +313,71 @@
 				</li>
 				<li class="profile">
 					<a href="#">
-						<img class="clientImg" src="https://xsilica.com/images/xsilica_broucher_final_modified_05082016-2.png">
-						<img src="https://images.unsplash.com/photo-1564564321837-a57b7070ac4f?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8bWFufGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60" alt="">
+						<img class="clientImg" src="{{ $companiesLogo->company_logo }}">
+						@if ($loginAdminDetails->image !== null && $loginAdminDetails->image != "null" && $loginAdminDetails->image != "Null" && $loginAdminDetails->image != "")
+						<img src="data:image/jpeg;base64,{{($loginAdminDetails->image)}} " alt="">
+						@else
+						@if($loginAdminDetails->gender=='Female')
+						<img src="{{ asset('images/female-default.jpg') }}" alt="">
+						@elseif($loginAdminDetails->gender=='Male')
+						<img src="{{ asset('images/male-default.png') }}" alt="">
+						@else
+						<img src="{{ asset('images/user.jpg') }}" alt="">
+						@endif
+						@endif
 					</a>
 					<div class="main__dropdown">
 						<div class="profile__top">
-							<img src="https://images.unsplash.com/photo-1564564321837-a57b7070ac4f?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8bWFufGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60" alt="">
+							@if ($loginAdminDetails->image !== null && $loginAdminDetails->image != "null" && $loginAdminDetails->image != "Null" && $loginAdminDetails->image != "")
+							<img src="data:image/jpeg;base64,{{($loginAdminDetails->image)}} " alt="">
+							@else
+							@if($loginAdminDetails->gender=='Female')
+							<img src="{{ asset('images/female-default.jpg') }}" alt="">
+							@elseif($loginAdminDetails->gender=='Male')
+							<img src="{{ asset('images/male-default.png') }}" alt="">
+							@else
+							<img src="{{ asset('images/user.jpg') }}" alt="">
+							@endif
+							@endif
 							<div class="name">
-								<h5>John Doe</h5>
-								<p>Web Developer</p>
+								<h6>{{ ucwords(strtolower(($loginAdminDetails->first_name))) }} {{ ucwords(strtolower(($loginAdminDetails->last_name))) }}</h6>
+								<p>{{ ucwords(strtolower(($loginAdminDetails->job_role))) }}</p>
 							</div>
 						</div>
 						<ul class="profile__menu">
 							<li><a href="#"><i class="ph-user-circle-fill"></i> Edit profile</a></li>
-							<li><a href="#"><i class="pwh-gear-fill"></i> Settings</a></li>
+							<li><a href="#"><i class="ph-gear-fill"></i> Settings</a></li>
 						</ul>
 					</div>
 				</li>
 			</ul>
 		</div>
 		<!-- end: MAIN TOP -->
+
+
+
+		<!-- Logout Modal -->
+		@if ($showLogoutModal)
+		<div class="modal" id="logoutModal" tabindex="-1" style="display: block;">
+			<div class="modal-dialog modal-dialog-centered">
+				<div class="modal-content">
+					<div class="modal-header text-white" style=" background-color: var(--main-button-color);">
+						<h6 class="modal-title " id="logoutModalLabel" style="align-items: center;">Confirm
+							Logout</h6>
+					</div>
+					<div class="modal-body text-center"
+						style="font-size: 14px;color:var( --main-heading-color);">
+						Are you sure you want to logout?
+					</div>
+					<div class="d-flex gap-3 justify-content-center p-3">
+						<button type="button" class="submit-btn mr-3"
+							wire:click="confirmLogout">Logout</button>
+						<button type="button" class="cancel-btn" wire:click="cancelLogout">Cancel</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal-backdrop fade show"></div>
+		@endif
 	</section>
 </div>

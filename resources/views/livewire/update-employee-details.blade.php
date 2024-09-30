@@ -54,7 +54,7 @@
             </div>
             <div class="col-md-5 mb-2">
                 <div class="d-flex justify-content-end">
-                    <input wire:change="filter" wire:model="search" type="text" placeholder="Search employees" class="search-input" style="border-radius: 5px;padding: 3px 5px;border: 1px solid #ccc;outline:none;">
+                    <input wire:input="filter" wire:model="search" type="text" placeholder="Search employees" class="search-input" style="border-radius: 5px;padding: 3px 5px;border: 1px solid #ccc;outline:none;">
                 </div>
             </div>
         </div>
@@ -85,27 +85,33 @@
                         <tr>
                             <td class="whitespace-nowrap">{{ $counter++ }}</td>
                             <td>
-                                @if($employee->image !== null && $employee->image != "null" && $employee->image != "Null" && $employee->image != "")
-                                <!-- <p>{{strlen($employee->image)}}</p> -->
-                                <img src="data:image/jpeg;base64,{{ $employee->image }}" alt=" image" style='height:50px;width:50px' class="img-thumbnail" />
+                                @if ($employee->image !== null && $employee->image != "null" && $employee->image != "Null" && $employee->image != "")
+                                <!-- Check if the image is in base64 format -->
+                                @if (strpos($employee->image, 'data:image/') === 0)
+                                <!-- It's base64 -->
+                                <img src="{{ $employee->image }}" alt="binart" style='height:50px;width:50px' class="img-thumbnail" />
                                 @else
-                                    @if($employee->gender=='Male')
-                                    <div class="employee-profile-image-container mb-2" >
-
-                                        <img src="{{ asset('images/male-default.png') }}" class="employee-profile-image-placeholder" style='height:50px;width:50px' alt="Default Image">
-                                    </div>
-                                    @elseif($employee->gender=='Female')
-                                    <div class="employee-profile-image-container mb-2" >
-                                        <img src="{{ asset('images/female-default.jpg') }}" class="employee-profile-image-placeholder" style='height:50px;width:50px' alt="Default Image">
-                                    </div>
-                                    @else
-                                    <div class="employee-profile-image-container mb-2" >
-                                        <img src="{{ asset('images/user.jpg') }}" class="employee-profile-image-placeholder" style='height:50px;width:50px' alt="Default Image">
-                                    </div>
-                                    @endif
-                                    @endif
-
+                                <!-- It's binary, convert to base64 -->
+                                <img src="data:image/jpeg;base64,{{ ($employee->image) }}" alt="base" style='height:50px;width:50px' class="img-thumbnail" />
+                                @endif
+                                @else
+                                <!-- Default images based on gender -->
+                                @if($employee->gender == 'Male')
+                                <div class="employee-profile-image-container mb-2">
+                                    <img src="{{ asset('images/male-default.png') }}" class="employee-profile-image-placeholder" style='height:50px;width:50px' alt="Default Image">
+                                </div>
+                                @elseif($employee->gender == 'Female')
+                                <div class="employee-profile-image-container mb-2">
+                                    <img src="{{ asset('images/female-default.jpg') }}" class="employee-profile-image-placeholder" style='height:50px;width:50px' alt="Default Image">
+                                </div>
+                                @else
+                                <div class="employee-profile-image-container mb-2">
+                                    <img src="{{ asset('images/user.jpg') }}" class="employee-profile-image-placeholder" style='height:50px;width:50px' alt="Default Image">
+                                </div>
+                                @endif
+                                @endif
                             </td>
+
                             <td class="whitespace-nowrapp">{{ $employee->emp_id }}</td>
 
                             <td class="whitespace-nowrap">{{ $employee->first_name }} {{ $employee->last_name }}</td>
