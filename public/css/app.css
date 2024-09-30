@@ -848,7 +848,7 @@ input {
 .analytic-table-container {
     overflow-y: auto;
     height: 300px;
-    overflow-x: hidden;
+    overflow-x: scroll;
 }
 
 .analytic-table {
