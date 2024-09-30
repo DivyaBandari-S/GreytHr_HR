@@ -49,11 +49,11 @@
             <div class="analytic-search-bar">
                 <div class="analytic-search-wrapper">
                     <input type="text" wire:input="filterBasicInformation"  class="analytic-search" wire:model="basicSearch" placeholder="Search...">
-                    <i class="analytic-search-icon fas fa-search" wire:click="filterBasicInformation"></i>
+                    <i class="analytic-search-icon bx bx-search" wire:click="filterBasicInformation"></i>
                 </div>
-                <div>
+                <div class="d-flex justify-content-center">
                     <span class="analytic-restore-text">Restore</span>
-                    <i class="analytic-restore-icon fas fa-cloud"></i>
+                    <i class="analytic-restore-icon bx bxs-cloud"></i>
                 </div>
             </div>
             <div class="analytic-table-container">
@@ -103,11 +103,11 @@
             <div class="analytic-search-bar">
                 <div class="analytic-search-wrapper">
                     <input type="text" wire:input="filterPersonalInformation"  class="analytic-search" wire:model="piSearch" placeholder="Search...">
-                    <i class="analytic-search-icon fas fa-search" wire:click="filterPersonalInformation"></i>
+                    <i class="analytic-search-icon bx bx-search" wire:click="filterPersonalInformation"></i>
                 </div>
-                <div>
+                <div class="d-flex justify-content-center">
                     <span class="analytic-restore-text">Restore</span>
-                    <i class="analytic-restore-icon fas fa-cloud"></i>
+                    <i class="analytic-restore-icon bx bxs-cloud"></i>
                 </div>
             </div>
             <div class="analytic-table-container">
@@ -192,11 +192,11 @@
             <div class="analytic-search-bar">
                 <div class="analytic-search-wrapper">
                     <input type="text" wire:input="filterAllInfo" class="analytic-search" wire:model="allInfoSearch" placeholder="Search...">
-                    <i class="analytic-search-icon fas fa-search" wire:click="filterAllInfo"></i>
+                    <i class="analytic-search-icon bx bx-search" wire:click="filterAllInfo"></i>
                 </div>
-                <div>
+                <div class="d-flex justify-content-center">
                     <span class="analytic-restore-text">Restore</span>
-                    <i class="analytic-restore-icon fas fa-cloud"></i>
+                    <i class="analytic-restore-icon bx bxs-cloud"></i>
                 </div>
             </div>
             <div class="analytic-table-container">
@@ -257,11 +257,11 @@
             <div class="analytic-search-bar">
                 <div class="analytic-search-wrapper">
                     <input type="text" wire:input="filterGenderWise" class="analytic-search" wire:model="genderSearch" placeholder="Search...">
-                    <i class="analytic-search-icon fas fa-search" wire:click="filterGenderWise"></i>
+                    <i class="analytic-search-icon bx bx-search" wire:click="filterGenderWise"></i>
                 </div>
-                <div>
+                <div class="d-flex justify-content-center">
                     <span class="analytic-restore-text">Restore</span>
-                    <i class="analytic-restore-icon fas fa-cloud"></i>
+                    <i class="analytic-restore-icon bx bxs-cloud"></i>
                 </div>
             </div>
             <div class="analytic-table-container">
@@ -292,11 +292,11 @@
             <div class="analytic-search-bar">
                 <div class="analytic-search-wrapper">
                     <input type="text" wire:input="filterResignees" class="analytic-search" wire:model="resigneesSearch" placeholder="Search...">
-                    <i class="analytic-search-icon fas fa-search" wire:click="filterResignees"></i>
+                    <i class="analytic-search-icon bx bx-search" wire:click="filterResignees"></i>
                 </div>
-                <div>
+                <div class="d-flex justify-content-center">
                     <span class="analytic-restore-text">Restore</span>
-                    <i class="analytic-restore-icon fas fa-cloud"></i>
+                    <i class="analytic-restore-icon bx bxs-cloud"></i>
                 </div>
             </div>
             <div class="analytic-table-container">
