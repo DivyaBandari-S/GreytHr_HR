@@ -44,7 +44,7 @@
         <div class="wide-short-container-who-is-in">
           <div style="display:flex;align-items:center;justify-content:space-between">
             <label class="checkbox-label-who-is-in">
-              <input type="checkbox">
+              <input type="radio"wire:model="selectedShift" value="GS">
               10:00 Am to 07:00 Pm(GS)
             </label>
             <span class="total-employee-count-who-is-in">{{$dayShiftEmployeesCount}} employee(s)</span>
@@ -59,7 +59,7 @@
         <div class="wide-short-container-who-is-in">
           <div style="display:flex;align-items:center;justify-content:space-between">
             <label class="checkbox-label-who-is-in">
-              <input type="checkbox">
+              <input type="radio"wire:model="selectedShift" value="AS">
               02:00 Pm to 11:00 Pm(AS)
             </label>
             <span class="total-employee-count-who-is-in">{{$afternoonShiftEmployeesCount}} employee(s)</span>
@@ -74,7 +74,7 @@
         <div class="wide-short-container-who-is-in">
           <div style="display:flex;align-items:center;justify-content:space-between">
             <label class="checkbox-label-who-is-in">
-              <input type="checkbox">
+              <input type="radio"wire:model="selectedShift" value="ES">
               05:00 Pm to 01:00 Am(ES)
             </label>
             <span class="total-employee-count-who-is-in">{{$eveningShiftEmployeesCount}} employee(s)</span>
@@ -193,7 +193,7 @@
             @else
             @foreach($Employees1 as $index=>$e1)
             <tr class="row-for-absent-employee">
-              <td style="font-size:10px;font-weight:700;max-width:120px;overflow: hidden;white-space: nowrap; text-overflow: ellipsis;"data-toggle="tooltip"
+              <td style="font-size:10px;font-weight:700;padding-left: 15px;max-width:120px;overflow: hidden;white-space: nowrap; text-overflow: ellipsis;"data-toggle="tooltip"
               data-placement="top" title="{{ ucwords(strtolower($e1->first_name)) }} {{ ucwords(strtolower($e1->last_name)) }}">
                 {{ ucwords(strtolower($e1->first_name)) }} {{ ucwords(strtolower($e1->last_name)) }}<br />
                 <span class="text-muted" style="font-weight:normal;font-size:10px;">#{{$e1->emp_id}}</span>
@@ -256,7 +256,7 @@
           
           <thead>
             <tr>
-              <th style="padding-right:53px;">Employee</th>
+              <th>Employee</th>
               <th>Late By</th>
               <th></th>
             </tr>
@@ -267,7 +267,7 @@
 
             @php
             $swipeTime = \Carbon\Carbon::parse($s1->swipe_time);
-            $lateArrivalTime = $swipeTime->diff(\Carbon\Carbon::parse($s1->shift_start_time))->format('%H:%I');
+            $lateArrivalTime = $swipeTime->diff(\Carbon\Carbon::parse($s1->shift_start_time))->format('%H:%I:%S');
             $isLateBy10AM = $swipeTime->format('H:i') > $s1->shift_start_time;
             @endphp
 
@@ -291,7 +291,7 @@
 
                 <br /><span class="text-muted" style="font-weight:normal;font-size:10px;">#{{$s1->emp_id}}</span>
               </td>
-              <td style="font-weight:700;font-size:10px;padding-left:12px;">{{$lateArrivalTime}}<br /><span class="text-muted" style="font-size:10px;font-weight:300;">{{$s1->swipe_time}}</span></td>
+              <td style="font-weight:700;font-size:10px;padding-left:12px;text-align: center;">{{$lateArrivalTime}}<br /><span class="text-muted" style="font-size:10px;font-weight:300;">{{$s1->swipe_time}}</span></td>
               <td style="text-align:right;">
               <button class="arrow-btn" style="background-color:#fff;cursor:pointer;color:{{ $openAccordionForLate === $index ? '#3a9efd' : '#778899' }};border:1px solid {{ $openAccordionForLate === $index ? '#3a9efd' : '#778899'}}" wire:click="toggleAccordionForLate({{ $index }})">
                           <i class="fa fa-angle-{{ $openAccordionForLate === $index ? 'down' : 'up' }}"style="color:{{ $openAccordionForLate === $index ? '#3a9efd' : '#778899' }}"></i>
@@ -373,14 +373,14 @@
             @foreach($Swipes as $index=>$s1)
             @php
             $swipeTime = \Carbon\Carbon::parse($s1->swipe_time);
-            $earlyArrivalTime = $swipeTime->diff(\Carbon\Carbon::parse($s1->shift_start_time))->format('%H:%I');
+            $earlyArrivalTime = $swipeTime->diff(\Carbon\Carbon::parse($s1->shift_start_time))->format('%H:%I:%S');
             $isEarlyBy10AM = $swipeTime->format('H:i') <= $s1->shift_start_time ; 
             @endphp 
             @if($isEarlyBy10AM) 
             <tr class="row-for-absent-employee">
               <td style="font-size:10px;font-weight:700;overflow: hidden; text-overflow: ellipsis; white-space: nowrap;max-width:100px;"data-toggle="tooltip"
               data-placement="top" title="{{ ucwords(strtolower($s1->first_name)) }} {{ ucwords(strtolower($s1->last_name)) }}">{{ ucwords(strtolower($s1->first_name)) }} {{ ucwords(strtolower($s1->last_name)) }}<br /><span class="text-muted" style="font-weight:normal;font-size:10px;">#{{$s1->emp_id}}</span></td>
-              <td style="font-weight:700;font-size:10px;">{{$earlyArrivalTime}}<br /><span class="text-muted" style="font-size:10px;font-weight:300;">{{$s1->swipe_time}}</span></td>
+              <td style="font-weight:700;font-size:10px;text-align: center;">{{$earlyArrivalTime}}<br /><span class="text-muted" style="font-size:10px;font-weight:300;">{{$s1->swipe_time}}</span></td>
               <td style="text-align:right;">
               <button class="arrow-btn" style="background-color:#fff;float:right;margin-top:-2px;margin-right:20px;cursor:pointer;color:{{ $openAccordionForEarly === $index ? '#3a9efd' : '#778899' }};border:1px solid {{ $openAccordionForEarly === $index ? '#3a9efd' : '#778899'}}" wire:click="toggleAccordionForEarly({{ $index }})">
                           <i class="fa fa-angle-{{ $openAccordionForEarly === $index ? 'down' : 'up' }}"style="color:{{ $openAccordionForEarly === $index ? '#3a9efd' : '#778899' }}"></i>
@@ -468,8 +468,8 @@
             @foreach($ApprovedLeaveRequests as $index=>$alr)
  
  
-            <tr class="row-for-absent-employee">
-              <td style="font-size:10px;font-weight:700;overflow: hidden; text-overflow: ellipsis; white-space: nowrap;max-width:100px;"data-toggle="tooltip"
+            <tr class="row-for-absent-employee"style="margin: 10px;">
+              <td style="font-size:10px;font-weight:700;padding-left: 15px;overflow: hidden; text-overflow: ellipsis; white-space: nowrap;max-width:120px;"data-toggle="tooltip"
               data-placement="top" title="{{ ucwords(strtolower($alr->first_name)) }} {{ ucwords(strtolower($alr->last_name)) }}">
                 @php
                 $firstNameParts = explode(' ', strtolower($alr->first_name));
@@ -484,7 +484,7 @@
                 @endforeach
                 <br /><span class="text-muted" style="font-weight:normal;font-size:10px;">#{{$alr->emp_id}}</span>
               </td>
-              <td style="font-weight:700;font-size:10px;">{{$alr->number_of_days}} Day(s)<br />
+              <td style="font-weight:700;font-size:10px;padding-left: 15px;">{{$alr->number_of_days}} Day(s)<br />
                 <div style="background-color: rgb(176, 255, 176); border: 1px solid green; color: green;border-radius:15px; padding: 2px; text-align: center;">
                   Approved
                 </div>

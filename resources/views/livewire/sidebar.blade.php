@@ -399,35 +399,20 @@
 
 
                             </div>
-
-                            <div class="col d-flex flex-column" style="padding: 10px 20px;border-radius: 5px;background:#c3e0ff; color:rgb(2, 17, 79); margin-right: 7px;box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);">
-
-                                <p class="font-weight-500" style="font-size:13px;">Update Employee</p>
-
-                                <a class="text-decoration-none" href="{{ route('update-employee-details') }}">
-
-                                    <i class="fa-solid fa-user-plus" style="display:flex;justify-content:center;cursor:pointer;"></i>
-
-                                </a>
-
-                            </div>
-
-                            <div class="col d-flex flex-column" style="padding: 10px 20px;border-radius: 5px;background:#e2c3ff; color:rgb(2, 17, 79);box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);">
-
-                                <p class="font-weight-500" style="font-size:13px;">Add Payroll</p>
-
-                            </div>
-
-                        </div>
-
-                        <div class="col-4 p-2">
-
-                            <div class="rounded" style="border:1px solid #ccc;background:#fffaea;">
-
-
-
-                            </div>
-
+ 
+                            @if (isset($showSubmenu['row-1']) && $showSubmenu['row-1'])
+                                <div id="Submenus" class="submenu-container">
+ 
+                                    <!-- Main SubMenues -->
+                                    <p class="p-0"><a href=""  class="submenu" wire:navigate>Leave Overview</a></p>
+                                    <p class="p-0"><a href="/hr/user/overview"  class="submenu" wire:navigate>Attendance Overview</a></p>
+                                    <p class="p-0"><a href="/hr/user/overview"  class="submenu" wire:navigate>Leave Calendar</a></p>
+                                    <p class="p-0"><a href="/hr/user/who-is-in-chart-hr"  class="submenu" wire:navigate>Who is In?</a></p>
+                                    <p class="p-0"><a href="/hr/user/attendance-info"  class="submenu" wire:navigate>Attendance Info</a></p>
+                                    <p class="p-0"><a href="/hr/user/attendance-muster-hr"  class="submenu" wire:navigate>Attendance Muster</a></p>
+                                    <p class="p-0"><a href="/hr/user/shift-roster-hr"  class="submenu" wire:navigate>Shift Roster</a></p>
+                                </div>
+                            @endif
                         </div>
 
                     </div>
