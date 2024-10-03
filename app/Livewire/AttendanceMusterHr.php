@@ -45,7 +45,12 @@ class AttendanceMusterHr extends Component
         $hremployeeId = auth()->guard('hr')->user()->hr_emp_id;
         $employeeId=Hr::where('hr_emp_id',$hremployeeId)->value('emp_id');
         $companyIdJson = EmployeeDetails::where('emp_id', $employeeId)->value('company_id');
-        $companyIds = json_decode($companyIdJson, true);
+        if (is_string($companyIdJson)) {
+            $companyIds = json_decode($companyIdJson, true);
+        } else {
+            // If it's already an array, no need to decode
+            $companyIds = $companyIdJson;
+        }
         $this->empIds = EmployeeDetails::where(function($query) use ($companyIds) {
             foreach ($companyIds as $companyId) {
                 // Use JSON_CONTAINS to check if company_id field contains the companyId

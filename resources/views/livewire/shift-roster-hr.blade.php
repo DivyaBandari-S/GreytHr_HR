@@ -137,7 +137,7 @@
      <div class="attendance-overview-help">
                 
                     <div style="margin-top:10px;">
-                            <p>The<span style="font-weight: 500;"> Shift Roster </span>gives you an overview of the existing planned shifts of the employees. The changes made on this page reflect throughout the <span style="font-weight:bold;">Attendance </span>module.</p>
+                            <p>The<span style="font-weight: bold;"> Shift Roster </span>gives you an overview of the existing planned shifts of the employees. The changes made on this page reflect throughout the <span style="font-weight:bold;">Attendance </span>module.</p>
                             <p>Explore greytHR by<span style="color: #1fb6ff;cursor:pointer;"> Help-Doc, </span> To watch the video on Shift Override, <span style="color: #1fb6ff;cursor:pointer;">click here,</span> and to watch the video on managing employee shifts,<span style="color: #1fb6ff;cursor:pointer;"> click here</span> and <span style="color: #1fb6ff;cursor:pointer;">FAQ</span>.</p>
                     </div>        
                     <span class="hide-attendance-help"wire:click="hideHelp">Hide Help</span>
