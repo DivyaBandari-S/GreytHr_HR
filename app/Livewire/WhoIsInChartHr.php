@@ -37,6 +37,7 @@ class WhoIsInChartHr extends Component
     public $toggleButton=false;
     public $isToggled = false;
 
+    public $selectedShift;
     public $openshiftselector = false;
     public $from_date;
 
@@ -369,6 +370,12 @@ class WhoIsInChartHr extends Component
             session()->flash('error', 'An error occurred while updating the date. Please try again.');
         }
     }
+    public function checkshift()
+{
+    $this->selectedShift=$this->selectedShift;
+    dd($this->selectedShift);
+    $this->openshiftselector=false;
+}
     //After seraching about any particular employee it will remove the data from the search bar
     public function clearSearch()
     {

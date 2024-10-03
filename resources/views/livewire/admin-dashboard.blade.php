@@ -1,4 +1,5 @@
 <div>
+    
     <div class="container-fluid">
         <ul class="nav nav-tabs" id="myTab" role="tablist">
 
@@ -24,7 +25,7 @@
                 <p class="p-0 " style="color: #565656;font-size:12px;">Congratulations! Your affiliate dashboard is now ready for use. You have access to view profiles, requests, and job details. Get started and make the most out of your affiliate opportunities.</p>
 
             </div>
-
+            
             <div class="col-md-5">
 
                 <img src="{{ asset('images/admin_banner.png') }}" alt="Image Description" style="width: 100%;">
@@ -32,7 +33,9 @@
             </div>
 
         </div>
-
+        <div class="row m-0">
+           sdfghjkl;''
+        </div>
         <div class="row m-0">
 
             <div class="col-md-8">

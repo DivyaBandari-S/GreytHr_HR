@@ -1333,8 +1333,11 @@ color: #fff;
         .scrollable-table {
             display: block;
             max-height: 400px;
+            width:auto;
             /* Adjust as needed */
             overflow-y: auto;
+            overflow-x: hidden;
+            width:100%;
             border: 1px solid #cbd5e1;
         }
 
@@ -1387,8 +1390,8 @@ color: #fff;
         <div class="col-md-6"></div>
     </div>
     <div class="m-auto">
-        <div class="table-container scrollable-table" style=" width: 100%;">
-            <table>
+            <div class="table-container">
+              <table>
                 <tr class="first-header-row" style="background-color:#ebf5ff;border-bottom: 1px solid #cbd5e1;">
                     <th class="date" style="font-weight:normal;font-size:12px;padding-top:16px; position: relative;color:#778899;border-right:1px solid #cbd5e1;">General&nbsp;Details{{$selectedEmployeeId}}</th>
                     <th></th>
@@ -1449,7 +1452,7 @@ color: #fff;
                     @endif
 
                 </tr>
-
+                </table>
                 @php
                 use Carbon\Carbon;
 
@@ -1458,7 +1461,7 @@ color: #fff;
                 $currentMonthRep = $fromDate->format('M');
                 $currentYear = $fromDate->year;
                 @endphp
-                
+                <table class="scrollable-table"style="width:1000px;">
                 @for ($date = $fromDate; $date->lte($toDate); $date->addDay())
                 @php
                 $dateKey = $date->format('d M Y');
@@ -1491,9 +1494,9 @@ color: #fff;
                     }
 
                     @endphp
-                   
+                  
                     <tr style="border-bottom: 1px solid #cbd5e1;background-color:{{$isDate ? ($isWeekend ? '#f8f8f8' : ($holidayNote ? '#f3faff' : ($isOnLeave ? 'rgb(252, 242, 255)':($isPresent || $swipeRecordExists ? '#edfaed' : '#fcf0f0')))) : 'white'}};">
-                        <td class="date" style="font-weight:normal;font-size:12px;padding-top:16px;border-right:1px solid #cbd5e1;">
+                        <td class="date" style="font-weight:normal;font-size:12px;padding-top:16px;border-right:1px solid #cbd5e1;margin:20px;">
                             <p style="white-space:nowrap;">
                                 {{ $date->format('d') }}&nbsp;&nbsp;{{$currentMonthRep}}&nbsp;{{$currentYear}}({{$dayName}})
                                 @if($swipeRecordExists)
@@ -1502,18 +1505,18 @@ color: #fff;
                             </p>
                         </td>
 
-                        <td style="font-weight:normal;font-size:12px;padding-top:16px;white-space:nowrap;">10:(GS)</td>
-                        <td style="font-weight:normal;font-size:12px;padding-top:16px;white-space:nowrap;">10:00 Am to 07:00Pm</td>
+                        <td style="font-weight:normal;font-size:12px;padding-top:16px;white-space:nowrap;margin:20px;">10:(GS)</td>
+                        <td style="font-weight:normal;font-size:12px;padding-top:16px;white-space:nowrap;margin:20px;">10:00 Am to 07:00Pm</td>
 
                         @if($distinctDates->has($dateKeyForLookup))
-                        <td style="font-weight:normal;font-size:12px;padding-top:16px;">
+                        <td style="font-weight:normal;font-size:12px;padding-top:16px;margin:20px;">
                             @if($isDate)
                             {{ date('H:i', strtotime($record['first_in_time'])) }}
                             @else
                             00:00
                             @endif
                         </td>
-                        <td style="font-weight:normal;font-size:12px;padding-top:16px;">
+                        <td style="font-weight:normal;font-size:12px;padding-top:16px;margin:20px;">
                             @if($isDate)
                             @if(empty($record['last_out_time']))
                             {{ date('H:i', strtotime($record['first_in_time'])) }}
@@ -1524,7 +1527,7 @@ color: #fff;
                             00:00
                             @endif
                         </td>
-                        <td style="font-weight:normal;font-size:12px;padding-top:16px;">
+                        <td style="font-weight:normal;font-size:12px;padding-top:16px;margin:20px;">
                             @if($isDate == false)
                             00:00
                             @elseif(empty($record['last_out_time']))
@@ -1533,7 +1536,7 @@ color: #fff;
                             {{ str_pad($hours, 2, '0', STR_PAD_LEFT) }}:{{ str_pad($minutes, 2, '0', STR_PAD_LEFT) }}
                             @endif
                         </td>
-                        <td style="font-weight:normal;font-size:12px;padding-top:16px;">
+                        <td style="font-weight:normal;font-size:12px;padding-top:16px;margin:20px;">
                             @if($isDate == false)
                             00:00
                             @elseif(empty($record['last_out_time']))
@@ -1547,10 +1550,10 @@ color: #fff;
                             @endif
                         </td>
                         @else
-                        <td style="font-weight:normal;font-size:12px;padding-top:16px;">00:00</td>
-                        <td style="font-weight:normal;font-size:12px;padding-top:16px;">00:00</td>
-                        <td style="font-weight:normal;font-size:12px;padding-top:16px;">00:00</td>
-                        <td style="font-weight:normal;font-size:12px;padding-top:16px;">00:00</td>
+                        <td style="font-weight:normal;font-size:12px;padding-top:16px;margin:20px;">00:00</td>
+                        <td style="font-weight:normal;font-size:12px;padding-top:16px;margin:20px;">00:00</td>
+                        <td style="font-weight:normal;font-size:12px;padding-top:16px;margin:20px;">00:00</td>
+                        <td style="font-weight:normal;font-size:12px;padding-top:16px;margin:20px;">00:00</td>
                         @endif
 
                         <td style="margin-left:10px; margin-top:20px; font-size:12px;color: {{ $isDate ? ($isWeekend ? 'black' : ($holidayNote ? 'black' : ($isOnLeave ? 'black' : ($distinctDates->has($dateKeyForLookup) ? 'black' : '#ff6666')))) : 'black'}}">
@@ -1590,14 +1593,14 @@ color: #fff;
                             @endif
                         </td>
 
-                        <td>
+                        <td style="margin:20px;">
                             <button type="button" style="font-size:12px;background-color:transparent;color:#24a7f8;border:none;text-decoration:underline;" wire:click="viewDetails('{{ $dateKeyForLookup }}')">
                                 Info
                             </button>
                         </td>
 
-                        <td style="font-weight:normal;font-size:12px;padding-top:16px;color:#778899;">No&nbsp;attention&nbsp;required</td>
-                        <td style="font-weight:normal;font-size:12px;padding-top:16px;">
+                        <td style="font-weight:normal;font-size:12px;padding-top:16px;color:#778899;margin:20px;">No&nbsp;attention&nbsp;required</td>
+                        <td style="font-weight:normal;font-size:12px;padding-top:16px;margin:20px;">
                             @if($totalWorkedMinutes < $standardWorkingMinutes && !empty($record['last_out_time']) && !$isWeekend && !$holidayNote && $isPresent)
                                 @php
                                 $shortfalltime=$standardWorkingMinutes - $totalWorkedMinutes;
@@ -1613,7 +1616,7 @@ color: #fff;
                                 00:00
                                 @endif
                                 </td>
-                        <td style="font-weight:normal;font-size:12px;padding-top:16px;">
+                        <td style="font-weight:normal;font-size:12px;padding-top:16px;margin:20px;">
                             @if($totalWorkedMinutes > $standardWorkingMinutes && !empty($record['last_out_time']) && !$isWeekend && !$holidayNote && $isPresent)
                             @php
                             $excesstime = $totalWorkedMinutes - $standardWorkingMinutes;
@@ -1628,7 +1631,7 @@ color: #fff;
                             00:00
                             @endif
                         </td>
-                        <td style="font-weight:normal;font-size:12px;padding-top:16px;">10:00-14:00</td>
+                        <td style="font-weight:normal;font-size:12px;padding-top:16px;margin:20px;">10:00-14:00</td>
                         @if($this->moveCaretLeftSession1)
                         @if($distinctDates->has($dateKeyForLookup))
                         @php
@@ -1637,7 +1640,7 @@ color: #fff;
                         $lateArrivalTime = $firstInTime->diff(\Carbon\Carbon::parse('10:00'))->format('%H:%I');
                         $isLateBy10AM = $firstInTime->format('H:i') > '10:00';
                         @endphp
-                        <td style="font-weight:normal;font-size:12px;padding-top:16px;">
+                        <td style="font-weight:normal;font-size:12px;padding-top:16px;margin:20px;">
                             @if($isDate)
                             {{ date('H:i', strtotime($record['first_in_time'])) }}
                             @else
@@ -1646,27 +1649,27 @@ color: #fff;
 
                         </td>
                         @if($isDate==false)
-                        <td style="font-weight:normal;font-size:12px;padding-top:16px;">00:00</td>
+                        <td style="font-weight:normal;font-size:12px;padding-top:16px;margin:20px;">00:00</td>
                         @elseif($isLateBy10AM)
-                        <td style="font-weight:normal;font-size:12px;padding-top:16px;">{{$lateArrivalTime}}</td>
+                        <td style="font-weight:normal;font-size:12px;padding-top:16px;margin:20px;">{{$lateArrivalTime}}</td>
                         @else
-                        <td style="font-weight:normal;font-size:12px;padding-top:16px;">00:00</td>
+                        <td style="font-weight:normal;font-size:12px;padding-top:16px;margin:20px;">00:00</td>
                         @endif
                         @else
-                        <td style="font-weight:normal;font-size:12px;padding-top:16px;">00:00</td>
-                        <td style="font-weight:normal;font-size:12px;padding-top:16px;">00:00</td>
+                        <td style="font-weight:normal;font-size:12px;padding-top:16px;margin:20px;">00:00</td>
+                        <td style="font-weight:normal;font-size:12px;padding-top:16px;margin:20px;">00:00</td>
                         @endif
 
-                        <td style="font-weight:normal;font-size:12px;padding-top:16px;">00:00</td>
-                        <td style="font-weight:normal;font-size:12px;padding-top:16px;">00:00</td>
+                        <td style="font-weight:normal;font-size:12px;padding-top:16px;margin:20px;">00:00</td>
+                        <td style="font-weight:normal;font-size:12px;padding-top:16px;margin:20px;">00:00</td>
 
                         @endif
-                        <td style="font-weight:normal;font-size:12px;padding-top:16px;">14:01-19:00</td>
+                        <td style="font-weight:normal;font-size:12px;padding-top:16px;margin:20px;">14:01-19:00</td>
                         @if($this->moveCaretLeftSession2==true)
 
 
-                        <td style="font-weight:normal;font-size:12px;padding-top:16px;">00:00</td>
-                        <td style="font-weight:normal;font-size:12px;padding-top:16px;">00:00</td>
+                        <td style="font-weight:normal;font-size:12px;padding-top:16px;margin:20px;">00:00</td>
+                        <td style="font-weight:normal;font-size:12px;padding-top:16px;margin:20px;">00:00</td>
                         @if($distinctDates->has($dateKeyForLookup))
                         @php
 
@@ -1677,17 +1680,17 @@ color: #fff;
                             $isEarlyBy07PM = $firstInTime->format('H:i') < '19:00' ; @endphp <td style="font-weight:normal;font-size:12px;padding-top:16px;">{{ date('H:i', strtotime($record['last_out_time'])) }}</td>
                                 @else
 
-                                <td style="font-weight:normal;font-size:12px;padding-top:16px;">{{ date('H:i', strtotime($record['last_out_time'])) }}</td>
+                                <td style="font-weight:normal;font-size:12px;padding-top:16px;margin:20px;">{{ date('H:i', strtotime($record['last_out_time'])) }}</td>
                                 @endif
                                 @if($isEarlyBy07PM)
-                                <td style="font-weight:normal;font-size:12px;padding-top:16px;">{{$lateArrivalTime}}</td>
+                                <td style="font-weight:normal;font-size:12px;padding-top:16px;margin:20px;">{{$lateArrivalTime}}</td>
                                 @else
-                                <td style="font-weight:normal;font-size:12px;padding-top:16px;">00:00</td>
+                                <td style="font-weight:normal;font-size:12px;padding-top:16px;margin:20px;">00:00</td>
                                 @endif
 
                                 @else
-                                <td style="font-weight:normal;font-size:12px;padding-top:16px;">00:00</td>
-                                <td style="font-weight:normal;font-size:12px;padding-top:16px;">00:00</td>
+                                <td style="font-weight:normal;font-size:12px;padding-top:16px;margin:20px;">00:00</td>
+                                <td style="font-weight:normal;font-size:12px;padding-top:16px;margin:20px;">00:00</td>
                                 @endif
                                 @endif
                                 @php
@@ -1696,8 +1699,8 @@ color: #fff;
 
                     </tr>
                     @endfor
-                    
-                    
+                    </table>
+                   <table>            
                     <tr style="border-bottom: 1px solid #cbd5e1;background-color:white;">
                         <td class="date" style="font-weight:normal;font-size:12px;padding-top:16px;border-right:1px solid #cbd5e1;">Total </td>
                         <td></td>
@@ -1759,8 +1762,8 @@ color: #fff;
                         <td></td>
                         @endif
                     </tr>
-            </table>
-        </div>
+                   </table>
+                </div>
         @if ($showAlertDialog)
         @php
         $formattedDate = \Carbon\Carbon::parse($dateforpopup)->format('d M');

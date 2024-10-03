@@ -7,6 +7,7 @@ use App\Livewire\HomeDashboard;
 use App\Livewire\AddEmployeeDetails;
 use App\Livewire\AnalyticsHub;
 use App\Livewire\AnalyticsHubViewAll;
+use App\Livewire\AttendanceMusterHr;
 use App\Livewire\EmployeeAsset;
 use App\Livewire\GrantLeaveBalance;
 use App\Livewire\UpdateEmployeeDetails;
@@ -17,6 +18,7 @@ use App\Livewire\HrAttendanceInfo;
 use App\Livewire\HrAttendanceOverviewNew;
 use App\Livewire\ParentDetails;
 use App\Livewire\PositionHistory;
+use App\Livewire\ShiftRosterHr;
 use App\Livewire\WhoIsInChartHr;
 use Illuminate\Support\Facades\Route;
 
@@ -67,6 +69,8 @@ Route::middleware(['auth:hr'])->group(function () {
                 Route::get('/user/overview', HrAttendanceOverviewNew::class)->name('overview');
                 Route::get('/user/who-is-in-chart-hr', WhoIsInChartHr::class)->name('who-is-in-chart-hr');
                 Route::get('/user/attendance-info', HrAttendanceInfo::class)->name('attendance-info');
+                Route::get('/user/attendance-muster-hr', AttendanceMusterHr::class)->name(name: 'attendance-muster-hr');
+                Route::get('/user/shift-roster-hr', ShiftRosterHr::class)->name(name: 'shift-roster-hr');
     });
 
 

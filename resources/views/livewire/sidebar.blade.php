@@ -223,8 +223,8 @@
                                     <p class="p-0"><a href="/hr/user/overview"  class="submenu" wire:navigate>Leave Calendar</a></p>
                                     <p class="p-0"><a href="/hr/user/who-is-in-chart-hr"  class="submenu" wire:navigate>Who is In?</a></p>
                                     <p class="p-0"><a href="/hr/user/attendance-info"  class="submenu" wire:navigate>Attendance Info</a></p>
-                                   
- 
+                                    <p class="p-0"><a href="/hr/user/attendance-muster-hr"  class="submenu" wire:navigate>Attendance Muster</a></p>
+                                    <p class="p-0"><a href="/hr/user/shift-roster-hr"  class="submenu" wire:navigate>Shift Roster</a></p>
                                 </div>
                             @endif
                         </div>
