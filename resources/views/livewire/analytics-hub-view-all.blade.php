@@ -9,11 +9,11 @@
         .back {
             display: flex;
             align-items: center;
-            cursor: pointer;
         }
 
-        .back:hover .analytic-blue-text {
+        .analytic-blue-text:hover {
             text-decoration: underline;
+            cursor: pointer;
             /* Change this to your desired hover color */
         }
 
@@ -21,6 +21,7 @@
             color: var(--main-button-color);
             margin-right: 10px;
             font-size: var(--sub-headings-font-size);
+            cursor: pointer;
         }
 
         .search-bar {
@@ -152,14 +153,14 @@
         }
     </style>
     <div class="card-container">
-        <div class="back" wire:click="goBack">
-            <i class="fas fa-arrow-left"></i>
-            <span class="analytic-blue-text">Go Back</span>
+        <div class="back">
+            <i class="bx bx-arrow-back" wire:click="goBack"></i>
+            <span class="analytic-blue-text" wire:click="goBack">Go Back</span>
         </div>
         <div class="search-bar">
             <div class="search-wrapper">
                 <input type="text" placeholder="Search...">
-                <i class="search-icon fas fa-search"></i>
+                <i class="search-icon bx bx-search"></i>
             </div>
         </div>
 
@@ -232,7 +233,7 @@
                                         type="button" wire:click="toggleAccordion({{ $index }})"
                                         aria-expanded="{{ $isOpenEventList === $index ? 'true' : 'false' }}"
                                         aria-controls="collapse{{ $index }}">
-                                        <i class="fas fa-folder folder-icon"></i> {{ $folder['name'] }}
+                                        <i class="bx bxs-folder folder-icon"></i> {{ $folder['name'] }}
                                         ({{ count($folder['files']) }})
                                     </button>
                                 </h2>
@@ -243,7 +244,7 @@
                                         <ul class="list-group">
                                             @foreach ($folder['files'] as $file)
                                                 <li class="list-group-item">
-                                                    <i class="far fa-star star-icon {{ $file['isStarred'] ? 'text-warning' : '' }}"
+                                                    <i class="bx bxs-star star-icon {{ $file['isStarred'] ? 'text-warning' : '' }}"
                                                         wire:click="toggleStar('{{ $file['name'] }}', '{{ $folder['name'] }}')"></i>
                                                     {{ $file['name'] }}
                                                 </li>
@@ -330,7 +331,7 @@
                                             type="button" wire:click="toggleAccordionStarred({{ $index }})"
                                             aria-expanded="{{ $isOpenStarred === $index ? 'true' : 'false' }}"
                                             aria-controls="collapseStarred{{ $index }}">
-                                            <i class="fas fa-folder folder-icon"></i> {{ $folder['name'] }}
+                                            <i class="bx bxs-folder folder-icon"></i> {{ $folder['name'] }}
                                             ({{ $starredFiles->count() }})
                                         </button>
                                     </h2>
@@ -341,7 +342,7 @@
                                             <ul class="list-group">
                                                 @foreach ($starredFiles as $file)
                                                     <li class="list-group-item">
-                                                        <i class="far fa-star star-icon text-warning"></i>
+                                                        <i class="bx bxs-star star-icon text-warning"></i>
                                                         {{ $file['name'] }}
                                                     </li>
                                                 @endforeach
