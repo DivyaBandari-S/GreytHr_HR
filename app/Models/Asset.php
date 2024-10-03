@@ -22,6 +22,7 @@ protected $table = 'assets';
         'cc_to',
         'remarks',
     ];
+   
 
     public function employee()
     {

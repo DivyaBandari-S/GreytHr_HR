@@ -862,7 +862,7 @@ input {
 .analytic-table-container {
     overflow-y: auto;
     height: 300px;
-    overflow-x: hidden;
+    overflow-x: scroll;
 }
 
 .analytic-table {
@@ -1514,14 +1514,18 @@ input[type="date"]::before {
     background-color: white;
     border-bottom: 2px solid #007bff;
 }
-.tab-content {
-    /* display: none; */
+.tab-content-custom {
+ display: none; 
     padding: 15px;
     border: none;
     background-color: transparent; /* Remove white background */
 }
-.tab-content.active {
+.tab-content-custom.active {
     display: block;
+}
+.edit-headings{
+    font-size: 12px;
+    font-weight: 500;
 }
 .custom-container {
     border-radius: 5px;
@@ -1537,15 +1541,11 @@ input[type="date"]::before {
 
 .main-text {
     font-size: 12px;
-    width: 85%;
+  
+    color: #778899;
 }
 
-.help-text {
-    font-size: 12px;
-    color: blue;
-    cursor: pointer;
-    margin-left: auto;
-}
+
 
 .secondary-text {
     font-size: 12px;
@@ -1603,6 +1603,7 @@ input[type="date"]::before {
 }
 
 /* Responsive styles */
+
 @media (max-width: 768px) {
     .input-group4 {
         flex-direction: row; /* Keep items in a row on small screens */
@@ -1630,22 +1631,155 @@ input[type="date"]::before {
         border-radius: 0; /* Maintain default border radius */
     }
 }
+.editprofile{
+    font-size: 12px;
+    margin-top:5px;
+    font-weight: 200;
 
-.container {
-    width: 100%;
+
+}
+.editprofilerow{
+    color: #778899; 
+    margin-top: 10px;
+     margin-left:10px; 
+     height:auto;
+}
+.search-container {
+ 
     max-width: none;
     margin-bottom: 10px;
+    cursor: pointer;
+     background-color:darkgrey; 
+     padding: 5px; 
+      width: 300px; 
+      border-radius: 5px; 
+      margin-top:5px
 }
 
-.container img {
-    height: 40px; /* Adjust size for smaller screens */
-    width: 40px;
+.profile-image{
+    border-radius:50%; 
+    width: 50px; 
+    height: 50px;
+}
+.profile-image-selected{
+    border-radius:50%; 
+    width: 35px; 
+    height: 35px; 
+}
+.selected-person{
+    border:1px solid blue;
+     border-radius:50px;
+      padding: 5px; 
+      width:fit-content; 
+      margin-left:5px; 
+      margin-top:5px
+}
+.selected-name{
+    margin-left: 10px; 
+    color: #778899;
+    line-height: 40px; 
+    font-size:12px; 
+    margin-bottom: 0;
+}
+.close-icon-person{
+    color:#3b4452 ;
+    font-weight: 500;
+    margin-left:15px;
+    cursor:pointer
+}
+.hide-text{
+    font-size: 12px; 
+    cursor: pointer;
+    color:#306cc6;
+    font-weight:500;
+}
+.cus-form-label{
+    width:100%;
+    font-size: 12px;
+
 }
 
-.profile {
-    margin-top: 10px;
-}
+.input-width{
+    width:90%;
+    font-size: 12px;
 
+}
+.alert-success {
+    font-size: var(--normal-font-size);
+    padding: 7px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.card-header{
+ font-size: 15px; 
+ background:white; 
+ width:100%;
+  display:flex;
+   justify-content:space-between;
+}
+.card-row{
+ color: #778899; 
+ margin-top: 10px; 
+ margin-left:10px; 
+ height:auto;
+
+ display: flex;
+}
+.profile-header{
+    background:#98CBBA; 
+    border-radius:5px; 
+    height:60px; 
+    display:flex;
+     padding: 10px; 
+ margin-top:10px;
+     align-items:center;
+     justify-content: center; 
+  
+     width:80%;
+  
+}
+.profile-header-row{
+    display:flex;
+     justify-content: center;
+      width:80%;
+       align-items:center;
+}
+.search-btn {
+    background-color:var(--main-button-color);
+    border-radius: 0 5px 5px 0;
+    color: #fff !important;
+    width: 45px;
+    height:32px;
+    border: none;
+    align-items: center;
+    display: flex;
+}
+.close-btn{
+   background-color: var(--main-button-color);
+    height: 30px; 
+    width: 30px; margin-left: 5px; 
+    display: flex; align-items: center
+    ; justify-content: center;
+    border: none;
+}
+.position-row{
+display: flex;
+
+background-color: white;
+
+font-size: 12px;
+width: 80%;
+
+}
+.search-btn i {
+    color: white; /* Ensures the icon color is white */
+}
+.emp-heading{
+    font-size: 14px;
+    font-weight: 500;
+    color: #3b4452;
+}
         .profile p {
             font-size: 14px;
         }

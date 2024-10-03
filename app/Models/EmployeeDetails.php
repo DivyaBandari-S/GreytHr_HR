@@ -75,10 +75,6 @@ class EmployeeDetails extends Authenticatable
     {
         return $this->hasOne(EmpPersonalInfo::class, 'emp_id', 'emp_id');
     }
-    public function empResignations()
-    {
-        return $this->hasOne(EmpResignations::class, 'emp_id', 'emp_id');
-    }
     public function hrPersonalInfo()
     {
         return $this->hasOne(EmpPersonalInfo::class, 'emp_id', 'hr_emp_id');
@@ -91,6 +87,16 @@ class EmployeeDetails extends Authenticatable
     {
         return $this->hasOne(EmpDepartment::class, 'dept_id', 'dept_id');
     }
+    public function empResignations()
+    {
+        return $this->hasOne(EmpResignations::class, 'emp_id', 'emp_id');
+    }
+    public function empSubDepartment()
+    {
+        return $this->hasOne(EmpSubDepartments::class, 'sub_dept_id', 'sub_dept_id'); 
+    }
+
+
     public function leaveRequests()
     {
         return $this->hasMany(LeaveRequest::class, 'emp_id');
