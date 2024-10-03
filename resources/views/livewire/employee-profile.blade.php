@@ -52,7 +52,7 @@
 
                 <div class="row justify-content-center mt-2 "  >
                 <div class="col-md-8 custom-container d-flex flex-column bg-white">
-    <div class="row justify-content-center mt-3 flex-column m-0" style="border-radius: 5px; font-size:12px; width:88%;">
+    <div class="row justify-content-center mt-3 flex-column m-0 employee-details-main" >
         <div class="col-md-9">
             <div class="row " style="display:flex;">
                 <div class="col-md-11 m-0">
@@ -70,33 +70,52 @@
     <p class="main-text "  style="cursor:pointer" wire:click="NamesSearch">
         Search Employee:
     </p>
-
     @foreach($selectedPeopleData as $personData)
-        <span class="selected-person d-flex align-items-center">
-            <img class="profile-image-selected" src="{{ $personData['image'] }}" alt="Employee Image">
-           
-           
-            <p class="selected-name">
-    @php
-        // Split the name into parts
-        $nameParts = explode(' ', $personData['name']);
+    <span class="selected-person d-flex align-items-center">
+        <img class="profile-image-selected" src="data:image/jpeg;base64,{{ $personData['image'] ?? '-' }}">
 
-        // Capitalize the first letter of the first name
-        $firstName = isset($nameParts[0]) ? ucfirst(strtolower($nameParts[0])) : '';
+        <p class="selected-name mb-0">
+            @php
+                // Split the name into parts
+                $nameParts = explode(' ', $personData['name']);
 
-        // Capitalize each part of the last name (all parts except the first)
-        $lastNameParts = array_slice($nameParts, 1);
-        $formattedLastName = implode(' ', array_map('ucfirst', array_map('strtolower', $lastNameParts)));
-    @endphp
-    {{ $firstName }} {{ $formattedLastName }}
-</p>
-            <svg class="close-icon-person"  
-                 wire:click="removePerson('{{ $personData['emp_id'] }}')" 
-                 xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20">
-                <path d="M6 18L18 6M6 6l12 12" stroke="#3b4452" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-        </span>
-    @endforeach
+                // Capitalize the first letter of the first name
+                $firstName = isset($nameParts[0]) ? ucfirst(strtolower($nameParts[0])) : '';
+
+                // Get the last name parts (excluding emp_id)
+                $lastNameParts = array_slice($nameParts, 1); // Get all parts after the first name
+
+                // Capitalize each part of the last name
+                $formattedLastName = implode(' ', array_map('ucfirst', array_map('strtolower', $lastNameParts)));
+
+                // Combine first and last names
+                $fullName = trim($firstName . ' ' . $formattedLastName);
+            @endphp
+            {{ $fullName }} <!-- Display only the full name -->
+        </p>
+
+        <p class="emp-id mb-0" style="font-size: 12px; color: white;">
+            (#{{ strtoupper(e((string) $personData['emp_id'])) }}) <!-- Display emp_id separately -->
+        </p>
+
+        <svg class="close-icon-person"  
+             wire:click="removePerson('{{ e((string) $personData['emp_id']) }}')" 
+             xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20">
+            <path d="M6 18L18 6M6 6l12 12" stroke="#3b4452" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    </span>
+@endforeach
+
+
+
+
+
+
+
+
+
+
+
 </div>
 
 
@@ -109,14 +128,14 @@
         <div class="col-md-6 col-12"> 
 
 @if($isNames)
-<div class="col-md-6" style="border-radius: 5px; background-color: grey; padding: 8px; width: 330px; margin-top: 10px; height: 250px; overflow-y: auto;">
-<div class="input-group4" style="display: flex; align-items: center; width: 100%;">
+<div class="col-md-6 search-bar" >
+<div class="input-group4" >
 
 <input 
 wire:model.debounce.500ms="searchTerm" placeholder="Search employees..."
-style="font-size: 10px; cursor: pointer; border-radius: 5px 0 0 5px; width: 250px; height: 30px; padding: 5px;" 
+
 type="text" 
-class="form-control" 
+class="form-control search-term" 
 placeholder="Search for Emp.Name or ID" 
 aria-label="Search" 
 aria-describedby="basic-addon1"
@@ -129,7 +148,7 @@ aria-describedby="basic-addon1"
  wire:click="searchforEmployee"  wire:model.debounce.500ms="searchTerm"  style="<?php echo ($searchEmployee) ? 'display: block;' : ''; ?>" 
     class="search-btn" 
     type="button" >
-<i class='bx bx-search' style="color:white"></i>
+    <i class='bx bx-search' style="color: white;"></i>
 </button>
 
 <button 
@@ -167,7 +186,7 @@ aria-describedby="basic-addon1"
                 </div>
                 <div class="col-auto">
                     @if($employee->image && $employee->image !== 'null')
-                        <img class="profile-image" src="{{ 'data:image/jpeg;base64,' . base64_encode($employee->image) }}" >
+                        <img class="profile-image"  src="data:image/jpeg;base64,{{($people->image ??'-') }}" >
                     @else
                         @if($employee->gender == "Male")
                             <img class="profile-image" src="{{ asset('images/male-default.png') }}" alt="Default Male Image">
@@ -234,6 +253,9 @@ aria-describedby="basic-addon1"
                 
         </div>
     </div>
+
+   
+ 
  
     @if(!empty($selectedPeople))
     <div class="row mt-3 p-0 justify-content-center">
@@ -264,13 +286,13 @@ aria-describedby="basic-addon1"
 
 
 @if($employee)
-<div class="card mx-auto" style="margin-top: 20px; height:auto; width:70%;background:#98CBBA">
+<div class="card-profile mx-auto" >
   
         <div class="profile-header " >
             
             {{-- Employee Image --}}
             @if($employee->image && $employee->image !== 'null')
-                <img class="profile-image" src="{{ 'data:image/jpeg;base64,' . base64_encode($employee->image) }}" style="border-radius:50%; height:50px; width:50px;" alt="Employee Image">
+                <img class="profile-image"     src="data:image/jpeg;base64,{{($employee->image ??'-') }}" >
             @else
                 @if($employee->gender == "Male")
                     <img class="profile-image" src="{{ asset('images/male-default.png') }}" alt="Default Male Image">
@@ -301,36 +323,21 @@ aria-describedby="basic-addon1"
 </div>
 
     <div class="row align-items-center bg-white">
-        <div class="card mx-auto" style="margin-top: 20px; height:auto; width:70%;">
+        <div class="card mx-auto" >
         <div class="card-header">
     <p style="color:#3b4452; font-weight: 500;">Employee Information</p>
 
   <i style="color:#3b4452">
   @if($currentEditingProfileId == $employee->emp_id)
-        <i wire:click="cancelProfile()" class="bi bi-x-circle me-3" style="cursor: pointer; color: black;"></i>
-        <i wire:click="saveProfile('{{ $employee->emp_id }}')" class="bi bi-save" style="cursor: pointer; color: black;"></i>
+        <i wire:click="cancelProfile()"  class="bx bx-x me-1" style="cursor: pointer; color: black;"></i>
+        <i wire:click="saveProfile('{{ $employee->emp_id }}')" class="bx bx-save" style="cursor: pointer; color: black;"></i>
     @else
-        <i wire:click="editProfile('{{ $employee->emp_id }}')" class="bi bi-pencil" style="cursor: pointer; color: black;"></i>
+        <i wire:click="editProfile('{{ $employee->emp_id }}')" class="bx bx-edit ml-auto"  style="cursor: pointer; color: black;"></i>
     @endif
   </i> 
 </div>
 
-            @if (session()->has('error'))
-    <div class="alert alert-danger alert-dismissible fade show" role="alert" style="font-size: 12px; padding: 5px 10px; width: 100%; max-width: 500px; margin: 10px auto;">
-        {{ session('error') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" style="margin-left: 2px; font-size: 8px;">
-            &times;
-        </button>
-    </div>
-@endif
-@if (session()->has('message'))
-    <div class="alert alert-success alert-dismissible fade show" role="alert" style="font-size: 12px; padding: 5px 10px; width: 100%; max-width: 500px; margin: 10px auto;">
-        {{ session('message') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" style="margin-left: 2px; font-size: 8px;">
-            &times;
-        </button>
-    </div>
-@endif
+
             <div class="card-row">
                 <div class="col-md-3  edit-headings" >Title
                 @if($currentEditingProfileId == $employee->emp_id)
@@ -366,7 +373,22 @@ aria-describedby="basic-addon1"
                 @endif
                 </div>
             </div>
-
+            @if (session()->has('error'))
+    <div class="alert alert-danger alert-dismissible fade show" role="alert" style="font-size: 12px; padding: 5px 10px; width: 100%; max-width: 500px; margin: 10px auto;">
+        {{ session('error') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" style="margin-left: 2px; font-size: 8px;">
+            &times;
+        </button>
+    </div>
+@endif
+@if (session()->has('message'))
+    <div class="alert alert-success alert-dismissible fade show" role="alert" style="font-size: 12px; padding: 5px 10px; width: 100%; max-width: 500px; margin: 10px auto;">
+        {{ session('message') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" style="margin-left: 2px; font-size: 8px;">
+            &times;
+        </button>
+    </div>
+@endif
 
             <div class="card-row" >
 
@@ -403,10 +425,10 @@ aria-describedby="basic-addon1"
     <p class="mb-0" style=" font-weight: 500;">Personal Information</p>
     <div style="font-size: 14px;">
    <i> @if($currentEditingPersonalProfileId == $employee->emp_id)
-    <i wire:click="cancelpersonalProfile('{{ $emp_id }}')" class="bi bi-x-circle me-3" style="cursor: pointer;"></i>
-    <i wire:click="savepersonalProfile('{{ $emp_id }}')" class="bi bi-save" style="cursor: pointer;"></i>
+    <i wire:click="cancelpersonalProfile('{{ $emp_id }}')" class="bx bx-x me-1" style="cursor: pointer;"></i>
+    <i wire:click="savepersonalProfile('{{ $emp_id }}')" class="bx bx-save" style="cursor: pointer;"></i>
 @else
-    <i wire:click="editpersonalProfile('{{ $emp_id }}')" class="bi bi-pencil" style="cursor: pointer;"></i>
+    <i wire:click="editpersonalProfile('{{ $emp_id }}')" class="bx bx-edit ml-auto"style="cursor: pointer;"></i>
 @endif
 </i>
 

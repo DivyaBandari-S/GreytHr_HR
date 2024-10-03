@@ -52,7 +52,7 @@
 
                 <div class="row justify-content-center mt-2 "  >
                 <div class="col-md-8 custom-container d-flex flex-column bg-white">
-    <div class="row justify-content-center mt-3 flex-column m-0" style="border-radius: 5px; font-size:12px; width:88%;">
+    <div class="row justify-content-center mt-3 flex-column m-0 employee-details-main" >
         <div class="col-md-9">
             <div class="row " style="display:flex;">
                 <div class="col-md-11 m-0">
@@ -70,33 +70,52 @@
     <p class="main-text "  style="cursor:pointer" wire:click="NamesSearch">
         Search Employee:
     </p>
-
     @foreach($selectedPeopleData as $personData)
-        <span class="selected-person d-flex align-items-center">
-            <img class="profile-image-selected" src="{{ $personData['image'] }}" alt="Employee Image">
-           
-           
-            <p class="selected-name">
-    @php
-        // Split the name into parts
-        $nameParts = explode(' ', $personData['name']);
+    <span class="selected-person d-flex align-items-center">
+        <img class="profile-image-selected" src="data:image/jpeg;base64,{{ $personData['image'] ?? '-' }}">
 
-        // Capitalize the first letter of the first name
-        $firstName = isset($nameParts[0]) ? ucfirst(strtolower($nameParts[0])) : '';
+        <p class="selected-name mb-0">
+            @php
+                // Split the name into parts
+                $nameParts = explode(' ', $personData['name']);
 
-        // Capitalize each part of the last name (all parts except the first)
-        $lastNameParts = array_slice($nameParts, 1);
-        $formattedLastName = implode(' ', array_map('ucfirst', array_map('strtolower', $lastNameParts)));
-    @endphp
-    {{ $firstName }} {{ $formattedLastName }}
-</p>
-            <svg class="close-icon-person"  
-                 wire:click="removePerson('{{ $personData['emp_id'] }}')" 
-                 xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20">
-                <path d="M6 18L18 6M6 6l12 12" stroke="#3b4452" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-        </span>
-    @endforeach
+                // Capitalize the first letter of the first name
+                $firstName = isset($nameParts[0]) ? ucfirst(strtolower($nameParts[0])) : '';
+
+                // Get the last name parts (excluding emp_id)
+                $lastNameParts = array_slice($nameParts, 1); // Get all parts after the first name
+
+                // Capitalize each part of the last name
+                $formattedLastName = implode(' ', array_map('ucfirst', array_map('strtolower', $lastNameParts)));
+
+                // Combine first and last names
+                $fullName = trim($firstName . ' ' . $formattedLastName);
+            @endphp
+            {{ $fullName }} <!-- Display only the full name -->
+        </p>
+
+        <p class="emp-id mb-0" style="font-size: 12px; color: white;">
+            (#{{ strtoupper(e((string) $personData['emp_id'])) }}) <!-- Display emp_id separately -->
+        </p>
+
+        <svg class="close-icon-person"  
+             wire:click="removePerson('{{ e((string) $personData['emp_id']) }}')" 
+             xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20">
+            <path d="M6 18L18 6M6 6l12 12" stroke="#3b4452" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    </span>
+@endforeach
+
+
+
+
+
+
+
+
+
+
+
 </div>
 
 
@@ -109,14 +128,14 @@
         <div class="col-md-6 col-12"> 
 
 @if($isNames)
-<div class="col-md-6" style="border-radius: 5px; background-color: grey; padding: 8px; width: 330px; margin-top: 10px; height: 250px; overflow-y: auto;">
-<div class="input-group4" style="display: flex; align-items: center; width: 100%;">
+<div class="col-md-6 search-bar" >
+<div class="input-group4" >
 
 <input 
 wire:model.debounce.500ms="searchTerm" placeholder="Search employees..."
-style="font-size: 10px; cursor: pointer; border-radius: 5px 0 0 5px; width: 250px; height: 30px; padding: 5px;" 
+
 type="text" 
-class="form-control" 
+class="form-control search-term" 
 placeholder="Search for Emp.Name or ID" 
 aria-label="Search" 
 aria-describedby="basic-addon1"
@@ -129,7 +148,7 @@ aria-describedby="basic-addon1"
  wire:click="searchforEmployee"  wire:model.debounce.500ms="searchTerm"  style="<?php echo ($searchEmployee) ? 'display: block;' : ''; ?>" 
     class="search-btn" 
     type="button" >
-<i class='bx bx-search' style="color:white"></i>
+    <i class='bx bx-search' style="color: white;"></i>
 </button>
 
 <button 
@@ -167,7 +186,7 @@ aria-describedby="basic-addon1"
                 </div>
                 <div class="col-auto">
                     @if($employee->image && $employee->image !== 'null')
-                        <img class="profile-image" src="{{ 'data:image/jpeg;base64,' . base64_encode($employee->image) }}" >
+                        <img class="profile-image"  src="data:image/jpeg;base64,{{($people->image ??'-') }}" >
                     @else
                         @if($employee->gender == "Male")
                             <img class="profile-image" src="{{ asset('images/male-default.png') }}" alt="Default Male Image">
@@ -234,7 +253,7 @@ aria-describedby="basic-addon1"
                 
         </div>
     </div>
- 
+
     @if(!empty($selectedPeople))
     <div class="row mt-3 p-0 justify-content-center">
    
@@ -249,7 +268,7 @@ aria-describedby="basic-addon1"
 
         <!-- Asset Type -->
         <div class="row justify-content-center">
-            <div class="col-md-4 ">
+            <div class="col-md-3 ">
                 <div class="mb-3 d-flex align-items-start">
                     <label for="assetType" class="col-cus-form-label cus-form-label ">Asset Type</label>
                     <select wire:model="asset_type" class="form-select form-control cus-form-label" id="assetType"  >
@@ -263,9 +282,12 @@ aria-describedby="basic-addon1"
                 </div>
                 @error('asset_type') <span class="text-danger  ">{{ $message }}</span> @enderror
             </div>
+<div class="col-md-1">
 
+
+</div>
             <!-- Asset Status -->
-            <div class="col-md-4  align-items-end">
+            <div class="col-md-3  align-items-end">
                 <div class="mb-3 d-flex align-items-end">
                     <label for="assetStatus" class="col-cus-form-label cus-form-label mb-2">Asset Status</label>
                     <select wire:model="asset_status" class="form-select form-control cus-form-label" id="assetStatus" >
@@ -281,15 +303,18 @@ aria-describedby="basic-addon1"
 
         <!-- Asset Details and Issue Date -->
         <div class="row justify-content-center mt-2">
-            <div class="col-md-4 ">
+            <div class="col-md-3">
                 <div class="mb-3 d-flex align-items-start">
                     <label for="assetDetails" class="col-cus-form-label cus-form-label">Asset Details</label>
                     <input type="text" class="form-control cus-form-label" id="assetDetails"  wire:model="asset_details">
                 </div>
                 @error('asset_details') <span class="text-danger mb-6">{{ $message }}</span> @enderror
             </div>
+            <div class="col-md-1">
 
-            <div class="col-md-4 ">
+
+</div>
+            <div class="col-md-3">
                 <div class="mb-3 d-flex align-items-center">
                     <label for="issueDate" class="col-cus-form-label cus-form-label">Issue Date</label>
                     <input type="date" wire:model="issue_date" class="form-control cus-form-label" id="issueDate" >
@@ -300,15 +325,19 @@ aria-describedby="basic-addon1"
 
         <!-- Asset ID and Valid Till -->
         <div class="row justify-content-center mt-2">
-            <div class="col-md-4 ">
+            <div class="col-md-3 ">
                 <div class="mb-3 d-flex align-items-start">
                     <label for="assetID" class="col-cus-form-label cus-form-label">Asset ID</label>
                     <input type="text" wire:model="asset_id" class="form-control cus-form-label" id="assetID" >
                 </div>
                 @error('asset_id') <span class="text-danger ">{{ $message }}</span> @enderror
             </div>
+            <div class="col-md-1">
 
-            <div class="col-md-4 custom-margin-left">
+
+</div>
+
+            <div class="col-md-3 custom-margin-left">
                 <div class="mb-3 d-flex align-items-start">
                     <label for="validTill" class="col-cus-form-label cus-form-label">Valid Till</label>
                     <input type="date" wire:model="valid_till" class="form-control cus-form-label" id="validTill" >
@@ -319,15 +348,19 @@ aria-describedby="basic-addon1"
 
         <!-- Asset Value and Returned On -->
         <div class="row justify-content-center mt-2">
-            <div class="col-md-4  ">
+            <div class="col-md-3 ">
                 <div class="mb-3 d-flex align-items-start">
                     <label for="assetValue" class="col-cus-form-label cus-form-label">Asset Value</label>
                     <input type="text" wire:model="asset_value" class="form-control cus-form-label" id="assetValue"  style="font-size: 12px;">
                 </div>
                 @error('asset_value') <span class="text-danger  ">{{ $message }}</span> @enderror
             </div>
+            <div class="col-md-1">
 
-            <div class="col-md-4  ">
+
+</div>
+
+            <div class="col-md-3  ">
                 <div class="mb-3 d-flex align-items-start">
                     <label for="returnedOn" class="col-cus-form-label cus-form-label">Returned On</label>
                     <input type="date" wire:model="returned_on" class="form-control cus-form-label" id="returnedOn"  style="font-size: 12px;">
@@ -338,7 +371,7 @@ aria-describedby="basic-addon1"
 
         <!-- Remarks -->
         <div class="row justify-content-center mt-2">
-    <div class="col-md-4">
+    <div class="col-md-3">
         <div class="mb-3 d-flex align-items-start">
             <label for="remarks" class="col-cus-form-label cus-form-label">Remarks</label>
             <textarea wire:model="remarks" class="form-control" id="remarks" style="font-size: 12px; width: 400px;"></textarea>
@@ -347,9 +380,13 @@ aria-describedby="basic-addon1"
             <span class="text-danger">{{ $message }}</span>
         @enderror
     </div>
-    <div class="col-md-4">
+    <div class="col-md-3">
 
     </div>
+    <div class="col-md-1">
+
+
+</div>
 </div>
      
 
