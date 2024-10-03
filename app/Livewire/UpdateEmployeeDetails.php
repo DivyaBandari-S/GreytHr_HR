@@ -20,12 +20,16 @@ use Illuminate\Support\Facades\Session;
 
 class UpdateEmployeeDetails extends Component
 {
-    public $employees;
-    public $employeeId;
+    // public $employees;
+    // public $employeeId;
     public $companies;
     public $hrDetails;
     public $counter = 1;
     public $search = '';
+    public $sortBy = 'status'; // Default sorting column
+    public $sortDirection = 'asc'; // Default sorting direction
+    public $employees = [];
+    public $hrCompany_id;
 
     //logic for logout
     public function logout()
@@ -72,6 +76,20 @@ class UpdateEmployeeDetails extends Component
         }
     }
 
+    public function sortBy($column)
+    {
+        if ($this->sortBy === $column) {
+            // Toggle direction if the same column is clicked
+            $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
+        } else {
+            // Set new column for sorting and reset to ascending order
+            $this->sortBy = $column;
+            $this->sortDirection = 'asc';
+        }
+
+        $this->fetchEmployees(); // Re-fetch employees after sorting
+    }
+
     public function render()
     {
 
@@ -79,6 +97,8 @@ class UpdateEmployeeDetails extends Component
             $hr = auth()->guard('hr')->user();
             $hr_Id=$hr->emp_id;
            $hrCompany_id=EmployeeDetails::where('emp_id', $hr_Id)->first()->company_id;
+        //    dd( $hrCompany_id);
+
         //    dd(EmployeeDetails::where('emp_id', $hr_Id)->first());
             $hrCompanies = Company::where('company_id', $hrCompany_id)->get();
             $hrDetails = Company::where('company_id', $hrCompany_id)->first();
@@ -88,7 +108,11 @@ class UpdateEmployeeDetails extends Component
 
             // Wrapping the database query in a try-catch block
             try {
-                $this->employees = EmployeeDetails::where('company_id', $hrCompany_id)
+                $this->employees = EmployeeDetails::where(function ($query) use ($hrCompany_id) {
+                    foreach ($hrCompany_id as $companyId) {
+                        $query->orWhereRaw("JSON_CONTAINS(company_id, '\"$companyId\"')");
+                    }
+                })
                     ->where(function ($query) {
                         $query->where('first_name', 'like', '%' . $this->search . '%')
                             ->orWhere('last_name', 'like', '%' . $this->search . '%')
@@ -96,8 +120,9 @@ class UpdateEmployeeDetails extends Component
                             ->orWhere('emp_id', 'like', '%' . $this->search . '%');
                             // ->orWhere('mobile_number', 'like', '%' . $this->search . '%');
                     })
-                    ->orderBy('status', 'desc')
+                    ->orderBy('status', 'asc')
                     ->get();
+                    // dd( $this->employees);
 
             } catch (\Illuminate\Database\QueryException $e) {
                 Log::error('Error fetching Employee details: ' . $e->getMessage());

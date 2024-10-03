@@ -22,8 +22,15 @@ class Company extends Authenticatable
         'company_logo',
         'password',
         'contact_email',
+        'email_domain',
+        'branch_locations',
+        'parent_company_id',
+        'is_parent',
         'contact_phone'
         // Add other fields that you want to be fillable here
+    ];
+    protected $casts=[
+        'branch_locations'=>'array',
     ];
 }
 

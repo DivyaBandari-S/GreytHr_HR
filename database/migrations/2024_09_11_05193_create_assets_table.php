@@ -17,9 +17,9 @@ return new class extends Migration
             $table->enum('asset_status', ['Active', 'Pending', 'Completed']);  
             $table->string('asset_details'); 
             $table->date('issue_date'); 
-            $table->string('asset_id');
+            $table->string('asset_id')->unique();
             $table->date('valid_till')->nullable();
-            $table->text('asset_value'); 
+            $table->integer('asset_value'); 
             $table->string('returned_on'); // Path to attached file (nullable)
             $table->text('remarks')->nullable();
             $table->timestamps();

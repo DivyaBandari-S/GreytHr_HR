@@ -147,9 +147,9 @@ body {
     }
 }
 
-.active {
+/* .active {
     background-color: white;
-}
+} */
 
 .active a {
     color: rgb(1, 1, 20);
@@ -162,9 +162,8 @@ body {
 
 ul {
     list-style-type: none;
-    display: flex;
-    justify-content: start;
     margin-top: 10px;
+    margin: 0px;
     cursor: pointer;
     padding: 0px;
 }
@@ -694,14 +693,11 @@ input {
     border: 1px solid var(--main-button-color);
     font-weight: 500;
     border-radius: 5px;
-    padding: 6px 12px;
+    padding: 7px 12px;
     font-size: var(--normal-font-size);
     border: none;
 }
-.submit-btn:hover {
-    background-color: var(--main-button-color);
-    color: #fff;
-}
+
 
 .cancel-btn {
     background-color: white;
@@ -869,7 +865,7 @@ input {
 .analytic-table-container {
     overflow-y: auto;
     height: 300px;
-    overflow-x: hidden; 
+    overflow-x: scroll;
 }
 
 .analytic-table {
@@ -937,168 +933,18 @@ input {
     background-color: #e1e5f6;
     border: 1px solid var(--main-button-color);
 }
+.analytic-no-items-found {
+    width: 10em;
+    margin: 20px;
+}
+.analytic-folder-label{
+    font-size: var(--normal-font-size);
+    color: var(--label-color);
+}
 
 /* analytics hub styles ended */
 
-/* analytics hub view all styles started */
 
-.card-container {
-    margin: 15px 30px;
-}
-
-.back {
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-}
-
-.back:hover .analytic-blue-text {
-    text-decoration: underline;
-    /* Change this to your desired hover color */
-}
-
-.back i {
-    color: var(--main-button-color);
-    margin-right: 10px;
-    font-size: var(--sub-headings-font-size);
-}
-
-.search-bar {
-    display: flex;
-    padding: 20px 0px;
-    justify-content: space-between;
-    /* Adjust spacing between items */
-    align-items: center;
-    margin-bottom: 10px;
-    margin-top: 10px;
-}
-
-.search-wrapper {
-    position: relative;
-    display: flex;
-    align-items: center;
-}
-
-.search-bar input[type="text"] {
-    width: 280px;
-    padding: 6px 28px 6px 10px;
-    /* Adjust padding for right space */
-    border: 1px solid #ccc;
-    border-radius: 18px;
-    position: relative;
-}
-
-.search-icon {
-    position: absolute;
-    right: 10px;
-    color: #666;
-    pointer-events: none;
-}
-
-.tab-container {
-    margin-bottom: 48px;
-}
-
-/* input[type="radio"] {
-    display: none;
-}
-
-/* label {
-    display: inline-block;
-    padding: 10px 20px;
-    margin-right: -1px;
-    border: 1px solid #ccc;
-    cursor: pointer;
-    background-color: #f1f1f1;
-}
-
-label:hover {
-    background-color: #ddd;
-} */
-
-input[type="radio"]:checked + label {
-    background-color: white;
-    border-bottom: 1px solid white;
-}
-
-.accordion-item {
-    width: 100%;
-}
-
-.accordion-button {
-    width: 100%;
-    color: black;
-    font-size: var(--sub-headings-font-size);
-}
-
-.accordion-collapse {
-    width: 100%;
-}
-
-.accordion-body {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-}a
-
-.list-group-item {
-    width: 100%;
-}
-
-.custom-accordion .accordion-button:after {
-    display: none;
-}
-
-.custom-accordion .accordion-button {
-    padding-left: 1.5rem;
-}
-
-.custom-accordion .accordion-item {
-    border: none;
-}
-
-.custom-accordion .accordion-body {
-    padding-left: 3rem;
-}
-
-.tab-content {
-    border: 1px solid #dee2e6;
-    border-top: none;
-    padding: 1rem;
-}
-
-.nav-tabs .nav-link.active {
-    background-color: #ffffff;
-    border-color: #dee2e6 #dee2e6 #ffffff;
-    color: var(--main-button-color);
-}
-.nav-tabs .nav-link {
-    font-size: var(--sub-headings-font-size);
-    color: black;
-}
-.nav-tabs .nav-link.folder-active {
-    font-size: var(--sub-headings-font-size);
-    color: var(--main-button-color);
-}
-
-.nav-link {
-    border: 1px solid transparent;
-}
-
-.list-group-item {
-    padding: 0.5rem 1rem;
-    color: var(--main-button-color);
-    font-size: var(--sub-headings-font-size);
-}
-
-.star-icon {
-    color: #c0c0c0;
-    margin-right: 0.5rem;
-}
-
-.folder-icon {
-    margin-right: 0.5rem;
-}
 
 /*Starting of Who Is In Submodule*/
 .who-is-in-table-for-late-employee th,td
@@ -1131,10 +977,7 @@ input[type="radio"]:checked + label {
     border: 1px solid #dcdcdc;
     margin-right: 10px;
 }
-.cancel-btn:hover {
-    background-color: rgb(2, 17, 79);
-    color: white;
-}
+
 .toggle-box-container-who-is-in {
     float: right;
     display: flex;
@@ -1676,14 +1519,18 @@ input[type="date"]::before {
     background-color: white;
     border-bottom: 2px solid #007bff;
 }
-.tab-content {
-    display: none;
+.tab-content-custom {
+ display: none; 
     padding: 15px;
     border: none;
     background-color: transparent; /* Remove white background */
 }
-.tab-content.active {
+.tab-content-custom.active {
     display: block;
+}
+.edit-headings{
+    font-size: 12px;
+    font-weight: 500;
 }
 .custom-container {
     border-radius: 5px;
@@ -1699,15 +1546,11 @@ input[type="date"]::before {
 
 .main-text {
     font-size: 12px;
-    width: 85%;
+  
+    color: #778899;
 }
 
-.help-text {
-    font-size: 12px;
-    color: blue;
-    cursor: pointer;
-    margin-left: auto;
-}
+
 
 .secondary-text {
     font-size: 12px;
@@ -1765,6 +1608,7 @@ input[type="date"]::before {
 }
 
 /* Responsive styles */
+
 @media (max-width: 768px) {
     .input-group4 {
         flex-direction: row; /* Keep items in a row on small screens */
@@ -1792,22 +1636,155 @@ input[type="date"]::before {
         border-radius: 0; /* Maintain default border radius */
     }
 }
+.editprofile{
+    font-size: 12px;
+    margin-top:5px;
+    font-weight: 200;
 
-.container {
-    width: 100%;
+
+}
+.editprofilerow{
+    color: #778899; 
+    margin-top: 10px;
+     margin-left:10px; 
+     height:auto;
+}
+.search-container {
+ 
     max-width: none;
     margin-bottom: 10px;
+    cursor: pointer;
+     background-color:darkgrey; 
+     padding: 5px; 
+      width: 300px; 
+      border-radius: 5px; 
+      margin-top:5px
 }
 
-.container img {
-    height: 40px; /* Adjust size for smaller screens */
-    width: 40px;
+.profile-image{
+    border-radius:50%; 
+    width: 50px; 
+    height: 50px;
+}
+.profile-image-selected{
+    border-radius:50%; 
+    width: 35px; 
+    height: 35px; 
+}
+.selected-person{
+    border:1px solid blue;
+     border-radius:50px;
+      padding: 5px; 
+      width:fit-content; 
+      margin-left:5px; 
+      margin-top:5px
+}
+.selected-name{
+    margin-left: 10px; 
+    color: #778899;
+    line-height: 40px; 
+    font-size:12px; 
+    margin-bottom: 0;
+}
+.close-icon-person{
+    color:#3b4452 ;
+    font-weight: 500;
+    margin-left:15px;
+    cursor:pointer
+}
+.hide-text{
+    font-size: 12px; 
+    cursor: pointer;
+    color:#306cc6;
+    font-weight:500;
+}
+.cus-form-label{
+    width:100%;
+    font-size: 12px;
+
 }
 
-.profile {
-    margin-top: 10px;
-}
+.input-width{
+    width:90%;
+    font-size: 12px;
 
+}
+.alert-success {
+    font-size: var(--normal-font-size);
+    padding: 7px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.card-header{
+ font-size: 15px; 
+ background:white; 
+ width:100%;
+  display:flex;
+   justify-content:space-between;
+}
+.card-row{
+ color: #778899; 
+ margin-top: 10px; 
+ margin-left:10px; 
+ height:auto;
+
+ display: flex;
+}
+.profile-header{
+    background:#98CBBA; 
+    border-radius:5px; 
+    height:60px; 
+    display:flex;
+     padding: 10px; 
+ margin-top:10px;
+     align-items:center;
+     justify-content: center; 
+  
+     width:80%;
+  
+}
+.profile-header-row{
+    display:flex;
+     justify-content: center;
+      width:80%;
+       align-items:center;
+}
+.search-btn {
+    background-color:var(--main-button-color);
+    border-radius: 0 5px 5px 0;
+    color: #fff !important;
+    width: 45px;
+    height:32px;
+    border: none;
+    align-items: center;
+    display: flex;
+}
+.close-btn{
+   background-color: var(--main-button-color);
+    height: 30px; 
+    width: 30px; margin-left: 5px; 
+    display: flex; align-items: center
+    ; justify-content: center;
+    border: none;
+}
+.position-row{
+display: flex;
+
+background-color: white;
+
+font-size: 12px;
+width: 80%;
+
+}
+.search-btn i {
+    color: white; /* Ensures the icon color is white */
+}
+.emp-heading{
+    font-size: 14px;
+    font-weight: 500;
+    color: #3b4452;
+}
         .profile p {
             font-size: 14px;
         }
@@ -1815,10 +1792,7 @@ input[type="date"]::before {
 
   /* Hr Main Overview Styles Started */
   .main-overview-container {
-    padding-top: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    overflow-x: hidden;
 }
 
 .main-overview-help {
@@ -1928,16 +1902,16 @@ input[type="date"]::before {
     cursor:pointer;
 }
 .main-overview-graphs-container{
-    border-radius: 5px; 
-    background-color: white; 
+    border-radius: 5px;
+    background-color: white;
     margin-bottom: 10px;
 }
 .main-overview-heading-text{
-    font-size: var(--sub-headings-font-size); 
+    font-size: var(--sub-headings-font-size);
     color: var(--label-color);
 }
 .main-overview-subheading-text{
-    font-size: var(--normal-font-size); 
+    font-size: var(--normal-font-size);
     color: var(--label-color);
 }
 .main-overview-red-text{
@@ -1947,8 +1921,8 @@ input[type="date"]::before {
     height: 220px;
 }
 .main-overview-count-text{
-    font-size: var(--main-headings-font-size); 
-    font-weight: 500; 
+    font-size: var(--main-headings-font-size);
+    font-weight: 500;
     color: var(--main-heading-color);
 }
 .main-overview-green-text{
@@ -1958,7 +1932,7 @@ input[type="date"]::before {
     margin-top: 30px;
 }
 .main-overview-tickets-count{
-    color: var(--main-heading-color); 
+    color: var(--main-heading-color);
     font-size: var(--normal-font-size);
     margin-top: -1px;
 }
@@ -1969,36 +1943,162 @@ input[type="date"]::before {
     cursor: pointer;
 }
 .main-overview-hr-line{
-    border: 1px solid grey; 
-    width: 100%; 
+    border: 1px solid grey;
+    width: 100%;
     margin-top: 10px;
 }
 .main-overview-no-records-img{
-    width: 5em; 
+    width: 5em;
     margin: 10px 0px;
 }
 .main-overview-no-records-text{
     font-size: 12px;
 }
 .main-overview-scroll-container{
-    height: 160px; 
-    overflow-y: auto; 
+    height: 160px;
+    overflow-y: auto;
     overflow-x: hidden;
 }
 .main-overview-list-div-container{
     gap: 10px;
 }
 .main-overview-mobile-users-count{
-    font-size: var(--normal-font-size); 
+    font-size: var(--normal-font-size);
     color: var(--main-heading-color);
     font-weight: 500;
 }
 .main-overview-invite-text{
-    font-size: var(--normal-font-size); 
-    color: var(--main-button-color); 
-    text-decoration: none; 
+    font-size: var(--normal-font-size);
+    color: var(--main-button-color);
+    text-decoration: none;
     font-weight: 500;
 }
 
 
   /* Hr Main Overview Styles Ended */
+
+
+  /* Calendar->Information->Employee leave styles start  */
+
+  .employee-leave-hr-main{
+    margin: 10px;
+  }
+
+  .employee-leave-searchrow{
+    background-color: white;
+    border-radius: 2px;
+  }
+  .employee-leave-start-para{
+    color: #2d2b2b;
+    font-weight: 600;
+    font-size: 15px;
+    padding:5px 10px;
+    margin-bottom: 0px;
+  }
+  .employee-search-hr{
+    padding: 5px 10px;
+  }
+  .Employee-select-leave{
+    border: 0px;
+    width: fit-content;
+    margin-left: 5px;
+    font-weight: 600;
+    margin-right: 5px;
+    padding-bottom:5px ;
+    color: var(--label-color);
+  }
+  .search-employee-type-leave{
+    align-items: center;
+    padding-bottom:10px ;
+    display: flex;
+    margin-right: 5px;
+    color: var(--label-color);
+  }
+  .Employee-details-hr{
+    border: 1px solid rgb(80, 80, 218);
+    width:200px ;
+    align-items: center;
+    border-radius: 30px;
+    padding: 5px 10px;
+    margin: 0px 0px 10px 10px;
+
+  }
+  .Employee-details-img-details-hr{
+    width: fit-content;
+    align-items: center;
+  }
+  .Emp-name-leave-details{
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 0px;
+  }
+  .Emp-id-leave-details{
+    font-size: 10px;
+    margin-bottom: 0px;
+  }
+
+  .Employee-leave-table-header{
+
+    border-bottom: 1px  solid rgb(199, 196, 196);
+    height: fit-content;
+  }
+  .leave-balance-lave-types {
+    width: fit-content;
+    align-items: end;
+    margin-top: 0px;
+
+  }
+  .leave-balance-lave-types  button {
+    padding: 0px 10px ;
+    font-size: 13px;
+    color: var(--main-button-color);
+    border: 0px;
+    background-color: white;
+    height: max-content;
+    height: 30px;
+
+  }
+  .Leave-balance-buttons{
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+  }
+  .Leave-balance-buttons button{
+    color: var(--main-button-color);
+    background-color: white;
+    border: 0.5px solid var(--main-button-color);
+    height: fit-content;
+    font-size: 13px;
+    font-weight: 500;
+    border-radius: 5px;
+  }
+.Employee-leave-table-maindiv{
+    border: 0.5px solid  rgb(199, 196, 196) ;
+}
+.modal-title {
+    color: #fff;
+    font-weight: 600;
+    font-size: var(--home-headings-font-size);
+}
+.modal-header {
+    background-color: var(--main-button-color);
+    color: white;
+    height: 50px;
+}
+.btn-close {
+    background-color: white;
+    height: 7px;
+    font-size: var(--normal-font-size);
+    width: 7px;
+}
+.placeholder-small {
+    color: var(--label-color); /* Placeholder text color */
+    font-size: var(--normal-font-size);
+    font-family: "Montserrat", sans-serif;
+    font-weight: normal;
+}
+.error-text {
+    font-size: var(--normal-font-size);
+}

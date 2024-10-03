@@ -12,10 +12,12 @@ use App\Livewire\EmployeeAsset;
 use App\Livewire\GrantLeaveBalance;
 use App\Livewire\UpdateEmployeeDetails;
 use App\Livewire\EmployeeDirectory;
+use App\Livewire\EmployeeLeave;
 use App\Livewire\EmployeeProfile;
 use App\Livewire\Feeds;
 use App\Livewire\HrAttendanceInfo;
 use App\Livewire\HrAttendanceOverviewNew;
+use App\Livewire\HrMainOverview;
 use App\Livewire\ParentDetails;
 use App\Livewire\PositionHistory;
 use App\Livewire\ShiftRosterHr;
@@ -72,10 +74,4 @@ Route::middleware(['auth:hr'])->group(function () {
                 Route::get('/user/attendance-muster-hr', AttendanceMusterHr::class)->name(name: 'attendance-muster-hr');
                 Route::get('/user/shift-roster-hr', ShiftRosterHr::class)->name(name: 'shift-roster-hr');
     });
-
-
-
-
 });
-
-
