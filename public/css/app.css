@@ -420,7 +420,8 @@ ul {
     background: rgb(2, 17, 79);
 }
 /* end of admin dashboard */
-/* Step Form */
+
+/* Onboarding Form styles  */
 
 #msform {
     /* text-align: center; */
@@ -496,8 +497,11 @@ input[type="radio"] {
 }
 /*progressbar*/
 #progressbar {
-    margin-bottom: 30px;
+    /* margin-bottom: 30px; */
     overflow: hidden;
+    display: flex;
+    justify-content: center;
+
     /*CSS counters to number the steps*/
     counter-reset: step;
 }
@@ -506,7 +510,7 @@ input[type="radio"] {
     color: black;
     text-transform: uppercase;
     font-size: 10px;
-    width: 25%;
+    width:10%;
     float: left;
     position: relative;
     padding: 0px 5px;
@@ -551,6 +555,16 @@ label {
     color: rgb(135, 129, 129);
     font-weight: 500;
 }
+.onboardinputs{
+    height: 40px;
+    width: 90%;
+    border: 1px solid #ccc;
+
+}
+.onboard-select-default{
+    font: 0.85rem/3 sans-serif;
+}
+
 .onboard-Valid {
     font-size: small;
 }
@@ -683,7 +697,7 @@ input {
     font-size: 10px;
 }
 .custom-select {
-    font-size: 13px;
+    color: #2c3e50
 }
 /* end of styles */
 /* button styles started*/
