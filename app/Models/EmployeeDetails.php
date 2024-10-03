@@ -58,6 +58,7 @@ class EmployeeDetails extends Authenticatable
     ];
     protected $casts = [
         'company_id' => 'array',
+        'emp_domain'=>'array',
 
     ];
     public function empBankDetails()
