@@ -582,6 +582,16 @@ width: 170px; */
             color: black;
             font-weight: 500;
         }
+        .searchContainer {
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    box-shadow: 2px 0 5px 0 #ccc;
+    padding: 12px 15px;
+    width: 250px;
+    margin-top: 15px;
+    display:none;
+}
 
         .table {
             overflow-x: hidden;
@@ -1109,6 +1119,29 @@ width: 170px; */
             border-color: rgb(2, 17, 79);
             /* Border color on hover */
         }
+        .normalTextSmall {
+    color: var(--label-color);
+    font-weight: 500;
+    font-size: 0.65rem;
+}
+.ellipsis {
+    font-size: var(--normal-font-size);
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 110px;
+    display: inline-block;
+}
+.search-btn {
+    background-color: rgb(2, 17, 79);
+    border-radius: 0 5px 5px 0;
+    color: #fff !important;
+    width: 40px;
+    border: none;
+    align-items: center;
+    display: flex;
+}
 
         .toggle-box-attendance-info i.fas.fa-bars {
             color: grey;
@@ -1638,6 +1671,16 @@ color: #fff;
             text-overflow: ellipsis;
             overflow: hidden;
         }
+        .closeIcon {
+    color: white;
+    font-size: 18px;
+}
+.close {
+    background-color: #ccc;
+    border: #ccc;
+    height: 33px;
+    width: 33px;
+}
 
         @media screen and (max-height: 513px) {
             .penalty-and-average-work-hours-card {
@@ -1666,35 +1709,76 @@ color: #fff;
 
         <div class="form-group">
             <label for="employeeType" wire:click="searchforEmployee" style="cursor:pointer;">Employee:</label>
-            <div class="search-container" style="<?php echo ($searchEmployee == 1) ? 'display: block;' : ''; ?>">
-                <button class="remove-employee-btn" wire:click="closeEmployeeBox">
-                    &times;
-                </button>
-                <input type="text" placeholder="Search for an employee..." wire:model="searchTerm" wire:change="updatesearchTerm">
-                <div class="scrollApplyingTO mb-2 mt-2">
-                    @forelse($employees as $employee)
-                    <div class="d-flex align-items-center mt-2 align-items-center" style=" gap: 10px; text-transform: capitalize; cursor: pointer;">
-                        <input type="checkbox" wire:model="selectedEmployee" value="{{$employee->emp_id}}" style="margin-right: 10px; cursor:pointer;" wire:click="updateselectedEmployee('{{ $employee->emp_id }}')">
-
-
-                        <div class="employee-profile-image-container">
-                            <img src="{{ asset('images/user.jpg') }}" class="employee-profile-image-placeholder" style="border-radius: 50%;" height="33" width="33">
-                        </div>
-
-
-                        <div class=" mb-2 mt-2">
-                            <p class="mb-0 empCcName">{{ ucwords(strtolower($employee->first_name)) }}&nbsp;&nbsp;{{ ucwords(strtolower($employee->last_name))}}</p>
-                            <p class="mb-0 empIdStyle">#{{ $employee->emp_id }}</p>
+            <div class="searchContainer"style="<?php echo ($searchEmployee == 1) ? 'display: block;' : ''; ?>">
+                    <!-- Content for the search container -->
+                    <div class="row mb-2 py-0 px-2">
+                        <div class="row m-0 p-0 d-flex align-items-center justify-content-between">
+                            <div class="col-md-10 p-0 m-0">
+                                <div class="input-group">
+                                    <input
+                                        wire:model="searchTerm" 
+                                        wire:change="updatesearchTerm"
+                                        id="searchInput"
+                                        type="text"
+                                        class="form-control placeholder-small"
+                                        placeholder="Search...."
+                                        aria-label="Search"
+                                        aria-describedby="basic-addon1">
+                                    <div class="input-group-append searchBtnBg d-flex align-items-center">
+                                        <button
+                                            type="button"
+                                            class="search-btn">
+                                            <i class="fas fa-search ms-2"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+ 
+                            <div class="col m-0 p-0 d-flex justify-content-end">
+                                <button wire:click="closeEmployeeBox" type="button" class="close rounded px-1 py-0" aria-label="Close">
+                                    <span aria-hidden="true" class="closeIcon"><i class="fas fa-times "></i>
+                                    </span>
+                                </button>
+                            </div>
                         </div>
                     </div>
-
-                    @empty
-                    <div>No employees found.</div>
-                    @endforelse
-
+ 
+                    <!-- Your Blade file -->
+                    <div class="scrollApplyingTO">
+                        @if(!empty($employees))
+                        @foreach($employees as $employee)
+                        <div class="d-flex gap-3 align-items-center"
+                            style="cursor: pointer;"wire:click="updateselectedEmployee('{{ $employee->emp_id }}')">
+                            @if($employee['image'] && $employee['image'] !== 'null' )
+                            <div class="employee-profile-image-container">
+                                <img class="rounded-circle" height="35px" width="35px" src="{{ 'data:image/jpeg;base64,' . base64_encode($employee['image'])}}">
+                            </div>
+                            @else
+                            @if($employee['gender'] == 'Female')
+                            <div class="employee-profile-image-container">
+                                <img src="{{ asset('images/female-default.jpg') }}" class="employee-profile-image-placeholder rounded-circle" height="35px" width="35px" alt="Default Image">
+                            </div>
+                            @elseif($employee['gender'] == 'Male')
+                            <div class="employee-profile-image-container">
+                                <img src="{{ asset('images/male-default.png') }}" class="employee-profile-image-placeholder rounded-circle" height="35px" width="35px" alt="Default Image">
+                            </div>
+                            @else
+                            <div class="employee-profile-image-container">
+                                <img src="{{ asset('images/user.jpg') }}" class="employee-profile-image-placeholder rounded-circle" height="35px" width="35px" alt="Default Image">
+                            </div>
+                            @endif
+                            @endif
+                            <div class="d-flex flex-column mt-2 mb-2">
+                                <span class="ellipsis mb-0">{{ $employee['first_name'] }} {{ $employee['last_name'] }}</span>
+                                <span class="mb-0 normalTextSmall"> #{{ $employee['emp_id'] }} </span>
+                            </div>
+                        </div>
+                        @endforeach
+                        @else
+                        <p class="mb-0 normalTextValue m-auto text-center">No managers found.</p>
+                        @endif
+                    </div>
                 </div>
-
-            </div>
 
         </div>
         @if(!empty($selectedEmployeeId))

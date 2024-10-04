@@ -65,7 +65,24 @@ body {
     transform: rotateY(180deg);
     backface-visibility: hidden;
 }
-
+.approveBtn {
+    background: rgb(2, 17, 79);
+    border: 1px solid rgb(2, 17, 79);
+    padding: 3px 5px;
+    color: #fff;
+    font-size: var(--normal-font-size);
+    font-weight: 500;
+    border-radius: 5px;
+}
+.rejectBtn {
+    background: #fff;
+    border: 1px solid rgb(2, 17, 79);
+    padding: 3px 5px;
+    color: rgb(2, 17, 79);
+    font-size: var(--normal-font-size);
+    font-weight: 500;
+    border-radius: 5px;
+}
 .active.carousel-item-right,
 .carousel-item-prev {
     transform: rotateY(360deg);
@@ -403,7 +420,8 @@ ul {
     background: rgb(2, 17, 79);
 }
 /* end of admin dashboard */
-/* Step Form */
+
+/* Onboarding Form styles  */
 
 #msform {
     /* text-align: center; */
@@ -479,8 +497,11 @@ input[type="radio"] {
 }
 /*progressbar*/
 #progressbar {
-    margin-bottom: 30px;
+    /* margin-bottom: 30px; */
     overflow: hidden;
+    display: flex;
+    justify-content: center;
+
     /*CSS counters to number the steps*/
     counter-reset: step;
 }
@@ -489,7 +510,7 @@ input[type="radio"] {
     color: black;
     text-transform: uppercase;
     font-size: 10px;
-    width: 25%;
+    width:10%;
     float: left;
     position: relative;
     padding: 0px 5px;
@@ -534,6 +555,16 @@ label {
     color: rgb(135, 129, 129);
     font-weight: 500;
 }
+.onboardinputs{
+    height: 40px;
+    width: 90%;
+    border: 1px solid #ccc;
+
+}
+.onboard-select-default{
+    font: 0.85rem/3 sans-serif;
+}
+
 .onboard-Valid {
     font-size: small;
 }
@@ -666,7 +697,7 @@ input {
     font-size: 10px;
 }
 .custom-select {
-    font-size: 13px;
+    color: #2c3e50
 }
 /* end of styles */
 /* button styles started*/
@@ -930,6 +961,17 @@ input {
 
 
 /*Starting of Who Is In Submodule*/
+.who-is-in-table-for-late-employee th,td
+{
+    padding:10px;
+}
+.container5-who-is-in-absent
+{
+    background-color: #ffffff;
+    margin-top: 30px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
 @media screen and (max-height: 320px) {
     .form-group-who-is-in{
 
@@ -981,7 +1023,7 @@ input {
     /* Border */
     border-radius: 5px;
     /* Rounded corners */
-    margin-top: 50px;
+    margin-top: 35px;
     /* Adjust spacing as needed */
     padding: 10px;
     /* Padding inside the container */
@@ -1160,16 +1202,7 @@ input:checked + .slider:before {
     border: 1px solid #ccc;
     /* Border style for the container */
 }
-.container5-who-is-in-absent
-{
-    background-color: #ffffff;
-    margin-top: 30px;
 
-    border-radius: 5px;
-    border: 1px solid #ccc;
-    width:230px;
-    margin-left: -18px;
-}
 .container5-who-is-in {
     /* Adjust the width as needed */
 

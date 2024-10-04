@@ -7,8 +7,6 @@ use App\Livewire\HomeDashboard;
 use App\Livewire\AddEmployeeDetails;
 use App\Livewire\AnalyticsHub;
 use App\Livewire\AnalyticsHubViewAll;
-use App\Livewire\BankAccount;
-use App\Livewire\EmpDocument;
 use App\Livewire\EmployeeAsset;
 use App\Livewire\GrantLeaveBalance;
 use App\Livewire\UpdateEmployeeDetails;
@@ -21,6 +19,7 @@ use App\Livewire\HrAttendanceOverviewNew;
 use App\Livewire\HrMainOverview;
 use App\Livewire\ParentDetails;
 use App\Livewire\PositionHistory;
+use App\Livewire\ShiftRosterHr;
 use App\Livewire\WhoIsInChartHr;
 use Illuminate\Support\Facades\Route;
 
@@ -71,9 +70,7 @@ Route::middleware(['auth:hr'])->group(function () {
         Route::get('/employee-profile', EmployeeProfile::class)->name('employee-profile');
         Route::get('/employee-asset', EmployeeAsset::class)->name('employee-asset');
         Route::get('/position-history', PositionHistory::class)->name('position-history');
-        Route::get('/bank-account',  BankAccount::class)->name('/bank-account');
-        Route::get('/parent-details', ParentDetails::class)->name('parent-details');
-        Route::get('/emp-document',  EmpDocument::class)->name('/emp-document');
+        Route::get('/parent', ParentDetails::class)->name('parent-details');
         Route::get('/user/hremployeedirectory', EmployeeDirectory::class)->name('employee-directory');
         Route::get('/user/attendance-overview', HrAttendanceOverviewNew::class)->name('attendance-overview');
         Route::get('/user/who-is-in-chart-hr', WhoIsInChartHr::class)->name('who-is-in-chart-hr');
