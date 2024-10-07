@@ -26,23 +26,13 @@ class UpdateEmployeeDetails extends Component
     public $hrDetails;
     public $counter = 1;
     public $search = '';
-    public $sortBy = 'status'; // Default sorting column
-    public $sortDirection = 'asc'; // Default sorting direction
     public $employees = [];
     public $hrCompany_id;
+    public $emp_gender = '';
+    public $emp_status = '';
+    public $sortColumn = 'emp_id'; // Default column to sort by
+    public $sortDirection = 'asc';
 
-    //logic for logout
-    public function logout()
-    {
-        try {
-            auth()->guard('com')->logout();
-        } catch (\Exception $e) {
-            // Store the error message in the session
-            Session::flash('error', 'An error occurred during logout. Please try again.');
-        }
-
-        return redirect('/Login&Register');
-    }
 
     // soft delete employee
     public function deleteEmp($id)
@@ -62,14 +52,17 @@ class UpdateEmployeeDetails extends Component
     public function filter()
     {
         try {
+
             $this->filteredEmployees = EmployeeDetails::where(function ($query) {
                 $query->where('first_name', 'like', '%' . $this->search . '%')
                     ->orWhere('last_name', 'like', '%' . $this->search . '%')
                     ->orWhere('email', 'like', '%' . $this->search . '%')
                     ->orWhere('emp_id', 'like', '%' . $this->search . '%')
                     ->orWhere('mobile_number', 'like', '%' . $this->search . '%');
-            })
-                ->get();
+            })->when($this->emp_gender != '', function ($query) {
+                $query->where('gender', $this->emp_gender);
+            })->get();
+            dd($this->filteredEmployees);
         } catch (\Exception $e) {
             Log::error('Error occurred in filter method: ' . $e->getMessage());
             session()->flash('error', 'An error occurred while filtering employees.');
@@ -77,60 +70,86 @@ class UpdateEmployeeDetails extends Component
     }
 
     public function sortBy($column)
-    {
-        if ($this->sortBy === $column) {
-            // Toggle direction if the same column is clicked
-            $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
-        } else {
-            // Set new column for sorting and reset to ascending order
-            $this->sortBy = $column;
-            $this->sortDirection = 'asc';
-        }
-
-        $this->fetchEmployees(); // Re-fetch employees after sorting
+{
+    if ($this->sortColumn === $column) {
+        // If the column is already selected, toggle the direction
+        $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
+    } else {
+        // Otherwise, set the new column and default to ascending
+        $this->sortColumn = $column;
+        $this->sortDirection = 'asc';
     }
+
+    // After updating, refresh the employee list
+    $this->fetchEmployeeDetails();
+}
+    public function fetchEmployeeDetails()
+    {
+        try {
+            // Prepare the base query
+            $query = EmployeeDetails::query();
+
+            // Filter by company_id using JSON_CONTAINS for each hrCompany_id
+            if (!empty($this->hrCompany_id)) {
+                $query->where(function ($query) {
+                    foreach ($this->hrCompany_id as $companyId) {
+                        $query->orWhereRaw("JSON_CONTAINS(company_id, '\"$companyId\"')");
+                    }
+                });
+            }
+
+            // Apply search filter
+            if (!empty($this->search)) {
+                $query->where(function ($query) {
+                    $query->where('first_name', 'like', '%' . $this->search . '%')
+                        ->orWhere('last_name', 'like', '%' . $this->search . '%')
+                        ->orWhere('email', 'like', '%' . $this->search . '%')
+                        ->orWhere('emp_id', 'like', '%' . $this->search . '%');
+                    // ->orWhere('mobile_number', 'like', '%' . $this->search . '%');
+                });
+            }
+            if(!empty($this->emp_gender)){
+                $query->where('gender',$this->emp_gender);
+            }
+            if($this->emp_status!=''){
+
+                $query->where('status',$this->emp_status);
+            }
+            // Ordering by status and fetching results
+            $query->orderBy($this->sortColumn, $this->sortDirection);
+
+        // Fetch results
+        $this->employees = $query->get();
+        } catch (\Illuminate\Database\QueryException $e) {
+            Log::error('Error fetching Employee details: ' . $e->getMessage());
+            session()->flash('error_message', 'An error occurred while fetching employee details.');
+            $this->employees = []; // Set employees to an empty array
+        }
+    }
+
 
     public function render()
     {
-
         try {
-            $hr = auth()->guard('hr')->user();
-            $hr_Id=$hr->emp_id;
-           $hrCompany_id=EmployeeDetails::where('emp_id', $hr_Id)->first()->company_id;
-        //    dd( $hrCompany_id);
+            $this->hrDetails = auth()->guard('hr')->user();
+            $hr_Id =  $this->hrDetails->emp_id;
+            $this->hrCompany_id = EmployeeDetails::where('emp_id', $hr_Id)->first()->company_id;
 
-        //    dd(EmployeeDetails::where('emp_id', $hr_Id)->first());
-            $hrCompanies = Company::where('company_id', $hrCompany_id)->get();
-            $hrDetails = Company::where('company_id', $hrCompany_id)->first();
+            $hrCompanies = Company::where('company_id',  $this->hrCompany_id)->get();
+            $hrDetails = Company::where('company_id',  $this->hrCompany_id)->first();
 
             $this->companies = $hrCompanies;
             $this->hrDetails = $hrDetails;
 
             // Wrapping the database query in a try-catch block
-            try {
-                $this->employees = EmployeeDetails::where(function ($query) use ($hrCompany_id) {
-                    foreach ($hrCompany_id as $companyId) {
-                        $query->orWhereRaw("JSON_CONTAINS(company_id, '\"$companyId\"')");
-                    }
-                })
-                    ->where(function ($query) {
-                        $query->where('first_name', 'like', '%' . $this->search . '%')
-                            ->orWhere('last_name', 'like', '%' . $this->search . '%')
-                            ->orWhere('email', 'like', '%' . $this->search . '%')
-                            ->orWhere('emp_id', 'like', '%' . $this->search . '%');
-                            // ->orWhere('mobile_number', 'like', '%' . $this->search . '%');
-                    })
-                    ->orderBy('status', 'asc')
-                    ->get();
-                    // dd( $this->employees);
+            $this->fetchEmployeeDetails();
 
-            } catch (\Illuminate\Database\QueryException $e) {
-                Log::error('Error fetching Employee details: ' . $e->getMessage());
-                session()->flash('error_message', 'An error occurred while fetching employee details.');
-                $this->employees = []; // Set employees to an empty array or handle error as needed
+            foreach ($this->employees as $employee) {
+                $employee->encrypted_emp_id = Crypt::encrypt($employee->emp_id);
             }
 
-        }catch (\Exception $e) {
+            return view('livewire.update-employee-details');
+        } catch (\Exception $e) {
             // Log the error
             Log::error($e);
             // Flash a message to the session
@@ -138,13 +157,5 @@ class UpdateEmployeeDetails extends Component
             // Redirect back or to a specific route
             return redirect()->back(); // Or redirect()->route('route.name');
         }
-
-        foreach ($this->employees as $employee) {
-            $employee->encrypted_emp_id = Crypt::encrypt($employee->emp_id);
-        }
-
-        return view('livewire.update-employee-details');
     }
-
-
 }
