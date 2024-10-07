@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Models\EmployeeDetails;
 use App\Models\Hr;
+use App\Models\RegularisationDates;
 use App\Models\SwipeRecord;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -15,6 +16,10 @@ class HrAttendanceOverviewNew extends Component
 {
     public $totalemployees;
     
+    public $openApprovePopupModal=false;
+
+    public $openRejectPopupModal=false;
+    public $openAccordionForActive=null;
     public $absentemployeescount;
 
     public $lateemployeescount;
@@ -25,6 +30,8 @@ class HrAttendanceOverviewNew extends Component
     public  $earlyemployeescount;
     public $showHelp=false;
     public $totalemployeesinexcel;
+
+    public $regularisations;
 
     public $whoisin=[
        [ 'Label'=>'Not Yet In','Value'=>48],
@@ -40,13 +47,7 @@ class HrAttendanceOverviewNew extends Component
         $year = $currentDate->format('Y');
  
         // Construct the table name for SQL Server
-        $tableName = 'DeviceLogs_' . $month . '_' . $year;
-        $employeeSwipeLog = DB::connection('sqlsrv')
-        ->table($tableName)
-        ->select('UserId', 'logDate', 'Direction')
-        
-        ->get();        
-        dd($employeeSwipeLog);
+      
     }
     public function hideHelp()
     {
@@ -111,11 +112,40 @@ class HrAttendanceOverviewNew extends Component
     
         return response()->download($filePath, 'employeesattendanceType.xlsx');
     }
+    public function toggleActiveAccordion($id)
+    {
+        
+        if ($this->openAccordionForActive === $id) {
+            $this->openAccordionForActive = null; // Close if already open
+        } else {
+            $this->openAccordionForActive = $id; // Set to open
+        }
+    }
   
     public function render()
     {
        
         // $companyName = $yourModels->com->company_name;
+        $hremployeeId = auth()->guard('hr')->user()->hr_emp_id;
+        $employeeId=Hr::where('hr_emp_id',$hremployeeId)->value('emp_id');
+        $companyIdJson = EmployeeDetails::where('emp_id', $employeeId)->value('company_id');
+        $companyIds = json_decode($companyIdJson, true);
+        $empIds = EmployeeDetails::where(function($query) use ($companyIds) {
+            foreach ($companyIds as $companyId) {
+                // Use JSON_CONTAINS to check if company_id field contains the companyId
+                $query->orWhereRaw('JSON_CONTAINS(company_id, \'' . json_encode($companyId) . '\')');
+            }
+        })->pluck('emp_id');
+       
+        $this->regularisations = RegularisationDates::where('is_withdraw', 0) // Only records with is_withdraw set to 0
+        ->where('status', 'pending')
+        ->whereIn('emp_id', $empIds) // Filter by emp_id
+        ->selectRaw('*, JSON_LENGTH(regularisation_entries) AS regularisation_entries_count')
+        ->whereRaw('JSON_LENGTH(regularisation_entries) > 0')
+        ->whereRaw('DATEDIFF(CURRENT_DATE, updated_at) > 3')  // Check if the difference from today is greater than 3 days
+        ->with('employee')
+        ->get();
+       
         $companyId =auth()->guard('hr')->user()->emp_id;
         $employeeCompanyId=EmployeeDetails::where('emp_id',$companyId)->value('company_id');
        

@@ -19,6 +19,7 @@ use App\Livewire\HrAttendanceOverviewNew;
 use App\Livewire\HrMainOverview;
 use App\Livewire\ParentDetails;
 use App\Livewire\PositionHistory;
+use App\Livewire\ShiftRosterHr;
 use App\Livewire\WhoIsInChartHr;
 use Illuminate\Support\Facades\Route;
 

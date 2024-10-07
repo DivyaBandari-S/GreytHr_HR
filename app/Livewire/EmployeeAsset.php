@@ -37,6 +37,7 @@ class EmployeeAsset extends Component
     public $isNames = false;
     public $record;
     public $subject;
+    public $people;
     public $Mobile;
     public $hrempid;
     public $description;

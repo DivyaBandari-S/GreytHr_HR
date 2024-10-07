@@ -54,14 +54,14 @@
 							<li><a href="/hr/employee-profile">Employee Profile</a></li>
 							<li><a href="/hr/position-history">Postion History</a></li>
 							<li><a href="/hr/employee-asset">Assets</a></li>
-							<li><a href="/user">Bank/PF/ESI</a></li>
-							<li><a href="/user">Family Details</a></li>
-							
+							<li><a href="/hr/bank-account">Bank/PF/ESI</a></li>
+							<li><a href="/hr/parent-details">Family Details</a></li>
+							<li><a href="/hr/emp-document">Employee Documents</a></li>
 						
 							<li><a href="/user">Previous Employement</a></li>
 							<li><a href="/user">Separration</a></li>
 							<li><a href="/user">Acess card details</a></li>
-							<li><a href="/home">Employee Documents</a></li>
+						
 							<li><a href="/user">Employee Contracts</a></li>
 							<li><a href="/user">Employee Salary</a></li>
 						</ul>
@@ -104,7 +104,7 @@
 							<li><a href="/hr/user/overview">Leave Overview</a></li>
 							<li><a href="/hr/user/analytics-hub">Attendance Overview</a></li>
 							<li><a href="/hr/user/hremployeedirectory">Leave Calendar</a></li>
-							<li><a href="/user">Who is in?</a></li>
+							<li><a href="/hr/user/who-is-in-chart-hr">Who is in?</a></li>
 						</ul>
 					</li>
 					<li>
@@ -139,10 +139,10 @@
 						<a href="#">Information <i class="ph-caret-right-fill"></i></a>
 						<ul class="sidebar__dropdown-menu">
 							<li><a href="/home">Employee Leave</a></li>
-							<li><a href="/user">Shift Roaster</a></li>
+							<li><a href="/user/shift-roster-hr">Shift Roaster</a></li>
 							<li><a href="/user">Employee Swipes</a></li>
-							<li><a href="/user">Attenance Muster</a></li>
-							<li><a href="/user">Attenance Info</a></li>
+							<li><a href="/hr/user/attendance-muster-hr">Attenance Muster</a></li>
+							<li><a href="/hr/user/attendance-info">Attenance Info</a></li>
 						</ul>
 					</li>
 				</ul>

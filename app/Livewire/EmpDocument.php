@@ -3,16 +3,17 @@
 namespace App\Livewire;
 
 use App\Models\EmployeeDetails;
-use App\Models\HelpDesks;
-use Livewire\Component;
+use App\Models\LetterRequest;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Livewire\Component;
 use Livewire\WithFileUploads;
-use  App\Models\ParentDetail;
-class ParentDetails extends Component
+
+class EmpDocument extends Component
 {
     use WithFileUploads;
+    public $requests;
+
 
     public $searchTerm = '';
     public $peopleData =[];
@@ -57,38 +58,21 @@ class ParentDetails extends Component
     public $peopleFound = true;
     public $file_path;
 
-    public $editingParentProfile=false;
-    public $BankName;
-
-    public $name;
-    public $AccountNumber;
-
-    public $Branch;
+   
     public $showSuccessMessage = false;
    
-    public $wishMeOn;
+  
     public $employeess;
     public $employeeIds=[];
-    public $selectedTimeZone;
-    public $timeZones;
-    public $biography;
-    public $faceBook;
-    public $FatherAddress;
-    public $Email;
+
+  
     
 
 
     public $recentHires = [];
-    public $FatherBloodGroup;
-    public $editingBankProfile = false;
-    public $editingTimeZone = false;
-    public $editingBiography = false;
-    public $editingSocialMedia = false;
+
     public $employees;
-    public $oldPassword;
-    public $newPassword;
-    public $confirmNewPassword;
-    public $passwordChanged = false;
+   
     public $employeeDetails = [];
     public $editingField = false;
     public function toggleDetails()
@@ -105,9 +89,17 @@ class ParentDetails extends Component
     public function updatedSelectedPeople()
     {
         $this->cc_to = implode(', ', array_unique($this->selectedPeopleNames));
+      
+        
     }
 
     public $selectedPeopleData=[];
+    public $activeTab1 = 'tab1';
+
+    public function switchTab($tab)
+    {
+        $this->activeTab1 = $tab;
+    }
     
     public function NamesSearch()
     {
@@ -135,15 +127,7 @@ class ParentDetails extends Component
 
         $this->filteredPeoples = $this->searchTerm ? $this->employees : null;
 
-        // Filter records based on category and search term
-        $this->records = HelpDesks::with('emp')
-            ->whereHas('emp', function ($query) {
-                $query->where('first_name', 'like', '%' . $this->searchTerm . '%')
-                    ->orWhere('last_name', 'like', '%' . $this->searchTerm . '%');
-            })
-
-            ->orderBy('created_at', 'desc')
-            ->get();
+   
     }
 
     public function removePerson($empId)
@@ -167,7 +151,9 @@ class ParentDetails extends Component
         });
      
     }
-    
+    public $combinedRequests=[];
+ 
+
     public function selectPerson($emp_id)
     {
         try {
@@ -178,7 +164,9 @@ class ParentDetails extends Component
     
             // Find the selected person from the list of employees
             $selectedPerson = $this->employees->where('emp_id', $emp_id)->first();
-    
+           
+      
+
             if ($selectedPerson) {
                 // Check if person is already selected
                 if (in_array($emp_id, $this->selectedPeople)) {
@@ -230,92 +218,7 @@ class ParentDetails extends Component
             $this->dispatchBrowserEvent('error', ['message' => 'An error occurred: ' . $e->getMessage()]);
         }
     }
-   public $currentEditingParentProfile; 
- 
-   public $fatherName;
-   public $FatherDOB;
-   public $MotherDOB;
-   public $motherName;
-  
-   public function editParentProfile($emp_id)
-   {
-       $this->currentEditingParentProfile = $emp_id; // Set current employee for editing
-   
-       // Fetch employee details along with parent details
-       $employee = EmployeeDetails::with('empParentDetails')->find($emp_id);
-      
-       $this->editingParentProfile = true;
-   
-       if ($employee && $employee->empParentDetails) {
-        $parentInfo = $employee->empParentDetails;
-        
-        // Set the values from the correct fields
-        $this->FatherFirstName = $parentInfo->father_first_name ?? '';
-   
-        $this->FatherLastName = $parentInfo->father_last_name ?? '';
-        $this->FatherDOB = $parentInfo->father_dob ?? '';
-        $this->FatherAddress = $parentInfo->father_address ?? '';
-        $this->MotherFirstName = $parentInfo->mother_first_name ?? '';
-        $this->MotherLastName = $parentInfo->mother_last_name ?? '';
-        $this->MotherDOB = $parentInfo->mother_dob ?? '';
-        $this->MotherAddress = $parentInfo->mother_address ?? '';
 
-        $this->editingParentProfile = true;
-    } else {
-        // Handle case when no parent details are found
-        session()->flash('error', 'No parent details found for this employee.');
-    }
-
-
-   }
-   
-   public function saveParentProfile($emp_id)
-   {
-       try {
-           // Fetch employee details along with parent details
-           $employee = EmployeeDetails::with('empParentDetails')->find($emp_id);
-   
-           if ($employee && $employee->empParentDetails) {
-               // Update parent details in the `emp_parent_details` table
-               $parentInfo = $employee->empParentDetails;
-   
-               $parentInfo->father_first_name = $this->FatherFirstName;
-               $parentInfo->father_last_name = $this->FatherLastName;
-               $parentInfo->father_dob = $this->FatherDOB;
-               $parentInfo->father_address = $this->FatherAddress;
-               $parentInfo->mother_first_name = $this->MotherFirstName;
-               $parentInfo->mother_last_name = $this->MotherLastName;
-               $parentInfo->mother_dob = $this->MotherDOB;
-               $parentInfo->mother_address = $this->MotherAddress;
-               // Save the updated parent information
-               $parentInfo->save();
-   
-               // Clear editing state
-               $this->currentEditingParentProfile = null;
-              
-   
-               // Flash success message
-               session()->flash('success', 'Parent profile updated successfully.');
-           } else {
-               // Handle the case where no parent details are found
-               session()->flash('error', 'No parent details found for this employee.');
-           }
-       } catch (\Exception $e) {
-           // Handle any exceptions that occur during saving
-           session()->flash('error', 'An error occurred while updating the parent profile. Please try again.');
-       }
-   }
-   
-   
-    public function cancelParentProfile()
-    {
-        // No need to query for $selectedPerson here
-      
-     
-        $this->currentEditingParentProfile = null; 
-       
-    }
-    
   
 
     
@@ -330,7 +233,28 @@ class ParentDetails extends Component
         
             return;
         }
-    
+        $companyID = EmployeeDetails::where('emp_id', $loggedInEmpID)
+        ->pluck('company_id')
+        ->first(); // Assuming company_id is unique for emp_id
+
+        // Fetch all letter requests, ensuring it's a collection even if empty
+        $this->requests = collect();
+        $this->requests = LetterRequest::all(); 
+        Log::info('Selected People: ' . json_encode($this->selectedPeople));
+        // Fetch all letter requests if selectedPeople is not empty
+        if (!empty($this->selectedPeople)) {
+            $this->requests = LetterRequest::whereIn('emp_id', (array) $this->selectedPeople)->get();
+            Log::info('Letter Requests: ' . $this->requests->toJson()); // Log the result of the query
+        } else {
+            $requests = collect(); // Return empty collection
+        }
+        
+        // If no search term, fetch all employees for the logged-in user's company
+        if (empty($this->searchTerm)) {
+            $this->employees = EmployeeDetails::whereJsonContains('company_id', $companyID)->get();
+        }
+        
+  
         // Retrieve the company_id associated with the logged-in emp_id
         $employeeDetails = EmployeeDetails::where('emp_id', $loggedInEmpID)->first();
         
@@ -436,8 +360,11 @@ class ParentDetails extends Component
     public function updateselectedEmployee($empId)
     {
         $this->selectedEmployeeId = $empId;
+     
+      
         $this->selectedEmployeeFirstName = EmployeeDetails::where('emp_id', $empId)->value('first_name');
         $this->selectedEmployeeLastName = EmployeeDetails::where('emp_id', $empId)->value('last_name');
+        $this->requests = LetterRequest::whereIn('emp_id', $this->selectedPeople)->get();
     }
     
    
@@ -459,14 +386,23 @@ class ParentDetails extends Component
     public function render()
     {
         $loggedInEmpID = auth()->guard('hr')->user()->emp_id;
-        $employeeId = auth()->user()->emp_id;
-        $companyId = auth()->user()->company_id;
-    
-        // Retrieve the company_id associated with the logged-in emp_id
         $companyID = EmployeeDetails::where('emp_id', $loggedInEmpID)
             ->pluck('company_id')
             ->first(); // Assuming company_id is unique for emp_id
-  
+            $this->requests = collect();
+        // Initialize the requests collection to prevent undefined errors
+        $this->requests = LetterRequest::all(); 
+        Log::info('Selected People: ' . json_encode($this->selectedPeople));
+        // Fetch all letter requests if selectedPeople is not empty
+        if (!empty($this->selectedPeople)) {
+            $requests = LetterRequest::whereIn('emp_id', (array) $this->selectedPeople)->get();
+            Log::info('Letter Requests: ' . $requests->toJson()); // Log the result of the query
+        } else {
+            $requests = collect(); // Return empty collection
+        }
+        
+        
+    
         // If no search term, fetch all employees for the logged-in user's company
         if (empty($this->searchTerm)) {
             $this->employees = EmployeeDetails::whereJsonContains('company_id', $companyID)->get();
@@ -474,13 +410,15 @@ class ParentDetails extends Component
     
         // Determine if there are people found
         $peopleFound = $this->employees->count() > 0;
-
-        return view('livewire.parent-details', [
+    
+        return view('livewire.emp-document', [
             'employees' => $this->employees,
             'selectedPeople' => $this->selectedPeople,
             'peopleFound' => $peopleFound,
-            'records' => $this->records
+            'records' => $this->records,
+            'combinedRequests' => $this->combinedRequests,
+            'requests' => $this->requests, // Pass the requests collection to the view
         ]);
     }
-
+    
 }

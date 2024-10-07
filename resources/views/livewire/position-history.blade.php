@@ -52,7 +52,7 @@
 
                 <div class="row justify-content-center mt-2 "  >
                 <div class="col-md-8 custom-container d-flex flex-column bg-white">
-    <div class="row justify-content-center mt-3 flex-column m-0" style="border-radius: 5px; font-size:12px; width:88%;">
+    <div class="row justify-content-center mt-3 flex-column m-0 employee-details-main" >
         <div class="col-md-9">
             <div class="row " style="display:flex;">
                 <div class="col-md-11 m-0">
@@ -73,7 +73,8 @@
 
     @foreach($selectedPeopleData as $personData)
         <span class="selected-person d-flex align-items-center">
-            <img class="profile-image-selected" src="{{ $personData['image'] }}" alt="Employee Image">
+            <img class="profile-image-selected" src="data:image/jpeg;base64,{{ $personData['image'] ?? '-' }}"
+          >
            
            
             <p class="selected-name">
@@ -109,14 +110,14 @@
         <div class="col-md-6 col-12"> 
 
 @if($isNames)
-<div class="col-md-6" style="border-radius: 5px; background-color: grey; padding: 8px; width: 330px; margin-top: 10px; height: 250px; overflow-y: auto;">
-<div class="input-group4" style="display: flex; align-items: center; width: 100%;">
+<div class="col-md-6 search-bar" >
+<div class="input-group4" >
 
 <input 
 wire:model.debounce.500ms="searchTerm" placeholder="Search employees..."
-style="font-size: 10px; cursor: pointer; border-radius: 5px 0 0 5px; width: 250px; height: 30px; padding: 5px;" 
+
 type="text" 
-class="form-control" 
+class="form-control search-term" 
 placeholder="Search for Emp.Name or ID" 
 aria-label="Search" 
 aria-describedby="basic-addon1"
@@ -167,7 +168,7 @@ aria-describedby="basic-addon1"
                 </div>
                 <div class="col-auto">
                     @if($employee->image && $employee->image !== 'null')
-                        <img class="profile-image" src="{{ 'data:image/jpeg;base64,' . base64_encode($employee->image) }}" >
+                        <img class="profile-image"  src="data:image/jpeg;base64,{{($people->image ??'-') }}" >
                     @else
                         @if($employee->gender == "Male")
                             <img class="profile-image" src="{{ asset('images/male-default.png') }}" alt="Default Male Image">
@@ -250,10 +251,11 @@ aria-describedby="basic-addon1"
 
 
 @if($employee)
-<div class="container-fluid bg-white">
-    <div class="row justify-content-center" style="margin-top:10px;width:80%">
-        <div class="col-md-3 ">
-            <div class="bg-white p-3 mb-3" style="border-radius: 5px; border: 1px solid silver;height:auto">
+<div class="container-fluid bg-white align-items-center justify-content-center ">
+    
+<div class="row justify-content-center personalProfile mt-5" >
+        <div class="col-md-3 " >
+            <div class=" p-3 mb-3 editInformation">
              <div class="column" style="display:flex">
              <p style="font-size:12px;font-weight:600">Division</p>
           
@@ -304,12 +306,13 @@ aria-describedby="basic-addon1"
           
         </div>
         <div class="col-md-3 ">
-            <div class="bg-white p-3 mb-3" style="border-radius: 5px; border: 1px solid silver;height:auto">
+            <div class="bg-white p-3 mb-3 editInformation" >
          
             <div class="column" style="display:flex">
              <p style="font-size:12px;font-weight:600">Cost Center</p>
           
-    <button type="button" class="btn btn-sm ml-auto" style="border-radius: 5px; border: 1px solid blue;height:28px;margin-left:10px;;margin-top:-5px"><p style="color:blue">add</p></button>
+    <button type="button" class="btn btn-sm ml-auto add-details" >
+        <p style="color:blue">add</p></button>
 
 
              </div>
@@ -340,7 +343,7 @@ aria-describedby="basic-addon1"
 <i style="margin-left:5px">             
 @if($currentEditingDomainProfileId == $employee->emp_id)
     <i wire:click="cancelDomainProfile('{{ $emp_id }}')" class="bx bx-x" style="cursor: pointer;"></i>
-    <i wire:click="savedomainProfile('{{ $emp_id }}')" class="bx bx-save" style="cursor: pointer;"></i>
+    <i wire:click="saveDomainProfile('{{ $emp_id }}')" class="bx bx-save" style="cursor: pointer;"></i>
 @else
     <i wire:click="editDomainProfile('{{ $emp_id }}')" class="bx bx-edit ml-auto" style="cursor: pointer;"></i>
 @endif
@@ -359,7 +362,7 @@ aria-describedby="basic-addon1"
           
         </div>
         <div class="col-md-3 ">
-            <div class="bg-white p-3 mb-3" style="border-radius: 5px; border: 1px solid silver;height:auto">
+            <div class="bg-white p-3 mb-3 editInformation">
              <div class="column" style="display:flex">
              <p style="font-size:12px;font-weight:600">Grade</p>
         
@@ -376,11 +379,12 @@ aria-describedby="basic-addon1"
         </div>
         </div>
         <div class="col-md-3 ">
-            <div class="bg-white p-3 mb-3" style="border-radius: 5px; border: 1px solid silver;height:auto">
+            <div class="bg-white p-3 mb-3 editInformation" >
              <div class="column" style="display:flex">
              <p style="font-size:12px;font-weight:600">Designation</p>
           
-    <button type="button" class="btn btn-sm ml-auto" style="border-radius: 5px; border: 1px solid blue;height:28px;margin-left:10px;;margin-top:-5px"><p style="color:blue">add</p></button>
+    <button type="button" class="btn btn-sm ml-auto" style="border-radius: 5px; border: 1px solid blue;height:28px;margin-left:10px;;margin-top:-5px;">
+        <p style="color:blue">add</p></button>
 
 
              </div>
@@ -427,9 +431,9 @@ aria-describedby="basic-addon1"
           
         </div>
     </div>
-    <div class="row justify-content-center" style="margin-top:10px">
+    <div class="row justify-content-center personalProfile" >
         <div class="col-md-3 ">
-            <div class="bg-white p-3 mb-3" style="border-radius: 5px; border: 1px solid silver;height:auto">
+            <div class="bg-white p-3 mb-3" style="border-radius: 5px; border: 1px solid silver;height:auto;box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);">
              <div class="column" style="display:flex">
              <p style="font-size:12px;font-weight:600">Location</p>
           
@@ -460,10 +464,10 @@ aria-describedby="basic-addon1"
 </div>      
 <i style="margin-left:5px">
         @if($currentEditinglocationProfileId == $employee->emp_id)
-                    <i wire:click="cancellocationProfile('{{ $emp_id }}')" class="fas fa-times me-3" style="cursor: pointer;"></i>
-                    <i wire:click="savelocationProfile('{{ $emp_id }}')" class="fa fa-save" style="cursor: pointer;"></i>
+                    <i wire:click="cancellocationProfile('{{ $emp_id }}')" class="bx bx-x" style="cursor: pointer;"></i>
+                    <i wire:click="savelocationProfile('{{ $emp_id }}')" class="bx bx-save"style="cursor: pointer;"></i>
                 @else
-                    <i wire:click="editlocationProfile('{{ $emp_id }}')" class="fas fa-edit ml-auto" style="cursor: pointer;"></i>
+                    <i wire:click="editlocationProfile('{{ $emp_id }}')" class="bx bx-edit ml-auto" style="cursor: pointer;"></i>
                 @endif
             </i> 
 
@@ -479,7 +483,7 @@ aria-describedby="basic-addon1"
           
         </div>
         <div class="col-md-3">
-            <div class="bg-white p-3 mb-3" style="border-radius: 5px; border: 1px solid silver;height:auto">
+            <div class="bg-white p-3 mb-3" style="border-radius: 5px; border: 1px solid silver;height:auto;box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);">
              <div class="column" style="display:flex">
              <p style="font-size:12px;font-weight:600">Department</p>
         
@@ -534,7 +538,7 @@ aria-describedby="basic-addon1"
           
         </div>
         <div class="col-md-3 ">
-            <div class="bg-white p-3 mb-3" style="border-radius: 5px; border: 1px solid silver;height:auto">
+            <div class="bg-white p-3 mb-3" style="border-radius: 5px; border: 1px solid silver;height:auto;box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);">
              <div class="column" style="display:flex">
              <p style="font-size:12px;font-weight:600">Job Mode</p>
         
@@ -628,10 +632,10 @@ aria-describedby="basic-addon1"
 </div>
 <i style="margin-left:5px">              
       @if($currentEditingAddressProfileId == $employee->emp_id)
-                    <i wire:click="cancelAddressProfile('{{ $employee->emp_id }}')" class="fas fa-times me-3" style="cursor: pointer;"></i>
-                    <i wire:click="saveAddressProfile('{{ $employee->emp_id }}')" class="fa fa-save" style="cursor: pointer;"></i>
+                    <i wire:click="cancelAddressProfile('{{ $employee->emp_id }}')" class="bx bx-x"style="cursor: pointer;"></i>
+                    <i wire:click="saveAddressProfile('{{ $employee->emp_id }}')" class="bx bx-save" style="cursor: pointer;"></i>
                 @else
-                    <i wire:click="editAddressProfile('{{ $employee->emp_id }}')" class="fas fa-edit ml-auto" style="cursor: pointer;"></i>
+                    <i wire:click="editAddressProfile('{{ $employee->emp_id }}')" class="bx bx-edit ml-auto"  style="cursor: pointer;"></i>
                 @endif
             </i> 
 
@@ -648,9 +652,9 @@ aria-describedby="basic-addon1"
           
         </div>
     </div>
-    <div class="row justify-content-center " style="margin-top:10px">
+    <div class="row justify-content-center  personalProfile" >
     <div class="col-md-3 ">
-            <div class="bg-white p-3 mb-3" style="border-radius: 5px; border: 1px solid silver;height:auto">
+            <div class="editInformation bg-white p-3 mb-3" >
              <div class="column" style="display:flex">
              <p style="font-size:12px;font-weight:600">Sub Department</p>
         
@@ -712,7 +716,7 @@ aria-describedby="basic-addon1"
           
         </div>
         <div class="col-md-3 ">
-            <div class="bg-red p-3 mb-3" style="border-radius: 5px; border: 1px solid silver;height:auto">
+            <div class="editInformation bg-white p-3 mb-3" >
              <div class="column" style="display:flex">
              <p style="font-size:12px;font-weight:600">Company Name</p>
         
@@ -808,26 +812,27 @@ aria-describedby="basic-addon1"
           
 
                     <div class="tab-page" data-tab-page="in-review">
-        <div class="row mt-3 ml-3" style="font-size:12px">
+              
+                    <div class="row mt-3 ml-3" style="font-size:12px">
       
-        <div id="employee-container">
-        @foreach($employeess as $employee)
-    <span style="font-weight:600">
-        Added New Employee: ({{ $employee->emp_id }}) {{ $employee->first_name }} {{ $employee->last_name }}
-    </span>
-    @if (!$loop->first)<br>@endif
-    <p>
-        Hire Date: 
-        @if($employee->hire_date)
-            @php
-                $hireDate = \Carbon\Carbon::parse($employee->hire_date);
-            @endphp
-            ({{ $hireDate->format('M d, Y') }})
-        @else
-            N/A
-        @endif
-    </p>
-    @if (!$loop->first)<br>@endif
+      <div id="employee-container">
+      @foreach($employeess as $employee)
+  <span style="font-weight:600">
+      Added New Employee: ({{ $employee->emp_id }}) {{ $employee->first_name }} {{ $employee->last_name }}
+  </span>
+  @if (!$loop->first)<br>@endif
+  <p class="main-text">
+      Hire Date: 
+      @if($employee->hire_date)
+          @php
+              $hireDate = \Carbon\Carbon::parse($employee->hire_date);
+          @endphp
+          ({{ $hireDate->format('M d, Y') }})
+      @else
+          N/A
+      @endif
+  </p>
+  @if (!$loop->first)<br>@endif
 @endforeach
 
 </div>
@@ -836,15 +841,27 @@ aria-describedby="basic-addon1"
 
 
 
-      
-      
-      
-              <br>
-          
-      
-      
-       
-                  </div>
+    
+    
+    
+            <br>
+        
+    
+    
+     
+                </div>
+
+
+
+
+    
+    
+    
+            <br>
+        
+    
+    
+     
       
         </div>
 
