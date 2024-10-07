@@ -299,17 +299,28 @@ class AddEmployeeDetails extends Component
         if ($this->currentStep == 1) {
 
             // dd($this->Projects);
-            $existingEmployee = EmployeeDetails::where('email', $this->company_email)
-                ->where('emp_id', '!=', $this->emp_id)
-                ->first();
+            if ($this->action != 'reJoin') {
+                $existingEmployee = EmployeeDetails::where('email', $this->company_email)
+                    ->where('emp_id', '!=', $this->emp_id)
+                    ->first();
+            } else {
+                $existingEmployee = EmployeeDetails::where('email', $this->company_email)
+                    ->first();
+            }
+
             $existingPhoneNumber = EmployeeDetails::where('emergency_contact', $this->mobile_number)
                 ->where('emp_id', '!=', $this->emp_id)
+                ->where('status', '!=', 0)
                 ->first();
 
             // dd( $existingEmployee);
             if ($existingEmployee) {
                 // Add custom error message for email
-                $this->addError('company_email', ' Company email already used for another employee.');
+                if ($this->action != 'reJoin') {
+                    $this->addError('company_email', ' Company email already used for another employee.');
+                } else {
+                    $this->addError('company_email', ' Company email should be different from previous employee.');
+                }
                 return;
             }
             if ($existingPhoneNumber) {
@@ -321,15 +332,22 @@ class AddEmployeeDetails extends Component
             // dd($this->company_email);
             $this->currentStep++;
         } elseif ($this->currentStep == 2) {
-
             $this->registerEmployeeDetails();
         } elseif ($this->currentStep == 3) {
             $existingaadhar = EmpPersonalInfo::where('adhar_no', $this->adhar_no)
-                ->where('emp_id', '!=', $this->emp_id)
+                ->where('emp_personal_infos.emp_id', '!=', $this->emp_id)
+                ->leftJoin('employee_details', 'employee_details.emp_id', '=', 'emp_personal_infos.emp_id') // Left join EmployeeDetails
+                ->select('emp_personal_infos.*', 'employee_details.status')
+                ->where('employee_details.status', '!=', 0)
                 ->first();
+
             $existingpan = EmpPersonalInfo::where('pan_no', $this->pan_no)
-                ->where('emp_id', '!=', $this->emp_id)
+                ->where('emp_personal_infos.emp_id', '!=', $this->emp_id)
+                ->leftJoin('employee_details', 'employee_details.emp_id', '=', 'emp_personal_infos.emp_id') // Left join EmployeeDetails
+                ->select('emp_personal_infos.*', 'employee_details.status')
+                ->where('employee_details.status', '!=', 0)
                 ->first();
+            // dd( $existingpan);
 
             // dd( $existingEmployee);
             if ($existingaadhar) {
@@ -354,8 +372,12 @@ class AddEmployeeDetails extends Component
             $this->registerEmployeeSpouseDetails();
         } elseif ($this->currentStep == 7) {
             $existingaccno = EmpBankDetail::where('account_number', $this->account_number)
-                ->where('emp_id', '!=', $this->emp_id)
+                ->where('emp_bank_details.emp_id', '!=', $this->emp_id)
+                ->leftJoin('employee_details', 'employee_details.emp_id', '=', 'emp_bank_details.emp_id') // Left join EmployeeDetails
+                ->select('emp_bank_details.*', 'employee_details.status')
+                ->where('employee_details.status', '!=', 0)
                 ->first();
+                // dd( $existingaccno);
 
             // dd( $existingEmployee);
             if ($existingaccno) {
@@ -366,7 +388,7 @@ class AddEmployeeDetails extends Component
 
             $this->registerEmployeeBankDetails();
         } elseif ($this->currentStep == 8) {
-
+            // dd($this->emp_id);
             $this->addEducationDetails();
         } elseif ($this->currentStep == 9) {
 
@@ -522,7 +544,7 @@ class AddEmployeeDetails extends Component
             'department_id' => 'required|string|max:255',
             'sub_department_id' => 'required|string|max:255',
             'job_title' => 'required|string|max:255',
-            'emp_domain' => 'nullable|array|max:1',
+            'emp_domain' => 'nullable|array|min:1',
             'referrer' => 'nullable|string',
             'job_location' => 'required|string|max:255',
             'manager_id' => 'required',
@@ -625,8 +647,8 @@ class AddEmployeeDetails extends Component
         'department_id.required' => 'Department is required.',
         'department_id.string' => 'Department must be a valid string.',
         'sub_department_id.required' => 'Sub-department is required.',
-        'sub_department_id.string' => 'Sub-department must be a valid string.',
-        'emp_domain.alpha' => 'Employee domain field must only contain letters',
+        // 'sub_department_id.string' => 'Sub-department must be a valid string.',
+        'emp_domain.min' => 'Please select alteast one project.',
         'referrer.alpha' => 'Referrer field must only contain letters',
         'job_title.required' => 'Job title is required.',
         'job_title.string' => 'Job title must be a valid string.',
@@ -744,8 +766,10 @@ class AddEmployeeDetails extends Component
 
             $report_to = EmployeeDetails::where('emp_id', $this->manager_id)->value('manager_id');
 
-
-
+            if ($this->action == 'reJoin') {
+                $this->emp_id = '';
+            }
+            // dd( $this->emp_id);
             EmployeeDetails::updateorCreate(
                 ['emp_id' => $this->emp_id],
                 [
@@ -941,7 +965,7 @@ class AddEmployeeDetails extends Component
     }
     public function addEducationDetails()
     {
-
+        // dd($this->emp_id);
         try {
             $this->validate([
                 'education' => 'required|array|min:1',
@@ -1101,15 +1125,21 @@ class AddEmployeeDetails extends Component
     public function editEmployee()
     {
 
-
         $id = request()->query('emp_id') ? request()->query('emp_id') : '';
-
+        if ($id != '') {
+            $this->action = 'edit';
+        } else {
+            $id = request()->query('re_emp_id') ? request()->query('re_emp_id') : '';
+            if ($id != '') {
+                $this->action = 'reJoin';
+            }
+        }
         if ($id) {
 
             // Assign fetched employee details to the respective properties
             try {
 
-                $this->action = 'edit';
+                // $this->action = 'edit';
                 // Employee job Details
 
                 // Decrypt the ID
