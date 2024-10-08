@@ -36,11 +36,24 @@ class HrMainOverview extends Component
     public function mount()
     {
         // Fetch employees who joined last month
-        $this->newJoiners = EmployeeDetails::whereBetween('hire_date', [
+        $employeeId = auth()->guard('hr')->user()->emp_id;
+
+        // Fetch the company_ids for the logged-in employee
+        $companyIds = EmployeeDetails::where('emp_id', $employeeId)->value('company_id');
+
+        // Check if companyIds is an array; decode if it's a JSON string
+        $companyIdsArray = is_array($companyIds) ? $companyIds : json_decode($companyIds, true);
+        $this->newJoiners = EmployeeDetails::where(function($query) use ($companyIdsArray) {
+            foreach ($companyIdsArray as $companyId) {
+                $query->orWhereJsonContains('company_id', $companyId);
+            }
+        })
+        ->whereBetween('hire_date', [
             Carbon::now()->startOfMonth()->subMonth()->format('Y-m-d'),
             Carbon::now()->subMonth()->endOfMonth()->format('Y-m-d')
         ])
-            ->where('employee_status', 'active')
+        
+        ->whereIn('employee_status', ['active', 'on-probation'])
             ->get();
 
 
@@ -54,16 +67,26 @@ class HrMainOverview extends Component
         $today = Carbon::now();
         $startOfNextMonth = $today->copy()->addMonth()->startOfMonth();
         $endOfNextMonth = $today->copy()->addMonth()->endOfMonth();
-        $this->confirmationDue = EmployeeDetails::where('employee_status', 'active')
+        $this->confirmationDue = EmployeeDetails::where(function($query) use ($companyIdsArray) {
+            foreach ($companyIdsArray as $companyId) {
+                $query->orWhereJsonContains('company_id', $companyId);
+            }
+        })
+        ->whereIn('employee_status', ['active', 'on-probation'])
             ->select(
                 'employee_details.*',
-                DB::raw('DATE_ADD(hire_date, INTERVAL probation_period MONTH) AS probation_end_date')
+                DB::raw('DATE_ADD(hire_date, INTERVAL probation_period DAY) AS probation_end_date')
             )
             ->havingRaw('probation_end_date BETWEEN ? AND ?', [$startOfNextMonth->toDateString(), $endOfNextMonth->toDateString()])
             ->get();
-        $this->employeesWithAnniversaries = EmployeeDetails::whereRaw('MONTH(hire_date) BETWEEN ? AND ?', [Carbon::parse($startOfWeekFormatted)->month, Carbon::parse($endOfWeekFormatted)->month])
+        $this->employeesWithAnniversaries = EmployeeDetails::where(function($query) use ($companyIdsArray) {
+            foreach ($companyIdsArray as $companyId) {
+                $query->orWhereJsonContains('company_id', $companyId);
+            }
+        })
+        ->whereRaw('MONTH(hire_date) BETWEEN ? AND ?', [Carbon::parse($startOfWeekFormatted)->month, Carbon::parse($endOfWeekFormatted)->month])
             ->whereRaw('DAY(hire_date) BETWEEN ? AND ?', [Carbon::parse($startOfWeekFormatted)->day, Carbon::parse($endOfWeekFormatted)->day])
-            ->where('employee_status', 'active')
+            ->whereIn('employee_status', ['active', 'on-probation'])
             ->get()
             ->map(function ($employee) use ($currentDate) {
                 // Get the hire date
@@ -90,29 +113,60 @@ class HrMainOverview extends Component
 
         // Query to get employees with birthdays in the current week
         $this->employeesbirthdays = EmployeeDetails::join('emp_personal_infos', 'employee_details.emp_id', '=', 'emp_personal_infos.emp_id')
+        ->where(function($query) use ($companyIdsArray) {
+            foreach ($companyIdsArray as $companyId) {
+                $query->orWhereJsonContains('company_id', $companyId);
+            }
+        })
             ->whereRaw('MONTH(emp_personal_infos.date_of_birth) BETWEEN ? AND ?', [Carbon::parse($startOfWeekFormatted)->month, Carbon::parse($endOfWeekFormatted)->month])
             ->whereRaw('DAY(emp_personal_infos.date_of_birth) BETWEEN ? AND ?', [Carbon::parse($startOfWeekFormatted)->day, Carbon::parse($endOfWeekFormatted)->day])
-            ->where('employee_details.employee_status', 'active')
+            ->whereIn('employee_details.employee_status', ['active','on-probation'])
             ->select('employee_details.*', 'emp_personal_infos.date_of_birth')
             ->get();
 
         // Fetch and log inactive employees
         $startOfPreviousMonth = Carbon::now()->subMonth()->startOfMonth()->format('Y-m-d');
         $endOfPreviousMonth = Carbon::now()->subMonth()->endOfMonth()->format('Y-m-d');
-        $this->inactiveEmployees = EmployeeDetails::whereIn('employee_status', ['resigned', 'terminated'])
-            ->whereBetween('resignation_date', [$startOfPreviousMonth, $endOfPreviousMonth])
-            ->get();
+        $this->inactiveEmployees = EmployeeDetails::where(function($query) use ($companyIdsArray) {
+            foreach ($companyIdsArray as $companyId) {
+                $query->orWhereJsonContains('company_id', $companyId);
+            }
+        })
+        ->whereIn('employee_status', ['active', 'on-probation'])
+        ->select(
+            'employee_details.*',
+            DB::raw('DATE_ADD(resignation_date, INTERVAL notice_period DAY) AS effective_end_date') // Calculate effective end date
+        )
+        ->havingRaw('effective_end_date BETWEEN ? AND ?', [$startOfPreviousMonth, $endOfPreviousMonth]) // Filter based on effective end date
+        ->get();
 
         // Fetch swipe chart data if applicable
         $this->fetchSwipeChartData();
-        $this->allEmpCount = EmployeeDetails::where('employee_status', 'active')->count();
+        $this->allEmpCount = EmployeeDetails::where(function($query) use ($companyIdsArray) {
+            foreach ($companyIdsArray as $companyId) {
+                $query->orWhereJsonContains('company_id', $companyId);
+            }
+        })
+        ->whereIn('employee_status', ['active', 'on-probation']) ->count();
         $this->calculateMobileUsers();
     }
     public function calculateMobileUsers()
     {
         $agent = new Agent();
+        $employeeId = auth()->guard('hr')->user()->emp_id;
+
+        // Fetch the company_ids for the logged-in employee
+        $companyIds = EmployeeDetails::where('emp_id', $employeeId)->value('company_id');
+
+        // Check if companyIds is an array; decode if it's a JSON string
+        $companyIdsArray = is_array($companyIds) ? $companyIds : json_decode($companyIds, true);
         // Example: Assuming you have a way to fetch users
-        $users = EmployeeDetails::where('employee_status', 'active')->get(); // Fetch all users or use a query
+        $users = EmployeeDetails::where(function($query) use ($companyIdsArray) {
+            foreach ($companyIdsArray as $companyId) {
+                $query->orWhereJsonContains('company_id', $companyId);
+            }
+        })
+        ->whereIn('employee_status', ['active', 'on-probation']) ->get(); // Fetch all users or use a query
         $mobileUsersCount = 0;
 
         foreach ($users as $user) {
@@ -279,6 +333,15 @@ class HrMainOverview extends Component
 
     public function render()
     {
+        $employeeId = auth()->guard('hr')->user()->emp_id;
+       
+
+
+        // Fetch the company_ids for the logged-in employee
+        $companyIds = EmployeeDetails::where('emp_id', $employeeId)->value('company_id');
+
+        // Check if companyIds is an array; decode if it's a JSON string
+        $companyIdsArray = is_array($companyIds) ? $companyIds : json_decode($companyIds, true);
         // Initialize arrays to store monthly counts and months
         $this->employeeCounts = [];
         $this->months = [];
@@ -341,16 +404,23 @@ class HrMainOverview extends Component
 
         // Calculate the start date for tracking employees
         $startDate = Carbon::createFromDate($currentYear - 1, $currentMonth + 1, 1)->startOfMonth();
+    
 
 
         // Loop through each month
         while ($startDate->lessThanOrEqualTo($currentDate)) {
             // Calculate the end date for the current month
             $endDate = $startDate->copy()->endOfMonth();
+           
 
 
             // Count active employees who were hired before or during the current month
-            $count = EmployeeDetails::where('employee_status', 'active')
+            $count = EmployeeDetails::where(function($query) use ($companyIdsArray) {
+                foreach ($companyIdsArray as $companyId) {
+                    $query->orWhereJsonContains('company_id', $companyId);
+                }
+            })
+            ->whereIn('employee_status', ['active', 'on-probation']) 
                 ->where(function ($query) use ($startDate, $endDate) {
                     $query->orWhere('hire_date', '<=', $endDate);
                 })
@@ -365,6 +435,8 @@ class HrMainOverview extends Component
             // Move to the next month
             $startDate->addMonth();
         }
+        $maxEmployeeCount = max($this->employeeCounts);
+        $roundedMaxEmployeeCount = ceil($maxEmployeeCount / 41) * 41;
 
         //dd($this->employeeCounts,$this->months);
 
@@ -380,7 +452,8 @@ class HrMainOverview extends Component
             'months' => $this->months,
             'mobileUsersCount' => $this->mobileUsersCount,
             'data' => $this->data,
-            'percentageChangeText' =>$percentageChangeText
+            'percentageChangeText' =>$percentageChangeText,
+            'maxEmployeeCount' => $roundedMaxEmployeeCount
         ]);
     }
     private function calculatePercentageChange($current, $previous)

@@ -60,7 +60,7 @@
                 <table class="analytic-table">
                     <thead>
                         <tr>
-                            <th>Emp ID <i class="fa-sharp fa-solid fa-arrow-up"></i></th>
+                            <th>Emp ID <i class="bx bx-up-arrow-alt analytic-up-arrow"></i></th>
                             <th>Emp Name</th>
                             <th>DOJ</th>
                             <th>Gender</th>
@@ -114,7 +114,7 @@
                 <table class="analytic-table">
                     <thead>
                         <tr>
-                            <th>Emp Id <i class="fa-sharp fa-solid fa-arrow-up"></i></th>
+                            <th>Emp Id <i class="bx bx-up-arrow-alt analytic-up-arrow"></i></th>
                             <th>Emp Name</th>
                             <th>DOJ</th>
                             <th>Gender</th>
@@ -203,7 +203,7 @@
             <table class="analytic-table">
                 <thead>
                     <tr>
-                        <th>Emp ID <i class="fa-sharp fa-solid fa-arrow-up"></i></th>
+                        <th>Emp ID <i class="bx bx-up-arrow-alt analytic-up-arrow"></i></th>
                         <th>Emp Name</th>
                         <th>DOJ</th>
                         <th>Gender</th>
@@ -268,24 +268,29 @@
             <table class="analytic-table">
                 <thead>
                     <tr>
-                        <th>Group <i class="fa-sharp fa-solid fa-arrow-up"></i></th>
-                        <th>Count(Emp ID) <i class="fa-sharp fa-solid fa-arrow-up"></i></th>
+                        <th>Group <i class='bx bx-up-arrow-alt analytic-up-arrow' ></i></th>
+                        <th>Count(Emp ID) <i class='bx bx-up-arrow-alt analytic-up-arrow' ></i></th>
                     </tr>
                 </thead>
                 <tbody>
+                    @if (count($filteredGenderCounts) === 0)
                     <tr>
-                        <td class="analytic-grey-text">Others</td>
-                        <td class="analytic-grey-text">{{ $genderCounts['Others'] }}</td>
+                        <td colspan="2" class="text-center">
+                            <img class="analytic-no-items-found"
+                                src="https://media.istockphoto.com/id/1357284048/vector/no-item-found-vector-flat-icon-design-illustration-web-and-mobile-application-symbol-on.jpg?s=612x612&w=0&k=20&c=j0V0ww6uBl1LwQLH0U9L7Zn81xMTZCpXPjH5qJo5QyQ="
+                                alt="No items found">
+                        </td>
                     </tr>
-                    <tr>
-                        <td class="analytic-grey-text">Male</td>
-                        <td class="analytic-grey-text">{{ $genderCounts['Male'] }}</td>
-                    </tr>
-                    <tr>
-                        <td class="analytic-grey-text">Female</td>
-                        <td class="analytic-grey-text">{{ $genderCounts['Female'] }}</td>
-                    </tr>
+                    @else
+                        @foreach ($filteredGenderCounts as $gender => $count)
+                            <tr>
+                                <td class="analytic-grey-text">{{ $gender }}</td>
+                                <td class="analytic-grey-text">{{ $count }}</td>
+                            </tr>
+                        @endforeach
+                    @endif
                 </tbody>
+                
             </table>
         </div>
             @elseif($selectedCard == 'Recent Resignees')
@@ -303,7 +308,7 @@
             <table class="analytic-table">
                 <thead>
                     <tr>
-                        <th>Emp ID <i class="fa-sharp fa-solid fa-arrow-up"></i></th>
+                        <th>Emp ID <i class='bx bx-up-arrow-alt analytic-up-arrow'></i></th>
                         <th>Emp Name</th>
                         <th>DOJ</th>
                         <th>Gender</th>

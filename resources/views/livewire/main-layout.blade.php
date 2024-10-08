@@ -101,8 +101,8 @@
 					<li>
 						<a href="#">Main <i class="ph-caret-right-fill"></i></a>
 						<ul class="sidebar__dropdown-menu">
-							<li><a href="/hr/user/overview">Leave Overview</a></li>
-							<li><a href="/hr/user/analytics-hub">Attendance Overview</a></li>
+							<li><a href="/hr/user/leave-overview">Leave Overview</a></li>
+							<li><a href="/hr/user/attendance-overview">Attendance Overview</a></li>
 							<li><a href="/hr/user/hremployeedirectory">Leave Calendar</a></li>
 							<li><a href="/user">Who is in?</a></li>
 						</ul>

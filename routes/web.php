@@ -16,6 +16,7 @@ use App\Livewire\EmployeeProfile;
 use App\Livewire\Feeds;
 use App\Livewire\HrAttendanceInfo;
 use App\Livewire\HrAttendanceOverviewNew;
+use App\Livewire\HrLeaveOverview;
 use App\Livewire\HrMainOverview;
 use App\Livewire\ParentDetails;
 use App\Livewire\PositionHistory;
@@ -75,5 +76,13 @@ Route::middleware(['auth:hr'])->group(function () {
         Route::get('/user/who-is-in-chart-hr', WhoIsInChartHr::class)->name('who-is-in-chart-hr');
         Route::get('/user/attendance-info', HrAttendanceInfo::class)->name('attendance-info');
         Route::get('/calendar/information/employee-leave', EmployeeLeave::class)->name('employee-leave');
+
+    //HR Leave Related Routes
+
+        //HR Leave-Main Submodule Routes
+        Route::get('/user/leave-overview', HrLeaveOverview::class)->name('leave-overview');
+        Route::get('/user/leave-overview/{month}/{leaveType?}', HrLeaveOverview::class)->name('leave-overview.month');
+        Route::get('/leave-overview/{leaveType?}', HrLeaveOverview::class)->name('leave-overview.leaveType');
+
     });
 });
