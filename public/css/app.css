@@ -1518,7 +1518,7 @@ input[type="date"]::before {
     border-bottom: 2px solid #007bff;
 }
 .tab-content-custom {
-    display: none;
+ display: none;
     padding: 15px;
     border: none;
     background-color: transparent; /* Remove white background */
@@ -1689,46 +1689,47 @@ input[type="date"]::before {
     margin-top: 5px;
     font-weight: 200;
 }
-.editprofilerow {
+.editprofilerow{
     color: #778899;
     margin-top: 10px;
-    margin-left: 10px;
-    height: auto;
+     margin-left:10px;
+     height:auto;
 }
 .search-container {
+
     max-width: none;
     margin-bottom: 10px;
     cursor: pointer;
-    background-color: darkgrey;
-    padding: 5px;
-    width: 300px;
-    border-radius: 5px;
-    margin-top: 5px;
+     background-color:darkgrey;
+     padding: 5px;
+      width: 300px;
+      border-radius: 5px;
+      margin-top:5px
 }
 
-.profile-image {
-    border-radius: 50%;
+.profile-image{
+    border-radius:50%; 
     width: 50px;
     height: 50px;
 }
-.profile-image-selected {
-    border-radius: 50%;
+.profile-image-selected{
+    border-radius:50%;
     width: 35px;
     height: 35px;
 }
-.selected-person {
-    border: 1px solid blue;
-    border-radius: 50px;
-    padding: 5px;
-    width: fit-content;
-    margin-left: 5px;
-    margin-top: 5px;
+.selected-person{
+    border:1px solid blue;
+     border-radius:50px;
+      padding: 5px;
+      width:fit-content;
+      margin-left:5px;
+      margin-top:5px
 }
-.selected-name {
+.selected-name{
     margin-left: 10px;
     color: #778899;
     line-height: 40px;
-    font-size: 12px;
+    font-size:12px;
     margin-bottom: 0;
 }
 .close-icon-person {
@@ -1737,7 +1738,7 @@ input[type="date"]::before {
     margin-left: 15px;
     cursor: pointer;
 }
-.hide-text {
+.hide-text{
     font-size: 12px;
     cursor: pointer;
     color: #306cc6;
@@ -1759,33 +1760,35 @@ input[type="date"]::before {
     align-items: center;
     justify-content: space-between;
 }
-.card-header {
-    font-size: 15px;
-    background: white;
-    width: 100%;
-    display: flex;
-
-    justify-content: space-between;
+.card-header{
+ font-size: 15px;
+ background:white;
+ width:100%;
+  display:flex;
+  
+   justify-content:space-between;
+   
 }
-.card-row {
-    color: #778899;
-    margin-top: 10px;
-    margin-left: 10px;
-    height: auto;
-
-    display: flex;
+.card-row{
+ color: #778899;
+ margin-top: 10px;
+ margin-left:10px;
+ height:auto;
+ 
+ display: flex;
 }
-.profile-header {
-    background: #98cbba;
-    border-radius: 5px;
-    height: 60px;
-    display: flex;
-    padding: 10px;
-    margin-top: 10px;
-    align-items: center;
-    justify-content: center;
+.profile-header{
+    background:#98CBBA;
+    border-radius:5px;
+    height:60px;
+    display:flex;
+     padding: 10px;
+ margin-top:10px;
+     align-items:center;
+     justify-content: center;
 
-    width: 80%;
+     width:80%;
+
 }
 .profile-header-row {
     display: flex;
@@ -2195,7 +2198,7 @@ input[type="date"]::before {
     width: 7px;
 }
 .placeholder-small {
-    color: var(--label-color); /* Placeholder text color */
+    /* color: var(--label-color); Placeholder text color */
     font-size: var(--normal-font-size);
     font-family: "Montserrat", sans-serif;
     font-weight: normal;
