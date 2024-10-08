@@ -37,6 +37,16 @@
                 text-transform: capitalize;
                 text-align: center;
             }
+
+            .fa-sort,
+            .fa-sort-down,
+            .fa-sort-up {
+                margin-left: 10px;
+            }
+
+            .sortavailable {
+                cursor: pointer;
+            }
         </style>
     </head>
     <div class="mt-4 p-0">
@@ -52,11 +62,30 @@
                     </ol>
                 </nav>
             </div>
-            <div class="col-md-5 mb-2">
-                <div class="d-flex justify-content-end">
-                    <input wire:input="filter" wire:model="search" type="text" placeholder="Search employees" class="search-input" style="border-radius: 5px;padding: 3px 5px;border: 1px solid #ccc;outline:none;">
+            <div class="col-md-6 mb-2 d-flex" style="gap: 10px; align-items:center;justify-content: end;">
+                <div class=" w-50">
+                    <input wire:input="filter" wire:model="search" type="text" placeholder="Search by Name / Emp ID" class="search-input form-control" style="border-radius: 5px;padding: 3px 5px;border: 1px solid #ccc;outline:none;height:30px;font-size:0.75rem;font-family: Montserrat, sans-serif;font-weight:100">
+                </div>
+                <div class="d-flex align-items-center">
+                    <label for="" style="margin-right: 2px;">Gender:</label>
+                    <select class="form-control   placeholder-small m-0" wire:change='fetchEmployeeDetails' wire:model="emp_gender" style="height: 30px;">
+                        <option value="">All</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Others">Others</option>
+
+                    </select>
+                </div>
+                <div class="d-flex align-items-center">
+                    <label for="" style="margin-right: 2px;">Status:</label>
+                    <select class="form-control   placeholder-small m-0" wire:change='fetchEmployeeDetails' wire:model="emp_status" style="height: 30px;">
+                        <option value="">All</option>
+                        <option value="1">Active</option>
+                        <option value="0">In-Active</option>
+                    </select>
                 </div>
             </div>
+
         </div>
         <div style="overflow-x: auto;">
             @if (count($employees)<=0 || $employees->isEmpty())
@@ -64,19 +93,19 @@
                     <p style="font-size: 18px; color: #555;">No records found.</p>
                 </div>
                 @else
-                <table class="empTable table-responsive">
+                <table class=" sortable empTable table-responsive">
                     <thead>
                         <tr>
-                            <th class="whitespace-nowrap" wire:click="sortBy('emp_id')">S.NO</th>
-                            <th class="whitespace-nowrap" wire:click="sortBy('image')">Profile</th>
-                            <th class="whitespace-nowrapp" wire:click="sortBy('emp_id')">Emp ID</th>
-                            <th class="whitespace-nowrap" wire:click="sortBy('name')">Name</th>
-                            <th class="aaa" wire:click="sortBy('email')">Email</th>
-                            <th class="whitespace-nowrap" wire:click="sortBy('gender')">Gender</th>
-                            <th class="whitespace-nowrapp" wire:click="sortBy('date_of_birth')">DOB</th>
-                            <th class="whitespace-nowrap" wire:click="sortBy('mobile_number')">Mobile No</th>
-                            <th class="whitespace-nowrap" wire:click="sortBy('employee_type')">Employee Type</th>
-                            <th class="whitespace-nowrappp">Action</th>
+                            <th class="">S.NO </th>
+                            <th class="">Profile</th>
+                            <th class="sortavailable" wire:click="sortBy('emp_id')">Emp ID @if($sortColumn=='emp_id')@if($sortDirection=='desc')<span><i class="fas fa-sort-down"></i></span>@else<span><i class="fas fa-sort-up"></i></span>@endif@else<span><i class="fas fa-sort"></i></span>@endif</th>
+                            <th class="sortavailable" wire:click="sortBy('first_name')">Employee Name @if($sortColumn=='first_name')@if($sortDirection=='desc')<span><i class="fas fa-sort-down"></i></span>@else<span><i class="fas fa-sort-up"></i></span>@endif@else<span><i class="fas fa-sort"></i></span>@endif</th>
+                            <th class="sortavailable" wire:click="sortBy('email')">Email @if($sortColumn=='email')@if($sortDirection=='desc')<span><i class="fas fa-sort-down"></i></span>@else<span><i class="fas fa-sort-up"></i></span>@endif@else<span><i class="fas fa-sort"></i></span>@endif</th>
+                            <th class="sortavailable" wire:click="sortBy('gender')">Gender @if($sortColumn=='gender')@if($sortDirection=='desc')<span><i class="fas fa-sort-down"></i></span>@else<span><i class="fas fa-sort-up"></i></span>@endif@else<span><i class="fas fa-sort"></i></span>@endif</th>
+                            {{-- <th class="" wire:click="sortBy('date_of_birth')">DOB</th>--}}
+                            <th class="" wire:click="sortBy('emergency_contact')">Mobile Number @if($sortColumn=='emergency_contact')@if($sortDirection=='desc')<span><i class="fas fa-sort-down"></i></span>@else<span><i class="fas fa-sort-up"></i></span>@endif@else<span><i class="fas fa-sort"></i></span>@endif</th>
+                            <th class="sortavailable" wire:click="sortBy('employee_type')">Employee Type @if($sortColumn=='employee_type')@if($sortDirection=='desc')<span><i class="fas fa-sort-down"></i></span>@else<span><i class="fas fa-sort-up"></i></span>@endif@else<span><i class="fas fa-sort"></i></span>@endif</th>
+                            <th class="sortavailable">Actions</th>
                             <!-- Add more table headers as needed -->
                         </tr>
                     </thead>
@@ -97,15 +126,15 @@
                                 @else
                                 <!-- Default images based on gender -->
                                 @if($employee->gender == 'Male')
-                                <div class="employee-profile-image-container mb-2">
+                                <div class="employee-profile-image-container ">
                                     <img src="{{ asset('images/male-default.png') }}" class="employee-profile-image-placeholder" style='height:50px;width:50px' alt="Default Image">
                                 </div>
                                 @elseif($employee->gender == 'Female')
-                                <div class="employee-profile-image-container mb-2">
+                                <div class="employee-profile-image-container ">
                                     <img src="{{ asset('images/female-default.jpg') }}" class="employee-profile-image-placeholder" style='height:50px;width:50px' alt="Default Image">
                                 </div>
                                 @else
-                                <div class="employee-profile-image-container mb-2">
+                                <div class="employee-profile-image-container ">
                                     <img src="{{ asset('images/user.jpg') }}" class="employee-profile-image-placeholder" style='height:50px;width:50px' alt="Default Image">
                                 </div>
                                 @endif
@@ -117,9 +146,9 @@
                             <td class="whitespace-nowrap">{{ $employee->first_name }} {{ $employee->last_name }}</td>
                             <td class="aaa">{{ $employee->email }}</td>
                             <td class="whitespace-nowrap">{{ $employee->gender }}</td>
-                            <td class="whitespace-nowrapp">
+                            {{-- <td class="whitespace-nowrapp">
                                 {{ \Carbon\Carbon::parse($employee->date_of_birth)->format('d M Y') }}
-                            </td>
+                            </td>--}}
                             <td class="whitespace-nowrap">{{ $employee->emergency_contact }}</td>
                             <td class="whitespace-nowrap">
                                 {{ ucwords(str_replace(['-', '_'], ' ', $employee->employee_type)) }}
@@ -127,20 +156,20 @@
                             <td>
                                 <div style="display:flex;flex-direction:row;gap:5px;border:0px;align-items:center;justify-content:center">
                                     <div style="background-color: #306cc6;border-radius:5px;">
-                                        <a href="{{ route('add-employee-details', ['emp_id' => $employee->encrypted_emp_id]) }}" class="btn btn  btn-xs">
-                                            <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> <i style="color:#f0f4f8" class='far fa-edit'></i>
+                                        <a title="Edit" href="{{ route('add-employee-details', ['emp_id' => $employee->encrypted_emp_id]) }}" class="btn btn  btn-xs">
+                                            <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> <i style="color:#f0f4f8" class='fa fa-edit'></i>
                                         </a>
                                     </div>
                                     <div class="d-inline-block">
                                         @if ($employee->status == 1)
                                         <button class="btn btn-danger " wire:click="deleteEmp('{{ $employee->emp_id }}')">
-
-                                            <i class="fa-solid fa-trash-can"></i>
+                                            <i title="Terminate" class="fa-solid fa-trash-can"></i>
                                         </button>
                                         @else
-                                        <button class="btn btn-danger " wire:click="deleteEmp('{{ $employee->emp_id }}')" style="background-color: lightcoral;">
-
-                                            <i class="fa-solid fa-trash-can"></i>
+                                        <button class="btn btn-success ">
+                                            <a href="{{ route('add-employee-details', ['re_emp_id' => $employee->encrypted_emp_id]) }}">
+                                                <i style="color: white;" title="Re-Join" class="fa-solid fa-recycle"></i>
+                                            </a>
                                         </button>
                                         @endif
                                     </div>

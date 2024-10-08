@@ -261,20 +261,7 @@ aria-describedby="basic-addon1"
    
     </div>
     
-    @if ($showSuccessMessage)
- 
-    <div class="alert alert-success alert-dismissible fade show" role="alert" 
-    style="font-size: 12px; padding: 5px 10px; display: flex; align-items: center; justify-content: space-between; width: 300px; margin: 0 auto;" 
-    wire:poll.5s="closeMessage">
-    Profile updated successfully!
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" 
-        style="font-size: 8px;align-items:center;margin-top:-7px">
-        &times;
-    </button>
-</div>
 
-
-@endif
 
     @foreach($selectedPeople as $emp_id)
                 @php
@@ -285,130 +272,90 @@ aria-describedby="basic-addon1"
 
 
 @if($employee)
+<div class="row" style="margin:0 auto;width:70%;justify-content:center;align-items:center">
+    <!-- Tabs Navigation -->
+    <ul class="nav nav-tabs">
+        <li class="nav-item">
+            <a class="nav-link tab-doc {{ $activeTab1 === 'tab1' ? 'active' : '' }}" wire:click.prevent="switchTab('tab1')" href="#">Documents</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link  tab-doc {{ $activeTab1 === 'tab2' ? 'active' : '' }}" wire:click.prevent="switchTab('tab2')" href="#">Letters</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link  tab-doc {{ $activeTab1 === 'tab3' ? 'active' : '' }}" wire:click.prevent="switchTab('tab3')" href="#">Payslip</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link  tab-doc{{ $activeTab1 === 'tab4' ? 'active' : '' }}" wire:click.prevent="switchTab('tab4')" href="#">Forms</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link  tab-doc{{ $activeTab1 === 'tab5' ? 'active' : '' }}" wire:click.prevent="switchTab('tab5')" href="#">Company Policies</a>
+        </li>
+    </ul>
+
+    <!-- Tabs Content -->
+    <div class="tab-content">
+        @if($activeTab1 === 'tab1')
+            <div class="tab-pane fade show active">
+                <h3>Content for Tab 1</h3>
+                <p>This is the content for the first tab.</p>
+            </div>
+            @elseif($activeTab1 === 'tab2')
+    <div class="tab-pane fade show active">
 
 
-    <div class="row align-items-center bg-white">
-    <div class="card mx-auto mt-3" style="width: 70%; height: auto;">
-    <div class="card-header d-flex justify-content-between align-items-center" style="font-size: 15px; background:white;">
-        <p class="mb-0" style="font-weight: 500;">Parent Information</p>
-        <div style="font-size: 14px;">
-            <i>
-                @if($currentEditingParentProfile == $employee->emp_id)
-                    <i wire:click="cancelParentProfile('{{ $employee->emp_id }}')" class="bx bx-x me-1" style="cursor: pointer;"></i>
-                    <i wire:click="saveParentProfile('{{ $employee->emp_id }}')" class="bx bx-save" style="cursor: pointer;"></i>
-                @else
-                    <i wire:click="editParentProfile('{{ $employee->emp_id }}')" class="bx bx-edit ml-auto" style="cursor: pointer;"></i>
-                @endif
-            </i>
-        </div>
+
+    <div class="requests-container"> <!-- Container for the list of requests -->
+                         
+                                    @foreach($requests as $request)
+                                        @if($request->emp_id === $emp_id) <!-- Only show requests for the current employee -->
+                                            <div class="request-item"> 
+                                                <p class="main-text">{{  $request->letter_type }} :</p>
+                                                <p class="main-text">Employee ID:  {{ $request->emp_id }}</p>
+                                         
+                                                <p class="main-text">Priority:{{ $request->priority }}</p>  
+                                                <p class="main-text"> Reason: {{ $request->reason  }} </p> 
+                                                <p class="main-text">Status:  {{ $request->status }}</p>
+                                            </div>
+                                        <!-- Optional separator between requests -->
+                                        @else
+                                        <p>No letter requests found for employee ID:</p>
+                                        @endif
+                                    @endforeach
+                              
+                            </div>
+
+
+
+
+
+
+
+
     </div>
 
 
-    <div class="card-row">
-            <!-- Father's First Name Field -->
-            <div class="col-md-3 edit-headings">Father's First Name
-                @if($currentEditingParentProfile == $employee->emp_id)
-                    <div class="mb-2">
-                        <input type="text" class="form-control mt-1 input-width" wire:model="FatherFirstName" placeholder="Father's First Name">
-                    </div>
-                @else
-                    <div class="editprofile mb-3">{{ $employee->empParentDetails->father_first_name ?? '-' }}</div>
-                @endif
+        @elseif($activeTab1 === 'tab3')
+            <div class="tab-pane fade show active">
+                <h3>Content for Tab 3</h3>
+                <p>This is the content for the third tab.</p>
             </div>
-
-            <!-- Father's Last Name Field -->
-            <div class="col-md-3 edit-headings">Father's Last Name
-                @if($currentEditingParentProfile == $employee->emp_id)
-                    <div class="mb-2">
-                        <input type="text" class="form-control mt-1 input-width" wire:model="FatherLastName" placeholder="Father's Last Name">
-                    </div>
-                @else
-                    <div class="editprofile mb-3">{{ $employee->empParentDetails->father_last_name ?? '-' }}</div>
-                @endif
+        @elseif($activeTab1 === 'tab4')
+            <div class="tab-pane fade show active">
+                <h3>Content for Tab 4</h3>
+                <p>This is the content for the fourth tab.</p>
             </div>
-
-            <!-- Father's DOB Field -->
-            <div class="col-md-3 edit-headings">Father's DOB
-                @if($currentEditingParentProfile == $employee->emp_id)
-                    <div class="mb-2">
-                        <input type="date" class="form-control mt-1 input-width" wire:model="FatherDOB" placeholder="Father's DOB">
-                    </div>
-                @else
-                    <div class="editprofile mb-3">
-                        {{ isset($employee->empParentDetails->father_dob) ? \Carbon\Carbon::parse($employee->empParentDetails->father_dob)->format('d/m/Y') : '-' }}
-                    </div>
-                @endif
+        @elseif($activeTab1 === 'tab5')
+            <div class="tab-pane fade show active">
+                <h3>Content for Tab 5</h3>
+                <p>This is the content for the fifth tab.</p>
             </div>
-            <div class="col-md-3 edit-headings">Father's Address
-                @if($currentEditingParentProfile == $employee->emp_id)
-                    <div class="mb-2">
-                        <input type="text" class="form-control mt-1 input-width" wire:model="FatherAddress" placeholder="Fatther's Address">
-                    </div>
-                @else
-                    <div class="editprofile mb-3">
-                        {{ $employee->empParentDetails->father_address ?? '-' }}
-                    </div>
-                @endif
-            </div>
-        </div>
-
-        <div class="card-row">
-            <!-- Mother's First Name Field -->
-            <div class="col-md-3 edit-headings">Mother's First Name
-                @if($currentEditingParentProfile == $employee->emp_id)
-                    <div class="mb-2">
-                        <input type="text" class="form-control mt-1 input-width" wire:model="MotherFirstName" placeholder="Mother's First Name">
-                    </div>
-                @else
-                    <div class="editprofile mb-3">{{ $employee->empParentDetails->mother_first_name ?? '-' }}</div>
-                @endif
-            </div>
-
-            <!-- Mother's Last Name Field -->
-            <div class="col-md-3 edit-headings">Mother's Last Name
-                @if($currentEditingParentProfile == $employee->emp_id)
-                    <div class="mb-2">
-                        <input type="text" class="form-control mt-1 input-width" wire:model="MotherLastName" placeholder="Mother's Last Name">
-                    </div>
-                @else
-                    <div class="editprofile mb-3">{{ $employee->empParentDetails->mother_last_name ?? '-' }}</div>
-                @endif
-            </div>
-
-            <!-- Mother's DOB Field -->
-            <div class="col-md-3 edit-headings">Mother's DOB
-                @if($currentEditingParentProfile == $employee->emp_id)
-                    <div class="mb-2">
-                        <input type="date" class="form-control mt-1 input-width" wire:model="MotherDOB" placeholder="Mother's DOB">
-                    </div>
-                @else
-                    <div class="editprofile mb-3">
-                        {{ isset($employee->empParentDetails->mother_dob) ? \Carbon\Carbon::parse($employee->empParentDetails->mother_dob)->format('d/m/Y') : '-' }}
-                    </div>
-                @endif
-            </div>
-            <div class="col-md-3 edit-headings">Mother's Address
-                @if($currentEditingParentProfile == $employee->emp_id)
-                    <div class="mb-2">
-                        <input type="text" class="form-control mt-1 input-width" wire:model="MotherAddress" placeholder="Mother's Address">
-                    </div>
-                @else
-                    <div class="editprofile mb-3">
-                        {{ $employee->empParentDetails->mother_address ?? '-' }}
-                    </div>
-                @endif
-            </div>
-        </div>
-
+        @endif
+    </div>
 </div>
 
 
 
 
-
-
-     
-    </div>
 @endif
 
     @endforeach

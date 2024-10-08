@@ -27,6 +27,7 @@ class PositionHistory extends Component
     public $selected_equipment;
     public $BloodGroup;
     public $MaritalStatus;
+    public $people;
     public $ItRequestaceessDialog = false;
     public $closeItRequestaccess = false;
     public $openItRequestaccess = false;
@@ -887,7 +888,7 @@ class PositionHistory extends Component
       
         ->take(5) // Limit to 5 records
         ->get();
-      
+    
          
            
     }
@@ -912,12 +913,7 @@ class PositionHistory extends Component
     // Determine if there are people found
     $peopleFound = $this->employees->count() > 0;
     // Fetch employee details based on IDs
-    $this->employees = EmployeeDetails::whereIn('emp_id', $this->employeeIds)->get();
-          $this->employeess = EmployeeDetails::where('company_id', $companyID)
-        ->orderBy('hire_date', 'desc') // Order by hire_date descending
-      
-        ->take(5) // Limit to 5 records
-        ->get();
+
     $this->employeeDetails = EmployeeDetails::with(['empBankDetails', 'empParentDetails', 'empPersonalInfo','empSpouseDetails','empSubDepartment'])
     ->where('emp_id', $this->employeeIds)
     ->first();

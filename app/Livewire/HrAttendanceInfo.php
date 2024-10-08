@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Models\EmployeeDetails;
 use App\Models\HolidayCalendar;
 use App\Models\LeaveRequest;
+use App\Models\RegularisationDates;
 use App\Models\SwipeRecord;
 use Carbon\Carbon;
 use Carbon\CarbonInterval;
@@ -1545,9 +1546,11 @@ class HrAttendanceInfo extends Component
     }
     public function updateselectedEmployee($empId)
     {
+    
         $this->selectedEmployeeId=$empId;
         $this->selectedEmployeeFirstName= EmployeeDetails::where('emp_id',$empId)->value('first_name');
         $this->selectedEmployeeLastName= EmployeeDetails::where('emp_id',$empId)->value('last_name');
+        $this->searchEmployee=0;
     }
     public function closeEmployeeBox()
     {

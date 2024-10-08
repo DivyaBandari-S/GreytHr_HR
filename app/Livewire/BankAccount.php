@@ -3,14 +3,10 @@
 namespace App\Livewire;
 
 use App\Models\EmployeeDetails;
-use App\Models\HelpDesks;
-use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
+use Livewire\Component;
 use Livewire\WithFileUploads;
-use  App\Models\ParentDetail;
-class ParentDetails extends Component
+class BankAccount extends Component
 {
     use WithFileUploads;
 
@@ -32,14 +28,7 @@ class ParentDetails extends Component
     public $isNames = false;
     public $record;
     public $subject;
-    public $FatherFirstName;
-    public $FatherLastName;
-    public $FatherDateOfBirth;
-    public $MotherFirstName;
-    public $MotherLastName;
-    public $MotherDateOfBirth;
-    public $MotherBloodGroup;
-    public $MotherAddress;
+ 
    
     public $hrempid;
     public $description;
@@ -62,7 +51,11 @@ class ParentDetails extends Component
 
     public $name;
     public $AccountNumber;
-
+   
+    public $BankBranch;
+    public $IFSCCode;
+    public $BankAccountNumber;
+    public $BankAddress;
     public $Branch;
     public $showSuccessMessage = false;
    
@@ -70,27 +63,16 @@ class ParentDetails extends Component
     public $employeess;
     public $employeeIds=[];
     public $selectedTimeZone;
-    public $timeZones;
-    public $biography;
-    public $faceBook;
-    public $FatherAddress;
-    public $Email;
+ 
     
 
 
     public $recentHires = [];
-    public $FatherBloodGroup;
-    public $editingBankProfile = false;
-    public $editingTimeZone = false;
-    public $editingBiography = false;
-    public $editingSocialMedia = false;
+
     public $employees;
-    public $oldPassword;
-    public $newPassword;
-    public $confirmNewPassword;
-    public $passwordChanged = false;
+
     public $employeeDetails = [];
-    public $editingField = false;
+
     public function toggleDetails()
     {
         $this->showDetails = !$this->showDetails;
@@ -135,15 +117,7 @@ class ParentDetails extends Component
 
         $this->filteredPeoples = $this->searchTerm ? $this->employees : null;
 
-        // Filter records based on category and search term
-        $this->records = HelpDesks::with('emp')
-            ->whereHas('emp', function ($query) {
-                $query->where('first_name', 'like', '%' . $this->searchTerm . '%')
-                    ->orWhere('last_name', 'like', '%' . $this->searchTerm . '%');
-            })
-
-            ->orderBy('created_at', 'desc')
-            ->get();
+  
     }
 
     public function removePerson($empId)
@@ -230,89 +204,79 @@ class ParentDetails extends Component
             $this->dispatchBrowserEvent('error', ['message' => 'An error occurred: ' . $e->getMessage()]);
         }
     }
-   public $currentEditingParentProfile; 
+   public $currentEditingBankProfile; 
  
    public $fatherName;
    public $FatherDOB;
    public $MotherDOB;
    public $motherName;
   
-   public function editParentProfile($emp_id)
+   public function editBankProfile($emp_id)
    {
-       $this->currentEditingParentProfile = $emp_id; // Set current employee for editing
+       $this->currentEditingBankProfile = $emp_id; // Set current employee for editing
    
        // Fetch employee details along with parent details
-       $employee = EmployeeDetails::with('empParentDetails')->find($emp_id);
-      
+       $employee = EmployeeDetails::with('empBankDetails')->find($emp_id);
+       
        $this->editingParentProfile = true;
    
-       if ($employee && $employee->empParentDetails) {
-        $parentInfo = $employee->empParentDetails;
-        
-        // Set the values from the correct fields
-        $this->FatherFirstName = $parentInfo->father_first_name ?? '';
+       if ($employee && $employee->empBankDetails) {
+           $bankInfo = $employee->empBankDetails;
+           
+           // Set the values for bank fields
+           $this->BankName = $bankInfo->bank_name ?? '';
+           $this->BankBranch = $bankInfo->bank_branch ?? '';
+           $this->IFSCCode = $bankInfo->ifsc_code ?? '';
+           $this->BankAccountNumber = $bankInfo->account_number ?? '';
+           $this->BankAddress = $bankInfo->bank_address ?? '';
    
-        $this->FatherLastName = $parentInfo->father_last_name ?? '';
-        $this->FatherDOB = $parentInfo->father_dob ?? '';
-        $this->FatherAddress = $parentInfo->father_address ?? '';
-        $this->MotherFirstName = $parentInfo->mother_first_name ?? '';
-        $this->MotherLastName = $parentInfo->mother_last_name ?? '';
-        $this->MotherDOB = $parentInfo->mother_dob ?? '';
-        $this->MotherAddress = $parentInfo->mother_address ?? '';
-
-        $this->editingParentProfile = true;
-    } else {
-        // Handle case when no parent details are found
-        session()->flash('error', 'No parent details found for this employee.');
-    }
-
-
+           $this->editingParentProfile = true;
+       } else {
+           // Handle case when no bank details are found
+           session()->flash('error', 'No bank details found for this employee.');
+       }
    }
    
-   public function saveParentProfile($emp_id)
+   public function saveBankProfile($emp_id)
    {
        try {
-           // Fetch employee details along with parent details
-           $employee = EmployeeDetails::with('empParentDetails')->find($emp_id);
+           // Fetch employee details along with bank details
+           $employee = EmployeeDetails::with('empBankDetails')->find($emp_id);
    
-           if ($employee && $employee->empParentDetails) {
-               // Update parent details in the `emp_parent_details` table
-               $parentInfo = $employee->empParentDetails;
+           if ($employee && $employee->empBankDetails) {
+               // Update bank details in the `emp_bank_details` table
+               $bankInfo = $employee->empBankDetails;
    
-               $parentInfo->father_first_name = $this->FatherFirstName;
-               $parentInfo->father_last_name = $this->FatherLastName;
-               $parentInfo->father_dob = $this->FatherDOB;
-               $parentInfo->father_address = $this->FatherAddress;
-               $parentInfo->mother_first_name = $this->MotherFirstName;
-               $parentInfo->mother_last_name = $this->MotherLastName;
-               $parentInfo->mother_dob = $this->MotherDOB;
-               $parentInfo->mother_address = $this->MotherAddress;
-               // Save the updated parent information
-               $parentInfo->save();
+               $bankInfo->bank_name = $this->BankName;
+               $bankInfo->bank_branch = $this->BankBranch;
+               $bankInfo->ifsc_code = $this->IFSCCode;
+               $bankInfo->account_number = $this->BankAccountNumber;
+               $bankInfo->bank_address = $this->BankAddress;
+               // Save the updated bank information
+               $bankInfo->save();
    
                // Clear editing state
-               $this->currentEditingParentProfile = null;
-              
+               $this->currentEditingBankProfile = null;
    
                // Flash success message
-               session()->flash('success', 'Parent profile updated successfully.');
+               session()->flash('success', 'Bank profile updated successfully.');
            } else {
-               // Handle the case where no parent details are found
-               session()->flash('error', 'No parent details found for this employee.');
+               // Handle the case where no bank details are found
+               session()->flash('error', 'No bank details found for this employee.');
            }
        } catch (\Exception $e) {
            // Handle any exceptions that occur during saving
-           session()->flash('error', 'An error occurred while updating the parent profile. Please try again.');
+           session()->flash('error', 'An error occurred while updating the bank profile. Please try again.');
        }
    }
    
    
-    public function cancelParentProfile()
+    public function cancelBankProfile()
     {
         // No need to query for $selectedPerson here
       
      
-        $this->currentEditingParentProfile = null; 
+        $this->currentEditingBankProfile = null; 
        
     }
     
@@ -475,7 +439,7 @@ class ParentDetails extends Component
         // Determine if there are people found
         $peopleFound = $this->employees->count() > 0;
 
-        return view('livewire.parent-details', [
+        return view('livewire.bank-account', [
             'employees' => $this->employees,
             'selectedPeople' => $this->selectedPeople,
             'peopleFound' => $peopleFound,

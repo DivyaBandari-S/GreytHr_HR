@@ -7,6 +7,7 @@
     class EmpPersonalInfo extends Model
     {
         use HasFactory;
+        protected $table  =  'emp_personal_infos';
         protected $fillable = [
             'emp_id',
             'title',
