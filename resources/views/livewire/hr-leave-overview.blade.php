@@ -100,7 +100,7 @@
         }
     </style>
     <div>
-        <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <ul class="nav nav-tabs"  role="tablist">
             <li class="nav-item">
                 <a class="nav-link {{ $activeTab === 'Main' ? 'active' : '' }}" wire:click="$set('activeTab', 'Main')"
                     id="all-tab" data-bs-toggle="tab" href="#all" role="tab" aria-controls="all"

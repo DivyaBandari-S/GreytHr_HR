@@ -2219,14 +2219,14 @@ input[type="date"]::before {
     background: #fff;
     font-size: var(--sub-headings-font-size);
 }
-.nav-tabs .nav-item.show .nav-link,
-.nav-tabs .nav-link {
+.leave-grant-nav-tabs .leave-grant-nav-item.show .leave-grant-nav-link,
+.leave-grant-nav-tabs .leave-grant-nav-link {
     border: none;
     color: var(--main-heading-color);
     font-weight: 500;
 }
-.nav-tabs .nav-item.show .nav-link,
-.nav-tabs .nav-link.active {
+.leave-grant-nav-tabs .leave-grant-nav-item.show .leave-grant-nav-link,
+.leave-grant-nav-tabs .leave-grant-nav-link.active {
     border-bottom: 2px solid #306cc6 !important;
     color: #306cc6;
     background-color: none;
