@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\EmployeeDetails;
+use App\Models\EmpResignations;
 use App\Models\Hr;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
@@ -12,7 +13,7 @@ use Illuminate\Support\Facades\Log;
 
 class AdminDashboard extends Component
 {
-    public $show= false;
+    public $show = false;
     public $totalEmployeeCount;
     public $totalNewEmployeeCount;
     public $totalNewEmployees;
@@ -24,20 +25,28 @@ class AdminDashboard extends Component
     public $femaleCount = 0;
     public $employeeCountsByLocation;
     public $loginEmployee;
+    public $hrRequests;
+    public $hrRequestsCount;
     public $activeTab = 'summary';
+
     public function setActiveTab($tab)
     {
-            $this->activeTab = $tab;
+        $this->activeTab = $tab;
     }
 
 
     public function mount()
     {
+
         try {
-            $this->setActiveTab($this->tab);
+            $this->setActiveTab($this->activeTab);
             $employeeId = auth()->guard('hr')->user()->emp_id;
-            $this->loginEmployee = Hr::where('emp_id',$employeeId)->select('emp_id', 'employee_name')->first();
-            $companyId = Auth::user()->company_id;
+
+            $this->loginEmployee = Hr::where('emp_id', $employeeId)->select('emp_id', 'employee_name')->first();
+            $companyId = EmployeeDetails::where('emp_id', $employeeId)->value('company_id');
+            //Hr Requests
+
+            $this->getHrRequests($companyId);
             // Count total employees
             $this->totalEmployeeCount = EmployeeDetails::where('company_id', $companyId)->count();
 
@@ -96,11 +105,10 @@ class AdminDashboard extends Component
                 // Handle database query exceptions
                 Log::error("Database error registering employee: " . $e->getMessage());
                 session()->flash('emp_error', 'Database connection error occurred. Please try again later.');
-            }
-            elseif (strpos($e->getMessage(), 'Call to a member function store() on null') !== false) {
+            } elseif (strpos($e->getMessage(), 'Call to a member function store() on null') !== false) {
                 // Display a user-friendly error message for null image
                 session()->flash('emp_error', 'Please upload an image.');
-            }elseif ($e instanceof \Illuminate\Http\Client\RequestException) {
+            } elseif ($e instanceof \Illuminate\Http\Client\RequestException) {
                 // Handle network request exceptions
                 Log::error("Network error registering employee: " . $e->getMessage());
                 session()->flash('emp_error', 'Network error occurred. Please try again later.');
@@ -117,14 +125,35 @@ class AdminDashboard extends Component
             return redirect()->back();
         }
     }
+    public function getHrRequests($companyId)
+    {
+        $this->hrRequests = collect();
+
+        foreach ($companyId as $company) {
+            $requests = EmpResignations::join('employee_details', 'employee_details.emp_id', '=', 'emp_resignations.emp_id')
+                ->where('emp_resignations.status', 'Pending')
+                ->whereRaw('JSON_CONTAINS(employee_details.company_id, ?)', [json_encode($company)])
+                ->get();
+
+            $this->hrRequests = $this->hrRequests->merge($requests);
+        }
+
+        // Output the hrRequestsCount
+        $this->hrRequestsCount=$this->hrRequests->count();
 
 
-    public function open(){
-        $this->show= true;
+    }
+
+
+
+
+    public function open()
+    {
+        $this->show = true;
     }
     public function render()
     {
-        return view('livewire.admin-dashboard',[
+        return view('livewire.admin-dashboard', [
             'departmentCount' => $this->departmentCount,
         ]);
     }
