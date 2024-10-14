@@ -2,7 +2,6 @@
 <section>
     <!-- start: MAIN BODY -->
     <div class="main__body">
-
         <section class="tab-section">
             <div class="container-fluid">
                 <div class="tab-pane">

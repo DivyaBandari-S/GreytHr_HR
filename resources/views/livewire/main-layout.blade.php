@@ -57,11 +57,11 @@
 							<li><a href="/hr/bank-account">Bank/PF/ESI</a></li>
 							<li><a href="/hr/parent-details">Family Details</a></li>
 							<li><a href="/hr/emp-document">Employee Documents</a></li>
-						
+
 							<li><a href="/user">Previous Employement</a></li>
 							<li><a href="/user">Separration</a></li>
 							<li><a href="/user">Acess card details</a></li>
-						
+
 							<li><a href="/user">Employee Contracts</a></li>
 							<li><a href="/user">Employee Salary</a></li>
 						</ul>
@@ -97,7 +97,7 @@
 			<li>
 				<a href="#"><i class="ph-fill ph-calendar-blank"></i></a>
 				<ul class="sidebar__submenu">
-					<li class="title">Calendar</li>
+					<li class="title">Leave</li>
 					<li>
 						<a href="#">Main <i class="ph-caret-right-fill"></i></a>
 						<ul class="sidebar__dropdown-menu">
@@ -108,21 +108,20 @@
 						</ul>
 					</li>
 					<li>
-						<a href="#">Setup <i class="ph-caret-right-fill"></i></a>
+						<a href="#">Information <i class="ph-caret-right-fill"></i></a>
 						<ul class="sidebar__dropdown-menu">
-							<li><a href="/home">Holiday List</a></li>
-							<li><a href="/user">weekend Override</a></li>
-							<li><a href="/user">Swipe Managment</a></li>
-							<li><a href="/user">Shift Rotation Calendar</a></li>
-							<li><a href="/home">Employee Week Days</a></li>
-							<li><a href="/user">Leave Type Reviewer</a></li>
-							<li><a href="/user">Ip Address Mapping</a></li>
+							<li><a href="/home">Employee Leave</a></li>
+							<li><a href="/hr/user/shift-roster-hr">Shift Roaster</a></li>
+							<li><a href="/user">Employee Swipes</a></li>
+							<li><a href="/hr/user/attendance-muster-hr">Attenance Muster</a></li>
+							<li><a href="/hr/user/attendance-info">Attenance Info</a></li>
 						</ul>
 					</li>
+
 					<li>
 						<a href="#">Admin <i class="ph-caret-right-fill"></i></a>
 						<ul class="sidebar__dropdown-menu">
-							<li><a href="/home">Leave Granter</a></li>
+							<li><a href="/hr/user/grant-summary">Leave Granter</a></li>
 							<li><a href="/user">Year End Process</a></li>
 							<li><a href="/user">Assign Attendnace Scheme</a></li>
 							<li><a href="/user">Process Attendance</a></li>
@@ -136,13 +135,15 @@
 						</ul>
 					</li>
 					<li>
-						<a href="#">Information <i class="ph-caret-right-fill"></i></a>
+						<a href="#">Setup <i class="ph-caret-right-fill"></i></a>
 						<ul class="sidebar__dropdown-menu">
-							<li><a href="/home">Employee Leave</a></li>
-							<li><a href="/user/shift-roster-hr">Shift Roaster</a></li>
-							<li><a href="/user">Employee Swipes</a></li>
-							<li><a href="/hr/user/attendance-muster-hr">Attenance Muster</a></li>
-							<li><a href="/hr/user/attendance-info">Attenance Info</a></li>
+							<li><a href="/home">Holiday List</a></li>
+							<li><a href="/user">weekend Override</a></li>
+							<li><a href="/user">Swipe Managment</a></li>
+							<li><a href="/user">Shift Rotation Calendar</a></li>
+							<li><a href="/home">Employee Week Days</a></li>
+							<li><a href="/user">Leave Type Reviewer</a></li>
+							<li><a href="/user">Ip Address Mapping</a></li>
 						</ul>
 					</li>
 				</ul>
