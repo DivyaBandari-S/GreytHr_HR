@@ -174,7 +174,7 @@
 
                                 </div>
 
-                                <div class="col-md-6 mb-4">
+                                <div class="col-md-6 mb-4" style="cursor: pointer;">
 
                                     <div class="row m-0 hrReqCard">
 
@@ -182,7 +182,7 @@
 
                                             <p class="totalEmpText">HR Requests</p>
 
-                                            <h4 class="countOfNum">15</h4>
+                                            <h4 class="countOfNum">{{$hrRequestsCount}}</h4>
 
                                         </div>
 

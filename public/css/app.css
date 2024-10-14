@@ -1553,17 +1553,17 @@ input[type="date"]::before {
     padding: 15px;
 }
 .card-profile {
-    margin-top: 20px; 
-    height:auto; 
+    margin-top: 20px;
+    height:auto;
     width:70%;
     border-radius: 5px;
     background:#98CBBA
 }
 .card{
     margin-top: 20px;
-     height:auto; 
+     height:auto;
      width:70%;
-     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);"
+     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
     @media (max-width: 768px) {
         .card-profile {
@@ -1787,16 +1787,16 @@ input[type="date"]::before {
  background:white;
  width:100%;
   display:flex;
-  
+
    justify-content:space-between;
-   
+
 }
 .card-row{
  color: #778899;
  margin-top: 10px;
  margin-left:10px;
  height:auto;
- 
+
  display: flex;
 }
 .profile-header{
@@ -1858,8 +1858,8 @@ width: 80%;
         }
         .personalProfile{
             margin-top: 10px;
-             width: 80%; 
-             max-width: 80%; 
+             width: 80%;
+             max-width: 80%;
              margin: auto;
         }
         .editInformation{
@@ -1870,20 +1870,20 @@ width: 80%;
              box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
         .search-term{
-            font-size: 10px; 
-            cursor: pointer; 
+            font-size: 10px;
+            cursor: pointer;
             border-radius: 5px 0 0 5px;
              width: 250px;
-              height: 30px; 
+              height: 30px;
               padding: 5px;
         }
         .search-bar{
-            border-radius: 5px; 
+            border-radius: 5px;
             background-color: grey;
-             padding: 8px; 
+             padding: 8px;
              width: 330px;
-              margin-top: 10px; 
-              height: 250px; 
+              margin-top: 10px;
+              height: 250px;
               overflow-y: auto;
         }
         .add-details{
@@ -1894,7 +1894,7 @@ width: 80%;
         }
         .employee-details-main{
             border-radius: 5px;
-             font-size:12px; 
+             font-size:12px;
              width:88%;
         }
         .requests-container {
@@ -1909,15 +1909,15 @@ width: 80%;
             padding: 10px;
            /* Adds a border between items */
         }
-        
+
         .request-item:last-child {
             border-bottom: none; /* Removes the border for the last item */
         }
-        
+
      .tab-doc {
         font-size: 12px;
      }
-        
+
   /* Employee Information ended*/
 
   /* Hr Main Overview Styles Started */
