@@ -100,7 +100,7 @@
         }
     </style>
     <div>
-        <ul class="nav nav-tabs"  role="tablist">
+        <ul class="nav nav-tabs" role="tablist">
             <li class="nav-item">
                 <a class="nav-link {{ $activeTab === 'Main' ? 'active' : '' }}" wire:click="$set('activeTab', 'Main')"
                     id="all-tab" data-bs-toggle="tab" href="#all" role="tab" aria-controls="all"
@@ -199,7 +199,7 @@
                         @if (!empty($leaveData) && count($leaveData) > 0)
                             <div class="col-12 col-md-3 d-flex justify-content-center">
                                 <div style="height: 150px; width: 150px;">
-                                    <canvas id="leaveChart"></canvas>
+                                    <canvas wire:ignore id="leaveChart"></canvas>
                                 </div>
                             </div>
                             <div class="col-12 col-md-9">
@@ -263,22 +263,41 @@
 
                         </div>
                     </div>
-                    <div class="p-2">
+                    @if (array_sum($leavesCount) > 0)
                         <canvas id="barChart" width="400" height="200"></canvas>
+                    @else
+                    <div class="col-12 text-center">
+                        <img src="{{ asset('images/not_found.png') }}" alt="No Leaves"
+                            style="width: 150px; height:150px;">
+                        <p style="font-size: 15px; color: gray;">Wow! There are no leaves.</p>
                     </div>
+                    @endif
                 </div>
                 <div class="col-md-6 col-12">
                     <div class="d-flex justify-content-between p-4">
                         <h3 style="color: var(--label-color); font-size: 14px;">Number of Employees on Leave for each
                             RH</h3>
 
-                        <select wire:model="selectedLeaveType" class="form-select mb-3 task-custom-select-width"
-                            wire:change="filterLeaveType">
-                            <option value="all">All</option>
-                            @foreach (array_keys($leaveTypeColors) as $leaveType)
-                                <option value="{{ $leaveType }}">{{ $leaveType }}</option>
-                            @endforeach
-                        </select>
+                            <div class="form-group">
+
+                                <select class="form-select task-custom-select-width"
+                                    >
+                                    <option value="all" selected>All</option>
+                                    <option value="Casual Leave">Casual Leave</option>
+                                    <option value="Casual Leave Probation">Casual Leave Probation </option>
+                                    <option value="Maternity Leave">Maternity Leave</option>
+                                    <option value="Loss Of Pay">Loss Of Pay</option>
+                                    <option value="Sick Leave">Sick Leave</option>
+                                    <option value="Marriage Leave">Marriage Leave</option>
+                                    <option value="Petarnity Leave">Petarnity Leave</option>
+                                </select>
+    
+                            </div>
+                    </div>
+                    <div class="col-12 text-center">
+                        <img src="{{ asset('images/not_found.png') }}" alt="No Leaves"
+                            style="width: 150px; height:150px;">
+                        <p style="font-size: 15px; color: gray;">No Records Found</p>
                     </div>
                 </div>
 
@@ -302,7 +321,7 @@
                     </div>
                     <div class="form-group">
 
-                        <select class="form-select task-custom-select-width" wire:model.defer="leaveType"
+                        <select class="form-select task-custom-select-width" wire:model.defer="teamOnLeaveType"
                             wire:change="leaveTypeFilter">
                             <option value="all" selected>All</option>
                             <option value="Casual Leave">Casual Leave</option>
@@ -538,7 +557,7 @@
             '#900C3F', '#C70039', '#581845', '#FFC0CB', '#FF4500', '#00FF7F'
         ];
         const maxCount = Math.max(...leavesCount); // Get the highest count
-const yAxisMax = Math.ceil(maxCount / 15) * 15;
+        const yAxisMax = Math.ceil(maxCount / 15) * 15;
 
         new Chart(barCtx, {
             type: 'bar',
@@ -557,10 +576,10 @@ const yAxisMax = Math.ceil(maxCount / 15) * 15;
                 },
                 scales: {
                     x: {
-                grid: {
-                    display: false // Hides x-axis grid lines
-                }
-            },
+                        grid: {
+                            display: false // Hides x-axis grid lines
+                        }
+                    },
                     y: {
                         beginAtZero: true,
                         min: 0,

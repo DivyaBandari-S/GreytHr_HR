@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Livewire;
-
 use Livewire\Component;
 use Illuminate\Support\Facades\Log;
 use App\Models\LeaveRequest;
@@ -12,22 +11,22 @@ class HrLeaveOverview extends Component
 {
     public $activeTab = 'Main';
     public $showHelp = false;
-    public $filterPeriodValue; // Bind this to the dropdown
+    public $filterPeriodValue; 
     public $months = [];
     public $selectedMonth;
     public $leaveData = [];
     public $leavesCount = [];
-    public $filterPeriod = 'this_week'; // Default value
+    public $filterPeriod = 'this_week'; 
     public $leaveType = 'all';
     public $monthFilterLeaveType = 'all';
-
+    public $teamOnLeaveType = 'all';
     public $leaveTypeColors = [
-        'Loss Of Pay' => '#ffadad', // Lighter shade of red
-        'Sick Leave' => '#ffd6a5', // Lighter shade of orange
-        'Maternity Leave' => '#fdffb6', // Lighter shade of yellow
-        'Casual Leave' => '#caffbf', // Lighter shade of green
-        'Marriage Leave' => '#a0c4ff', // Lighter shade of blue
-        'Casual Leave Probation' => '#bdb2ff', // Lighter shade of purple
+        'Loss Of Pay' => '#ffadad', 
+        'Sick Leave' => '#ffd6a5',
+        'Maternity Leave' => '#fdffb6', 
+        'Casual Leave' => '#caffbf', 
+        'Marriage Leave' => '#a0c4ff', 
+        'Casual Leave Probation' => '#bdb2ff', 
         'Paternity Leave' => '#8996cb',
     ];
     public $leaveTypeAbbreviations = [
@@ -39,66 +38,49 @@ class HrLeaveOverview extends Component
         'Marriage Leave' => 'ML',
         'Casual Leave Probation' => 'CLP',
     ];
-
     public $selectedLeave;
     public $selectedLeaveType = 'all';
 
-
-
-    public function mount($month = null, $leaveType = null)
+    public function mount($month = null, $leaveType = null, $monthLeaveType = null)
     {
-        $this->filterPeriodValue = 'this_year'; // Default to current year
+        $this->filterPeriodValue = 'this_year';
         $this->selectedMonth = $month ?? 'Jan';
-        if ($leaveType) {
-            $this->selectedLeaveType = $leaveType;
-            $this->monthFilterLeaveType = $leaveType; // Set both if needed
-        } else {
-            $this->selectedLeaveType = 'all';
-            $this->monthFilterLeaveType = 'all'; // Default to all
-        }
-        $this->updateMonths(); // Initialize months
-
+        $this->selectedLeaveType = $leaveType ?? 'all';
+        $this->monthFilterLeaveType = $monthLeaveType ?? 'all';
+        $this->updateMonths(); 
         $this->fetchLeaveData();
         $this->calculateLeaves();
     }
+
     public function calculateLeaves()
     {
         $this->leavesCount = array_fill(0, 12, 0);
-    $currentYear = now()->year;
-
-    // Build the query
-    $query = LeaveRequest::where('status', 'approved')
-        ->whereYear('from_date', $currentYear);
-
-    // If a leave type is selected, add it to the query
-    if ($this->monthFilterLeaveType !== 'all') {
-        $query->where('leave_type', $this->monthFilterLeaveType);
-    }
-
-    // Fetch the count of approved leaves grouped by month
-    $monthlyLeaves = $query
-        ->selectRaw('MONTH(from_date) as month, COUNT(*) as count')
-        ->groupBy('month')
-        ->orderBy('month')
-        ->get();
-
-    // Populate the leaves count
-    foreach ($monthlyLeaves as $entry) {
-        $this->leavesCount[$entry->month - 1] = $entry->count; // Zero-based index
-    }
+        $currentYear = now()->year;
+        $query = LeaveRequest::where('status', 'approved')
+            ->whereYear('from_date', $currentYear);
+        if ($this->monthFilterLeaveType !== 'all') {
+            $query->where('leave_type', $this->monthFilterLeaveType);
+        }
+        $monthlyLeaves = $query
+            ->selectRaw('MONTH(from_date) as month, COUNT(*) as count')
+            ->groupBy('month')
+            ->orderBy('month')
+            ->get();
+        foreach ($monthlyLeaves as $entry) {
+            $this->leavesCount[$entry->month - 1] = $entry->count;
+        }
     }
 
     public function filterPeriodChanged()
     {
-        // This method will be called when the dropdown value changes
         $this->selectedMonth = 'Jan';
-        $this->updateMonths(); // Update months based on the new selection
-
+        $this->updateMonths();
         $this->fetchLeaveData();
     }
+
     public function selectMonth($month)
     {
-        $this->selectedMonth = $month; // Update selected month
+        $this->selectedMonth = $month;
         $this->fetchLeaveData();
         return redirect()->route('leave-overview.month', ['month' => $month]);
     }
@@ -106,10 +88,7 @@ class HrLeaveOverview extends Component
     public function updateMonths()
     {
         $currentYear = date('Y');
-
-        // Determine the year based on filterPeriodValue
         $year = $this->filterPeriodValue === 'this_year' ? $currentYear : $currentYear - 1;
-
         $this->months = $this->getMonths($year);
     }
 
@@ -130,17 +109,12 @@ class HrLeaveOverview extends Component
             'Dec' => $year,
         ];
     }
-   
-
 
     public function filterLeaveType()
     {
-        // Call fetchLeaveData to get the latest data based on month and year
         if ($this->selectedLeaveType === 'all') {
-            // Fetch all leave data
-            $this->fetchLeaveData(); // This will get all leave types with counts
+            $this->fetchLeaveData(); 
         } else {
-            // Fetch specific leave type data
             $this->leaveData = $this->fetchLeaveDataByType($this->selectedLeaveType);
         }
         return redirect()->route('leave-overview.month', [
@@ -154,12 +128,10 @@ class HrLeaveOverview extends Component
         $year = $this->filterPeriodValue === 'this_year' ? date('Y') : date('Y') - 1;
         $startDate = Carbon::createFromFormat('M Y', $this->selectedMonth . ' ' . $year)->startOfMonth();
         $endDate = $startDate->copy()->endOfMonth();
-
         $leaveApplications = LeaveRequest::whereBetween('from_date', [$startDate, $endDate])
             ->where('leave_type', $leaveType)
             ->get()
             ->count();
-
         return [$leaveType => $leaveApplications];
     }
 
@@ -168,22 +140,12 @@ class HrLeaveOverview extends Component
         $year = $this->filterPeriodValue === 'this_year' ? date('Y') : date('Y') - 1;
         $startDate = Carbon::createFromFormat('M Y', $this->selectedMonth . ' ' . $year)->startOfMonth();
         $endDate = $startDate->copy()->endOfMonth();
-
-        // Fetch all leave applications
         $leaveApplications = LeaveRequest::whereBetween('from_date', [$startDate, $endDate]);
-
         if ($this->selectedLeaveType !== 'all') {
             $leaveApplications->where('leave_type', $this->selectedLeaveType);
         }
-
-        // Get all leave data grouped by leave type
         $this->leaveData = $leaveApplications->get()->groupBy('leave_type')->map->count()->toArray();
     }
-
-
-
-
-
 
     public function hideHelp()
     {
@@ -194,52 +156,60 @@ class HrLeaveOverview extends Component
     {
         $this->showHelp = false;
     }
+
     public function monthFilter()
     {
-
-
-        // Optionally, you could refresh the data or handle any additional logic here
-        $this->render(); // Not needed usually, as Livewire auto-triggers render
+        $this->getFilteredLeaveRequests();
     }
-   
 
     public function leaveTypeFilter()
     {
-
-
-        // Optionally, you could refresh the data or handle any additional logic here
-        $this->render(); // Not needed usually, as Livewire auto-triggers render
+        $this->getFilteredLeaveRequests(); 
     }
+
     public function monthLeaveTypeFilter()
-{
-    $this->calculateLeaves(); // Recalculate leaves based on the selected type
-    return redirect()->route('leave-overview.leaveType', [
-        'leaveType' => $this->monthFilterLeaveType,
-    ]); // Recalculate leaves when the filter changes
-}
+    {
+        if ($this->monthFilterLeaveType === 'all') {
+            $this->calculateLeaves(); 
+        } else {
+            $this->calculateLeavesForType($this->monthFilterLeaveType);
+        }
+        return redirect()->route('leave-overview.monthLeaveType', [
+            'monthLeaveType' => $this->monthFilterLeaveType,
+        ]);
+    }
 
+    public function calculateLeavesForType($leaveType)
+    {
+        $this->leavesCount = array_fill(0, 12, 0);
+        $currentYear = now()->year;
+        $query = LeaveRequest::where('status', 'approved')
+            ->whereYear('from_date', $currentYear)
+            ->where('leave_type', $leaveType); 
+        $monthlyLeaves = $query
+            ->selectRaw('MONTH(from_date) as month, COUNT(*) as count')
+            ->groupBy('month')
+            ->orderBy('month')
+            ->get();
+        foreach ($monthlyLeaves as $entry) {
+            $this->leavesCount[$entry->month - 1] = $entry->count;
+        }
+    }
 
-
-    public function render()
+    public function getFilteredLeaveRequests()
     {
         $query = LeaveRequest::with('employee')->where('status', 'approved');
-
-        // Filter based on selected leave type
-        if ($this->leaveType && $this->leaveType !== 'all') {
-            $query->where('leave_type', $this->leaveType);
+        if ($this->teamOnLeaveType && $this->teamOnLeaveType !== 'all') {
+            $query->where('leave_type', $this->teamOnLeaveType);
         }
-
-        // Filter based on selected period
         if ($this->filterPeriod && $this->filterPeriod !== 'all') {
             $startDate = now()->startOfMonth();
             $endDate = now()->endOfMonth();
-
             switch ($this->filterPeriod) {
                 case 'this_week':
                     $query->whereBetween('from_date', [now()->startOfWeek(), now()->endOfWeek()]);
                     break;
                 case 'this_month':
-                    // Ensure both from_date and to_date fall within the current month
                     $query->where(function ($q) use ($startDate, $endDate) {
                         $q->whereBetween('from_date', [$startDate, $endDate])
                             ->orWhereBetween('to_date', [$startDate, $endDate]);
@@ -253,12 +223,7 @@ class HrLeaveOverview extends Component
                     break;
             }
         }
-
-
-        // Get the filtered leave requests
         $leaveRequests = $query->get();
-
-        // Calculate the number of days for each leave request
         foreach ($leaveRequests as $leaveRequest) {
             $leaveRequest->calculated_days = LeaveHelper::calculateNumberOfDays(
                 $leaveRequest->from_date,
@@ -268,6 +233,11 @@ class HrLeaveOverview extends Component
                 $leaveRequest->leave_type
             );
         }
+        return $leaveRequests;
+    }
+    public function render()
+    {
+        $leaveRequests = $this->getFilteredLeaveRequests();
         return view('livewire.hr-leave-overview', compact('leaveRequests'));
     }
 }

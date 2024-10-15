@@ -110,7 +110,7 @@
 					<li>
 						<a href="#">Information <i class="ph-caret-right-fill"></i></a>
 						<ul class="sidebar__dropdown-menu">
-							<li><a href="/home">Employee Leave</a></li>
+							<li><a href="/hr/user/employee-leave">Employee Leave</a></li>
 							<li><a href="/hr/user/shift-roster-hr">Shift Roaster</a></li>
 							<li><a href="/user">Employee Swipes</a></li>
 							<li><a href="/hr/user/attendance-muster-hr">Attenance Muster</a></li>

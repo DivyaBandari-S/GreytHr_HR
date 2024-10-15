@@ -81,14 +81,14 @@ Route::middleware(['auth:hr'])->group(function () {
         Route::get('/user/attendance-info', HrAttendanceInfo::class)->name('attendance-info');
 
         //HR Leave-Infomation Submodule Routes
-        Route::get('/calendar/information/employee-leave', EmployeeLeave::class)->name('employee-leave');
+        Route::get('/user/employee-leave', EmployeeLeave::class)->name('employee-leave');
 
     //HR Leave Related Routes
 
         //HR Leave-Main Submodule Routes
         Route::get('/user/leave-overview', HrLeaveOverview::class)->name('leave-overview');
         Route::get('/user/leave-overview/{month}/{leaveType?}', HrLeaveOverview::class)->name('leave-overview.month');
-        Route::get('/leave-overview/{leaveType?}', HrLeaveOverview::class)->name('leave-overview.leaveType');
+        Route::get('/leave-overview/{monthLeaveType?}', HrLeaveOverview::class)->name('leave-overview.monthLeaveType');
 
         Route::get('/user/attendance-info', HrAttendanceInfo::class)->name('attendance-info');
         Route::get('/user/attendance-muster-hr', AttendanceMusterHr::class)->name(name: 'attendance-muster-hr');
