@@ -24,7 +24,7 @@
             cursor: pointer;
         }
 
-        .search-bar {
+        .analytic-view-all-search-bar {
             display: flex;
             padding: 20px 0px;
             justify-content: space-between;
@@ -40,7 +40,7 @@
             align-items: center;
         }
 
-        .search-bar input[type="text"] {
+        .analytic-view-all-search-bar input[type="text"] {
             width: 280px;
             padding: 6px 28px 6px 10px;
             /* Adjust padding for right space */
@@ -157,7 +157,7 @@
             <i class="bx bx-arrow-back" wire:click="goBack"></i>
             <span class="analytic-blue-text" wire:click="goBack">Go Back</span>
         </div>
-        <div class="search-bar">
+        <div class="analytic-view-all-search-bar">
             <div class="search-wrapper">
                 <input type="text" placeholder="Search...">
                 <i class="search-icon bx bx-search"></i>
@@ -166,7 +166,7 @@
 
 
         <div class=" p-0">
-            <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <ul class="nav nav-tabs" role="tablist">
                 <li class="nav-item">
                     <a class="nav-link {{ $activeTab === 'all' ? 'active' : '' }}" wire:click="$set('activeTab', 'all')"
                         id="all-tab" data-bs-toggle="tab" href="#all" role="tab" aria-controls="all"
