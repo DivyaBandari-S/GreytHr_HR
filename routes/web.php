@@ -8,6 +8,7 @@ use App\Livewire\AddEmployeeDetails;
 use App\Livewire\AnalyticsHub;
 use App\Livewire\AnalyticsHubViewAll;
 use App\Livewire\AttendanceMusterHr;
+use App\Livewire\EmpDocument;
 use App\Livewire\EmpLeaveGranterDetails;
 use App\Livewire\EmployeeAsset;
 use App\Livewire\GrantLeaveBalance;
@@ -73,7 +74,8 @@ Route::middleware(['auth:hr'])->group(function () {
         Route::get('/employee-asset', EmployeeAsset::class)->name('employee-asset');
         Route::get('/position-history', PositionHistory::class)->name('position-history');
         Route::get('/parent', ParentDetails::class)->name('parent-details');
-
+        Route::get('/emp-document', EmpDocument::class)->name('emp-document');
+        Route::get('/bank-account', EmpDocument::class)->name('bank-account');
         //HR Leave-Main Submodule Routes
         Route::get('/user/attendance-overview', HrAttendanceOverviewNew::class)->name('attendance-overview');
         Route::get('/user/who-is-in-chart-hr', WhoIsInChartHr::class)->name('who-is-in-chart-hr');
