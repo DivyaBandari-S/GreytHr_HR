@@ -21,8 +21,8 @@ use App\Models\EmpParentDetails;
 use App\Models\EmpSpouseDetails;
 use Illuminate\Support\Facades\Hash;
 use App\Models\Company;
-use App\Models\Company_Shifts;
-use App\Models\Projects;
+use App\Models\CompanyShifts;
+use App\Models\CompanyProjects;
 use App\Models\EmpDepartment;
 use App\Models\EmpSubDepartments;
 use App\Models\EmpBankDetail;
@@ -1028,8 +1028,8 @@ class AddEmployeeDetails extends Component
                 $this->email_domain = $this->selectedId->email_domain;
 
 
-                $this->shift_details = Company_Shifts::where('company_id',  $this->com_id)->get();
-                $this->Projects = Projects::where('company_id',  $this->com_id)->get();
+                $this->shift_details = CompanyShifts::where('company_id',  $this->com_id)->get();
+                $this->Projects = CompanyProjects::where('company_id',  $this->com_id)->get();
                 // dd( $this->Projects);
 
                 // $this->shift_details = Company_Shifts::where('company_id', $this->com_id)
@@ -1163,7 +1163,7 @@ class AddEmployeeDetails extends Component
                     $this->selectedId = Company::where('company_id', $this->com_id)->first();
                     $this->job_locations_array = $this->selectedId->branch_locations;
 
-                    $this->shift_details = Company_Shifts::where('company_id',  $this->com_id)->get();
+                    $this->shift_details = CompanyShifts::where('company_id',  $this->com_id)->get();
                 }
 
                 $this->employee_type = $empdetails->employee_type;
@@ -1193,7 +1193,7 @@ class AddEmployeeDetails extends Component
                 if ($empdetails->emp_domain != null) {
                     $this->emp_domain = $empdetails->emp_domain;
                 }
-                $this->Projects = Projects::where('company_id',  $this->com_id)->get();
+                $this->Projects = CompanyProjects::where('company_id',  $this->com_id)->get();
 
 
                 // dd( $this->emp_domain);
