@@ -141,11 +141,16 @@ class UpdateEmployeeDetails extends Component
 
     public function mount()
     {
+        $this->hrDetails = auth()->guard('hr')->user();
+        $hr_Id =  $this->hrDetails->emp_id;
+        $this->hrCompany_id = EmployeeDetails::where('emp_id', $hr_Id)->first()->company_id;
+
         $this->fetchEmployeeDetails();
     }
     public function fetchEmployeeDetails()
     {
         try {
+
             // Prepare the base query
 
             $query = EmployeeDetails::query();
@@ -205,15 +210,8 @@ class UpdateEmployeeDetails extends Component
     public function render()
     {
         try {
-            $this->hrDetails = auth()->guard('hr')->user();
-            $hr_Id =  $this->hrDetails->emp_id;
-            $this->hrCompany_id = EmployeeDetails::where('emp_id', $hr_Id)->first()->company_id;
 
-            $hrCompanies = Company::where('company_id',  $this->hrCompany_id)->get();
-            $hrDetails = Company::where('company_id',  $this->hrCompany_id)->first();
 
-            $this->companies = $hrCompanies;
-            $this->hrDetails = $hrDetails;
 
             // Wrapping the database query in a try-catch block
 
