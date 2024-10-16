@@ -14,13 +14,14 @@ return new class extends Migration
         Schema::create('leave_applications', function (Blueprint $table) {
             $table->id();
             $table->string('emp_id');
-            $table->enum('leave_type', ['Causal Leave Probation ', 'Maternity Leave', 'Loss Of Pay','Sick Leave','Marriage Leave','Causal Leave','Petarnity Leave']);
+            $table->enum('leave_type', ['Casual Leave Probation ', 'Maternity Leave', 'Loss Of Pay','Sick Leave','Marriage Leave','Casual Leave','Petarnity Leave']);
             $table->date('from_date');
             $table->string('from_session');
             $table->string('to_session');
             $table->date('to_date');
             $table->json('file_paths')->nullable();
             $table->string('applying_to');
+            $table->string('action_by');
             $table->json('cc_to')->nullable();
             $table->string('status')->default('Pending');
             $table->string('contact_details');

@@ -19,6 +19,7 @@ class LeaveRequest extends Model
         'to_session',
         'to_date',
         'applying_to',
+        'action_by',
         'cc_to',
         'contact_details',
         'reason',

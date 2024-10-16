@@ -101,8 +101,8 @@
 					<li>
 						<a href="#">Main <i class="ph-caret-right-fill"></i></a>
 						<ul class="sidebar__dropdown-menu">
-							<li><a href="/hr/user/overview">Leave Overview</a></li>
-							<li><a href="/hr/user/analytics-hub">Attendance Overview</a></li>
+							<li><a href="/hr/user/leave-overview">Leave Overview</a></li>
+							<li><a href="/hr/user/attendance-overview">Attendance Overview</a></li>
 							<li><a href="/hr/user/hremployeedirectory">Leave Calendar</a></li>
 							<li><a href="/hr/user/who-is-in-chart-hr">Who is in?</a></li>
 						</ul>
@@ -110,7 +110,7 @@
 					<li>
 						<a href="#">Information <i class="ph-caret-right-fill"></i></a>
 						<ul class="sidebar__dropdown-menu">
-							<li><a href="/home">Employee Leave</a></li>
+							<li><a href="/hr/user/employee-leave">Employee Leave</a></li>
 							<li><a href="/hr/user/shift-roster-hr">Shift Roaster</a></li>
 							<li><a href="/user">Employee Swipes</a></li>
 							<li><a href="/hr/user/attendance-muster-hr">Attenance Muster</a></li>
@@ -160,9 +160,7 @@
 			<li>
 				<a href="#"><i class="ph-gear-fill"></i></a>
 			</li>
-			<li wire:click="handleLogout">
-				<a href="#" class="logout"><i class="ph-sign-out-fill"></i></a>
-			</li>
+			<div class="pointer m-auto">@livewire('log-out')</div>
 		</ul>
 	</section>
 
@@ -358,27 +356,6 @@
 
 
 		<!-- Logout Modal -->
-		@if ($showLogoutModal)
-		<div class="modal" id="logoutModal" tabindex="-1" style="display: block;">
-			<div class="modal-dialog modal-dialog-centered">
-				<div class="modal-content">
-					<div class="modal-header text-white" style=" background-color: var(--main-button-color);">
-						<h6 class="modal-title " id="logoutModalLabel" style="align-items: center;">Confirm
-							Logout</h6>
-					</div>
-					<div class="modal-body text-center"
-						style="font-size: 14px;color:var( --main-heading-color);">
-						Are you sure you want to logout?
-					</div>
-					<div class="d-flex gap-3 justify-content-center p-3">
-						<button type="button" class="submit-btn mr-3"
-							wire:click="confirmLogout">Logout</button>
-						<button type="button" class="cancel-btn" wire:click="cancelLogout">Cancel</button>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="modal-backdrop fade show"></div>
-		@endif
+	
 	</section>
 </div>
