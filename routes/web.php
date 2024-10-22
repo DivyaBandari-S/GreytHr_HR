@@ -8,6 +8,7 @@ use App\Livewire\AddEmployeeDetails;
 use App\Livewire\AnalyticsHub;
 use App\Livewire\AnalyticsHubViewAll;
 use App\Livewire\AttendanceMusterHr;
+use App\Livewire\EmpDocument;
 use App\Livewire\EmpLeaveGranterDetails;
 use App\Livewire\EmployeeAsset;
 use App\Livewire\GrantLeaveBalance;
@@ -18,6 +19,7 @@ use App\Livewire\EmployeeProfile;
 use App\Livewire\Feeds;
 use App\Livewire\HrAttendanceInfo;
 use App\Livewire\HrAttendanceOverviewNew;
+use App\Livewire\HrLeaveOverview;
 use App\Livewire\HrMainOverview;
 use App\Livewire\ParentDetails;
 use App\Livewire\PositionHistory;
@@ -55,7 +57,7 @@ Route::middleware(['auth:hr'])->group(function () {
     Route::prefix('hr')->group(function () {
 
         //like this  Route: /hr/hello
-        // Route::get('/hello', Dashboard::class)->name('hello');
+        Route::get('/hello', Dashboard::class)->name('hello');
         //home page routes
         Route::get('/add-employee-details/{employee?}', AddEmployeeDetails::class)->name('add-employee-details');
         Route::get('/update-employee-details', UpdateEmployeeDetails::class)->name('update-employee-details');
@@ -73,14 +75,23 @@ Route::middleware(['auth:hr'])->group(function () {
         Route::get('/employee-asset', EmployeeAsset::class)->name('employee-asset');
         Route::get('/position-history', PositionHistory::class)->name('position-history');
         Route::get('/parent', ParentDetails::class)->name('parent-details');
-
+        Route::get('/emp-document', EmpDocument::class)->name('emp-document');
+        Route::get('/bank-account', EmpDocument::class)->name('bank-account');
         //HR Leave-Main Submodule Routes
         Route::get('/user/attendance-overview', HrAttendanceOverviewNew::class)->name('attendance-overview');
         Route::get('/user/who-is-in-chart-hr', WhoIsInChartHr::class)->name('who-is-in-chart-hr');
         Route::get('/user/attendance-info', HrAttendanceInfo::class)->name('attendance-info');
 
         //HR Leave-Infomation Submodule Routes
-        Route::get('/calendar/information/employee-leave', EmployeeLeave::class)->name('employee-leave');
+        Route::get('/user/employee-leave', EmployeeLeave::class)->name('employee-leave');
+
+    //HR Leave Related Routes
+
+        //HR Leave-Main Submodule Routes
+        Route::get('/user/leave-overview', HrLeaveOverview::class)->name('leave-overview');
+        Route::get('/user/leave-overview/{month}/{leaveType?}', HrLeaveOverview::class)->name('leave-overview.month');
+        Route::get('/leave-overview/{monthLeaveType?}', HrLeaveOverview::class)->name('leave-overview.monthLeaveType');
+
         Route::get('/user/attendance-info', HrAttendanceInfo::class)->name('attendance-info');
         Route::get('/user/attendance-muster-hr', AttendanceMusterHr::class)->name(name: 'attendance-muster-hr');
         Route::get('/user/shift-roster-hr', ShiftRosterHr::class)->name(name: 'shift-roster-hr');

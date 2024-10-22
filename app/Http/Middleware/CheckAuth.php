@@ -17,7 +17,7 @@ class CheckAuth
     {
         if(auth()->guard('hr')->check())
         {
-            return redirect()->route('hello');
+            return redirect()->route('hrlogin');
 
         }
         else{

@@ -2,17 +2,17 @@
 
     <div class="container-fluid px-1  rounded">
 
-        <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <ul class="nav leave-grant-nav-tabs" id="myTab" role="tablist">
 
-            <li class="nav-item" role="presentation">
+            <li class="leave-grant-nav-item" role="presentation">
 
-                <button class="nav-link active" id="summary-tab" data-bs-toggle="tab" data-bs-target="#summary-tab-pane" type="button" role="tab" aria-controls="summary-tab-pane" aria-selected="true">Main</button>
+                <button class="leave-grant-nav-link active" id="summary-tab" data-bs-toggle="tab" data-bs-target="#summary-tab-pane" type="button" role="tab" aria-controls="summary-tab-pane" aria-selected="true">Main</button>
 
             </li>
 
-            <li class="nav-item" role="presentation">
+            <li class="leave-grant-nav-item" role="presentation">
 
-                <button class="nav-link" id="dashboard-tab" data-bs-toggle="tab" data-bs-target="#dashboard-tab-pane" type="button" role="tab" aria-controls="dashboard-tab-pane" aria-selected="false">Activity</button>
+                <button class="leave-grant-nav-link" id="dashboard-tab" data-bs-toggle="tab" data-bs-target="#dashboard-tab-pane" type="button" role="tab" aria-controls="dashboard-tab-pane" aria-selected="false">Activity</button>
 
             </li>
 
