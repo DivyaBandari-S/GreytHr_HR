@@ -25,7 +25,7 @@
 <!-- Tab Content -->
 <div class="tab-page active" data-tab-page="active">
 <div class="row justify-content-center"  >
-                        <div class="col-md-8 custom-container d-flex flex-column">
+                        <div class="col-md-9 custom-container d-flex flex-column">
                         <div class="d-flex align-items-center mb-2">
     <p class="main-text mb-0" style="width:88%">
         This page allows you to add/edit the profile details of an employee. The page helps you to keep the employee information up to date.
@@ -51,7 +51,7 @@
                  
 
                 <div class="row justify-content-center mt-2 "  >
-                <div class="col-md-8 custom-container d-flex flex-column bg-white">
+                <div class="col-md-9 custom-container d-flex flex-column bg-white">
     <div class="row justify-content-center mt-3 flex-column m-0 employee-details-main" >
         <div class="col-md-9">
             <div class="row " style="display:flex;">
@@ -60,7 +60,33 @@
                     <div class="col mt-3" style="display: flex;">
              
                         <p class="main-text">Employee Type:</p>
-                        <p  class="edit-heading ml-2">Current Employees</p>
+                        <div class="dropdown-for-employee">
+                        <div class="dropdown">
+                        <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" style="font-size:12px">
+    Employee: {{ ucfirst($selectedOption) }} 
+    <span class="arrow-for-employee"></span><span class="caret"></span>
+</button>
+
+    <span class="caret"></span></button>
+    <ul class="dropdown-menu" style="font-size:12px; ">
+    <li class="updated-drodown" style="width: 100%; display: flex; margin-left:5px">
+        <a href="#" wire:click.prevent="updateSelected('all')">All</a>
+    </li>
+    <li class="updated-drodown" style="width: 100%; display: flex;margin-left:5px">
+        <a href="#" wire:click.prevent="updateSelected('current')">Current</a>
+    </li>
+    <li class="updated-drodown"  style="width: 100%; display: flex; margin-left:5px">
+        <a href="#" wire:click.prevent="updateSelected('past')">Past</a>
+    </li>
+    <li class="updated-drodown" style="width: 100%; display: flex; margin-left:5px">
+        <a href="#" wire:click.prevent="updateSelected('intern')">Intern</a>
+    </li>
+</ul>
+
+  </div>
+          </div>
+
+                      
                     </div>
                  
                     <div class="profile" >
@@ -172,8 +198,8 @@ aria-describedby="basic-addon1"
                                         No People Found
                                     </div>
                                     @else
-                                 
-                                    @foreach($peopleData as $employee)
+                                    @if(count($employees) > 0)
+                                    @foreach($employees as $employee)
     @if(stripos($employee->first_name . ' ' . $employee->last_name, $searchTerm) !== false)
         <label wire:click="selectPerson('{{ $employee->emp_id }}')" class="search-container">
             <div class="row align-items-center">
@@ -216,6 +242,7 @@ aria-describedby="basic-addon1"
         </label>
     @endif
 @endforeach
+@endif
 
 @endif
 
@@ -513,6 +540,26 @@ aria-describedby="basic-addon1"
        </div> <!-- Tab buttons -->
 </div>
 
+<script>
+    // JavaScript to handle dropdown display
+    document.querySelector('.dropdown-button-for-employee').addEventListener('click', function () {
+        const dropdownContent = document.querySelector('.dropdown-content-for-employee');
+        dropdownContent.style.display = dropdownContent.style.display === 'block' ? 'none' : 'block';
+    });
+
+    // Close the dropdown if clicked outside
+    window.onclick = function (event) {
+        if (!event.target.matches('.dropdown-button-for-employee')) {
+            const dropdowns = document.getElementsByClassName("dropdown-content-for-employee");
+            for (let i = 0; i < dropdowns.length; i++) {
+                const openDropdown = dropdowns[i];
+                if (openDropdown.style.display === 'block') {
+                    openDropdown.style.display = 'none';
+                }
+            }
+        }
+    }
+</script>
 
 
 

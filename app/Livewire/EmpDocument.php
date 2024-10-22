@@ -390,6 +390,8 @@ class EmpDocument extends Component
             ->pluck('company_id')
             ->first(); // Assuming company_id is unique for emp_id
             $this->requests = collect();
+            
+
         // Initialize the requests collection to prevent undefined errors
         $this->requests = LetterRequest::all(); 
         Log::info('Selected People: ' . json_encode($this->selectedPeople));
