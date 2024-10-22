@@ -12,20 +12,25 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('leave_applications', function (Blueprint $table) {
-            $table->id();
-            $table->string('emp_id');
-            $table->enum('leave_type', ['Causal Leave Probation ', 'Maternity Leave', 'Loss Of Pay','Sick Leave','Marriage Leave','Causal Leave','Petarnity Leave']);
-            $table->date('from_date');
-            $table->string('from_session');
-            $table->string('to_session');
-            $table->date('to_date');
+            $table->smallInteger('id')->autoIncrement();
+            $table->string('emp_id', 10);
+            $table->string('category_type','25')->default('Leave');
+            $table->enum('leave_type', ['Casual Leave Probation', 'Maternity Leave', 'Loss Of Pay','Sick Leave','Marriage Leave','Casual Leave','Petarnity Leave','Work From Home'])->nullable();
+            $table->date('from_date')->nullable();
+            $table->string('from_session','10')->nullable();
+            $table->string('to_session','10')->nullable();
+            $table->date('to_date')->nullable();
             $table->json('file_paths')->nullable();
-            $table->string('applying_to');
+            $table->json('applying_to');
+            $table->string( 'action_by','10')->nullable();
             $table->json('cc_to')->nullable();
-            $table->string('status')->default('Pending');
-            $table->string('contact_details');
-            $table->text('reason');
-           
+            $table->smallInteger('leave_status')->default(5);
+            $table->smallInteger('cancel_status')->default(5);
+            $table->text('leave_cancel_reason')->nullable();
+            $table->string('contact_details','50')->nullable();
+            $table->text('reason')->nullable();
+            $table->boolean('is_read')->default(false);
+
             // $table->enum('sick_leave', ['yes', 'no'])->default('no');
             // $table->enum('casual_leave', ['yes', 'no'])->default('no');
             $table->timestamps();

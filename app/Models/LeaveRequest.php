@@ -19,11 +19,13 @@ class LeaveRequest extends Model
         'to_session',
         'to_date',
         'applying_to',
+        'action_by',
         'cc_to',
         'contact_details',
         'reason',
-        'file_paths'
-        // Add other fields that you want to be fillable here
+        'file_paths',
+        'leave_status',
+        'cancel_status'
     ];
 
     protected $casts = [

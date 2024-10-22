@@ -872,12 +872,19 @@ input {
     color: var(--main-button-color);
     cursor: pointer;
 }
+.analytic-up-arrow{
+    font-size: 20px;
+    font-weight: 500;
+    position: absolute;
+    top: 10px;
+    margin-left: 5px;
+}
 
 /* Adjusted CSS for alternating row colors */
 .analytic-table-container {
     overflow-y: auto;
     height: 300px;
-    overflow-x: scroll;
+    overflow-x: auto;
 }
 
 .analytic-table {
@@ -1912,12 +1919,10 @@ input[type="date"]::before {
 
 .main-overview-help {
     border-radius: 5px;
-    /* border: 1px solid #ccc; */
-    box-shadow: 2px 2px 1px 2px #d1eef675;
-    padding: 10px;
-    box-shadow: 2px 1px 4px 1px rgb(214 208 208 / 45%);
-    margin: 10px 0px 10px 0px;
-    background-color: #cef1fa75;
+    border: 1px solid #ccc;
+    padding: 5px 5px;
+    margin: 10px 0px 20px 0px;
+    background-color: #f3faff;
 }
 
 .hide-main-overview-help {
@@ -2092,125 +2097,7 @@ input[type="date"]::before {
 
 /* Hr Main Overview Styles Ended */
 
-/* Calendar->Information->Employee leave styles start  */
 
-.employee-leave-hr-main {
-    margin: 10px;
-}
-
-.employee-leave-searchrow {
-    background-color: white;
-    border-radius: 2px;
-}
-.employee-leave-start-para {
-    color: #2d2b2b;
-    font-weight: 600;
-    font-size: 15px;
-    padding: 5px 10px;
-    margin-bottom: 0px;
-}
-.employee-search-hr {
-    padding: 5px 10px;
-}
-.Employee-select-leave {
-    border: 0px;
-    width: fit-content;
-    margin-left: 5px;
-    font-weight: 600;
-    margin-right: 5px;
-    padding-bottom: 5px;
-    color: var(--label-color);
-}
-.search-employee-type-leave {
-    align-items: center;
-    padding-bottom: 10px;
-    display: flex;
-    margin-right: 5px;
-    color: var(--label-color);
-}
-.Employee-details-hr {
-    border: 1px solid rgb(80, 80, 218);
-    width: 200px;
-    align-items: center;
-    border-radius: 30px;
-    padding: 5px 10px;
-    margin: 0px 0px 10px 10px;
-}
-.Employee-details-img-details-hr {
-    width: fit-content;
-    align-items: center;
-}
-.Emp-name-leave-details {
-    font-size: 13px;
-    font-weight: 500;
-    margin-bottom: 0px;
-}
-.Emp-id-leave-details {
-    font-size: 10px;
-    margin-bottom: 0px;
-}
-
-.Employee-leave-table-header {
-    border-bottom: 1px solid rgb(199, 196, 196);
-    height: fit-content;
-}
-.leave-balance-lave-types {
-    width: fit-content;
-    align-items: end;
-    margin-top: 0px;
-}
-.leave-balance-lave-types button {
-    padding: 0px 10px;
-    font-size: 13px;
-    color: var(--main-button-color);
-    border: 0px;
-    background-color: white;
-    height: max-content;
-    height: 30px;
-}
-.Leave-balance-buttons {
-    margin-left: auto;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-.Leave-balance-buttons button {
-    color: var(--main-button-color);
-    background-color: white;
-    border: 0.5px solid var(--main-button-color);
-    height: fit-content;
-    font-size: 13px;
-    font-weight: 500;
-    border-radius: 5px;
-}
-.Employee-leave-table-maindiv {
-    border: 0.5px solid rgb(199, 196, 196);
-}
-.modal-title {
-    color: #fff;
-    font-weight: 600;
-    font-size: var(--home-headings-font-size);
-}
-.modal-header {
-    background-color: var(--main-button-color);
-    color: white;
-    height: 50px;
-}
-.btn-close {
-    background-color: white;
-    height: 7px;
-    font-size: var(--normal-font-size);
-    width: 7px;
-}
-.placeholder-small {
-    /* color: var(--label-color); Placeholder text color */
-    font-size: var(--normal-font-size);
-    font-family: "Montserrat", sans-serif;
-    font-weight: normal;
-}
-.error-text {
-    font-size: var(--normal-font-size);
-}
 
 /* Leave->Admin->Leave Granter styles start  */
 #myTab {
@@ -2219,14 +2106,14 @@ input[type="date"]::before {
     background: #fff;
     font-size: var(--sub-headings-font-size);
 }
-.nav-tabs .nav-item.show .nav-link,
-.nav-tabs .nav-link {
+.leave-grant-nav-tabs .leave-grant-nav-item.show .leave-grant-nav-link,
+.leave-grant-nav-tabs .leave-grant-nav-link {
     border: none;
     color: var(--main-heading-color);
     font-weight: 500;
 }
-.nav-tabs .nav-item.show .nav-link,
-.nav-tabs .nav-link.active {
+.leave-grant-nav-tabs .leave-grant-nav-item.show .leave-grant-nav-link,
+.leave-grant-nav-tabs .leave-grant-nav-link.active {
     border-bottom: 2px solid #306cc6 !important;
     color: #306cc6;
     background-color: none;

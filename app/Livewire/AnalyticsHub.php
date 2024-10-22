@@ -12,7 +12,11 @@ use Illuminate\Support\Facades\Redirect;
 class AnalyticsHub extends Component
 {
     public $selectedCard = 'Basic Information';
-    public $genderCounts;
+    public $genderCounts = [
+        'Male' => 0,
+        'Female' => 0,
+        'Others' => 0,
+    ];
     public $basicSearch = '';
     public $piSearch = '';
     public $allInfoSearch = '';
@@ -24,6 +28,7 @@ class AnalyticsHub extends Component
     public $filteredGenderWise;
     public $filteredResignees;
     public $peopleFound = true;
+    public $filteredGenderCounts = [];
 
     public function selectCard($card)
     {
@@ -42,7 +47,18 @@ class AnalyticsHub extends Component
         $hrId = auth()->guard('hr')->user()->emp_id;
         $employee = EmployeeDetails::find($hrId);
         $empCompanyId = $employee->company_id;
-        $this->filteredEmployees = EmployeeDetails::whereJsonContains('company_id', $empCompanyId)
+        $employeeId = auth()->guard('hr')->user()->emp_id;
+
+        // Fetch the company_ids for the logged-in employee
+        $companyIds = EmployeeDetails::where('emp_id', $employeeId)->value('company_id');
+
+        // Check if companyIds is an array; decode if it's a JSON string
+        $companyIdsArray = is_array($companyIds) ? $companyIds : json_decode($companyIds, true);
+        $this->filteredEmployees = EmployeeDetails::where(function($query) use ($companyIdsArray) {
+            foreach ($companyIdsArray as $companyId) {
+                $query->orWhereJsonContains('company_id', $companyId);
+            }
+        })
         ->where('employee_status', 'active')
         ->when($this->basicSearch, function ($query) {
             $query->where(function ($subQuery) {
@@ -59,9 +75,20 @@ class AnalyticsHub extends Component
         $hrId = auth()->guard('hr')->user()->emp_id;
         $employee = EmployeeDetails::find($hrId);
         $empCompanyId = $employee->company_id;
+        $employeeId = auth()->guard('hr')->user()->emp_id;
+
+            // Fetch the company_ids for the logged-in employee
+            $companyIds = EmployeeDetails::where('emp_id', $employeeId)->value('company_id');
+
+            // Check if companyIds is an array; decode if it's a JSON string
+            $companyIdsArray = is_array($companyIds) ? $companyIds : json_decode($companyIds, true);
        
         $this->filteredPI =  EmployeeDetails::with('empPersonalInfo')
-        ->whereJsonContains('company_id', $empCompanyId)
+        ->where(function($query) use ($companyIdsArray) {
+            foreach ($companyIdsArray as $companyId) {
+                $query->orWhereJsonContains('company_id', $companyId);
+            }
+        })
         ->where('employee_status','active')
         ->when($this->piSearch, function ($query) {
             $query->where(function ($subQuery) {
@@ -77,8 +104,19 @@ class AnalyticsHub extends Component
         $hrId = auth()->guard('hr')->user()->emp_id;
         $employee = EmployeeDetails::find($hrId);
         $empCompanyId = $employee->company_id;
+        $employeeId = auth()->guard('hr')->user()->emp_id;
+
+            // Fetch the company_ids for the logged-in employee
+            $companyIds = EmployeeDetails::where('emp_id', $employeeId)->value('company_id');
+
+            // Check if companyIds is an array; decode if it's a JSON string
+            $companyIdsArray = is_array($companyIds) ? $companyIds : json_decode($companyIds, true);
         $this->filteredAllInfo = EmployeeDetails::with('empPersonalInfo')
-        ->whereJsonContains('company_id', $empCompanyId)
+        ->where(function($query) use ($companyIdsArray) {
+            foreach ($companyIdsArray as $companyId) {
+                $query->orWhereJsonContains('company_id', $companyId);
+            }
+        })
         ->where('employee_status','active')
         ->when($this->allInfoSearch, function ($query) {
             $query->where(function ($subQuery) {
@@ -91,27 +129,73 @@ class AnalyticsHub extends Component
         ->get();
         $this->peopleFound = count($this->filteredAllInfo) > 0;
     }
-    public function filterGenderWise(){
+    public function filterGenderWise()
+    {
         $hrId = auth()->guard('hr')->user()->emp_id;
         $employee = EmployeeDetails::find($hrId);
         $empCompanyId = $employee->company_id;
-        $this->filteredGenderWise = EmployeeDetails::whereJsonContains('company_id', $empCompanyId)
-        ->where('employee_status', 'active')
-        ->when($this->genderSearch, function ($query) {
-            $query->where(function ($subQuery) {
-                $subQuery->where('emp_id', 'like', "%{$this->genderSearch}%")
-                          ->orWhere(DB::raw("CONCAT(first_name, ' ', last_name)"), 'like', "%{$this->genderSearch}%")
-                          ->orWhere('gender', 'like', "%{$this->genderSearch}%")
-                          ->orWhere('email', 'like', "%{$this->genderSearch}%");
-            });
+        $employeeId = auth()->guard('hr')->user()->emp_id;
+
+            // Fetch the company_ids for the logged-in employee
+            $companyIds = EmployeeDetails::where('emp_id', $employeeId)->value('company_id');
+
+            // Check if companyIds is an array; decode if it's a JSON string
+            $companyIdsArray = is_array($companyIds) ? $companyIds : json_decode($companyIds, true);
+    
+        // Get all gender counts
+        $genderWiseCount = EmployeeDetails::where(function($query) use ($companyIdsArray) {
+            foreach ($companyIdsArray as $companyId) {
+                $query->orWhereJsonContains('company_id', $companyId);
+            }
         })
-        ->get();
-        $this->peopleFound = count($this->filteredGenderWise) > 0;
+            ->selectRaw('gender, COUNT(*) as count')
+            ->groupBy('gender')
+            ->where('employee_status', 'active');
+    
+        // Fetch gender data
+        $genderWiseCount = $genderWiseCount->get();
+    
+        // Initialize gender counts
+        $this->filteredGenderCounts = [
+            'Male' => 0,
+            'Female' => 0,
+            'Others' => 0,
+        ];
+    
+        // Populate counts based on actual data
+        foreach ($genderWiseCount as $genderCount) {
+            if (in_array($genderCount->gender, ['Male', 'Female'])) {
+                $this->filteredGenderCounts[$genderCount->gender] += $genderCount->count;
+            } else {
+                $this->filteredGenderCounts['Others'] += $genderCount->count;
+            }
+        }
+    
+        // Filter based on the search term
+        if ($this->genderSearch) {
+            $searchTerm = strtolower(trim($this->genderSearch));
+            $this->filteredGenderCounts = array_filter($this->filteredGenderCounts, function($count, $key) use ($searchTerm) {
+                return (stripos($key, $searchTerm) !== false) || (strval($count) === $searchTerm);
+            }, ARRAY_FILTER_USE_BOTH);
+        }
     }
+    
+    
+    public function mount()
+{
+    $this->filterGenderWise(); // Load all data initially
+}
     public function filterResignees(){
         $hrId = auth()->guard('hr')->user()->emp_id;
         $employee = EmployeeDetails::find($hrId);
         $empCompanyId = $employee->company_id;
+        $employeeId = auth()->guard('hr')->user()->emp_id;
+
+            // Fetch the company_ids for the logged-in employee
+            $companyIds = EmployeeDetails::where('emp_id', $employeeId)->value('company_id');
+
+            // Check if companyIds is an array; decode if it's a JSON string
+            $companyIdsArray = is_array($companyIds) ? $companyIds : json_decode($companyIds, true);
         $this->filteredResignees = EmployeeDetails::with('empResignations')
         ->whereHas('empResignations', function($query) {
             $lastMonthStart = Carbon::now()->subMonth()->startOfMonth();
@@ -120,7 +204,11 @@ class AnalyticsHub extends Component
             $query->whereBetween('emp_resignations.last_working_day', [$lastMonthStart, $currentDate])
                   ->whereColumn('employee_details.emp_id', 'emp_resignations.emp_id');
         })
-        ->whereJsonContains('company_id', $empCompanyId)
+        ->where(function($query) use ($companyIdsArray) {
+            foreach ($companyIdsArray as $companyId) {
+                $query->orWhereJsonContains('company_id', $companyId);
+            }
+        })
         ->when($this->resigneesSearch, function ($query) {
             $query->where(function ($subQuery) {
                 $subQuery->where('emp_id', 'like', "%{$this->resigneesSearch}%")
@@ -138,31 +226,46 @@ class AnalyticsHub extends Component
         $hrId = auth()->guard('hr')->user()->emp_id;
         $employee = EmployeeDetails::find($hrId);
         $empCompanyId = $employee->company_id;
+        $employeeId = auth()->guard('hr')->user()->emp_id;
 
-        $employees = EmployeeDetails::whereJsonContains('company_id', $empCompanyId)
+            // Fetch the company_ids for the logged-in employee
+            $companyIds = EmployeeDetails::where('emp_id', $employeeId)->value('company_id');
+
+            // Check if companyIds is an array; decode if it's a JSON string
+            $companyIdsArray = is_array($companyIds) ? $companyIds : json_decode($companyIds, true);
+
+        $employees = EmployeeDetails::where(function($query) use ($companyIdsArray) {
+            foreach ($companyIdsArray as $companyId) {
+                $query->orWhereJsonContains('company_id', $companyId);
+            }
+        })
         ->where('employee_status','active')->get();
 
         $employeesPersonal = EmployeeDetails::with('empPersonalInfo')
-        ->whereJsonContains('company_id', $empCompanyId)
-        ->where('employee_status','active')->get();
-
-        $genderWiseCount =EmployeeDetails::whereJsonContains('company_id', $empCompanyId)
-        ->selectRaw('gender, COUNT(*) as count')
-    ->groupBy('gender')
-        ->where('employee_status','active')->get();
-        $this->genderCounts = [
-            'Male' => 0,
-            'Female' => 0,
-            'Others' => 0, // This will be used if there are any unexpected gender entries
-        ];
-
-        foreach ($genderWiseCount as $genderCount) {
-            if (in_array($genderCount->gender, ['Male', 'Female'])) {
-                $this->genderCounts[$genderCount->gender] += $genderCount->count;
-            } else {
-                $this->genderCounts['Others'] += $genderCount->count;
+       ->where(function($query) use ($companyIdsArray) {
+            foreach ($companyIdsArray as $companyId) {
+                $query->orWhereJsonContains('company_id', $companyId);
             }
-        }
+        })
+        ->where('employee_status','active')->get();
+
+    //     $genderWiseCount =EmployeeDetails::whereJsonContains('company_id', $empCompanyId)
+    //     ->selectRaw('gender, COUNT(*) as count')
+    // ->groupBy('gender')
+    //     ->where('employee_status','active')->get();
+    //     $this->genderCounts = [
+    //         'Male' => 0,
+    //         'Female' => 0,
+    //         'Others' => 0, // This will be used if there are any unexpected gender entries
+    //     ];
+
+    //     foreach ($genderWiseCount as $genderCount) {
+    //         if (in_array($genderCount->gender, ['Male', 'Female'])) {
+    //             $this->genderCounts[$genderCount->gender] += $genderCount->count;
+    //         } else {
+    //             $this->genderCounts['Others'] += $genderCount->count;
+    //         }
+    //     }
  
     $resigneeEmployees = EmployeeDetails::with('empResignations')
     ->whereHas('empResignations', function($query) {
@@ -172,7 +275,11 @@ class AnalyticsHub extends Component
         $query->whereBetween('emp_resignations.last_working_day', [$lastMonthStart, $currentDate])
               ->whereColumn('employee_details.emp_id', 'emp_resignations.emp_id');
     })
-    ->whereJsonContains('company_id', $empCompanyId)
+    ->where(function($query) use ($companyIdsArray) {
+        foreach ($companyIdsArray as $companyId) {
+            $query->orWhereJsonContains('company_id', $companyId);
+        }
+    })
     ->get();
 
 
@@ -187,7 +294,7 @@ class AnalyticsHub extends Component
         'personalInformationData' => $personalInformationData,
         'resigneesData' => $resigneesData,
         'allInfoData' => $allInfoData,
-        'genderWiseData' => $genderWiseData,
+        'genderWiseData' => $this->filteredGenderCounts,
     ]);
     }
     public function addEmployee()
