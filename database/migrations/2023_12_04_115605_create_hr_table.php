@@ -15,47 +15,28 @@ return new class extends Migration
         Schema::create('hr', function (Blueprint $table) {
             $table->id();
             $table->string('hr_emp_id')->nullable()->default(null)->unique();
-            $table->string('company_id');
-            $table->string('employee_name');
-            $table->string('image');
-            $table->string('position');
-            $table->string('department');
-            $table->string('email')->unique();
-            $table->string('company_email');
-            $table->string('phone_number');
-            $table->string('emergency_contact_number');
-            $table->date('date_of_birth');
-            $table->string('address');
-            $table->string('nationality');
-            $table->string('marital_status');
-            $table->string('gender');
-            $table->string('tax_id');
+            $table->string('emp_id');
             $table->string('password');
-            $table->decimal('salary', 10, 2);
-            $table->date('joining_date');
             $table->boolean('is_active')->default(true);
-            $table->foreign('company_id')
-                ->references('company_id') // Assuming the primary key of the companies table is 'id'
-                ->on('companies')
+            $table->tinyInteger('role')->default(0); // Role column: 0 = user, 1 = admin, 2 = super admin (or other roles)
+            $table->timestamps();
+            $table->foreign('emp_id')
+                ->references('emp_id') // Assuming the primary key of the companies table is 'id'
+                ->on('employee_details')
                 ->onDelete('restrict')
                 ->onUpdate('cascade');
-            $table->timestamps();
         });
 
-
         $triggerSQL = <<<SQL
-        CREATE TRIGGER generate_hr_emp_id BEFORE INSERT ON hr FOR EACH ROW
+        CREATE TRIGGER generate_hr_emp_id BEFORE INSERT ON hr
+        FOR EACH ROW
         BEGIN
-            -- Check if bill_number is NULL
             IF NEW.hr_emp_id IS NULL THEN
-                -- Find the maximum bill_number value in the bills table
-                SET @max_id := IFNULL((SELECT MAX(CAST(SUBSTRING(hr_emp_id, 3) AS UNSIGNED)) + 1 FROM hr), 100000);
-
-                -- Increment the max_id and assign it to the new bill_number
-                SET NEW.hr_emp_id = CONCAT('HR', LPAD(@max_id, 6, '0'));
+                SET @max_id := IFNULL((SELECT MAX(CAST(SUBSTRING(hr_emp_id, 4) AS UNSIGNED)) + 1 FROM hr), 10000);
+                SET NEW.hr_emp_id = CONCAT('HR-', LPAD(@max_id, 5, '0'));
             END IF;
         END;
-    SQL;
+        SQL;
 
         DB::unprepared($triggerSQL);
     }
@@ -65,6 +46,10 @@ return new class extends Migration
      */
     public function down(): void
     {
+        // Drop the trigger before dropping the table
+        DB::unprepared('DROP TRIGGER IF EXISTS generate_hr_emp_id;');
+
+        // Now drop the table
         Schema::dropIfExists('hr');
     }
 };

@@ -47,17 +47,12 @@ Route::middleware(['checkauth'])->group(function () {
 });
 
 Route::middleware(['auth:hr'])->group(function () {
-    // Root route, protected by auth:hr middleware
-    // Route::get('/', Dashboard::class)->name('dashboard');
-    Route::get('/', function () {
-        return redirect('/hr/dashboard');
-    });
-    Route::get('/hr/dashboard', HomeDashboard::class)->name('admin-home');
+
+    Route::get('/', HomeDashboard::class)->name('admin-home');
     // Group routes under the 'hr' prefix
     Route::prefix('hr')->group(function () {
 
-        //like this  Route: /hr/hello
-        Route::get('/hello', Dashboard::class)->name('hello');
+
         //home page routes
         Route::get('/add-employee-details/{employee?}', AddEmployeeDetails::class)->name('add-employee-details');
         Route::get('/update-employee-details', UpdateEmployeeDetails::class)->name('update-employee-details');
@@ -85,7 +80,7 @@ Route::middleware(['auth:hr'])->group(function () {
         //HR Leave-Infomation Submodule Routes
         Route::get('/user/employee-leave', EmployeeLeave::class)->name('employee-leave');
 
-    //HR Leave Related Routes
+        //HR Leave Related Routes
 
         //HR Leave-Main Submodule Routes
         Route::get('/user/leave-overview', HrLeaveOverview::class)->name('leave-overview');
