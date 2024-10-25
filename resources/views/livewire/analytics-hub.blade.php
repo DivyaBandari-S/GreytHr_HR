@@ -5,6 +5,22 @@
             <span class="analytic-right" wire:click="analyticsHubList">View All</span>
         </div>
         <div class="analytic-content-row">
+
+            {{-- @foreach($recentCards as $card)
+            <div class="analytic-content-box"
+                wire:click="selectCard('{{ $card }}')">
+                <span class="analytic-icon">&#9734;</span>
+                <span class="analytic-text">{{ $card }}</span>
+            </div>
+        @endforeach --}}
+        {{-- @foreach ($dynamicCards as $card)
+    <div class="analytic-content-box @if ($selectedCard == $card) analytic-highlighted @endif"
+         wire:click="selectCard('{{ $card }}')">
+        <span class="analytic-icon">&#9734;</span>
+        <span class="analytic-text">{{ $card }}</span>
+    </div>
+@endforeach --}}
+
             <div class="analytic-content-box @if ($selectedCard == 'Basic Information') analytic-highlighted @endif"
                 wire:click="selectCard('Basic Information')">
                 <span class="analytic-icon">&#9734;</span>
@@ -60,7 +76,7 @@
                 <table class="analytic-table">
                     <thead>
                         <tr>
-                            <th>Emp ID <i class="fa-sharp fa-solid fa-arrow-up"></i></th>
+                            <th>Emp ID <i class="bx bx-up-arrow-alt analytic-up-arrow"></i></th>
                             <th>Emp Name</th>
                             <th>DOJ</th>
                             <th>Gender</th>
@@ -90,7 +106,7 @@
                                     @else
                                     @endif
                                 </td>
-                                <td class="analytic-grey-text">{{ $employee->gender }}</td>
+                                <td class="analytic-grey-text">{{ ucwords(strtolower($employee->gender)) }}</td>
                                 <td class="analytic-grey-text">{{ $employee->email }}</td>
                             </tr>
                         @endforeach
@@ -114,7 +130,7 @@
                 <table class="analytic-table">
                     <thead>
                         <tr>
-                            <th>Emp Id <i class="fa-sharp fa-solid fa-arrow-up"></i></th>
+                            <th>Emp Id <i class="bx bx-up-arrow-alt analytic-up-arrow"></i></th>
                             <th>Emp Name</th>
                             <th>DOJ</th>
                             <th>Gender</th>
@@ -148,7 +164,7 @@
                                     @else
                                     @endif
                                 </td>
-                                <td class="analytic-grey-text">{{ $employee->gender ?? '' }}</td>
+                                <td class="analytic-grey-text">{{ ucwords(strtolower($employee->gender))?? '' }}</td>
                                 <td class="analytic-grey-text">
                                     @if ($personalInfo && $personalInfo->date_of_birth)
                                         {{ \Carbon\Carbon::parse($personalInfo->date_of_birth)->format('d M Y') }}
@@ -203,7 +219,7 @@
             <table class="analytic-table">
                 <thead>
                     <tr>
-                        <th>Emp ID <i class="fa-sharp fa-solid fa-arrow-up"></i></th>
+                        <th>Emp ID <i class="bx bx-up-arrow-alt analytic-up-arrow"></i></th>
                         <th>Emp Name</th>
                         <th>DOJ</th>
                         <th>Gender</th>
@@ -238,7 +254,7 @@
                                 @else
                                 @endif
                             </td>
-                            <td class="analytic-grey-text">{{ $employee->gender }}</td>
+                            <td class="analytic-grey-text">{{ ucwords(strtolower($employee->gender))}}</td>
                             <td class="analytic-grey-text">
                                 @if ($personalInfo && $personalInfo->date_of_birth)
                                     {{ \Carbon\Carbon::parse($personalInfo->date_of_birth)->format('d M Y') }}
@@ -268,24 +284,29 @@
             <table class="analytic-table">
                 <thead>
                     <tr>
-                        <th>Group <i class="fa-sharp fa-solid fa-arrow-up"></i></th>
-                        <th>Count(Emp ID) <i class="fa-sharp fa-solid fa-arrow-up"></i></th>
+                        <th>Group <i class='bx bx-up-arrow-alt analytic-up-arrow' ></i></th>
+                        <th>Count(Emp ID) <i class='bx bx-up-arrow-alt analytic-up-arrow' ></i></th>
                     </tr>
                 </thead>
                 <tbody>
+                    @if (count($filteredGenderCounts) === 0)
                     <tr>
-                        <td class="analytic-grey-text">Others</td>
-                        <td class="analytic-grey-text">{{ $genderCounts['Others'] }}</td>
+                        <td colspan="2" class="text-center">
+                            <img class="analytic-no-items-found"
+                                src="https://media.istockphoto.com/id/1357284048/vector/no-item-found-vector-flat-icon-design-illustration-web-and-mobile-application-symbol-on.jpg?s=612x612&w=0&k=20&c=j0V0ww6uBl1LwQLH0U9L7Zn81xMTZCpXPjH5qJo5QyQ="
+                                alt="No items found">
+                        </td>
                     </tr>
-                    <tr>
-                        <td class="analytic-grey-text">Male</td>
-                        <td class="analytic-grey-text">{{ $genderCounts['Male'] }}</td>
-                    </tr>
-                    <tr>
-                        <td class="analytic-grey-text">Female</td>
-                        <td class="analytic-grey-text">{{ $genderCounts['Female'] }}</td>
-                    </tr>
+                    @else
+                        @foreach ($filteredGenderCounts as $gender => $count)
+                            <tr>
+                                <td class="analytic-grey-text">{{ $gender }}</td>
+                                <td class="analytic-grey-text">{{ $count }}</td>
+                            </tr>
+                        @endforeach
+                    @endif
                 </tbody>
+                
             </table>
         </div>
             @elseif($selectedCard == 'Recent Resignees')
@@ -303,7 +324,7 @@
             <table class="analytic-table">
                 <thead>
                     <tr>
-                        <th>Emp ID <i class="fa-sharp fa-solid fa-arrow-up"></i></th>
+                        <th>Emp ID <i class='bx bx-up-arrow-alt analytic-up-arrow'></i></th>
                         <th>Emp Name</th>
                         <th>DOJ</th>
                         <th>Gender</th>
@@ -339,7 +360,7 @@
                                 @else
                                 @endif
                             </td>
-                            <td class="analytic-grey-text">{{ $employee->gender }}</td>
+                            <td class="analytic-grey-text">{{ ucwords(strtolower($employee->gender))}}</td>
                             <td class="analytic-grey-text">
                                 @if ($empResignations && $empResignations->last_working_day)
                                     {{ \Carbon\Carbon::parse($empResignations->last_working_day)->format('d M Y') }}

@@ -41,7 +41,6 @@ class EmployeeProfile extends Component
     public $cc_to;
     public $peoples;
     public $peopleData =[];
-    public $employee;
     public $filteredPeoples;
     public $selectedPeopleNames = [];
     public $selectedPeople = [];
@@ -263,7 +262,7 @@ class EmployeeProfile extends Component
     
         // Fetch employee details including related empPersonalInfo
         $employee = EmployeeDetails::with('empPersonalInfo')->find($emp_id);
-    
+  
         if ($employee) {
             // Access personalInfo data using the relationship
             $personalInfo = $employee->empPersonalInfo;
@@ -272,7 +271,7 @@ class EmployeeProfile extends Component
             $this->title = $personalInfo->title ?? '';  // Use relationship data
             $this->nickName = $personalInfo->nick_name ?? '';
             $this->gender = $employee->gender ?? '';
-            $this->name = $employee->first_name . ' ' . $employee->last_name ?? ''; // Combine first and last name
+            $this->name = $employee->first_name . ' ' . $employee->last_name ?? '';
             $this->emergency_contact = $employee->emergency_contact ?? '';
             $this->Email = $employee->email ?? '';
             $this->extension = $employee->extension ?? '';
@@ -282,72 +281,72 @@ class EmployeeProfile extends Component
 
     
     public function saveProfile($emp_id)
-{
-    try {
-        // Fetch employee details along with empPersonalInfo
-        $employee = EmployeeDetails::with('empPersonalInfo')->find($emp_id);
-
-        if ($employee) {
-            // Split name into first_name and last_name (handling multiple last name parts)
-            $nameParts = explode(' ', $this->name);
-            $firstName = ucfirst(strtolower(array_shift($nameParts))); // First name is the first part
-            $lastName = implode(' ', array_map('ucfirst', array_map('strtolower', $nameParts))); // Remaining parts as last name
-
-            // Check for duplicate email
-            if ($this->Email !== '') {
-                $existingEmail = EmployeeDetails::where('email', $this->Email)
-                    ->where('emp_id', '!=', $emp_id) // Exclude the current employee
-                    ->first();
-
-                if ($existingEmail) {
-                    session()->flash('error', 'This email is already taken by another employee.');
-                    return;  // Stop further execution
+    {
+        try {
+            // Fetch employee details along with empPersonalInfo
+            $employee = EmployeeDetails::with('empPersonalInfo')->find($emp_id);
+    
+            if ($employee) {
+                // Split name into first_name and last_name if necessary
+                $nameParts = explode(' ', $this->name);
+                $firstName = $nameParts[0];
+                $lastName = isset($nameParts[1]) ? $nameParts[1] : '';
+    
+                // Check for duplicate email
+                if ($this->Email !== '') {
+                    $existingEmail = EmployeeDetails::where('email', $this->Email)
+                        ->where('emp_id', '!=', $emp_id) // Exclude the current employee
+                        ->first();
+    
+                    if ($existingEmail) {
+                        session()->flash('error', 'This email is already taken by another employee.');
+                        return;  // Stop further execution
+                    }
                 }
-            }
-
-            // Check for duplicate mobile number (emergency_contact)
-            if ($this->emergency_contact !== '') {
-                $existingMobile = EmployeeDetails::where('emergency_contact', $this->emergency_contact)
-                    ->where('emp_id', '!=', $emp_id) // Exclude the current employee
-                    ->first();
-
-                if ($existingMobile) {
-                    session()->flash('error', 'This mobile number is already taken by another employee.');
-                    return;  // Stop further execution
+    
+                // Check for duplicate mobile number (emergency_contact)
+                if ($this->emergency_contact !== '') {
+                    $existingMobile = EmployeeDetails::where('emergency_contact', $this->emergency_contact)
+                        ->where('emp_id', '!=', $emp_id) // Exclude the current employee
+                        ->first();
+    
+                    if ($existingMobile) {
+                        session()->flash('error', 'This mobile number is already taken by another employee.');
+                        return;  // Stop further execution
+                    }
                 }
+    
+                // Update EmployeeDetails fields
+                $employee->gender = $this->gender;
+                $employee->first_name = $firstName;
+                $employee->last_name = $lastName;
+                $employee->emergency_contact = $this->emergency_contact;
+                $employee->email = $this->Email === '' ? null : $this->Email; // Temporarily assign null if empty
+                $employee->extension = $this->extension;
+                $employee->save();
+    
+                // Update empPersonalInfo fields if it exists
+                $personalInfo = $employee->empPersonalInfo;
+                if ($personalInfo) {
+                    $personalInfo->title = $this->title;
+                    $personalInfo->nick_name = $this->nickName;
+                    $personalInfo->save();
+                } else {
+                    // Optionally, create new personal info if it doesn't exist
+                    EmpPersonalInfo::create([
+                        'emp_id' => $emp_id,
+                        'title' => $this->title,
+                        'nick_name' => $this->nickName,
+                    ]);
+                }
+    
+                $this->currentEditingProfileId = null; // Exit edit mode after saving
+              
             }
-
-            // Update EmployeeDetails fields
-            $employee->gender = $this->gender;
-            $employee->first_name = $firstName;
-            $employee->last_name = $lastName;
-            $employee->emergency_contact = $this->emergency_contact;
-            $employee->email = $this->Email === '' ? null : $this->Email; // Temporarily assign null if empty
-            $employee->extension = $this->extension;
-            $employee->save();
-
-            // Update empPersonalInfo fields if it exists
-            $personalInfo = $employee->empPersonalInfo;
-            if ($personalInfo) {
-                $personalInfo->title = $this->title;
-                $personalInfo->nick_name = $this->nickName;
-                $personalInfo->save();
-            } else {
-                // Optionally, create new personal info if it doesn't exist
-                EmpPersonalInfo::create([
-                    'emp_id' => $emp_id,
-                    'title' => $this->title,
-                    'nick_name' => $this->nickName,
-                ]);
-            }
-
-            $this->currentEditingProfileId = null; // Exit edit mode after saving
+        } catch (\Exception $e) {
+            session()->flash('error', 'An error occurred while creating new record. Please try again.');
         }
-    } catch (\Exception $e) {
-        session()->flash('error', 'An error occurred while creating new record. Please try again.');
     }
-}
-
     
     
     
@@ -523,7 +522,7 @@ class EmployeeProfile extends Component
     
         // Set the component's employee data
         $this->employees = $employees;
-        $this->employeess = EmployeeDetails::whereJsonContains('company_id', $companyID)
+        $this->employeess = EmployeeDetails::where('company_id', $companyID)
         ->orderBy('hire_date', 'desc') // Order by hire_date descending
       
         ->take(5) // Limit to 5 records

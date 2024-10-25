@@ -290,117 +290,89 @@ aria-describedby="basic-addon1"
     <div class="row align-items-center bg-white">
     <div class="card mx-auto mt-3" style="width: 70%; height: auto;">
     <div class="card-header d-flex justify-content-between align-items-center" style="font-size: 15px; background:white;">
-        <p class="mb-0" style="font-weight: 500;">Parent Information</p>
+        <p class="mb-0" style="font-weight: 500;">Bank/PF/ESI</p>
         <div style="font-size: 14px;">
             <i>
-                @if($currentEditingParentProfile == $employee->emp_id)
-                    <i wire:click="cancelParentProfile('{{ $employee->emp_id }}')" class="bx bx-x me-1" style="cursor: pointer;"></i>
-                    <i wire:click="saveParentProfile('{{ $employee->emp_id }}')" class="bx bx-save" style="cursor: pointer;"></i>
+                @if($currentEditingBankProfile == $employee->emp_id)
+                    <i wire:click="cancelBankProfile('{{ $employee->emp_id }}')" class="bx bx-x me-1" style="cursor: pointer;"></i>
+                    <i wire:click="saveBankProfile('{{ $employee->emp_id }}')" class="bx bx-save" style="cursor: pointer;"></i>
                 @else
-                    <i wire:click="editParentProfile('{{ $employee->emp_id }}')" class="bx bx-edit ml-auto" style="cursor: pointer;"></i>
+                    <i wire:click="editBankProfile('{{ $employee->emp_id }}')" class="bx bx-edit ml-auto" style="cursor: pointer;"></i>
                 @endif
             </i>
         </div>
     </div>
 
 
+
+   
+
+
+
+        <!-- Mother's Address Field -->
+  
+        
+ <div class="card-row">
+        <!-- Bank Name Field -->
+        <div class="col-md-3 edit-headings">Bank Name
+            @if($currentEditingBankProfile == $employee->emp_id)
+                <div class="mb-2">
+                    <input type="text" class="form-control mt-1 input-width" wire:model="BankName" placeholder="Bank Name">
+                </div>
+            @else
+                <div class="editprofile mb-3">{{ $employee->empBankDetails->bank_name ?? '-' }}</div>
+            @endif
+        </div>
+
+        <!-- Bank Branch Field -->
+        <div class="col-md-3 edit-headings">Bank Branch
+            @if($currentEditingBankProfile == $employee->emp_id)
+                <div class="mb-2">
+                    <input type="text" class="form-control mt-1 input-width" wire:model="BankBranch" placeholder="Bank Branch">
+                </div>
+            @else
+                <div class="editprofile mb-3">{{ $employee->empBankDetails->bank_branch ?? '-' }}</div>
+            @endif
+        </div>
+
+        <!-- IFSC Code Field -->
+        <div class="col-md-3 edit-headings">IFSC Code
+            @if($currentEditingBankProfile == $employee->emp_id)
+                <div class="mb-2">
+                    <input type="text" class="form-control mt-1 input-width" wire:model="IFSCCode" placeholder="IFSC Code">
+                </div>
+            @else
+                <div class="editprofile mb-3">{{ $employee->empBankDetails->ifsc_code ?? '-' }}</div>
+            @endif
+        </div>
+
+        <!-- Bank Account Number Field -->
+        <div class="col-md-3 edit-headings">Bank Account Number
+            @if($currentEditingBankProfile == $employee->emp_id)
+                <div class="mb-2">
+                    <input type="text" class="form-control mt-1 input-width" wire:model="BankAccountNumber" placeholder="Bank Account Number">
+                </div>
+            @else
+                <div class="editprofile mb-3">{{ $employee->empBankDetails->account_number ?? '-' }}</div>
+            @endif
+        </div>
+    </div>
+
     <div class="card-row">
-            <!-- Father's First Name Field -->
-            <div class="col-md-3 edit-headings">Father's First Name
-                @if($currentEditingParentProfile == $employee->emp_id)
-                    <div class="mb-2">
-                        <input type="text" class="form-control mt-1 input-width" wire:model="FatherFirstName" placeholder="Father's First Name">
-                    </div>
-                @else
-                    <div class="editprofile mb-3">{{ $employee->empParentDetails->father_first_name ?? '-' }}</div>
-                @endif
-            </div>
-
-            <!-- Father's Last Name Field -->
-            <div class="col-md-3 edit-headings">Father's Last Name
-                @if($currentEditingParentProfile == $employee->emp_id)
-                    <div class="mb-2">
-                        <input type="text" class="form-control mt-1 input-width" wire:model="FatherLastName" placeholder="Father's Last Name">
-                    </div>
-                @else
-                    <div class="editprofile mb-3">{{ $employee->empParentDetails->father_last_name ?? '-' }}</div>
-                @endif
-            </div>
-
-            <!-- Father's DOB Field -->
-            <div class="col-md-3 edit-headings">Father's DOB
-                @if($currentEditingParentProfile == $employee->emp_id)
-                    <div class="mb-2">
-                        <input type="date" class="form-control mt-1 input-width" wire:model="FatherDOB" placeholder="Father's DOB">
-                    </div>
-                @else
-                    <div class="editprofile mb-3">
-                        {{ isset($employee->empParentDetails->father_dob) ? \Carbon\Carbon::parse($employee->empParentDetails->father_dob)->format('d/m/Y') : '-' }}
-                    </div>
-                @endif
-            </div>
-            <div class="col-md-3 edit-headings">Father's Address
-                @if($currentEditingParentProfile == $employee->emp_id)
-                    <div class="mb-2">
-                        <input type="text" class="form-control mt-1 input-width" wire:model="FatherAddress" placeholder="Fatther's Address">
-                    </div>
-                @else
-                    <div class="editprofile mb-3">
-                        {{ $employee->empParentDetails->father_address ?? '-' }}
-                    </div>
-                @endif
-            </div>
+        <!-- Bank Address Field -->
+        <div class="col-md-3 edit-headings">Bank Address
+            @if($currentEditingBankProfile == $employee->emp_id)
+                <div class="mb-2">
+                    <input type="text" class="form-control mt-1 input-width" wire:model="BankAddress" placeholder="Bank Address">
+                </div>
+            @else
+                <div class="editprofile mb-3">{{ $employee->empBankDetails->bank_address ?? '-' }}</div>
+            @endif
         </div>
-
-        <div class="card-row">
-            <!-- Mother's First Name Field -->
-            <div class="col-md-3 edit-headings">Mother's First Name
-                @if($currentEditingParentProfile == $employee->emp_id)
-                    <div class="mb-2">
-                        <input type="text" class="form-control mt-1 input-width" wire:model="MotherFirstName" placeholder="Mother's First Name">
-                    </div>
-                @else
-                    <div class="editprofile mb-3">{{ $employee->empParentDetails->mother_first_name ?? '-' }}</div>
-                @endif
-            </div>
-
-            <!-- Mother's Last Name Field -->
-            <div class="col-md-3 edit-headings">Mother's Last Name
-                @if($currentEditingParentProfile == $employee->emp_id)
-                    <div class="mb-2">
-                        <input type="text" class="form-control mt-1 input-width" wire:model="MotherLastName" placeholder="Mother's Last Name">
-                    </div>
-                @else
-                    <div class="editprofile mb-3">{{ $employee->empParentDetails->mother_last_name ?? '-' }}</div>
-                @endif
-            </div>
-
-            <!-- Mother's DOB Field -->
-            <div class="col-md-3 edit-headings">Mother's DOB
-                @if($currentEditingParentProfile == $employee->emp_id)
-                    <div class="mb-2">
-                        <input type="date" class="form-control mt-1 input-width" wire:model="MotherDOB" placeholder="Mother's DOB">
-                    </div>
-                @else
-                    <div class="editprofile mb-3">
-                        {{ isset($employee->empParentDetails->mother_dob) ? \Carbon\Carbon::parse($employee->empParentDetails->mother_dob)->format('d/m/Y') : '-' }}
-                    </div>
-                @endif
-            </div>
-            <div class="col-md-3 edit-headings">Mother's Address
-                @if($currentEditingParentProfile == $employee->emp_id)
-                    <div class="mb-2">
-                        <input type="text" class="form-control mt-1 input-width" wire:model="MotherAddress" placeholder="Mother's Address">
-                    </div>
-                @else
-                    <div class="editprofile mb-3">
-                        {{ $employee->empParentDetails->mother_address ?? '-' }}
-                    </div>
-                @endif
-            </div>
-        </div>
+    </div>
 
 </div>
+
 
 
 

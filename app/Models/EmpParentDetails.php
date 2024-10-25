@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class EmpParentDetails extends Model
 {
     use HasFactory;
+    protected $table = 'emp_parent_details';
     protected $fillable = [
         'emp_id',
         'father_first_name',

@@ -15,14 +15,10 @@ class CheckAuth
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if(auth()->guard('hr')->check())
-        {
-            return redirect()->route('hello');
-
+        if (auth()->guard('hr')->check()) {
+            return redirect()->route('home');
+        } else {
+            return $next($request);
         }
-        else{
-          return $next($request);
-
-          }
-   }
+    }
 }

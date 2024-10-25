@@ -21,9 +21,7 @@
                     <p class="main-overview-text">The page guides you through an overview of your organization's
                         day-to-day
                         HR activities including lifecycle events like additions, seperations, etc</p>
-                    <p class="main-overview-text">Explore greytHR by <span class="main-overview-highlited-text">
-                            Help-Doc</span>, watching<span class="main-overview-highlited-text"> How-to Videos</span>
-                        and<span class="main-overview-highlited-text"> FAQ</span>.</p>
+
                 </div>
                 <div class="hide-main-overview-help col-1">
                     <span wire:click="showhelp">Show Help</span>
@@ -47,7 +45,9 @@
                     <div class="border rounded p-3 bg-white">
                         <h2 class="main-overview-heading-text">Employees Login
                             Stats of 2 Months</h2>
-                        <h2 class="main-overview-subheading-text"><span class="main-overview-red-text">{{$data['percentageChangeText']}}</span> vs Previous month</h2>
+                        <h2 class="main-overview-subheading-text"><span
+                                class="main-overview-red-text">{{ $data['percentageChangeText'] }}</span> vs Previous
+                            month</h2>
                         <canvas id="swipeRecordChart" height="200"></canvas>
                     </div>
                 </div>
@@ -63,7 +63,9 @@
                             {{ $hrRequestSolvedCount }}</h2>
                         <h2 class="main-overview-heading-text">HelpDesk Stats
                             of 3 Months</h2>
-                        <h2 class="main-overview-subheading-text"><span class="main-overview-green-text">{{$percentageChangeText}}</span> vs Previous month</h2>
+                        <h2 class="main-overview-subheading-text"><span
+                                class="main-overview-green-text">{{ $percentageChangeText }}</span> vs Previous month
+                        </h2>
                         <div class="row p-0 main-overview-count-container">
                             <div class="col-md-5 d-flex flex-column main-overview-custom-border ">
                                 <h1 class="main-overview-tickets-count">
@@ -94,12 +96,12 @@
                             {{ $mobileUsersCount }}</h2>
                         <h2 class="main-overview-heading-text">Mobile App
                             Users</h2>
-                        <h2 class="main-overview-subheading-text"><span
-                              class="main-overview-red-text">-25%</span> vs Previous month</h2>
+                        <h2 class="main-overview-subheading-text"><span class="main-overview-red-text">-25%</span> vs
+                            Previous month</h2>
                         <div class="d-flex align-items-center main-overview-list-div-container">
                             <!-- Adjust margin or padding as needed -->
                             <div class="main-overview-chart-container">
-                                <canvas id="MobileUsers"></canvas>
+                                <canvas id="MobileUsers" wire:ignore></canvas>
                             </div>
 
                             <div>
@@ -139,7 +141,7 @@
                         @if ($newJoiners->isEmpty())
                             <div class="d-flex flex-column justify-content-center align-items-center p-2">
                                 <img src="/images/norecordstoshow.png" alt="Image Description"
-                                  class="main-overview-no-records-img">
+                                    class="main-overview-no-records-img">
                                 <p class="text-muted main-overview-no-records-text">No Joins in Last Month</p>
                             </div>
                         @else
@@ -153,9 +155,11 @@
                                             <div class="d-flex col-8 main-overview-list-div-container">
                                                 <!-- You can replace this placeholder with the actual profile image URL -->
                                                 <div>
-                                                    @if (!empty($joiner->image) && $joiner->image !== 'null')
-                                                        <img class="main-overview-profile-image"
-                                                            src="{{ 'data:image/jpeg;base64,' . base64_encode($joiner->image) }}">
+
+                                                    @if ($joiner->image !== null && $joiner->image != 'null' && $joiner->image != 'Null' && $joiner->image != '')
+                                                        <!-- It's binary, convert to base64 -->
+                                                        <img src="data:image/jpeg;base64,{{ $joiner->image }}"
+                                                            alt="base" class="main-overview-profile-image" />
                                                     @else
                                                         @if ($joiner && $joiner->gender == 'Male')
                                                             <img class="main-overview-profile-image"
@@ -177,7 +181,8 @@
                                                         title="{{ ucwords(strtolower($joiner->first_name)) }} {{ ucwords(strtolower($joiner->last_name)) }}">
                                                         {{ ucwords(strtolower($joiner->first_name)) }}
                                                         {{ ucwords(strtolower($joiner->last_name)) }}</span>
-                                                    <span class="main-overview-heading-text">{{ $joiner->emp_id }}</span>
+                                                    <span
+                                                        class="main-overview-heading-text">{{ $joiner->emp_id }}</span>
                                                 </div>
 
                                             </div>
@@ -210,7 +215,8 @@
 
                         @if ($employeesBirthdays->isEmpty())
                             <div class="d-flex flex-column justify-content-center align-items-center">
-                                <img src="/images/norecordstoshow.png" alt="Image Description" class="main-overview-no-records-img">
+                                <img src="/images/norecordstoshow.png" alt="Image Description"
+                                    class="main-overview-no-records-img">
                                 <p class="text-muted main-overview-no-records-text">No birthday reminders to show.</p>
                             </div>
                         @else
@@ -224,9 +230,10 @@
                                             <div class="d-flex col-8 main-overview-list-div-container">
                                                 <!-- You can replace this placeholder with the actual profile image URL -->
                                                 <div>
-                                                    @if (!empty($birthday->image) && $birthday->image !== 'null')
-                                                        <img class="main-overview-profile-image"
-                                                            src="{{ 'data:image/jpeg;base64,' . base64_encode($birthday->image) }}">
+                                                    @if ($birthday->image !== null && $birthday->image != 'null' && $birthday->image != 'Null' && $birthday->image != '')
+                                                        <!-- It's binary, convert to base64 -->
+                                                        <img src="data:image/jpeg;base64,{{ $birthday->image }}"
+                                                            alt="base" class="main-overview-profile-image" />
                                                     @else
                                                         @if ($birthday && $birthday->gender == 'Male')
                                                             <img class="main-overview-profile-image"
@@ -244,11 +251,13 @@
                                                     @endif
                                                 </div>
                                                 <div class="d-flex flex-column">
-                                                    <span class="main-overview-text-truncate main-overview-heading-text"
+                                                    <span
+                                                        class="main-overview-text-truncate main-overview-heading-text"
                                                         title="{{ ucwords(strtolower($birthday->first_name)) }} {{ ucwords(strtolower($birthday->last_name)) }}">
                                                         {{ ucwords(strtolower($birthday->first_name)) }}
                                                         {{ ucwords(strtolower($birthday->last_name)) }}</span>
-                                                    <span class="main-overview-heading-text">{{ $birthday->emp_id }}</span>
+                                                    <span
+                                                        class="main-overview-heading-text">{{ $birthday->emp_id }}</span>
                                                     <span class="main-overview-subheading-text">
                                                         {{ \Carbon\Carbon::parse($birthday->date_of_birth)->format('M, d') }}</span>
                                                 </div>
@@ -273,7 +282,8 @@
                         <hr class="main-overview-hr-line">
                         @if ($confirmationDue->isEmpty())
                             <div class="d-flex flex-column justify-content-center align-items-center">
-                                <img src="/images/norecordstoshow.png" alt="Image Description" class="main-overview-no-records-img">
+                                <img src="/images/norecordstoshow.png" alt="Image Description"
+                                    class="main-overview-no-records-img">
                                 <p class="text-muted main-overview-no-records-text">No Confirmation This Month</p>
                             </div>
                         @else
@@ -287,9 +297,15 @@
                                             <div class="d-flex col-8 main-overview-list-div-container">
                                                 <!-- You can replace this placeholder with the actual profile image URL -->
                                                 <div>
-                                                    @if (!empty($confirmation->image) && $confirmation->image !== 'null')
-                                                        <img class="main-overview-profile-image"
-                                                            src="{{ 'data:image/jpeg;base64,' . base64_encode($confirmation->image) }}">
+
+                                                    @if (
+                                                        $confirmation->image !== null &&
+                                                            $confirmation->image != 'null' &&
+                                                            $confirmation->image != 'Null' &&
+                                                            $confirmation->image != '')
+                                                        <!-- It's binary, convert to base64 -->
+                                                        <img src="data:image/jpeg;base64,{{ $confirmation->image }}"
+                                                            alt="base" class="main-overview-profile-image" />
                                                     @else
                                                         @if ($confirmation && $confirmation->gender == 'Male')
                                                             <img class="main-overview-profile-image"
@@ -307,11 +323,13 @@
                                                     @endif
                                                 </div>
                                                 <div class="d-flex flex-column">
-                                                    <span class="main-overview-text-truncate main-overview-heading-text"
+                                                    <span
+                                                        class="main-overview-text-truncate main-overview-heading-text"
                                                         title="{{ ucwords(strtolower($confirmation->first_name)) }} {{ ucwords(strtolower($confirmation->last_name)) }}">
                                                         {{ ucwords(strtolower($confirmation->first_name)) }}
                                                         {{ ucwords(strtolower($confirmation->last_name)) }}</span>
-                                                    <span class="main-overview-heading-text">{{ $confirmation->emp_id }}</span>
+                                                    <span
+                                                        class="main-overview-heading-text">{{ $confirmation->emp_id }}</span>
                                                 </div>
 
                                             </div>
@@ -348,8 +366,10 @@
 
                         @if ($inactiveEmployees->isEmpty())
                             <div class="d-flex flex-column justify-content-center align-items-center">
-                                <img src="{{ asset('images/norecordstoshow.png') }}" alt="Image Description" class="main-overview-no-records-img">
-                                <p class="text-muted main-overview-no-records-text">No employee resignation to show.</p>
+                                <img src="{{ asset('images/norecordstoshow.png') }}" alt="Image Description"
+                                    class="main-overview-no-records-img">
+                                <p class="text-muted main-overview-no-records-text">No employee resignation to show.
+                                </p>
                             </div>
                         @else
                             @php
@@ -362,9 +382,14 @@
                                             <div class="d-flex col-8 main-overview-list-div-container">
                                                 <!-- You can replace this placeholder with the actual profile image URL -->
                                                 <div>
-                                                    @if (!empty($inactive->image) && $inactive->image !== 'null')
-                                                        <img class="main-overview-profile-image"
-                                                            src="{{ 'data:image/jpeg;base64,' . base64_encode($inactive->image) }}">
+                                                    @if (
+                                                        $inactive->image !== null &&
+                                                            $inactive->image != 'null' &&
+                                                            $inactive->image != 'Null' &&
+                                                            $inactive->image != '')
+                                                        <!-- It's binary, convert to base64 -->
+                                                        <img src="data:image/jpeg;base64,{{ $inactive->image }}"
+                                                            alt="base" class="main-overview-profile-image" />
                                                     @else
                                                         @if ($inactive && $inactive->gender == 'Male')
                                                             <img class="main-overview-profile-image"
@@ -382,11 +407,13 @@
                                                     @endif
                                                 </div>
                                                 <div class="d-flex flex-column">
-                                                    <span class="main-overview-text-truncate main-overview-heading-text"
+                                                    <span
+                                                        class="main-overview-text-truncate main-overview-heading-text"
                                                         title="{{ ucwords(strtolower($inactive->first_name)) }} {{ ucwords(strtolower($inactive->last_name)) }}">
                                                         {{ ucwords(strtolower($inactive->first_name)) }}
                                                         {{ ucwords(strtolower($inactive->last_name)) }}</span>
-                                                    <span class="main-overview-heading-text">{{ $inactive->emp_id }}</span>
+                                                    <span
+                                                        class="main-overview-heading-text">{{ $inactive->emp_id }}</span>
                                                     <span class="main-overview-subheading-text">
                                                         {{ \Carbon\Carbon::parse($inactive->resignation_date)->format('d M, Y') }}
                                                     </span>
@@ -411,7 +438,8 @@
 
                         @if ($employeesWithAnniversaries->isEmpty())
                             <div class="d-flex flex-column justify-content-center align-items-center">
-                                <img src="/images/norecordstoshow.png" alt="Image Description" class="main-overview-no-records-img">
+                                <img src="/images/norecordstoshow.png" alt="Image Description"
+                                    class="main-overview-no-records-img">
                                 <p class="text-muted main-overview-no-records-text">No Anniversaries for a week</p>
                             </div>
                         @else
@@ -425,9 +453,14 @@
                                             <div class="d-flex col-8 main-overview-list-div-container">
                                                 <!-- You can replace this placeholder with the actual profile image URL -->
                                                 <div>
-                                                    @if (!empty($anniversary->image) && $anniversary->image !== 'null')
-                                                        <img class="main-overview-profile-image"
-                                                            src="{{ 'data:image/jpeg;base64,' . base64_encode($anniversary->image) }}">
+                                                    @if (
+                                                        $anniversary->image !== null &&
+                                                            $anniversary->image != 'null' &&
+                                                            $anniversary->image != 'Null' &&
+                                                            $anniversary->image != '')
+                                                        <!-- It's binary, convert to base64 -->
+                                                        <img src="data:image/jpeg;base64,{{ $anniversary->image }}"
+                                                            alt="base" class="main-overview-profile-image" />
                                                     @else
                                                         @if ($anniversary && $anniversary->gender == 'Male')
                                                             <img class="main-overview-profile-image"
@@ -445,11 +478,13 @@
                                                     @endif
                                                 </div>
                                                 <div class="d-flex flex-column">
-                                                    <span class="main-overview-text-truncate main-overview-heading-text"
+                                                    <span
+                                                        class="main-overview-text-truncate main-overview-heading-text"
                                                         title="{{ ucwords(strtolower($anniversary->first_name)) }} {{ ucwords(strtolower($anniversary->last_name)) }}">
                                                         {{ ucwords(strtolower($anniversary->first_name)) }}
                                                         {{ ucwords(strtolower($anniversary->last_name)) }}</span>
-                                                    <span class="main-overview-heading-text">{{ $anniversary->emp_id }}</span>
+                                                    <span
+                                                        class="main-overview-heading-text">{{ $anniversary->emp_id }}</span>
                                                     <span class="main-overview-subheading-text">
                                                         {{ \Carbon\Carbon::parse($anniversary->hire_date)->format('d M, Y') }}
                                                         @if ($anniversary->anniversary_years > 1)
@@ -480,6 +515,8 @@
     document.addEventListener('DOMContentLoaded', function() {
         var months = @json($months);
         var employeeCounts = @json($employeeCounts);
+        var maxEmployeeCount = {{ $maxEmployeeCount }};
+
         console.log(employeeCounts);
 
         var monthNames = months.map(function(month) {
@@ -521,7 +558,7 @@
                             display: true, // Y-axis title
                         },
                         min: 0,
-                        max: 164,
+                        max: maxEmployeeCount,
                         grid: {
                             color: 'rgba(0, 0, 0, 0.1)', // Set the color of the grid lines
                             lineWidth: 0.5, // Set the width of the grid lines
@@ -558,7 +595,7 @@
         // Fetch data for current month
         var currentMonthData = {!! json_encode(array_values($data['currentMonth'] ?? [])) !!};
         var filteredCurrentMonthData = selectedDays.map(day => currentMonthData[day - 1] ||
-        0); // Adjust for 0-based index
+            0); // Adjust for 0-based index
         var filteredLastMonthData = selectedDays.map(day => lastMonthData[day - 1] || 0);
 
 
@@ -668,7 +705,8 @@
                 labels: ['Mobile Users', 'Other Users'],
                 datasets: [{
                     data: [mobileUsersCount, allEmpCount -
-                    mobileUsersCount], // Use actual counts
+                        mobileUsersCount
+                    ], // Use actual counts
                     backgroundColor: ['#f9ecfa', '#be9fc1'],
                 }]
             },
