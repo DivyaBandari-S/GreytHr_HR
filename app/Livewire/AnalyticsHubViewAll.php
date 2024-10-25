@@ -15,6 +15,14 @@ class AnalyticsHubViewAll extends Component
     public $fileName;
     public $folders = [];
     public $isModalOpen = false;
+//     public $recentCards = [];
+
+// public function navigateToRecent($fileName)
+// {
+//     $this->recentCards[] = "$fileName";
+//     session()->put('recentCards', $this->recentCards);
+//     return redirect()->route('analytics-hub');
+// }
 
     public function openModal()
     {
@@ -140,5 +148,15 @@ public function toggleAccordionStarred($index)
     }
     public function mount(){
         $this->folders = AnalyticHubCreateFolder::all()->toArray();
+        // $this->folders = $this->getFolders();
+    
+        // // Store filenames in the session
+        // $filenames = [];
+        // foreach ($this->folders as $folder) {
+        //     foreach ($folder['files'] as $file) {
+        //         $filenames[] = $file['name'];
+        //     }
+        // }
+        // session()->put('filenames', $filenames);
     }
 }

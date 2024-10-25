@@ -68,7 +68,8 @@ class LeaveHelper
 
             return $totalDays;
         } catch (\Exception $e) {
-            return 'Error: ' . $e->getMessage();
+            // FlashMessageHelper::flashError('An error occured while calculating no. of days.');
+            return false;
         }
     }
 
@@ -80,24 +81,26 @@ class LeaveHelper
 
     public static function getApprovedLeaveDays($employeeId, $selectedYear)
     {
-        // Fetch approved leave requests
-        $selectedYear = (int) $selectedYear;
-        $approvedLeaveRequests = LeaveRequest::where('emp_id', $employeeId)
-            ->where(function ($query) {
-                $query->where('status', 'approved')
-                    ->where('cancel_status', 'Pending');
-            })
-            ->whereIn('leave_type', [
-                'Casual Leave Probation',
-                'Loss Of Pay',
-                'Sick Leave',
-                'Casual Leave',
-                'Maternity Leave',
-                'Marriage Leave',
-                'Paternity Leave'
-            ])
-            ->whereYear('to_date', '=', $selectedYear)
-            ->get();
+        try {
+            // Fetch approved leave requests
+            $selectedYear = (int) $selectedYear;
+            $approvedLeaveRequests = LeaveRequest::where('emp_id', $employeeId)
+            ->where('category_type','Leave')
+                ->where(function ($query) {
+                    $query->where('leave_status', 2)
+                        ->whereIn('cancel_status', [6, 5, 3, 4]);
+                })
+                ->whereIn('leave_type', [
+                    'Casual Leave Probation',
+                    'Loss Of Pay',
+                    'Sick Leave',
+                    'Casual Leave',
+                    'Maternity Leave',
+                    'Marriage Leave',
+                    'Paternity Leave'
+                ])
+                ->whereYear('to_date', '=', $selectedYear)
+                ->get();
             $totalCasualDays = 0;
             $totalCasualLeaveProbationDays = 0;
             $totalSickDays = 0;
@@ -106,51 +109,57 @@ class LeaveHelper
             $totalMarriageDays = 0;
             $totalPaternityDays = 0;
 
-        // Calculate the total number of days based on sessions for each approved leave request
-        foreach ($approvedLeaveRequests as $leaveRequest) {
-            $leaveType = $leaveRequest->leave_type;
-            $days = self::calculateNumberOfDays(
-                $leaveRequest->from_date,
-                $leaveRequest->from_session,
-                $leaveRequest->to_date,
-                $leaveRequest->to_session,
-                $leaveRequest->leave_type
-            );
+            // Calculate the total number of days based on sessions for each approved leave request
+            foreach ($approvedLeaveRequests as $leaveRequest) {
+                $leaveType = $leaveRequest->leave_type;
+                $days = self::calculateNumberOfDays(
+                    $leaveRequest->from_date,
+                    $leaveRequest->from_session,
+                    $leaveRequest->to_date,
+                    $leaveRequest->to_session,
+                    $leaveRequest->leave_type
+                );
 
-            // Accumulate days based on leave type
-            switch ($leaveType) {
-                case 'Casual Leave':
-                    $totalCasualDays += $days;
-                    break;
-                case 'Sick Leave':
-                    $totalSickDays += $days;
-                    break;
-                case 'Loss Of Pay':
-                    $totalLossOfPayDays += $days;
-                    break;
-                case 'Casual Leave Probation':
-                    $totalCasualLeaveProbationDays += $days;
-                    break;
-                case 'Maternity Leave':
-                    $totalMaternityDays += $days;
-                    break;
-                case 'Marriage Leave':
-                    $totalMarriageDays += $days;
-                    break;
-                case 'Petarnity Leave':
-                    $totalPaternityDays += $days;
-                    break;
+                // Accumulate days based on leave type
+                switch ($leaveType) {
+                    case 'Casual Leave':
+                        $totalCasualDays += $days;
+                        break;
+                    case 'Sick Leave':
+                        $totalSickDays += $days;
+                        break;
+                    case 'Loss Of Pay':
+                        $totalLossOfPayDays += $days;
+                        break;
+                    case 'Casual Leave Probation':
+                        $totalCasualLeaveProbationDays += $days;
+                        break;
+                    case 'Maternity Leave':
+                        $totalMaternityDays += $days;
+                        break;
+                    case 'Marriage Leave':
+                        $totalMarriageDays += $days;
+                        break;
+                    case 'Paternity Leave': // Corrected the spelling
+                        $totalPaternityDays += $days;
+                        break;
+                }
             }
+
+            return [
+                'totalCasualDays' => $totalCasualDays,
+                'totalCasualLeaveProbationDays' => $totalCasualLeaveProbationDays,
+                'totalSickDays' => $totalSickDays,
+                'totalLossOfPayDays' => $totalLossOfPayDays,
+                'totalMaternityDays' => $totalMaternityDays,
+                'totalMarriageDays' => $totalMarriageDays,
+                'totalPaternityDays' => $totalPaternityDays,
+            ];
+        } catch (\Exception $e) {
+            // Log the error message or handle it as needed
+            // FlashMessageHelper::flashError('An error occurred while fetching leave days. Please try again later.');
+            return null; // Return null or an empty array to indicate failure
         }
-        return [
-            'totalCasualDays' => $totalCasualDays,
-            'totalCasualLeaveProbationDays' => $totalCasualLeaveProbationDays,
-            'totalSickDays' => $totalSickDays,
-            'totalLossOfPayDays' => $totalLossOfPayDays,
-            'totalMaternityDays' => $totalMaternityDays,
-            'totalMarriageDays' => $totalMarriageDays,
-            'totalPaternityDays' => $totalPaternityDays,
-        ];
     }
 
     public static function getApprovedLeaveDaysOnSelectedDay($employeeId, $selectedYear)
@@ -158,8 +167,8 @@ class LeaveHelper
         // Fetch approved leave requests
         $approvedLeaveRequests = LeaveRequest::where('emp_id', $employeeId)
             ->where(function ($query) {
-                $query->where('status', 'approved')
-                    ->where('cancel_status', 'Pending'); // Check both 'status' and 'cancel_status'
+                $query->where('leave_status', 2)
+                    ->whereIn('cancel_status', [6, 5, 3, 4]); // Check both 'leave_status' and 'cancel_status'
             })
             ->whereIn('leave_type', [
                 'Casual Leave Probation',

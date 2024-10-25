@@ -196,7 +196,7 @@
                     </div>
 
                     <div class="row">
-                        @if (!empty($leaveData) && count($leaveData) > 0)
+                        @if (!is_null($leaveData) && !empty($leaveData) && count($leaveData) > 0)
                             <div class="col-12 col-md-3 d-flex justify-content-center">
                                 <div style="height: 150px; width: 150px;">
                                     <canvas wire:ignore id="leaveChart"></canvas>
@@ -263,7 +263,7 @@
 
                         </div>
                     </div>
-                    @if (array_sum($leavesCount) > 0)
+                    @if (!is_null($leavesCount) && array_sum($leavesCount) > 0)
                         <canvas id="barChart" width="400" height="200"></canvas>
                     @else
                     <div class="col-12 text-center">
@@ -401,8 +401,13 @@
 </div>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const ctx = document.getElementById('leaveChart').getContext('2d');
+      
+
+        const leaveCtx = document.getElementById('leaveChart');
+        if (leaveCtx){
+            const ctx = leaveCtx.getContext('2d');
         let leaveChart;
+
 
         const leaveTypes = [
             'Loss Of Pay',
@@ -549,9 +554,13 @@
         Livewire.hook('message.processed', () => {
             renderChart(@json($leaveData));
         });
+    }
 
-        const barCtx = document.getElementById('barChart').getContext('2d');
+        const barCtx = document.getElementById('barChart');
+        if (barCtx){
+            const ctx = barCtx.getContext('2d');
         const leavesCount = @json($leavesCount);
+        console.log(leavesCount);
         const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
         const colors = ['#FF5733', '#33FF57', '#3357FF', '#FF33A1', '#FFC300', '#DAF7A6',
             '#900C3F', '#C70039', '#581845', '#FFC0CB', '#FF4500', '#00FF7F'
@@ -596,6 +605,8 @@
                 }
             }
         });
+    }
+        
 
     });
 </script>

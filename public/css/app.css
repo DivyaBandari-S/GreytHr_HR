@@ -2274,3 +2274,28 @@ input[type="date"]::before {
 .leave-table td button.delete-btn:hover {
     color: #b52b27;
 }
+.modal-title {
+    color: #fff;
+    font-weight: 600;
+    font-size: var(--home-headings-font-size);
+}
+.modal-header {
+    background-color: var(--main-button-color);
+    color: white;
+    height: 50px;
+}
+.btn-close {
+    background-color: white;
+    height: 7px;
+    font-size: var(--normal-font-size);
+    width: 7px;
+}
+.error-text{
+    font-size: var(--normal-font-size);
+}
+.placeholder-small {
+    color: var(--label-color); /* Placeholder text color */
+    font-size: var(--normal-font-size);
+    font-family: "Montserrat", sans-serif;
+    font-weight: normal;
+}
