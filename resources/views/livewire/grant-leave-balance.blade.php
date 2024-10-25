@@ -1,14 +1,4 @@
 <div class="mt-4">
-    @if (session()->has('success'))
-        <div class="alert alert-success">
-            {{ session('success') }}
-        </div>
-    @endif
-    @if (session()->has('error'))
-        <div class="alert alert-danger">
-            {{ session('error') }}
-        </div>
-    @endif
     <div class="p-4 m-0 w-50 bg-white border rounded m-auto">
         <form wire:submit.prevent="grantLeavesForEmp">
             <p style="color: #778899;">Grant Leaves</p>

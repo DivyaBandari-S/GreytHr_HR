@@ -23,6 +23,8 @@ body {
     --normal-font-size: 0.75rem;
     --sub-headings-font-size: 0.8rem;
     --main-headings-font-size: 1rem;
+    --main-table-heading-bg-color: #cfdbe4c2;
+    --main-table-heading-text-color: #545658;
 }
 .loginform {
     display: flex;
@@ -550,8 +552,7 @@ input[type="radio"] {
     color: white;
 }
 label {
-    font-size: 13px;
-
+    font-size: var(--normal-font-size);
     color: rgb(135, 129, 129);
     font-weight: 500;
 }
@@ -1557,7 +1558,7 @@ input[type="date"]::before {
     margin-top: 20px;
      height:auto;
      width:70%;
-     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);"
+     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 @media (max-width: 768px) {
     .card-profile {
@@ -2103,17 +2104,43 @@ input[type="date"]::before {
     background: #fff;
     font-size: var(--sub-headings-font-size);
 }
+.radioLabel{
+    display: flex;
+    gap: 5px;
+    color: var(--label-color);
+}
+.labelText{
+    color: var(--label-color);
+    font-size: var(--normal-font-size);
+    font-weight: 500;
+    margin-bottom: 5px;
+}
+.grid {
+    display: flex;
+    flex-direction: column;
+}
+.periodicity {
+    display: grid;
+    grid-template-columns: 1fr 4fr; /* Adjust the fraction values as needed */
+    gap: 10px; /* Space between the columns */
+    align-items: center; /* Align items vertically */
+}
+.radio-buttons{
+    display: flex;
+    gap: 20px;
+}
 .leave-grant-nav-tabs .leave-grant-nav-item.show .leave-grant-nav-link,
 .leave-grant-nav-tabs .leave-grant-nav-link {
     border: none;
     color: var(--main-heading-color);
     font-weight: 500;
+    background: none !important;
 }
 .leave-grant-nav-tabs .leave-grant-nav-item.show .leave-grant-nav-link,
 .leave-grant-nav-tabs .leave-grant-nav-link.active {
     border-bottom: 2px solid #306cc6 !important;
     color: #306cc6;
-    background-color: none;
+    background-color: none !important;
     font-weight: 500;
 }
 .msgHeighlighter {
@@ -2122,13 +2149,11 @@ input[type="date"]::before {
     font-size: var(--normal-font-size);
 }
 .leave-granter {
-    padding: 20px;
-    background-color: #f5f7f9;
+    background-color: none;
     font-family: Arial, sans-serif;
 }
 
 .filters select,
-.filters button,
 .date-picker input {
     padding: 8px 12px;
     border: 1px solid #d9dde2;
@@ -2140,13 +2165,14 @@ input[type="date"]::before {
 .filters {
     display: flex;
     gap: 10px;
-    margin-bottom: 15px;
 }
-
+.buttonRouting{
+    color: white !important;
+}
 /* Style for custom dropdown */
 .custom-dropdown {
     position: relative;
-    width: 200px;
+    width: 150px;
 }
 
 .dropdown-selected {
@@ -2155,6 +2181,7 @@ input[type="date"]::before {
     border-radius: 4px;
     background-color: #fff;
     font-size: var(--normal-font-size);
+    font-weight: 500;
     color: var(--main-heading-color);
     cursor: pointer;
     transition: border-color 0.3s ease;
@@ -2203,20 +2230,8 @@ input[type="date"]::before {
     background-color: #dbedf4; /* Light blue on hover */
 }
 
-/* Style for the button */
-.filters button {
-    padding: 8px 16px;
-    border: 1px solid #306cc6;
-    border-radius: 4px;
-    background-color: #306cc6;
-    color: #fff;
-    font-size: 14px;
-    cursor: pointer;
-    transition: background-color 0.3s ease, border-color 0.3s ease;
-}
-
 /* Hover effect for the button */
-.filters button:hover {
+.submit-btn:hover {
     background-color: #357ab8; /* Darker blue on hover */
     border-color: #357ab8;
 }
@@ -2239,14 +2254,14 @@ input[type="date"]::before {
 .leave-table td {
     padding: 10px;
     text-align: left;
-    border: 1px solid #e0e0e0;
+    border: 1px solid #a7a6a65e;
 }
 
 .leave-table th {
-    background-color: #f9fafb;
+    background-color: var(--main-table-heading-bg-color);
     font-weight: 600;
     font-size: var(--sub-headings-font-size);
-    color: var(--main-heading-color);
+    color: var(--main-table-heading-text-color);
 }
 
 .leave-table tbody tr {
