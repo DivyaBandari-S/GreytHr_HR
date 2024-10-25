@@ -12,9 +12,9 @@
                 font-size: 12px;
             }
             .hide-attendance-help {
-                margin-top:40px;
+                margin-top:50px;
                 position: absolute;
-                bottom: 95px;
+                bottom: 80px;
                 right: 10px;
                 color: #0000FF;
                 font-weight:500;
@@ -33,7 +33,7 @@
     border: 1px solid #ccc;
     border-radius: 5px;
     background-color: white;
-    font-size: 14px;
+    font-size: 12px;
 }
 .dropdown-right-for-month:hover {
     border-color: #a9a9a9; /* Darker border on hover */
@@ -69,6 +69,7 @@
     background-color: #f1f1f1; /* Light gray background on hover */
 }
 .dropdown-button-for-employee {
+    font-size: 12px;
     background-color: white; /* White background */
     color: #333; /* Text color */
     padding: 10px 15px; /* Space around text */
@@ -82,24 +83,26 @@
 }
 
 .Attendance {
-            border: 1px solid #ccc;
-            background: #ebf5ff;
-            overflow-y: hidden;
-            padding: 0;
-            max-width: 50%;
-            overflow-x: auto;
-            scrollbar-width: thin;
-            scrollbar-color: #dce0e5;
-            height: auto;
-
-        }
-        .summary {
-            border: 1px solid #ccc;
-            background: #ebf5ff;
-            padding: 0;
-            height: 210px;
-
-        }
+    border: 1px solid #ccc;
+    background: #ebf5ff;
+    overflow-y: hidden;
+    margin-left: 600px;
+    padding: 0;
+    max-width: 48%;
+    overflow-x: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #dce0e5;
+    height: auto;
+    margin-top: -220px;
+}
+.summary {
+    border: 1px solid #ccc;
+    background: #ebf5ff;
+    padding: 0;
+    height: 210px;
+    margin: 10px;
+}
+ 
         .summary .table tbody tr td:last-child {
             border-right: none;
             background: #f2f2f2;
@@ -158,7 +161,7 @@
             </div>
             
            <div class="dropdown-for-employee">
-                    <button class="dropdown-button-for-employee">Employee: {{$selectedOption}} <span class="arrow-for-employee"></span></button>
+                    <button class="dropdown-button-for-employee"><span style="font-size:12px;">Employee: {{$selectedOption}}</span> <span class="arrow-for-employee"></span></button>
                     <div class="dropdown-content-for-employee">
                         <a href="#" wire:click.prevent="updateSelected('All')">All</a>
                         <a href="#" wire:click.prevent="updateSelected('Current')">Current</a>
@@ -174,11 +177,11 @@
             
         </div>
         <div class="gap-2" style="display:flex;flex-direction:row;">
-                <button style="border:1px solid blue;margin-top:40px;background-color:white;color:blue;border-radius:5px;padding:8px 10px;font-size:14px;"wire:click="downloadExcelForShiftRoster">
-                    Export Excel
+                <button style="border:1px solid blue;margin-top:40px;background-color:white;color:blue;border-radius:5px;padding:8px 10px;font-size:12px;"wire:click="downloadExcelForShiftRoster">
+                    <span styl="font-size:12px;">Export Excel</span>
                 </button>
                 <button style="border:1px solid blue;margin-top:40px;background-color:white;color:blue;border-radius:5px;padding:8px 10px;font-size:14px;" wire:click="refresh">
-                        <i class="fas fa-sync"></i>
+                   <i class="ph-arrow-clockwise"></i>
                 </button>
         </div>        
         </div>

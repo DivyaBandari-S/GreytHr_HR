@@ -39,7 +39,14 @@ class EmployeeShiftExport implements FromCollection,WithStyles
         $hremployeeId = auth()->guard('hr')->user()->hr_emp_id;
         $employeeId=Hr::where('hr_emp_id',$hremployeeId)->value('emp_id');
         $companyIdJson = EmployeeDetails::where('emp_id', $employeeId)->value('company_id');
-        $companyIds = json_decode($companyIdJson, true);
+        if (is_array($companyIdJson)) {
+            $companyIds = $companyIdJson; // It's already an array
+        } elseif (is_string($companyIdJson)) {
+            $companyIds = json_decode($companyIdJson, true); // Decode the JSON string
+        } else {
+            $companyIds = []; // Default to an empty array if it's neither
+        }
+        
         $this->empIds = EmployeeDetails::where(function($query) use ($companyIds) {
             foreach ($companyIds as $companyId) {
                 // Use JSON_CONTAINS to check if company_id field contains the companyId
