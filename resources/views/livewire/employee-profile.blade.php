@@ -1,30 +1,17 @@
-<div >
+<div>
+<div class="main__body" >
+<ul class="nav nav-tabs custom-nav-tabs" role="tablist" style="margin-top:67px">
+    <li class="nav-item" role="presentation">
+        <a class="nav-link active custom-nav-link" id="simple-tab-0" data-bs-toggle="tab" href="#simple-tabpanel-0" role="tab" aria-controls="simple-tabpanel-0" aria-selected="true">Main</a>
+    </li>
+    <li class="nav-item" role="presentation">
+        <a class="nav-link custom-nav-link" id="simple-tab-1" data-bs-toggle="tab" href="#simple-tabpanel-1" role="tab" aria-controls="simple-tabpanel-1" aria-selected="false">Activity</a>
+    </li>
+</ul>
 
-<div class="main__body">
-       <div class="tab-container">
-       <div class="tab-pane">
-                    <button
-                        type="button"
-                        data-tab-pane="active"
-                        class="tab-pane-item active"
-                        onclick="tabToggle()">
-                        <span class="tab-pane-item-title">01</span>
-                        <span class="tab-pane-item-subtitle">main</span>
-                    </button>
-                    <button
-                        type="button"
-                        data-tab-pane="in-review"
-                        class="tab-pane-item after"
-                        onclick="tabToggle()">
-                        <span class="tab-pane-item-title">02</span>
-                        <span class="tab-pane-item-subtitle">Activity</span>
-                    </button>
-                   
-                </div>
-
-<!-- Tab Content -->
-<div class="tab-page active" data-tab-page="active">
-<div class="row justify-content-center"  >
+<div class="tab-content pt-5" id="tab-content">
+  <div class="tab-pane active" id="simple-tabpanel-0" role="tabpanel" aria-labelledby="simple-tab-0" style="overflow-x: hidden;">
+    <div class="row justify-content-center"  >
                         <div class="col-md-9 custom-container d-flex flex-column">
                         <div class="d-flex align-items-center mb-2">
     <p class="main-text mb-0" style="width:88%">
@@ -39,7 +26,7 @@
                                 
                            
                             <div class="secondary-text">
-    Explore greytHR by 
+    Explore HR Xpert by 
     <span class="hide-text">Help-Doc</span>, watching How-to 
     <span class="hide-text">Videos</span> and 
     <span class="hide-text">FAQ</span>
@@ -51,7 +38,7 @@
                  
 
                 <div class="row justify-content-center mt-2 "  >
-                <div class="col-md-9 custom-container d-flex flex-column bg-white">
+                <div class="col-md-9 custom-container d-flex flex-column bg-white" >
     <div class="row justify-content-center mt-3 flex-column m-0 employee-details-main" >
         <div class="col-md-9">
             <div class="row " style="display:flex;">
@@ -59,32 +46,32 @@
                     <p class="emp-heading" >Start searching to see specific employee details here</p>
                     <div class="col mt-3" style="display: flex;">
              
-                        <p class="main-text">Employee Type:</p>
-                        <div class="dropdown-for-employee">
+                        <p class="main-text mt-1">Employee Type:</p>
+                       
                         <div class="dropdown">
-                        <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" style="font-size:12px">
+                        <button class="btn btn dropdown-toggle dp-info" type="button" data-bs-toggle="dropdown" style="font-size:12px">
     Employee: {{ ucfirst($selectedOption) }} 
     <span class="arrow-for-employee"></span><span class="caret"></span>
 </button>
 
     <span class="caret"></span></button>
     <ul class="dropdown-menu" style="font-size:12px; ">
-    <li class="updated-drodown" style="width: 100%; display: flex; margin-left:5px">
-        <a href="#" wire:click.prevent="updateSelected('all')">All</a>
+    <li class="updated-drodown" >
+        <a href="#" wire:click.prevent="updateSelected('all')" class="dropdown-item custom-info-item">All Employees</a>
     </li>
-    <li class="updated-drodown" style="width: 100%; display: flex;margin-left:5px">
-        <a href="#" wire:click.prevent="updateSelected('current')">Current</a>
+    <li class="updated-drodown" >
+        <a href="#" wire:click.prevent="updateSelected('current')" class="dropdown-item custom-info-item">Current Employees</a>
     </li>
-    <li class="updated-drodown"  style="width: 100%; display: flex; margin-left:5px">
-        <a href="#" wire:click.prevent="updateSelected('past')">Past</a>
+    <li class="updated-drodown" >
+        <a href="#" wire:click.prevent="updateSelected('past')" class="dropdown-item custom-info-item">Resigned Employees</a>
     </li>
-    <li class="updated-drodown" style="width: 100%; display: flex; margin-left:5px">
-        <a href="#" wire:click.prevent="updateSelected('intern')">Intern</a>
+    <li class="updated-drodown" >
+        <a href="#" wire:click.prevent="updateSelected('intern')" class="dropdown-item custom-info-item">Intern</a>
     </li>
 </ul>
 
   </div>
-          </div>
+         
 
                       
                     </div>
@@ -199,7 +186,19 @@ aria-describedby="basic-addon1"
                                     </div>
                                     @else
                                     @if(count($employees) > 0)
+                                    @if (session()->has('warning'))
+    <div class="alert alert-warning alert-dismissible fade show" role="alert" style="font-size: 12px; padding: 5px 10px; width: 100%; max-width: 500px; margin: 10px auto;">
+        {{ session('warning') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" style="margin-left: 2px; font-size: 8px;">
+            &times;
+        </button>
+    </div>
+@endif
+
+
+
                                     @foreach($employees as $employee)
+
     @if(stripos($employee->first_name . ' ' . $employee->last_name, $searchTerm) !== false)
         <label wire:click="selectPerson('{{ $employee->emp_id }}')" class="search-container">
             <div class="row align-items-center">
@@ -207,11 +206,12 @@ aria-describedby="basic-addon1"
                     <input type="checkbox" id="employee-{{ $employee->emp_id }}" 
                            wire:click="updateselectedEmployee('{{ $employee->emp_id }}')"  
                            wire:model="selectedPeople" 
-                           value="{{ $employee->emp_id }}" 
+                           value="{{ $employee->emp_id }}" class="form-check-input custom-checkbox-information"
                            {{ in_array($employee->emp_id, $selectedPeople) || $employee->isChecked ? 'checked' : '' }}>
                 </div>
                 <div class="col-auto">
                     @if($employee->image && $employee->image !== 'null')
+                    
                         <img class="profile-image"  src="data:image/jpeg;base64,{{($people->image ??'-') }}" >
                     @else
                         @if($employee->gender == "Male")
@@ -265,7 +265,7 @@ aria-describedby="basic-addon1"
                 <div class="col-md-1">
     <!-- Modified image container to have a fixed height -->
     <div class="image-container d-flex align-items-end" >
-        <img src="https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcTrb080MeuXwgT6ZB-x7qWZ3i_xQks-9xsRz5F9wWIyKbEEbGzL" alt="Employee Image" style="height: 180px; width:300px;align-items:end">
+        <img src="{{ asset('images/employeeleave.png') }}"  alt="Employee Image" style="height: 180px; width:280px;align-items:end">
     </div>
 </div>
 
@@ -289,21 +289,7 @@ aria-describedby="basic-addon1"
    
     </div>
     
-    @if ($showSuccessMessage)
- 
-    <div class="alert alert-success alert-dismissible fade show" role="alert" 
-    style="font-size: 12px; padding: 5px 10px; display: flex; align-items: center; justify-content: space-between; width: 300px; margin: 0 auto;" 
-    wire:poll.5s="closeMessage">
-    Profile updated successfully!
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" 
-        style="font-size: 8px;align-items:center;margin-top:-7px">
-        &times;
-    </button>
-</div>
-
-
-@endif
-
+   
     @foreach($selectedPeople as $emp_id)
                 @php
                     $employee = $employees->firstWhere('emp_id', $emp_id);
@@ -313,6 +299,21 @@ aria-describedby="basic-addon1"
 
 
 @if($employee)
+@if ($showSuccessMessage)
+ 
+ <div class="alert alert-success alert-dismissible fade show" role="alert" 
+ style="font-size: 12px; padding: 5px 10px; display: flex; align-items: center; justify-content: space-between; width: 300px; margin: 0 auto;" 
+ wire:poll.5s="closeMessage">
+ Profile updated successfully!
+ <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" 
+     style="font-size: 8px;align-items:center;margin-top:-7px">
+     &times;
+ </button>
+</div>
+
+
+@endif
+
 <div class="card-profile mx-auto" >
   
         <div class="profile-header " >
@@ -335,10 +336,24 @@ aria-describedby="basic-addon1"
 
             {{-- Update Button and File Input --}}
             <div class="d-flex align-items-center gap-2" style="margin-left: auto;">
-                <input type="file" id="imageInput" wire:model="image" class="form-control-small" style="font-size: 0.75rem; margin-right: 10px;">
-                <button class="submit-btn px-2 py-1" wire:click="updateProfile('{{ $employee->emp_id }}')">
-                    <span style="font-size: 10px;">Update</span>
-                </button>
+    <!-- Camera Icon to Open File Input for Camera -->
+<!-- Camera Icon to Open File Input -->
+
+
+<!-- Update Profile Button, Disabled by Default -->
+
+
+<!-- Separate Button to Update Profile -->
+<button type="button" wire:click="updateProfile('{{ $employee->emp_id }}')" class="custom-file-upload">
+<i class="bx bx-camera" style="color:white;" onclick="document.getElementById('imageInput').click();"></i>
+
+<!-- Hidden File Input for Selecting Image -->
+<input type="file" id="imageInput" wire:model="image" accept="image/*;capture=camera" style="display: none;" />
+    Update Profile
+</button>
+
+
+              
             </div>
 
             {{-- Image Upload Error --}}
@@ -349,7 +364,7 @@ aria-describedby="basic-addon1"
   
 </div>
 
-    <div class="row align-items-center bg-white">
+    <div class="row align-items-center ">
         <div class="card mx-auto" >
         <div class="card-header">
     <p style="color:#3b4452; font-weight: 500;">Employee Information</p>
@@ -498,10 +513,11 @@ aria-describedby="basic-addon1"
 @endif
 
 </div>
-<div class="tab-page" data-tab-page="in-review">
-<div class="row mt-3 ml-3" style="font-size:12px">
-      
-      <div id="employee-container">
+
+  <div class="tab-pane" id="simple-tabpanel-1" role="tabpanel" aria-labelledby="simple-tab-1" style="overflow-x: hidden;">
+    <div class="row " style="font-size:12px;margin-left:30px">
+      <h6 style="text-decoration:underline">Activity Stream :</h6>
+      <div id="employee-container mt-10">
       @foreach($employeess as $employee)
   <span style="font-weight:600">
       Added New Employee: ({{ $employee->emp_id }}) {{ $employee->first_name }} {{ $employee->last_name }}
@@ -525,43 +541,13 @@ aria-describedby="basic-addon1"
 
 
 
-
-
-    
-    
-    
-            <br>
-        
-    
-    
-     
-                </div>
 </div>
-       </div> <!-- Tab buttons -->
 </div>
-
+</div>
 <script>
-    // JavaScript to handle dropdown display
-    document.querySelector('.dropdown-button-for-employee').addEventListener('click', function () {
-        const dropdownContent = document.querySelector('.dropdown-content-for-employee');
-        dropdownContent.style.display = dropdownContent.style.display === 'block' ? 'none' : 'block';
-    });
-
-    // Close the dropdown if clicked outside
-    window.onclick = function (event) {
-        if (!event.target.matches('.dropdown-button-for-employee')) {
-            const dropdowns = document.getElementsByClassName("dropdown-content-for-employee");
-            for (let i = 0; i < dropdowns.length; i++) {
-                const openDropdown = dropdowns[i];
-                if (openDropdown.style.display === 'block') {
-                    openDropdown.style.display = 'none';
-                }
-            }
-        }
-    }
+document.getElementById('imageInput').addEventListener('change', function () {
+    const fileName = this.files[0] ? this.files[0].name : 'Update Profile';
+    this.nextElementSibling.textContent = fileName;
+});
 </script>
-
-
-
-
-    </div>
+</div>

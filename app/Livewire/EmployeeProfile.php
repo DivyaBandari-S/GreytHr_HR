@@ -115,10 +115,7 @@ class EmployeeProfile extends Component
        
        
     }
-    public function updatedSelectedPeople()
-    {
-        $this->cc_to = implode(', ', array_unique($this->selectedPeopleNames));
-    }
+
 
     public $selectedPeopleData=[];
     public function filter()
@@ -149,12 +146,21 @@ class EmployeeProfile extends Component
 
     public function selectPerson($emp_id)
     {
+        if (!empty($this->selectedPeople) && !in_array($emp_id, $this->selectedPeople)) {
+            // Flash an error message to the session
+            session()->flash('warning', 'You can only select one employee ');
+            return; // Stop further execution
+        }
+    
+
         try {
+         
             // Ensure $this->selectedPeople is initialized as an array
             if (!is_array($this->selectedPeople)) {
                 $this->selectedPeople = [];
             }
     
+         
             // Find the selected person from the list of employees
             $selectedPerson = $this->employees->where('emp_id', $emp_id)->first();
     
@@ -206,7 +212,7 @@ class EmployeeProfile extends Component
         } catch (\Exception $e) {
             // Handle the exception
             // Optionally, you can log the error or display a user-friendly message
-            $this->dispatchBrowserEvent('error', ['message' => 'An error occurred: ' . $e->getMessage()]);
+            $this->dispatch('error', ['message' => 'An error occurred: ' . $e->getMessage()]);
         }
     }
     
@@ -218,20 +224,34 @@ class EmployeeProfile extends Component
     public function updateProfile($emp_id)
     {
         try {
+            // Validate if the image is present, and if present, ensure it's an image of the allowed types
             $this->validate([
-                'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:1024', // 1024 kilobytes = 1 megabyte
+                'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:1024', // 1 MB max file size
             ]);
     
             $employee = EmployeeDetails::where('emp_id', $emp_id)->first();
     
+            // Check if an image is selected
             if ($this->image) {
+                // Get the file content and encode it to Base64
                 $imagePath = file_get_contents($this->image->getRealPath());
-                $employee->image = $imagePath;
+                $employee->image = base64_encode($imagePath);
+    
+                // Save the employee details
                 $employee->save();
+    
+                // Show the success message only if a file is chosen and successfully saved
+                $this->showSuccessMessage = true;
+    
+                // Clear the image input after updating
+                $this->reset('image');
+            } else {
+                // Do not show success message if no image is selected
+                $this->showSuccessMessage = false;
             }
-            
-            $this->showSuccessMessage = true;
+    
         } catch (\Exception $e) {
+            // Log the error and show an error message
             Log::error('Error in updateProfile method: ' . $e->getMessage());
             session()->flash('error', 'An error occurred while updating the profile. Please try again later.');
         }
@@ -482,12 +502,12 @@ class EmployeeProfile extends Component
         // Fetch the employee IDs after filtering
         $this->employeeIds = $query->pluck('emp_id')->toArray(); // Fetch the filtered employee IDs
         $this->employees = $query->get(); // Fetch the employee data for rendering in the view
-    }
+  
     
     
 
     
- 
+   }
     public function cancelpersonalProfile($emp_id)
     {
         // No need to query for $selectedPerson here
@@ -640,13 +660,22 @@ if (is_array($companyId)) {
 
     
     
-    
     public function updateselectedEmployee($empId)
-    {
+{
+  
+    if (count($this->selectedPeople) > 1) {
+           $this->selectedPeople = array_slice($this->selectedPeople, 0, 1);
+     
+        return;
+        
+    } else {
+        // Proceed with selecting a single employee
         $this->selectedEmployeeId = $empId;
         $this->selectedEmployeeFirstName = EmployeeDetails::where('emp_id', $empId)->value('first_name');
         $this->selectedEmployeeLastName = EmployeeDetails::where('emp_id', $empId)->value('last_name');
     }
+}
+
     
    
     public function closeEmployeeBox()
