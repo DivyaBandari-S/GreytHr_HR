@@ -73,13 +73,33 @@ class HrLogin extends Component
         ]);
 
         try {
-            // $this->showLoader = true;
 
-            if (Auth::guard('hr')->attempt(['hr_emp_id' => $this->form['emp_id'], 'password' => $this->form['password']])) {
-                return redirect()->route('admin-home');
-            } elseif (Auth::guard('hr')->attempt(['email' => $this->form['emp_id'], 'password' => $this->form['password']])) {
-                return redirect()->route('admin-home');
-            }  else {
+            // $this->showLoader = true;
+            $user = HR::where('hr_emp_id', $this->form['emp_id'])
+                ->orWhere('email', $this->form['emp_id'])
+                ->first();
+            // Check if user exists and is inactive
+            if ($user && !$user->status) {
+
+                // sweetalert()->addError('Your account is inactive. Please contact support.');
+                // is_active == false
+                ################################### this is also working by using dispatch event call from in the blade using javascript
+                // Dispatch event to trigger a SweetAlert on the frontend
+                $this->dispatch('inactive-user-alert', ['message' => 'Your account is inactive. Please contact support.']);
+                $this->resetForm();
+                $this->reset('form'); // Reset the entire form
+
+            }
+
+
+
+            if (Auth::guard('hr')->attempt(['hr_emp_id' => $this->form['emp_id'], 'password' => $this->form['password'],'status' => 1],)) {
+                session(['post_login' => true]);
+                return redirect()->route('home');
+            } elseif (Auth::guard('hr')->attempt(['email' => $this->form['emp_id'], 'password' => $this->form['password'],'status' => 1])) {
+                session(['post_login' => true]);
+                return redirect()->route('home');
+            } else {
                 $this->error = "Invalid ID or Password. Please try again.";
             }
         } catch (ValidationException $e) {
@@ -116,18 +136,17 @@ class HrLogin extends Component
     {
         $this->resetForm();
         $this->resetValidation();
-        $this->showDialog =true;
+        $this->showDialog = true;
     }
     public function remove()
     {
-        $this->showDialog =false;
+        $this->showDialog = false;
         $this->resetForm();
-
     }
 
     public function closeSuccessModal()
     {
-        $this->showSuccessModal =false;
+        $this->showSuccessModal = false;
     }
     public function closeErrorModal()
     {
@@ -175,7 +194,7 @@ class HrLogin extends Component
                 $this->verified = true;
                 if ($this->verified) {
                     $this->verified = false;
-                    $this->showDialog=false;
+                    $this->showDialog = false;
                     $this->showSuccessModal = true;
                 }
             } else {
@@ -211,7 +230,7 @@ class HrLogin extends Component
     {
         $this->verified = true;
         $this->showSuccessModal = false;
-        $this->showDialog=true;
+        $this->showDialog = true;
     }
     public function createNewPassword()
     {
@@ -246,7 +265,7 @@ class HrLogin extends Component
 
 
                 // Combine the results of all queries
-                $user = $userInHR ;
+                $user = $userInHR;
 
 
                 if ($user) {

@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Redirect;
 class AnalyticsHub extends Component
 {
     public $selectedCard = 'Basic Information';
+    // public $dynamicCards = [];
+    // public $recentCards = [];
     public $genderCounts = [
         'Male' => 0,
         'Female' => 0,
@@ -33,11 +35,19 @@ class AnalyticsHub extends Component
     public function selectCard($card)
     {
         $this->selectedCard = $card;
+        // if (!in_array($card, $this->recentCards)) {
+        //     $this->recentCards[] = $card;
+        //     if (count($this->recentCards) > 5) {
+        //         array_shift($this->recentCards); // Remove the oldest
+        //     }
+        //     session()->put('recentCards', $this->recentCards);
+        // }
         $this->basicSearch = '';
         $this->piSearch = '';
         $this->allInfoSearch = '';
         $this->genderSearch = '';
         $this->resigneesSearch = '';
+        // return redirect()->route('analytics-hub', ['selectedCard' => $card]);
     }
     public function analyticsHubList()
     {
@@ -164,8 +174,14 @@ class AnalyticsHub extends Component
     
         // Populate counts based on actual data
         foreach ($genderWiseCount as $genderCount) {
-            if (in_array($genderCount->gender, ['Male', 'Female'])) {
-                $this->filteredGenderCounts[$genderCount->gender] += $genderCount->count;
+            $standardizedGender = ucfirst(strtolower(trim($genderCount->gender)));
+            // if (in_array($genderCount->gender, ['Male', 'Female'])) {
+            //     $this->filteredGenderCounts[$genderCount->gender] += $genderCount->count;
+            // } else {
+            //     $this->filteredGenderCounts['Others'] += $genderCount->count;
+            // }
+            if (in_array($standardizedGender, ['Male', 'Female'])) {
+                $this->filteredGenderCounts[$standardizedGender] += $genderCount->count;
             } else {
                 $this->filteredGenderCounts['Others'] += $genderCount->count;
             }
@@ -183,7 +199,10 @@ class AnalyticsHub extends Component
     
     public function mount()
 {
+    // $this->recentCards = session()->get('recentCards', []);
     $this->filterGenderWise(); // Load all data initially
+    // $this->dynamicCards = session()->get('filenames', []);
+
 }
     public function filterResignees(){
         $hrId = auth()->guard('hr')->user()->emp_id;
@@ -295,6 +314,7 @@ class AnalyticsHub extends Component
         'resigneesData' => $resigneesData,
         'allInfoData' => $allInfoData,
         'genderWiseData' => $this->filteredGenderCounts,
+        // 'recentCards' => $this->recentCards, 
     ]);
     }
     public function addEmployee()

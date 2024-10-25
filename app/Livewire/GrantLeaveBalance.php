@@ -28,10 +28,17 @@ class GrantLeaveBalance extends Component
         // Step 2: Retrieve the company_id associated with the logged-in emp_id
         $companyID = EmployeeDetails::where('emp_id', $loggedInEmpID)
             ->pluck('company_id')
-            ->first(); // Assuming company_id is unique for emp_id
+            ->first();
+            $companyIdsArray = is_array($companyID) ? $companyID : json_decode($companyID, true);
 
         // Step 3: Fetch all emp_id values where company_id matches the logged-in user's company_id
-        $this->employeeIds = EmployeeDetails::where('company_id', $companyID)
+        $this->employeeIds = EmployeeDetails:: where(function ($query) use ($companyIdsArray) {
+            // Check if any of the company IDs match
+            foreach ($companyIdsArray as $companyId) {
+                $query->orWhere('company_id', 'like', "%\"$companyId\"%");
+            }
+        })
+        ->whereIn('employee_status',['active','on-probation'])
             ->pluck('emp_id')
             ->toArray();
     }
@@ -108,12 +115,10 @@ class GrantLeaveBalance extends Component
                         'to_date' => $this->to_date, // Laravel will encode this as JSON
                     ]);
                 }
-                
 
                 // Flash success message
                 session()->flash('success', 'Leave balances added successfully.');
             } catch (QueryException $e) {
-                dd($e);
                 if ($e->errorInfo[1] == 1062) {
                     session()->flash('error', 'Leaves have already been added for the selected employee(s).');
                 } else {
@@ -123,7 +128,7 @@ class GrantLeaveBalance extends Component
             }
         }
 
-        return redirect()->to('/hr/update-employee-leaves');
+        return redirect()->to('/hr/user/grant-summary');
     }
  
     public function render()

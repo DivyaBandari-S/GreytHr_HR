@@ -9,6 +9,7 @@ use App\Models\LeaveRequest;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use App\Helpers\LeaveHelper;
+use Illuminate\Support\Collection;
 
 class EmployeeLeave extends Component
 {
@@ -16,13 +17,15 @@ class EmployeeLeave extends Component
     public $employeeType = 'active'; // Default to 'active'
     public $employees = [];
     public $showContainer = false;
-    public $selectedEmployees = [];
+    public $selectedEmployee = null; 
     public $activeTab = 'Overview';
+    public $showSearch = true;
 
     
 
     public function mount()
     {
+        $this->employees = new Collection();
         $this->loadEmployees();
     }
     public function closeFollowers(){
@@ -46,41 +49,54 @@ class EmployeeLeave extends Component
 
     public function searchFilter()
     {
-        $this->showContainer = true; // Show the container when the search is triggered
-
-        // If search term is empty, reload current employees
-        if ($this->search === '') {
-            $this->loadEmployees();
-            return;
-        }
-
-        // Search with the existing term
-        $this->employees = EmployeeDetails::where(function ($query) {
-            $query->where('first_name', 'like', '%' . $this->search . '%')
-                  ->orWhere('last_name', 'like', '%' . $this->search . '%')
-                  ->orWhere('emp_id', $this->search);
-        })
-        ->where(function ($query) {
-            if ($this->employeeType === 'active') {
-                $query->whereIn('employee_status', ['active', 'on-probation']);
-            } else {
-                $query->whereIn('employee_status', ['terminated', 'resigned']);
+        if ($this->search !== '') {
+            $this->showContainer = true; // Show the container when the search is triggered
+    
+            // Search with the existing term
+            $this->employees = EmployeeDetails::where(function ($query) {
+                $query->where('first_name', 'like', '%' . $this->search . '%')
+                      ->orWhere('last_name', 'like', '%' . $this->search . '%')
+                      ->orWhere('emp_id', 'like', '%' . $this->search . '%'); // Ensure `like` for partial match
+            })
+            ->where(function ($query) {
+                if ($this->employeeType === 'active') {
+                    $query->whereIn('employee_status', ['active', 'on-probation']);
+                } else {
+                    $query->whereIn('employee_status', ['terminated', 'resigned']);
+                }
+            })
+            ->get();
+    
+            // If no results found, the container should still be shown to display the message
+            if ($this->employees->isEmpty()) {
+                // You can decide if you want to show "No employees found." here or in the Blade.
             }
-        })
-        ->get();
+        } else {
+            // If search term is empty, hide the container and reload the employees
+            $this->showContainer = false; // Hide the container
+            $this->loadEmployees(); // Reload current employees
+        }
     }
+    
     public function selectEmployee($employeeId)
     {
         // Check if the employee is already selected
-        if (in_array($employeeId, $this->selectedEmployees)) {
-            // Deselect employee
-            $this->selectedEmployees = array_diff($this->selectedEmployees, [$employeeId]);
+        $this->selectedEmployee = $employeeId; // Change here
+        Log::info('Selected Employee: ', [$this->selectedEmployee]);
+        if (is_null($employeeId)) {
+            $this->showSearch = true;
+            $this->search = '';
+            // $this->showContainer = true;
+            // $this->showSearch = false;
+            $this->selectedEmployee = null;
         } else {
-            // Select employee
-            $this->selectedEmployees[] = $employeeId;
+            $this->showSearch = false;
+            $this->showContainer = false;
         }
-        Log::info('Selected Employees: ', $this->selectedEmployees);
     }
+    // public function closeEmployee(){
+    //     $this->showSearch = true;
+    // }
 //     public function showLeaveBalances($employeeId)
 // {
 
@@ -158,28 +174,24 @@ public static function getLeaveBalances($employeeId, $selectedYear)
     {
         $leaveData = [];
         $today = Carbon::now()->year;
-        foreach ($this->selectedEmployees as $empId) {
-            $leaveRequests = LeaveRequest::where('emp_id', $empId)
-            ->where('status', 'approved')
-            ->get();
-            // $leaveBalances = EmployeeLeaveBalances::where('emp_id', $empId)->get();
-            $leaveBalances = EmployeeLeave::getLeaveBalances($empId, $today);
-            // $balances = [];
-            // foreach ($leaveRequests as $request) {
-            //     $balances[$request->leave_type] = EmployeeLeaveBalances::getLeaveBalancePerYear($empId, $request->leave_type, date('Y'));
-            // }
-    
-            // Structure your leave data here
-            $leaveData[$empId] = [
+        if ($this->selectedEmployee) {
+            $leaveRequests = LeaveRequest::where('emp_id', $this->selectedEmployee)
+                ->where('leave_status', 2)
+                ->get();
+            $leaveBalances = EmployeeLeave::getLeaveBalances($this->selectedEmployee, $today);
+            
+            // Structure leave data
+            $leaveData[$this->selectedEmployee] = [
                 'leaveRequests' => $leaveRequests,
                 'leaveBalances' => $leaveBalances,
             ];
         }
-        $selectedEmployeesDetails = EmployeeDetails::whereIn('emp_id', $this->selectedEmployees)->get();
-        
-        return view('livewire.employee-leave', [
-            'selectedEmployeesDetails' => $selectedEmployeesDetails,
-            'leaveData' => $leaveData,
-        ]);
+        $selectedEmployeesDetails = $this->selectedEmployee ? 
+        EmployeeDetails::where('emp_id', $this->selectedEmployee)->get() : [];
+
+    return view('livewire.employee-leave', [
+        'selectedEmployeesDetails' => $selectedEmployeesDetails,
+        'leaveData' => $leaveData,
+    ]);
     }
 }
