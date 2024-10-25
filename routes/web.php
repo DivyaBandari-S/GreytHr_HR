@@ -46,9 +46,9 @@ Route::middleware(['checkauth'])->group(function () {
     Route::get('/hrlogin', HrLogin::class)->name('hrlogin');
 });
 
-Route::middleware(['auth:hr'])->group(function () {
+Route::middleware(['auth:hr', 'handleSession'])->group(function () {
 
-    Route::get('/', HomeDashboard::class)->name('admin-home');
+    Route::get('/', HomeDashboard::class)->name('home');
     // Group routes under the 'hr' prefix
     Route::prefix('hr')->group(function () {
 

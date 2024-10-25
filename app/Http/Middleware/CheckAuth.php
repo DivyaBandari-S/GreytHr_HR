@@ -16,7 +16,7 @@ class CheckAuth
     public function handle(Request $request, Closure $next): Response
     {
         if (auth()->guard('hr')->check()) {
-            return redirect()->route('admin-home');
+            return redirect()->route('home');
         } else {
             return $next($request);
         }
