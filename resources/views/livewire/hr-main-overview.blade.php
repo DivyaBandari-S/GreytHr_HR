@@ -101,7 +101,7 @@
                         <div class="d-flex align-items-center main-overview-list-div-container">
                             <!-- Adjust margin or padding as needed -->
                             <div class="main-overview-chart-container">
-                                <canvas id="MobileUsers"></canvas>
+                                <canvas id="MobileUsers" wire:ignore></canvas>
                             </div>
 
                             <div>

@@ -231,6 +231,35 @@
             color: var(--main-button-color);
             font-size: var(--sub-headings-font-size);
         }
+        .analytic-view-all-search-bar {
+            display: flex;
+            padding: 20px 0px;
+            justify-content: space-between;
+            /* Adjust spacing between items */
+            align-items: center;
+        }
+
+        .search-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .analytic-view-all-search-bar input[type="text"] {
+            width: 200px;
+            padding: 6px 28px 6px 10px;
+            /* Adjust padding for right space */
+            border: 1px solid #ccc;
+            border-radius: 18px;
+            position: relative;
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 10px;
+            color: #666;
+            pointer-events: none;
+        }
     </style>
     <div class="row" style="background-color: #fff; margin: 10px; padding: 10px 5px;">
         <div class="col-md-8 col-12">
@@ -248,122 +277,87 @@
                 <div wire:click="searchFilter" style="cursor: pointer;">
                     <label>Search Employee</label>
                 </div>
-                {{-- Display selected employees below the search results --}}
-                @if ($selectedEmployees)
-                    <div class="row" style="margin-top: 10px; margin-bottom: 10px;">
-                        @foreach ($selectedEmployeesDetails as $selectedEmployee)
-                            <div class="col-md-4 col-6">
-                                <div class="d-flex Employee-details-hr">
-                                    <div class="d-flex Employee-details-img-details-hr">
-                                        {{-- <img style="width: 30px; height:30px; border-radius: 50%;"
-                                        src="{{ $selectedEmployee->image ? 'data:image/jpeg;base64,' . $selectedEmployee->image : asset('images/default-user.png') }}"
-                                        alt=""> --}}
-                                        @if (
-                                            $selectedEmployee->image !== null &&
-                                                $selectedEmployee->image != 'null' &&
-                                                $selectedEmployee->image != 'Null' &&
-                                                $selectedEmployee->image != '')
-                                            <!-- It's binary, convert to base64 -->
-                                            <img src="data:image/jpeg;base64,{{ $selectedEmployee->image }}"
-                                                alt="base" class="profile-image" />
+                @if ($selectedEmployee)
+                <div class="row" style="margin-top: 10px; margin-bottom: 10px;">
+                    <div class="col-md-4 col-6">
+                        <div class="d-flex Employee-details-hr">
+                            <div class="d-flex Employee-details-img-details-hr">
+                                @if ($selectedEmployeesDetails && $selectedEmployeesDetails->isNotEmpty())
+                                    @php $selectedEmployee = $selectedEmployeesDetails->first(); @endphp
+                                    @if ($selectedEmployee->image)
+                                        <img src="data:image/jpeg;base64,{{ $selectedEmployee->image }}" alt="base" class="profile-image" />
+                                    @else
+                                        <!-- Gender-based default image -->
+                                        @if ($selectedEmployee->gender == 'Male')
+                                            <img class="profile-image" src="{{ asset('images/male-default.png') }}" alt="Default Male Image">
+                                        @elseif ($selectedEmployee->gender == 'Female')
+                                            <img class="profile-image" src="{{ asset('images/female-default.jpg') }}" alt="Default Female Image">
                                         @else
-                                            @if ($selectedEmployee && $selectedEmployee->gender == 'Male')
-                                                <img class="profile-image" src="{{ asset('images/male-default.png') }}"
-                                                    alt="Default Male Image">
-                                            @elseif($selectedEmployee && $selectedEmployee->gender == 'Female')
-                                                <img class="profile-image"
-                                                    src="{{ asset('images/female-default.jpg') }}"
-                                                    alt="Default Female Image">
-                                            @else
-                                                <img class="profile-image" src="{{ asset('images/user.jpg') }}"
-                                                    alt="Default Image">
-                                            @endif
+                                            <img class="profile-image" src="{{ asset('images/user.jpg') }}" alt="Default Image">
                                         @endif
-                                        <div style="margin-left: 15px; color: var(--label-color)">
-                                            <p class="Emp-name-leave-details">
-                                                {{ ucfirst(strtolower($selectedEmployee->first_name)) }}
-                                                {{ ucfirst(strtolower($selectedEmployee->last_name)) }}</p>
-                                            <p class="Emp-id-leave-details">{{ $selectedEmployee->emp_id }}</p>
-                                        </div>
+                                    @endif
+                                    <div style="margin-left: 15px; color: var(--label-color)">
+                                        <p class="Emp-name-leave-details">
+                                            {{ ucfirst(strtolower($selectedEmployee->first_name)) }} {{ ucfirst(strtolower($selectedEmployee->last_name)) }}
+                                        </p>
+                                        <p class="Emp-id-leave-details">{{ $selectedEmployee->emp_id }}</p>
                                     </div>
-                                    <div style="margin-left: auto;">
-                                        <p style="margin-bottom: 0px; cursor:pointer; font-weight: 500; font-size:20px"
-                                            wire:click="selectEmployee('{{ $selectedEmployee->emp_id }}')">x</p>
+                                @endif
+                            </div>
+                            <div style="margin-left: auto;">
+                                <p style="margin-bottom: 0px; cursor:pointer; font-weight: 500; font-size:20px" wire:click="selectEmployee(null)">x</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @endif
+                @if ($showSearch) 
+                <div class="analytic-view-all-search-bar">
+                    <div class="search-wrapper">
+                        <input wire:click="searchFilter" wire:input="searchFilter" wire:model.debounce.500ms="search" type="text" placeholder="Search...">
+                        <i class="search-icon bx bx-search"></i>
+                    </div>
+                </div>
+            @endif
+            
+            @if ($showContainer)
+                <div style="background: white; padding: 10px; border: 1px solid black; border-radius: 5px; width: 310px; position: absolute; z-index: 1000;">
+                    @if ($employees->isNotEmpty())
+                        @foreach ($employees as $employee)
+                            <div class="row custom-border" style="display: flex; align-items: center; height: fit-content; cursor: pointer;" wire:click="selectEmployee('{{ $employee->emp_id }}')">
+                                <div class="col-3 text-center">
+                                    @if ($employee->image)
+                                        <img src="data:image/jpeg;base64,{{ $employee->image }}" alt="base" class="profile-image" />
+                                    @else
+                                        @if ($employee->gender == 'Male')
+                                            <img class="profile-image" src="{{ asset('images/male-default.png') }}" alt="Default Male Image">
+                                        @elseif ($employee->gender == 'Female')
+                                            <img class="profile-image" src="{{ asset('images/female-default.jpg') }}" alt="Default Female Image">
+                                        @else
+                                            <img class="profile-image" src="{{ asset('images/user.jpg') }}" alt="Default Image">
+                                        @endif
+                                    @endif
+                                </div>
+                                <div class="col-7">
+                                    <div style="font-size: var(--normal-font-size); color: var(--label-color); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px;" title="{{ $employee->first_name }} {{ $employee->last_name }}">
+                                        {{ ucfirst(strtolower($employee->first_name)) }} {{ ucfirst(strtolower($employee->last_name)) }}
+                                    </div>
+                                    <div style="font-size: var(--normal-font-size); color: var(--label-color);">
+                                        {{ $employee->emp_id }}
                                     </div>
                                 </div>
                             </div>
                         @endforeach
-                    </div>
-                @endif
+                    @else
+                        <p>No employees found.</p>
+                    @endif
+                </div>
+            @endif
+            
 
-                @if ($showContainer)
-                    <div
-                        style="background: white; padding: 10px; margin-top: 10px;   border: 1px solid black;border-radius: 5px;width: 310px;">
+              
 
-                        <div class="input-group d-flex task-follower-filter-container">
-                            <div class="input-group task-input-group-container task-follower-search-container">
-                                <input wire:input="searchFilter" wire:model.debounce.500ms="search" type="text"
-                                    class="form-control task-search-input" placeholder="Search employee name / Id"
-                                    aria-label="Search" aria-describedby="basic-addon1">
-                                <div class="input-group-append1">
-                                    <button wire:change="autoValidate" wire:click="searchFilter" class="task-search-btn"
-                                        type="button">
-                                        <i class="fa fa-search task-search-icon"></i>
-                                    </button>
-                                </div>
-                            </div>
-                            <div wire:change="autoValidate" wire:click="closeFollowers" aria-label="Close">
-                                <i class="fa fa-times task-follower-close-icon" aria-hidden="true"></i>
-                            </div>
-                        </div>
-
-                        @if ($employees->isNotEmpty())
-                            <div style="max-height: 300px; margin-top: 10px;overflow-y: auto;overflow-x: hidden;">
-                                @foreach ($employees as $employee)
-                                    <div class="row custom-border"
-                                        style="display: flex; align-items: center;height: fit-content;">
-                                        <div class="col-1">
-                                            <input type="checkbox" id="employee-{{ $employee->emp_id }}"
-                                                wire:click="selectEmployee('{{ $employee->emp_id }}')"
-                                                {{ in_array($employee->emp_id, $selectedEmployees) ? 'checked' : '' }}>
-                                        </div>
-                                        <div class="col-3 text-center">
-                                            @if ($employee->image !== null && $employee->image != 'null' && $employee->image != 'Null' && $employee->image != '')
-                                                <!-- It's binary, convert to base64 -->
-                                                <img src="data:image/jpeg;base64,{{ $employee->image }}" alt="base"
-                                                    class="profile-image" />
-                                            @else
-                                                @if ($employee && $employee->gender == 'Male')
-                                                    <img class="profile-image"
-                                                        src="{{ asset('images/male-default.png') }}"
-                                                        alt="Default Male Image">
-                                                @elseif($employee && $employee->gender == 'Female')
-                                                    <img class="profile-image"
-                                                        src="{{ asset('images/female-default.jpg') }}"
-                                                        alt="Default Female Image">
-                                                @else
-                                                    <img class="profile-image" src="{{ asset('images/user.jpg') }}"
-                                                        alt="Default Image">
-                                                @endif
-                                            @endif
-                                        </div>
-
-                                        <div class="col-7">
-                                            <div style="font-size: var(--normal-font-size); color: var(--label-color);white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px;"
-                                                title="{{ $employee->first_name }} {{ $employee->last_name }}">
-                                                {{ ucfirst(strtolower($employee->first_name)) }}
-                                                {{ ucfirst(strtolower($employee->last_name)) }}</div>
-                                            <div style="font-size: var(--normal-font-size); color: var(--label-color);">
-                                                {{ $employee->emp_id }}</div>
-                                        </div>
-                                    </div>
-                                @endforeach
-                            </div>
-                        @else
-                            <p>No employees found.</p>
-                        @endif
-                    </div>
-                @endif
+            
             </div>
         </div>
         <div class="col-md-4 col-12 text-center">
@@ -413,9 +407,23 @@
                     id="All-tab" data-bs-toggle="tab" href="#All" role="tab" aria-controls="All"
                     aria-selected="false">All</a>
             </li>
-            <li class="nav-item ms-auto">
+            {{-- <li class="nav-item ms-auto">
                 <a class="nav-link folder-active" href="#" wire:click.prevent="openModal">Add Folder</a>
+            </li> --}}
+            <li class="nav-item ms-auto">
+                <div class="d-flex">
+                    <button style="background-color: white; border: 1px solid blue; color: blue; padding: 5px 15px; border-radius: 5px;margin: 5px; font-size: 12px;" wire:click="postLeaveTransaction">
+                        Post Leave Transaction
+                    </button>
+                    <button style="background-color: white; border: 1px solid blue; color: blue; padding: 5px 15px; border-radius: 5px;margin: 5px; font-size: 12px;" wire:click="applyOnBehalf">
+                        Apply on Behalf
+                    </button>
+                    <button style="background-color: white; border: 1px solid blue; color: blue; padding: 5px 15px; border-radius: 5px;margin: 5px; font-size: 12px;" wire:click="download">
+                        Download
+                    </button>
+                </div>
             </li>
+            
         </ul>
     </div>
     <div class="tab-content" style="margin: 0px 8px;" id="myTabContent">
@@ -446,74 +454,79 @@
 
                         <tbody>
 
-                            @if (!empty($selectedEmployees))
+                            @if (!empty($selectedEmployee))
                                 @foreach ($leaveData as $empId => $data)
                                     <tr
                                         style="font-size: var(--normal-font-size); color: var(--main-heading-color);text-align: center; background-color: #f8f9fa;">
                                         <td>LOP</td>
                                         <td>Loss Of Pay</td>
-                                        <td>0</td>
-                                        <td>{{ $data['leaveBalances']['lossOfPayPerYear'] }}</td>
-                                        <td>5</td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                        <td>0</td>
+                                        <td></td>
+                                        <td>
+                                            {{-- {{ isset($data['leaveBalances']['lossOfPayPerYear']) ? $data['leaveBalances']['lossOfPayPerYear'] : '-' }} --}}
+                                        </td>
+                                        
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
                                     </tr>
                                     <tr
                                         style="font-size: var(--normal-font-size); color: var(--main-heading-color);text-align: center; background-color: #fff;">
                                         <td>ML</td>
                                         <td>Maternity Leave</td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                        <td>5</td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                        <td>0</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
                                     </tr>
                                     <tr
                                         style="font-size: var(--normal-font-size); color: var(--main-heading-color);text-align: center; background-color: #f8f9fa;">
                                         <td>CL</td>
                                         <td>Casual Leave</td>
-                                        <td>0</td>
-                                        <td>{{ $data['leaveBalances']['casualLeavePerYear'] }}</td>
-                                        <td>5</td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                        <td>{{ $data['leaveBalances']['casualLeaveBalance'] }}</td>
+                                        <td></td>
+                                        <td>{{ $data['leaveBalances']['casualLeavePerYear'] ?? '-' }}</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td>{{ $data['leaveBalances']['casualLeaveBalance']  ?? '-' }}</td>
                                     </tr>
                                     <tr
                                         style="font-size: var(--normal-font-size); color: var(--main-heading-color);text-align: center;  background-color: #fff;">
                                         <td>EL</td>
                                         <td>Earned Leave</td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                        <td>5</td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                        <td>0</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
                                     </tr>
                                     <tr
                                         style="font-size: var(--normal-font-size); color: var(--main-heading-color);text-align: center; background-color: #f8f9fa;">
                                         <td>SL</td>
                                         <td>Sick Leave</td>
-                                        <td>0</td>
-                                        <td>{{ $data['leaveBalances']['sickLeavePerYear'] }}</td>
-                                        <td>5</td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                        <td>{{ $data['leaveBalances']['sickLeaveBalance'] }}</td>
+                                        <td></td>
+                                        <td>{{ $data['leaveBalances']['sickLeavePerYear']  ?? '-' }}</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td>{{ $data['leaveBalances']['sickLeaveBalance']  ?? '-' }}</td>
                                     </tr>
                                 @endforeach
                             @else
                                 <tr>
-                                    <td colspan="9"
-                                        style="text-align: center; font-weight: bold; color: var(--main-heading-color);">
-                                        No employees found.</td>
+                                    <td colspan="9" class="text-center">
+                                        <img src="{{ asset('images/not_found.png') }}" alt="No Leaves"
+                                    style="width: 150px; height:150px;">
+                                <p style="font-size: 15px; color: gray;">No Data Found.</p>
+                                    </td>
                                 </tr>
                             @endif
 
@@ -553,27 +566,29 @@
 
                         <tbody>
 
-                            @if (!empty($selectedEmployees))
+                            @if (!empty($selectedEmployee))
                                 @foreach ($leaveData as $empId => $data)
                                     <tr
                                         style="font-size: var(--normal-font-size); color: var(--main-heading-color);text-align: center; background-color: #f8f9fa;">
                                         <td>LOP</td>
                                         <td>Loss Of Pay</td>
-                                        <td>0</td>
+                                        <td></td>
                                         <td>{{ $data['leaveBalances']['lossOfPayPerYear'] }}</td>
-                                        <td>5</td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                        <td>0</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
                                     </tr>
                                 @endforeach
                             @else
-                                <tr>
-                                    <td colspan="9"
-                                        style="text-align: center; font-weight: bold; color: var(--main-heading-color);">
-                                        No employees found.</td>
-                                </tr>
+                            <tr>
+                                <td colspan="9" class="text-center">
+                                    <img src="{{ asset('images/not_found.png') }}" alt="No Leaves"
+                                style="width: 150px; height:150px;">
+                            <p style="font-size: 15px; color: gray;">No Data Found.</p>
+                                </td>
+                            </tr>
                             @endif
 
                         </tbody>
@@ -611,27 +626,29 @@
 
                         <tbody>
 
-                            @if (!empty($selectedEmployees))
+                            @if (!empty($selectedEmployee))
                                 @foreach ($leaveData as $empId => $data)
                                     <tr
                                         style="font-size: var(--normal-font-size); color: var(--main-heading-color);text-align: center; background-color: #fff;">
                                         <td>ML</td>
                                         <td>Maternity Leave</td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                        <td>5</td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                        <td>0</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
                                     </tr>
                                 @endforeach
                             @else
-                                <tr>
-                                    <td colspan="9"
-                                        style="text-align: center; font-weight: bold; color: var(--main-heading-color);">
-                                        No employees found.</td>
-                                </tr>
+                            <tr>
+                                <td colspan="9" class="text-center">
+                                    <img src="{{ asset('images/not_found.png') }}" alt="No Leaves"
+                                style="width: 150px; height:150px;">
+                            <p style="font-size: 15px; color: gray;">No Data Found.</p>
+                                </td>
+                            </tr>
                             @endif
 
                         </tbody>
@@ -669,27 +686,29 @@
 
                         <tbody>
 
-                            @if (!empty($selectedEmployees))
+                            @if (!empty($selectedEmployee))
                                 @foreach ($leaveData as $empId => $data)
                                     <tr
                                         style="font-size: var(--normal-font-size); color: var(--main-heading-color);text-align: center; background-color: #f8f9fa;">
                                         <td>CL</td>
                                         <td>Casual Leave</td>
-                                        <td>0</td>
+                                        <td></td>
                                         <td>{{ $data['leaveBalances']['casualLeavePerYear'] }}</td>
-                                        <td>5</td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                        <td>0</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
                                         <td>{{ $data['leaveBalances']['casualLeaveBalance'] }}</td>
                                     </tr>
                                 @endforeach
                             @else
-                                <tr>
-                                    <td colspan="9"
-                                        style="text-align: center; font-weight: bold; color: var(--main-heading-color);">
-                                        No employees found.</td>
-                                </tr>
+                            <tr>
+                                <td colspan="9" class="text-center">
+                                    <img src="{{ asset('images/not_found.png') }}" alt="No Leaves"
+                                style="width: 150px; height:150px;">
+                            <p style="font-size: 15px; color: gray;">No Data Found.</p>
+                                </td>
+                            </tr>
                             @endif
 
                         </tbody>
@@ -727,27 +746,29 @@
 
                         <tbody>
 
-                            @if (!empty($selectedEmployees))
+                            @if (!empty($selectedEmployee))
                                 @foreach ($leaveData as $empId => $data)
                                     <tr
                                         style="font-size: var(--normal-font-size); color: var(--main-heading-color);text-align: center;  background-color: #fff;">
                                         <td>EL</td>
                                         <td>Earned Leave</td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                        <td>5</td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                        <td>0</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
                                     </tr>
                                 @endforeach
                             @else
-                                <tr>
-                                    <td colspan="9"
-                                        style="text-align: center; font-weight: bold; color: var(--main-heading-color);">
-                                        No employees found.</td>
-                                </tr>
+                            <tr>
+                                <td colspan="9" class="text-center">
+                                    <img src="{{ asset('images/not_found.png') }}" alt="No Leaves"
+                                style="width: 150px; height:150px;">
+                            <p style="font-size: 15px; color: gray;">No Data Found.</p>
+                                </td>
+                            </tr>
                             @endif
 
                         </tbody>
@@ -785,27 +806,30 @@
 
                         <tbody>
 
-                            @if (!empty($selectedEmployees))
+                            @if (!empty($selectedEmployee))
+                            <p>hi</p>
                                 @foreach ($leaveData as $empId => $data)
                                     <tr
                                         style="font-size: var(--normal-font-size); color: var(--main-heading-color);text-align: center; background-color: #f8f9fa;">
                                         <td>SL</td>
                                         <td>Sick Leave</td>
-                                        <td>0</td>
+                                        <td></td>
                                         <td>{{ $data['leaveBalances']['sickLeavePerYear'] }}</td>
-                                        <td>5</td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                        <td>0</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
                                         <td>{{ $data['leaveBalances']['sickLeaveBalance'] }}</td>
                                     </tr>
                                 @endforeach
                             @else
-                                <tr>
-                                    <td colspan="9"
-                                        style="text-align: center; font-weight: bold; color: var(--main-heading-color);">
-                                        No employees found.</td>
-                                </tr>
+                            <tr>
+                                <td colspan="9" class="text-center">
+                                    <img src="{{ asset('images/not_found.png') }}" alt="No Leaves"
+                                style="width: 150px; height:150px;">
+                            <p style="font-size: 15px; color: gray;">No Data Found.</p>
+                                </td>
+                            </tr>
                             @endif
 
                         </tbody>
@@ -843,27 +867,29 @@
 
                         <tbody>
 
-                            @if (!empty($selectedEmployees))
+                            @if (!empty($selectedEmployee))
                                 @foreach ($leaveData as $empId => $data)
                                     <tr
                                         style="font-size: var(--normal-font-size); color: var(--main-heading-color);text-align: center; background-color: #fff;">
                                         <td>MAL</td>
                                         <td>Marraiage Leave</td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                        <td>5</td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                        <td>0</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
                                     </tr>
                                 @endforeach
                             @else
-                                <tr>
-                                    <td colspan="9"
-                                        style="text-align: center; font-weight: bold; color: var(--main-heading-color);">
-                                        No employees found.</td>
-                                </tr>
+                            <tr>
+                                <td colspan="9" class="text-center">
+                                    <img src="{{ asset('images/not_found.png') }}" alt="No Leaves"
+                                style="width: 150px; height:150px;">
+                            <p style="font-size: 15px; color: gray;">No Data Found.</p>
+                                </td>
+                            </tr>
                             @endif
 
                         </tbody>
@@ -901,7 +927,7 @@
 
                         <tbody>
 
-                            @if (!empty($selectedEmployees))
+                            @if (!empty($selectedEmployee))
                                 @foreach ($leaveData as $empId => $data)
                                     <tr
                                         style="font-size: var(--normal-font-size); color: var(--main-heading-color);text-align: center; background-color: #f8f9fa;">
@@ -965,11 +991,13 @@
                                     </tr>
                                 @endforeach
                             @else
-                                <tr>
-                                    <td colspan="9"
-                                        style="text-align: center; font-weight: bold; color: var(--main-heading-color);">
-                                        No employees found.</td>
-                                </tr>
+                            <tr>
+                                <td colspan="9" class="text-center">
+                                    <img src="{{ asset('images/not_found.png') }}" alt="No Leaves"
+                                style="width: 150px; height:150px;">
+                            <p style="font-size: 15px; color: gray;">No Data Found.</p>
+                                </td>
+                            </tr>
                             @endif
 
                         </tbody>
