@@ -105,7 +105,7 @@ class HrAttendanceTable extends Component
 
 
             return LeaveRequest::where('emp_id', $employeeId)
-                ->where('status', 'approved')
+                ->where('leave_status', 2)
                 ->where(function ($query) use ($date) {
                     $query->whereDate('from_date', '<=', $date)
                         ->whereDate('to_date', '>=', $date);
@@ -124,7 +124,7 @@ class HrAttendanceTable extends Component
 
 
             return LeaveRequest::where('emp_id', $employeeId)
-                ->where('status', 'approved')
+                ->where('leave_status', 2)
                 ->where(function ($query) use ($date) {
                     $query->whereDate('from_date', '<=', $date)
                         ->whereDate('to_date', '>=', $date);
@@ -183,7 +183,7 @@ class HrAttendanceTable extends Component
         $this->todaysDate = date('Y-m-d');
         $employeeId = $this->selectedEmployeeId;
         $this->employeeIdForTable = $this->selectedEmployeeId;
-        $this->swiperecord = SwipeRecord::where('emp_id', $this->selectedEmployeeId)->where('is_regularised', 1)->get();
+        $this->swiperecord = SwipeRecord::where('emp_id', $this->selectedEmployeeId)->where('is_regularized', 1)->get();
         $currentMonth = date('F');
         $currentYear = date('Y');
         $this->holiday = HolidayCalendar::pluck('date')

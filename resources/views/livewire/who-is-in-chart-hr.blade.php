@@ -11,7 +11,8 @@
   $swipeTime = \Carbon\Carbon::parse($s1->swipe_time);
   $isLateBy10AM = $swipeTime->format('H:i') > $s1->shift_start_time;
   $isEarlyBy10AM= $swipeTime->format('H:i') <= $s1->shift_start_time ; @endphp @if($isLateBy10AM) @php $notyetin++; $lateArrival++; @endphp @endif @if($isEarlyBy10AM) @php $onTime++; @endphp @endif @endforeach @php $CalculatePresentOnTime=($EarlySwipesCount/$TotalEmployees)*100; $CalculatePresentButLate=($LateSwipesCount/$TotalEmployees)*100; @endphp <div class="date-form-who-is-in">
-    <input type="date" wire:model="from_date" wire:change="updateDate" class="form-control" id="fromDate" name="fromDate" style="color: #778899;">
+    <input type="date" wire:model="from_date" wire:change="updateDate" class="form-control" id="fromDate" name="fromDate" style="color: #778899;margin-left: 12px;
+    margin-top: 10px;">
 </div>
 <div class="shift-selector-container-who-is-in">
   <input type="text" class="shift-selector-who-is-in" placeholder="Select Shifts">

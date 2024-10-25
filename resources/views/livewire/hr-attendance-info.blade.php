@@ -87,6 +87,7 @@
             flex-direction: column;
             white-space: nowrap;
             text-overflow: ellipsis;
+           
         }
 
         .employee-name {
@@ -151,7 +152,7 @@
             /* Smaller font size */
             color: #333;
             /* Text color */
-            width: 200px;
+            width: 300px;
             /* Fixed width for rectangular shape */
             height: 50px;
             /* Fixed height for a smaller box */
@@ -189,7 +190,7 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
-            margin-right: 55px;
+            margin-right: 115px;
         }
 
         .selected-employee-box .close-btn {
@@ -197,7 +198,7 @@
             /* Absolute positioning */
             right: 5px;
             /* Position from the right edge */
-            top: 5px;
+            top: 1px;
             /* Position from the top edge */
             background: transparent;
             /* Transparent background */
@@ -1133,15 +1134,6 @@ width: 170px; */
     max-width: 110px;
     display: inline-block;
 }
-.search-btn {
-    background-color: rgb(2, 17, 79);
-    border-radius: 0 5px 5px 0;
-    color: #fff !important;
-    width: 40px;
-    border: none;
-    align-items: center;
-    display: flex;
-}
 
         .toggle-box-attendance-info i.fas.fa-bars {
             color: grey;
@@ -1695,129 +1687,236 @@ color: #fff;
             }
         }
     </style>
-    <div class="container">
-        <h6 style="padding-top:15px;">Start searching to see specific employee details here</h6>
-        <div class="form-group">
-            <label for="employeeType">Employee Type:</label>
-            <select id="employeeType">
-                <option value="current" selected>Current Employees</option>
-                <option value="former">Former Employees</option>
-                <option value="contract">Contract Employees</option>
-                <option value="intern">Interns</option>
-            </select>
-        </div>
+    <div class="container" style="position: relative;">
+    <h6 style="padding-top:15px;">Start searching to see specific employee details here</h6>
+    <div class="form-group">
+        <label for="employeeType">Employee Type:</label>
+        <select id="employeeType" wire:model="employeeType" wire:change="updateEmployeeType">
+            <option value="all">All Employees</option>
+            <option value="current">Current Employees</option>
+            <option value="past">Past Employees</option>
+            <option value="interns">Interns</option>
+        </select>
+    </div>
 
-        <div class="form-group">
-            <label for="employeeType" wire:click="searchforEmployee" style="cursor:pointer;">Employee:</label>
-            <div class="searchContainer"style="<?php echo ($searchEmployee == 1) ? 'display: block;' : ''; ?>">
-                    <!-- Content for the search container -->
-                    <div class="row mb-2 py-0 px-2">
-                        <div class="row m-0 p-0 d-flex align-items-center justify-content-between">
-                            <div class="col-md-10 p-0 m-0">
-                                <div class="input-group">
-                                    <input
-                                        wire:model="searchTerm" 
-                                        wire:change="updatesearchTerm"
-                                        id="searchInput"
-                                        type="text"
-                                        class="form-control placeholder-small"
-                                        placeholder="Search...."
-                                        aria-label="Search"
-                                        aria-describedby="basic-addon1">
-                                    <div class="input-group-append searchBtnBg d-flex align-items-center">
-                                        <button
-                                            type="button"
-                                            class="search-btn">
-                                            <i class="fas fa-search ms-2"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
- 
-                            <div class="col m-0 p-0 d-flex justify-content-end">
-                                <button wire:click="closeEmployeeBox" type="button" class="close rounded px-1 py-0" aria-label="Close">
-                                    <span aria-hidden="true" class="closeIcon"><i class="fas fa-times "></i>
-                                    </span>
+    <div class="form-group">
+        <label for="employeeType" wire:click="searchforEmployee" style="cursor:pointer;">Employee:</label>
+        <div class="searchContainer" style="<?php echo ($searchEmployee == 1) ? 'display: block;' : ''; ?>">
+            <!-- Content for the search container -->
+            <div class="row mb-2 py-0 px-2">
+                <div class="row m-0 p-0 d-flex align-items-center justify-content-between">
+                    <div class="col-md-10 p-0 m-0">
+                        <div class="input-group">
+                            <input wire:model="searchTerm" wire:change="updatesearchTerm" id="searchInput" type="text"
+                                class="form-control placeholder-small" placeholder="Search...." aria-label="Search"
+                                aria-describedby="basic-addon1">
+                            <div class="input-group-append searchBtnBg d-flex align-items-center">
+                                <button type="button" class="search-btn">
+                                    <i class="ph-magnifying-glass ms-2"></i>
                                 </button>
                             </div>
                         </div>
                     </div>
- 
-                    <!-- Your Blade file -->
-                    <div class="scrollApplyingTO">
-                        @if(!empty($employees))
-                        @foreach($employees as $employee)
-                        <div class="d-flex gap-3 align-items-center"
-                            style="cursor: pointer;"wire:click="updateselectedEmployee('{{ $employee->emp_id }}')">
-                            @if($employee['image'] && $employee['image'] !== 'null' )
-                            <div class="employee-profile-image-container">
-                                <img class="rounded-circle" height="35px" width="35px" src="{{ 'data:image/jpeg;base64,' . base64_encode($employee['image'])}}">
-                            </div>
-                            @else
-                            @if($employee['gender'] == 'Female')
-                            <div class="employee-profile-image-container">
-                                <img src="{{ asset('images/female-default.jpg') }}" class="employee-profile-image-placeholder rounded-circle" height="35px" width="35px" alt="Default Image">
-                            </div>
-                            @elseif($employee['gender'] == 'Male')
-                            <div class="employee-profile-image-container">
-                                <img src="{{ asset('images/male-default.png') }}" class="employee-profile-image-placeholder rounded-circle" height="35px" width="35px" alt="Default Image">
-                            </div>
-                            @else
-                            <div class="employee-profile-image-container">
-                                <img src="{{ asset('images/user.jpg') }}" class="employee-profile-image-placeholder rounded-circle" height="35px" width="35px" alt="Default Image">
-                            </div>
-                            @endif
-                            @endif
-                            <div class="d-flex flex-column mt-2 mb-2">
-                                <span class="ellipsis mb-0">{{ $employee['first_name'] }} {{ $employee['last_name'] }}</span>
-                                <span class="mb-0 normalTextSmall"> #{{ $employee['emp_id'] }} </span>
-                            </div>
-                        </div>
-                        @endforeach
-                        @else
-                        <p class="mb-0 normalTextValue m-auto text-center">No managers found.</p>
-                        @endif
-                    </div>
-                </div>
 
-        </div>
-        @if(!empty($selectedEmployeeId))
-        @php
-        function getRandomAbsentColor()
-        {
-        $colors = ['#FFD1DC', '#D2E0FB', '#ADD8E6', '#E6E6FA', '#F1EAFF', '#FFC5C5'];
-        return $colors[array_rand($colors)];
-        }
-        @endphp
-        <div class="row m-0 p-0">
-            <div class="col p-0 m-0">
-                @if($searchEmployee==0)
-                <div class="selected-employee-box position-relative gap-4">
-                    <button type="button" class="close-btn" wire:click="clearSelectedEmployee">
-                        &times; <!-- This will render a cross (×) symbol -->
-                    </button>
-                    
-                    <div class="thisCircle"
-                        style="border: 2px solid {{ getRandomAbsentColor() }};"
-                        data-toggle="tooltip" data-placement="top"
-                        title="{{ ucwords(strtolower($selectedEmployeeFirstName)) }} {{ ucwords(strtolower($selectedEmployeeLastName)) }}">
-                        <span class="initials">
-                            {{ strtoupper(substr(trim($selectedEmployeeFirstName), 0, 1)) }}{{ strtoupper(substr(trim($selectedEmployeeLastName), 0, 1)) }}
-                        </span>
+                    <div class="col m-0 p-0 d-flex justify-content-end">
+                        <button wire:click="closeEmployeeBox" type="button" class="close rounded px-1 py-0"
+                            aria-label="Close">
+                            <span aria-hidden="true" class="closeIcon"><i class="ph-x"></i></span>
+                        </button>
                     </div>
-                    <div class="employee-info">
-                        <span>{{ ucwords(strtolower($selectedEmployeeFirstName)) }}&nbsp;{{ ucwords(strtolower($selectedEmployeeLastName)) }}</span> {{ $selectedEmployeeId }}
-                    </div>
-                    
                 </div>
+            </div>
+
+            <!-- Your Blade file -->
+            <div class="scrollApplyingTO">
+                @if(!empty($employees) && $employees->isNotEmpty())
+                @foreach($employees as $employee)
+                <div class="d-flex gap-3 align-items-center" style="cursor: pointer;"
+                    wire:click="updateselectedEmployee('{{ $employee->emp_id }}')">
+                    @if($employee['image'] && $employee['image'] !== 'null')
+                    <div class="employee-profile-image-container">
+                        <img class="navProfileImg rounded-circle" src="data:image/jpeg;base64,{{ $employee->image }}">
+                    </div>
+                    @else
+                    @if($employee['gender'] == 'Female')
+                    <div class="employee-profile-image-container">
+                        <img src="{{ asset('images/female-default.jpg') }}"
+                            class="employee-profile-image-placeholder rounded-circle" height="35px" width="35px"
+                            alt="Default Image">
+                    </div>
+                    @elseif($employee['gender'] == 'Male')
+                    <div class="employee-profile-image-container">
+                        <img src="{{ asset('images/male-default.png') }}"
+                            class="employee-profile-image-placeholder rounded-circle" height="35px" width="35px"
+                            alt="Default Image">
+                    </div>
+                    @else
+                    <div class="employee-profile-image-container">
+                        <img src="{{ asset('images/user.jpg') }}"
+                            class="employee-profile-image-placeholder rounded-circle" height="35px" width="35px"
+                            alt="Default Image">
+                    </div>
+                    @endif
+                    @endif
+                    <div class="d-flex flex-column mt-2 mb-2">
+                        <span class="ellipsis mb-0">{{ ucwords(strtolower($employee['first_name'])) }}
+                            {{ ucwords(strtolower($employee['last_name'])) }}</span>
+                        <span class="mb-0 normalTextSmall"> #{{ $employee['emp_id'] }} </span>
+                    </div>
+                </div>
+                @endforeach
+                @else
+                <p class="mb-0 normalTextValue text-muted m-auto text-center" style="font-size:12px;">No employees
+                    found.</p>
                 @endif
             </div>
         </div>
-        @endif
 
     </div>
+    @if(!empty($selectedEmployeeId))
+    @php
+    function getRandomAbsentColor() {
+    $colors = ['#FFD1DC', '#D2E0FB', '#ADD8E6', '#E6E6FA', '#F1EAFF', '#FFC5C5'];
+    return $colors[array_rand($colors)];
+    }
+    @endphp
+    <div class="row m-0 p-0">
+        <div class="col p-0 m-0">
+            @if($searchEmployee==0)
+            <div class="selected-employee-box position-relative gap-4">
+                <button type="button" class="close-btn" wire:click="clearSelectedEmployee">
+                    &times; <!-- This will render a cross (×) symbol -->
+                </button>
+
+                <div class="thisCircle" style="border: 2px solid {{ getRandomAbsentColor() }};" data-toggle="tooltip"
+                    data-placement="top"
+                    title="{{ ucwords(strtolower($selectedEmployeeFirstName)) }} {{ ucwords(strtolower($selectedEmployeeLastName)) }}">
+                    <span class="initials">
+                        {{ strtoupper(substr(trim($selectedEmployeeFirstName), 0, 1)) }}{{ strtoupper(substr(trim($selectedEmployeeLastName), 0, 1)) }}
+                    </span>
+                </div>
+                <div class="employee-info">
+                    <span>{{ ucwords(strtolower($selectedEmployeeFirstName)) }}&nbsp;{{ ucwords(strtolower($selectedEmployeeLastName)) }}</span>
+                    {{ $selectedEmployeeId }}
+                </div>
+            </div>
+            @endif
+        </div>
+    </div>
+    @endif
+
+    <div class="image-right-container" style="position: absolute; top: 0; right: 0; margin-top: 15px; margin-right: 30px; z-index: 1000;">
+        <img src="{{ asset('images/attendance-employee.png') }}" height="120" width="150" alt="Right Image">
+    </div>
+
+</div>
     @if($selectedEmployeeId)
     <div class="row m-0 mt-3">
+    <div class="row m-0 d-flex justify-content-center text-center">
+            <div class="col-12 col-md-4">
+                <div class="row m-0 topMsg-attendance-info d-flex align-items-center">
+
+                    <div class="col-8 p-0">
+                        <!-- Small box with the text -->
+                        <div style="white-space:nowrap;text-align:center;margin-left:30px;font-size:12px;">Access card details not available</div>
+
+                    </div>
+
+                    <!-- Blue info icon on the right -->
+                    <div class="info-icon-container-attendance-info col-4">
+                        <i class="fa fa-info-circle" aria-hidden="true" style="margin-left:66px;font-size: 14px; color: blue;text-decoration:none;"></i>
+                        <div class="info-box-attendance-info">
+                            Contact administrator to get access card assigned.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2"></div>
+        </div>
+        <div class="row m-0 mt-3">
+            <div class="row m-0 d-flex justify-content-center" style="display:flex;justify-content:center;">
+            
+                <div class="penalty-and-average-work-hours-card col-md-3 mb-3">
+                    <div class="insight-card bg-white pt-2 pb-2"style="{{ $percentageinworkhrsforattendance == 0 ? 'height: 135px;' : '' }}">
+                        <h6 class="text-secondary text-regular text-center" style="font-size:12px;border-bottom:1px solid #ccc;padding-bottom:5px;">Avg. Work Hrs
+                        </h6>
+                        <section class="text-center">
+                            
+                            <p class="text-2" style="margin-top:30px;">{{$averageWorkHrsForCurrentMonth}}</p>
+                            
+                          
+                            <div>
+                            @if($avgWorkHoursPreviousMonth==0)
+                                   <span class="text-success ng-star-inserted" style="font-size:10px;">
+                                            </span>
+                                            <span class="text-muted" style="font-size:10px;margin-left:0px;">
+                                            </span>
+                              
+                            @elseif($percentageinworkhrsforattendance>0)
+                                            <span class="text-success ng-star-inserted" style="font-size:10px;"> +{{intval($percentageinworkhrsforattendance)}}%
+                                            </span>
+                                            <span class="text-muted" style="font-size:10px;margin-left:0px;"> From {{ \Carbon\Carbon::createFromDate($year, $month, 1)->subMonth()->format('F') }}
+                                            </span>
+                                   @elseif($percentageinworkhrsforattendance<0)
+                                       <span class="text-danger ng-star-inserted" style="font-size:10px;"> {{intval($percentageinworkhrsforattendance)}}%
+                                        </span>
+                                        <span class="text-muted" style="font-size:10px;margin-left:0px;"> From {{ \Carbon\Carbon::createFromDate($year, $month, 1)->subMonth()->format('F') }}
+                                        </span> 
+                                    @endif
+                                     
+                            </div>
+
+                        </section>
+                    </div>
+                </div>
+                <div class="penalty-and-average-work-hours-card mb-3 col-md-3">
+                    <div class="insight-card bg-white pt-2 pb-2"style="{{ $percentageinworkhrsforattendance == 0 ? 'height: 135px;' : '' }}">
+                        <h6 class="text-secondary text-regular text-center" style="font-size:12px;border-bottom:1px solid #ccc;padding-bottom:5px;">
+                            Avg.&nbsp;Actual&nbsp;Work&nbsp;Hrs</h6>
+                        <section class="text-center">
+                                   
+                                            <p class="text-2" style="margin-top:30px;">{{$averageWorkHrsForCurrentMonth}}</p>
+                                    
+
+                            <div>
+                                   @if($avgWorkHoursPreviousMonth==0)
+                                   <span class="text-success ng-star-inserted" style="font-size:10px;">
+                                            </span>
+                                            <span class="text-muted" style="font-size:10px;margin-left:0px;">
+                                            </span>
+
+                                   @elseif($percentageinworkhrsforattendance>0)
+                                            <span class="text-success ng-star-inserted" style="font-size:10px;"> +{{intval($percentageinworkhrsforattendance)}}%
+                                            </span>
+                                            <span class="text-muted" style="font-size:10px;margin-left:0px;"> From {{ \Carbon\Carbon::createFromDate($year, $month, 1)->subMonth()->format('F') }}
+                                            </span>
+                                   @elseif($percentageinworkhrsforattendance<0) 
+                                       <span class="text-danger ng-star-inserted" style="font-size:10px;"> {{intval($percentageinworkhrsforattendance)}}%
+                                        </span>
+                                        <span class="text-muted" style="font-size:10px;margin-left:0px;"> From {{ \Carbon\Carbon::createFromDate($year, $month, 1)->subMonth()->format('F') }}
+                                        </span> 
+                                    @endif
+                            </div>
+
+                        </section>
+                    </div>
+                </div>
+
+                <div class="penalty-and-average-work-hours-card mb-3 col-md-3">
+                    <div class="insight-card  bg-white pt-2 pb-2" style="height: 135px;">
+                        <h6 class="text-secondary text-regular text-center" style="font-size:12px;border-bottom:1px solid #ccc;padding-bottom:5px;"> Penalty Days </h6>
+                        <section class="text-center">
+                            <p class="text-2" style="margin-top:30px;"> 0 </p>
+                        </section>
+                    </div>
+                </div>
+                <div class="col-md-2 mt-5" style="text-align: center">
+                    <a href="#" class="attendanceperiod" wire:click="öpenattendanceperiodModal">
+                        Insights
+                    </a>
+                </div>
+            </div>
+            </div>
             <div class="col-6" style="text-align: left">
                 <a href="#" id="toggleSidebar" class="gt-overlay-toggle" style="margin-top:69px;color:rgb(2, 17, 79); display: none">Legend</a>
             </div>
@@ -2063,25 +2162,26 @@ color: #fff;
                         <h6 class="m-0 p-2 mb-2" style="background-color: #f1f4f7">Day Type</h6>
                         <div class="col-md-3 mb-2 pe-0" style="display: flex">
                             <p class="mb-0">
-                                <i class="fas fa-mug-hot"></i>
+                               <i class="ph-coffee"></i>
                             </p>
                             <p class="m-1 pb-2 attendance-legend-text">Rest Day</p>
                         </div>
                         <div class="col-md-3 mb-2 pe-0" style="display: flex">
                             <p class="mb-0">
-                                <i class="fas fa-tv"></i>
+                               <i class="ph-television"></i>
                             </p>
                             <p class="m-1 attendance-legend-text" style="margin-bottom:14px;">Off Day</p>
                         </div>
                         <div class="col-md-3 mb-2 pe-0" style="display: flex">
                             <p class="mb-0">
-                                <i class="fas fa-umbrella"></i>
+                               <i class="ph-umbrella"></i>
                             </p>
                             <p class="m-1 pb-2 attendance-legend-text">Holiday</p>
                         </div>
                         <div class="col-md-3 mb-2 pe-0" style="display: flex">
                             <p class="mb-0">
-                                <i class="fas fa-calendar-day"></i>
+                                <i class="ph-calendar"></i>
+
                             </p>
                             <p class="m-1  pb-2 attendance-legend-text">Half Day</p>
                         </div>
@@ -2202,7 +2302,7 @@ color: #fff;
 
 
                                         $CurrentDate = $currentDate2;
-                                        $swiperecord = App\Models\SwipeRecord::where('emp_id', $employeeIdForRegularisation)->where('is_regularised',1)->get(); // Example query
+                                        $swiperecord = App\Models\SwipeRecord::where('emp_id', $employeeIdForRegularisation)->where('is_regularized',1)->get(); // Example query
 
                                         if ($swiperecord && is_iterable($swiperecord)) {
                                         $swipeRecordExists = $swiperecord->contains(function ($record) use ($CurrentDate) {
@@ -2346,7 +2446,7 @@ color: #fff;
                                         <td>
                                             <div style="display:flex;flex-direction:column;">
                                                 <p style="margin-bottom: 0;font-weight:normal;font-size:12px;white-space:nowrap;">
-                                                    {{ date('h:i:s A', strtotime($swiperecord->swipe_time)) }}
+                                                    {{ date('H:i:s A', strtotime($swiperecord->swipe_time)) }}
                                                 </p>
                                                 <p style="margin-bottom: 0;font-size: 10px;color: #a3b2c7;">
                                                     {{ date('d M Y', strtotime($currentDate2)) }}
@@ -2355,7 +2455,47 @@ color: #fff;
                                         </td>
                                         <td style="font-size:10px;">{{$this->city}},{{$this->country}},{{$this->postal_code}}</td>
 
-                                        <td><button class="info-button" wire:click="viewDetails('{{$swiperecord->id}}')">Info</button></td>
+                                        <td>
+                                            <button class="info-button" wire:click="viewDetails('{{$swiperecord->id}}')">Info</button>
+                                            @if($showSR==true)
+
+                                        <div class="modal" tabindex="-1" role="dialog" style="display: block;">
+                                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                                <div class="modal-content">
+
+                                                    <div class="modal-header" style="background-color: #eef7fa; height: 50px">
+                                                        <h5 style="padding: 5px; color: #778899; font-size: 15px;" class="modal-title"><b>Swipe&nbsp;&nbsp;Details</b></h5>
+                                                        <button type="button" class="btn-close btn-primary" data-dismiss="modal" aria-label="Close" wire:click="closeSWIPESR" style="background-color: white; height:10px;width:10px;">
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body" style="max-height:300px;overflow-y:auto">
+                                                        <div class="row m-0 mt-3">
+
+                                                            <div class="col" style="font-size: 11px;color:#778899;font-weight:500;">Employee Name: <br /><span style="color: #000000;">{{$view_student_first_name}}&nbsp;{{$view_student_last_name}}</span></div>
+                                                            <div class="col" style="font-size: 11px;color:#778899;font-weight:500;">Employee Id: <br /><span style="color: #000000;">{{$view_student_emp_id}}</span></div>
+                                                        </div>
+                                                        <div class="row m-0 mt-3">
+                                                            <div class="col" style="font-size: 11px;color:#778899;font-weight:500;">Swipe Date : <br /><span style="color: #000000;">{{\Carbon\Carbon::parse($swiperecord->created_at)->format('jS F, Y')}}</span></div>
+                                                            <div class="col" style="font-size: 11px;color:#778899;font-weight:500;">Swipe Time: <br /><span style="color: #000000;">{{$view_student_swipe_time}}</span></div>
+                                                        </div>
+                                                        <div class="row m-0 mt-3">
+                                                            <div class="col" style="font-size: 11px;color:#778899;font-weight:500;">In/Out: <br /><span style="color: #000000;">{{$view_student_in_or_out}}</span></div>
+                                                            <div class="col" style="font-size: 11px;color:#778899;font-weight:500;">Access Card Number: <br /><span style="color: #000000;">-</span></div>
+                                                        </div>
+                                                        <div class="row m-0 mt-3">
+                                                            <div class="col" style="font-size: 11px;color:#778899;font-weight:500;">Location:<br /> <span style="color: #000000;">NA</span></div>
+                                                        </div>
+                                                        <div style="display: flex; justify-content: center; margin-top: 20px;">
+                                                            <button class="cancel-btn" style="border:1px solid rgb(2, 17, 79);" wire:click="closeSWIPESR">Close</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="modal-backdrop fade show blurred-backdrop"style="background-color: rgba(0, 0, 0, 0.05);"></div>
+
+                                        @endif
+                                        </td>
 
                                     </tr>
                                     @if (($index + 1) % 2 == 0)

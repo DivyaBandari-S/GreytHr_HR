@@ -68,7 +68,7 @@ Route::middleware(['auth:hr'])->group(function () {
                 Route::get('/user/hremployeedirectory', EmployeeDirectory::class)->name('employee-directory');
                 Route::get('/user/analytics-hub', AnalyticsHub::class)->name('analytics-hub');
                 Route::get('/user/analytics-hub-viewall', AnalyticsHubViewAll::class)->name('analytics-hub-viewall');
-                Route::get('/user/overview', HrAttendanceOverviewNew::class)->name('overview');
+                Route::get('/user/hr-attendance-overview', HrAttendanceOverviewNew::class)->name('overview');
                 Route::get('/user/who-is-in-chart-hr', WhoIsInChartHr::class)->name('who-is-in-chart-hr');
                 Route::get('/user/attendance-info', HrAttendanceInfo::class)->name('attendance-info');
                 Route::get('/user/attendance-muster-hr', AttendanceMusterHr::class)->name(name: 'attendance-muster-hr');

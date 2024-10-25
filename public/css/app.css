@@ -567,7 +567,18 @@ label {
     float: inline-end;
     border-radius: 5px;
 }
-
+.navProfileImg{
+    width: 35px;
+	height: 35px;
+	border-radius: 50%;
+	object-fit: cover;
+	cursor: pointer;
+	margin-right: 0px !important;
+}
+.employee-profile-image-container
+{
+    margin-top:5px;
+}
 .ilynn-btn:hover {
     cursor: pointer;
 }
@@ -1317,6 +1328,7 @@ input[type="date"]::before {
     position: relative;
     width: 200px;
     margin-top: 30px;
+    padding-left: 15px;
 }
 
 .shift-selector-who-is-in {
@@ -2102,3 +2114,4 @@ width: 80%;
 .error-text {
     font-size: var(--normal-font-size);
 }
+/*Shift Roster Hr SubM
