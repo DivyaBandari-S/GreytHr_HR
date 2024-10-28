@@ -13,6 +13,7 @@ class EmpDocument extends Component
 {
     use WithFileUploads;
     public $requests;
+    public $showConfDialog=false;
 
     public $selectedOption = 'all'; 
     public $searchTerm = '';
@@ -30,6 +31,7 @@ class EmpDocument extends Component
   
     public $selectedEmployeeLastName;
     public $selectedEmployee;
+    public $showDocDialog=false;
     public $isNames = false;
     public $record;
     public $subject;
@@ -129,6 +131,11 @@ class EmpDocument extends Component
 
    
     }
+    public function addDocs()
+    {
+        $this->showDocDialog = true;
+    }
+ 
 
     public function removePerson($empId)
     {

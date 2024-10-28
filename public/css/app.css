@@ -675,7 +675,7 @@ label {
 }
 
 .btn-btn {
-    background: rgb(2, 17, 79);
+    background: var(--main-button-color);
     border: none;
 }
 .closed-btn {
@@ -2392,7 +2392,7 @@ input[type="date"]::before {
 }
 
 .leave-table td button.delete-btn:hover {
-    color: #b52b27;
+    color: #b52b
 }
 .modal-title {
     color: #fff;
@@ -2419,3 +2419,38 @@ input[type="date"]::before {
     font-family: "Montserrat", sans-serif;
     font-weight: normal;
 }
+/* Employee Documents in Information started*/
+
+.upload-button {
+    display: inline-flex;
+    align-items: center;
+     height: 30px;
+     
+    font-size: 10px;
+    color: var(--main-button-color);
+    border: 1px solid var(--main-button-color);
+    border-radius: 4px;
+    cursor: pointer;
+    background-color: #f9f9f9;
+}
+
+.upload-icon {
+    color: blue;
+    margin-right: 8px;
+    font-size: 14px;
+}
+.hidden-input {
+    display: none;
+}
+.emp-doc{
+    margin-top: 10px;
+    margin-left: 15px;
+    display: flex; align-items: center; gap: 10px;
+}
+.emp-doc-form{
+    width:60%;
+    margin-top: 5px;
+    margin-left: 5px;
+    font-size: 12px;
+}
+/* Employee Documents in Information ended*/

@@ -378,8 +378,122 @@ aria-describedby="basic-addon1"
 </div>
 
     <div class="col-md-4 ">
-        <button class="btn btn-primary " style="font-size:12px;">Add Documents</button>
+        <button class="btn btn-primary " style="font-size:12px;" wire:click="addDocs">Add Documents</button>
     </div>
+    <div class=" mt-2 bg-white d-flex align-items-center ">
+                    <div class="d-flex ms-auto">
+                        @if($showDocDialog)
+                        <div class="modal" tabindex="-1" role="dialog" style="display: block;width:90% ">
+                            <div class="modal-dialog modal-dialog-centered" role="document" >
+
+                                <div class="modal-content">
+                                    <div class="modal-header" style="background:white;">
+                <p style="font-size:10px;color:black" class="modal-title" id="myModalLabel">You can upload employee documents, such as certificates, awards, or other qualifications.
+
+Note: Your uploads are automatically private. Select the "Publish to Employee Portal" checkbox so that employees can view it.</p>
+            
+            </div>
+                                 
+                                <form method="POST" action="/upload-document" enctype="multipart/form-data">
+                                <div class="form-group emp-doc">
+    <label for="employeeId">Employee</label>
+    @php
+        // Split the name into parts (excluding emp_id)
+        $nameParts = explode(' ', $personData['name']);
+
+        // Capitalize the first letter of the first name
+        $firstName = isset($nameParts[0]) ? ucfirst(strtolower($nameParts[0])) : '';
+
+        // Get the last name parts, excluding the first name and emp_id
+        $lastNameParts = array_filter($nameParts, function($part) {
+            return !preg_match('/#\(.+\)/', $part); // Exclude emp_id in the form #(EMP_ID)
+        });
+
+        // Capitalize each part of the last name
+        $formattedLastName = implode(' ', array_map('ucfirst', array_map('strtolower', $lastNameParts)));
+
+        // Combine first name and formatted last name
+        $fullName = trim( ' ' . $formattedLastName);
+
+        // Extract emp_id (already in uppercase) from the name string
+        preg_match('/#\((.*)\)/', $personData['name'], $matches);
+        $empId = isset($matches[1]) ? $matches[1] : '';
+    @endphp
+    <input type="text" class="form-control emp-doc-form" id="employeeId" name="employeeId" readonly 
+           value="{{ $fullName }}@if($empId) (#{{ strtoupper($empId) }}) @endif">
+</div>
+
+
+    <div class="form-group emp-doc">
+        <label for="documentName">Document Name</label>
+        <input type="text" class="form-control emp-doc-form" id="documentName" name="documentName" placeholder="Please enter the Document Name" required>
+        <small class="text-danger" style="display: none;">Please enter the Document Name</small>
+    </div>
+
+    <div class="form-group emp-doc">
+        <label for="category">Category</label>
+        <select class="form-control emp-doc-form" id="category" name="category" required>
+            <option value="" disabled selected>Select a category</option>
+            <option value="Accounts & Statutory">Accounts & Statutory</option>
+            <option value="Address">Address</option>
+            <option value="Background Verification">Background Verification</option>
+            <option value="Education">Education</option>
+            <option value="Experience">Experience</option>
+            <option value="Joining Kit">Joining Kit</option>
+            <option value="Previous Employment">Previous Employment</option>
+            <option value="Projects">Projects</option>
+            <option value="Qualification">Qualification</option>
+            <option value="Vaccination Certificate">Vaccination Certificate</option>
+        </select>
+        <small class="text-danger" style="display: none;">Please select a Category</small>
+    </div>
+
+    <div class="form-group emp-doc">
+        <label for="description">Description</label>
+        <textarea class="form-control emp-doc-form" id="description" name="description" placeholder="Enter document description (optional)"></textarea>
+    </div>
+
+    <div class="form-group emp-doc mt-2">
+        <label for="file ">File</label>
+        <input type="file" id="file" name="file" class="hidden-input" accept=".pdf,.xls,.xlsx,.doc,.docx,.txt,.ppt,.pptx,.gif,.jpg,.png" required>
+
+<!-- Visible upload button -->
+<label for="file" class="upload-button">
+        <i class="bx bx-upload upload-icon"></i> 
+        <span style="color: blue;">Upload File</span>
+    </label>
+        
+        <small class="text-danger" style="display: none;">Please select a file</small>
+        <p class="form-text text-muted" style="font-size:8px">Note: Only PDF, XLS, XLSX, DOC, DOCX, TXT, PPT, PPTX, GIF, JPG, PNG files are accepted.</p>
+    </div>
+
+
+    <div class="form-group form-check ml-5">
+        <input type="checkbox" class="form-check-input" id="publishToPortal" name="publishToPortal" >
+        <label class="form-check-label" for="publishToPortal">Publish to Employee Portal</label>
+    </div>
+
+    <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+</form>
+
+
+
+
+
+                                </div>
+                            </div>
+                        </div>
+
+
+
+
+                        <div class="modal-backdrop fade show"></div>
+                        @endif
+                    </div>
+                </div>
 </div>
 </div>
 
