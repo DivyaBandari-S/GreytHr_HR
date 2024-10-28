@@ -34,12 +34,14 @@ class ShiftRosterHr extends Component
         $hremployeeId = auth()->guard('hr')->user()->hr_emp_id;
         $employeeId=Hr::where('hr_emp_id',$hremployeeId)->value('emp_id');
         $companyIdJson = EmployeeDetails::where('emp_id', $employeeId)->value('company_id');
-        if (is_string($companyIdJson)) {
-            $companyIds = json_decode($companyIdJson, true);
+        if (is_array($companyIdJson)) {
+            $companyIds = $companyIdJson; // It's already an array
+        } elseif (is_string($companyIdJson)) {
+            $companyIds = json_decode($companyIdJson, true); // Decode the JSON string
         } else {
-            // If it's already an array, no need to decode
-            $companyIds = $companyIdJson;
+            $companyIds = []; // Default to an empty array if it's neither
         }
+       
         $this->empIds = EmployeeDetails::where(function($query) use ($companyIds) {
             foreach ($companyIds as $companyId) {
                 // Use JSON_CONTAINS to check if company_id field contains the companyId
@@ -52,7 +54,7 @@ class ShiftRosterHr extends Component
         $this->selectedMonth=$this->currentMonth;
         $employeeIds = $this->employees->pluck('emp_id');
         $this->approvedLeaveRequests = LeaveRequest::join('employee_details', 'leave_applications.emp_id', '=', 'employee_details.emp_id')
-        ->where('leave_applications.status', 'approved')
+        ->where('leave_applications.leave_status', 2)
         ->whereIn('leave_applications.emp_id', $employeeIds)
         ->whereDate('from_date', '>=', $this->currentYear . '-' . $this->selectedMonth . '-01') // Dynamically set year and month
         ->whereDate('to_date', '<=', $this->currentYear . '-' . $this->selectedMonth . '-31') // Dynamically set year and month

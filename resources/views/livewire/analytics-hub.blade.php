@@ -5,6 +5,22 @@
             <span class="analytic-right" wire:click="analyticsHubList">View All</span>
         </div>
         <div class="analytic-content-row">
+
+            {{-- @foreach($recentCards as $card)
+            <div class="analytic-content-box"
+                wire:click="selectCard('{{ $card }}')">
+                <span class="analytic-icon">&#9734;</span>
+                <span class="analytic-text">{{ $card }}</span>
+            </div>
+        @endforeach --}}
+        {{-- @foreach ($dynamicCards as $card)
+    <div class="analytic-content-box @if ($selectedCard == $card) analytic-highlighted @endif"
+         wire:click="selectCard('{{ $card }}')">
+        <span class="analytic-icon">&#9734;</span>
+        <span class="analytic-text">{{ $card }}</span>
+    </div>
+@endforeach --}}
+
             <div class="analytic-content-box @if ($selectedCard == 'Basic Information') analytic-highlighted @endif"
                 wire:click="selectCard('Basic Information')">
                 <span class="analytic-icon">&#9734;</span>
@@ -90,7 +106,7 @@
                                     @else
                                     @endif
                                 </td>
-                                <td class="analytic-grey-text">{{ $employee->gender }}</td>
+                                <td class="analytic-grey-text">{{ ucwords(strtolower($employee->gender)) }}</td>
                                 <td class="analytic-grey-text">{{ $employee->email }}</td>
                             </tr>
                         @endforeach
@@ -148,7 +164,7 @@
                                     @else
                                     @endif
                                 </td>
-                                <td class="analytic-grey-text">{{ $employee->gender ?? '' }}</td>
+                                <td class="analytic-grey-text">{{ ucwords(strtolower($employee->gender))?? '' }}</td>
                                 <td class="analytic-grey-text">
                                     @if ($personalInfo && $personalInfo->date_of_birth)
                                         {{ \Carbon\Carbon::parse($personalInfo->date_of_birth)->format('d M Y') }}
@@ -238,7 +254,7 @@
                                 @else
                                 @endif
                             </td>
-                            <td class="analytic-grey-text">{{ $employee->gender }}</td>
+                            <td class="analytic-grey-text">{{ ucwords(strtolower($employee->gender))}}</td>
                             <td class="analytic-grey-text">
                                 @if ($personalInfo && $personalInfo->date_of_birth)
                                     {{ \Carbon\Carbon::parse($personalInfo->date_of_birth)->format('d M Y') }}
@@ -344,7 +360,7 @@
                                 @else
                                 @endif
                             </td>
-                            <td class="analytic-grey-text">{{ $employee->gender }}</td>
+                            <td class="analytic-grey-text">{{ ucwords(strtolower($employee->gender))}}</td>
                             <td class="analytic-grey-text">
                                 @if ($empResignations && $empResignations->last_working_day)
                                     {{ \Carbon\Carbon::parse($empResignations->last_working_day)->format('d M Y') }}

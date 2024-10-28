@@ -11,6 +11,7 @@ use Carbon\Carbon;
 use Carbon\CarbonInterval;
 use Illuminate\Support\Facades\Log;
 use Livewire\Component;
+use Torann\GeoIP\Facades\GeoIP;
 
 class HrAttendanceInfo extends Component
 {
@@ -53,6 +54,9 @@ class HrAttendanceInfo extends Component
     public $avgSignInTime;
 
 
+    public $view_student_first_name;
+
+    public $view_student_last_name;
     public $averageWorkHours;
 
     public $percentageOfWorkHrs;
@@ -136,6 +140,7 @@ class HrAttendanceInfo extends Component
 
     public $employeeIdForRegularisation;
 
+   
     public $totalDurationFormatted;
 
     public $avgDurationFormatted;
@@ -158,6 +163,7 @@ class HrAttendanceInfo extends Component
 
     public $totalcount = 0;
 
+    public $employeeType = 'all';
     public $averageMinutesWorked;
     public $avgSwipeInTime = null;
     public $avgSwipeOutTime = null;
@@ -171,6 +177,7 @@ class HrAttendanceInfo extends Component
     public $weekendDays = 0;
     public $daysWithRecords = 0;
 
+    public $selectedOption = 'all'; 
     public $percentageinworkhrsforattendance;
     public $leaveTaken = 0;
     public $totalHoursWorked = 0;
@@ -190,7 +197,8 @@ class HrAttendanceInfo extends Component
     public function mount()
     {
         
-        $this->employee = EmployeeDetails::where('emp_id', $this->selectedEmployeeId)->select('emp_id', 'first_name', 'last_name', 'shift_type', 'shift_start_time', 'shift_end_time')->first();
+        $this->employee = EmployeeDetails::where('emp_id', $this->selectedEmployeeId)->select('emp_id', 'first_name', 'last_name', 'shift_type')->first();
+        
         $this->selectedEmployeeId=$this->selectedEmployeeId;
         $this->year=now()->year;
         $this->month=now()->month;
@@ -205,13 +213,6 @@ class HrAttendanceInfo extends Component
             $endDate = Carbon::parse($this->to_date);
             $totalHoursWorked = 0;
             $totalMinutesWorked = 0;
-            // $ip = request()->ip();
-            // $location = GeoIP::getLocation($ip);
-            // $lat = $location['lat'];
-            // $lon = $location['lon'];
-            // $this->country = $location['country'];
-            // $this->city = $location['city'];
-            // $this->postal_code = $location['postal_code'];
             $firstDateOfPreviousMonth = Carbon::now()->subMonth()->startOfMonth();
 
             // Get the current date of the current month
@@ -374,119 +375,7 @@ class HrAttendanceInfo extends Component
         
         return $this->percentageDifference;
     }
-    public function calculateAverageWorkHoursAndPercentage($startDate, $endDate)
-    {
-        $employeeId = $this->selectedEmployeeId;
-
-        // Retrieve swipe records within the given date range
-        $records = SwipeRecord::where('emp_id', $employeeId)
-            ->whereDate('created_at', '>=', $startDate)
-            ->whereDate('created_at', '<', $endDate)
-            ->orderBy('created_at')
-            ->get();
-
-        // Group swipes by date
-        $dailySwipes = $records->groupBy(function ($swipe) {
-            return Carbon::parse($swipe->created_at)->toDateString();
-        });
-
-        // Get leave requests for the employee within the date range
-        $leaveRequests = LeaveRequest::where('emp_id', $employeeId)
-            ->where('status', 'approved') // Filter for approved leave requests
-            ->where(function ($query) use ($startDate, $endDate) {
-                $query->whereDate('from_date', '<=', $endDate)
-                    ->whereDate('to_date', '>=', $startDate);
-            })
-            ->get();
-
-        $totalMinutes = 0;
-        $workingDaysCount = 0;
-
-        // Determine if the current month is involved
-        $today = Carbon::now();
-        $isCurrentMonth = Carbon::parse($startDate)->isSameMonth($today) && Carbon::parse($endDate)->isSameMonth($today);
-
-        // Calculate the total working days in the date range
-        $currentDate = Carbon::parse($startDate);
-        $endDate = Carbon::parse($endDate);
-
-        while ($currentDate <= $endDate) {
-            // Skip the current date if it's in the current month and it's today
-            if ($isCurrentMonth && $currentDate->isSameDay($today)) {
-                $currentDate->addDay();
-                continue;
-            }
-
-            $isWeekend = $currentDate->isWeekend();
-            $isHoliday = HolidayCalendar::where('date', $currentDate->toDateString())->exists();
-
-            // Check if the date is a leave day
-            $isOnLeave = $leaveRequests->contains(function ($leaveRequest) use ($currentDate) {
-                return $currentDate->between($leaveRequest->from_date, $leaveRequest->to_date);
-            });
-
-            // Count the day as a working day if it's not a weekend, holiday, or leave day
-            if (!$isWeekend && !$isHoliday && !$isOnLeave) {
-                $workingDaysCount++;
-            }
-
-            $currentDate->addDay();
-        }
-        foreach ($dailySwipes as $date => $swipesForDay) {
-            $inTime = null;
-            $dayMinutes = 0;
-            $carbonDate = Carbon::parse($date);
-
-            // Check if the date is a weekend or a holiday
-            $isWeekend = $carbonDate->isWeekend();
-            $isHoliday = HolidayCalendar::where('date', $carbonDate->toDateString())->exists();
-
-            // Check if the date is a leave day
-            $isOnLeave = $leaveRequests->contains(function ($leaveRequest) use ($carbonDate) {
-                return $carbonDate->between($leaveRequest->from_date, $leaveRequest->to_date);
-            });
-
-            // Process the day only if it's a working day and not a leave day
-            if (!$isWeekend && !$isHoliday && !$isOnLeave) {
-                foreach ($swipesForDay as $swipe) {
-                    if ($swipe->in_or_out === 'IN') {
-                        $inTime = Carbon::parse($swipe->swipe_time);
-                    }
-
-                    // If the swipe is 'OUT' and there was a previous 'IN' time
-                    if ($swipe->in_or_out === 'OUT' && $inTime) {
-                        $outTime = Carbon::parse($swipe->swipe_time);
-                        // Calculate the difference in minutes and add it to the day's total
-                        $dayMinutes += $inTime->diffInMinutes($outTime);
-                        $inTime = null; // Reset the 'IN' time after the calculation
-                    }
-                }
-
-                // If there was an 'IN' time but no 'OUT' time, the total minutes for the day should be 0
-                if ($inTime && $dayMinutes === 0) {
-                    $dayMinutes = 0;
-                }
-
-                // Add the day's total minutes to the overall total
-                $totalMinutes += $dayMinutes;
-            }
-        }
-
-        // Calculate the average minutes per working day
-        if ($workingDaysCount > 0) {
-            $averageMinutes = $totalMinutes / $workingDaysCount;
-        } else {
-            $averageMinutes = 0; // Set to 0 or any fallback value if there are no working days
-        }
-
-        $hours = intdiv($averageMinutes, 60);
-        $minutes = $averageMinutes % 60;
-
-        $averageWorkHours = sprintf('%02d:%02d', $hours, $minutes);
-
-        return $averageWorkHours;
-    }
-
+    
 
     public function toggleSession1Fields()
     {
@@ -654,7 +543,7 @@ class HrAttendanceInfo extends Component
     {
         try {
             $employeeId = $this->selectedEmployeeId;
-            return SwipeRecord::where('emp_id', $employeeId)->whereDate('created_at', $date)->where('is_regularised', 1)->exists();
+            return SwipeRecord::where('emp_id', $employeeId)->whereDate('created_at', $date)->where('is_regularized', 1)->exists();
         } catch (\Exception $e) {
             Log::error('Error in isEmployeePresentOnDate method: ' . $e->getMessage());
             session()->flash('error', 'An error occurred while checking employee presence. Please try again later.');
@@ -689,7 +578,7 @@ class HrAttendanceInfo extends Component
             ]);
 
             return LeaveRequest::where('emp_id', $employeeId)
-                ->where('status', 'approved')
+                ->where('leave_status', 2)
                 ->where(function ($query) use ($date) {
                     $query->whereDate('from_date', '<=', $date)
                         ->whereDate('to_date', '>=', $date);
@@ -931,6 +820,167 @@ class HrAttendanceInfo extends Component
             session()->flash('error', 'An error occurred while processing the date click. Please try again later.');
         }
     }
+    public function updatesearchTerm()
+    {
+        $this->searchTerm=$this->searchTerm;
+    }
+ 
+    public function updateEmployeeType()
+    {
+        // Handle the change in employee type
+        $this->employeeType = $this->employeeType;
+        
+       
+        
+    }
+    public function calculateAverageWorkHoursAndPercentage($startDate, $endDate)
+    {
+        $employeeId = $this->selectedEmployeeId;
+          
+        // Retrieve swipe records within the given date range
+        $records = SwipeRecord::where('emp_id', $employeeId)
+            ->whereDate('created_at', '>=', $startDate)
+            ->whereDate('created_at', '<', $endDate)
+            ->orderBy('created_at')
+            ->get();
+       
+        // Group swipes by date
+        $dailySwipes = $records->groupBy(function ($swipe) {
+            return Carbon::parse($swipe->created_at)->toDateString();
+        });
+        
+         // Get leave requests for the employee within the date range
+        $leaveRequests = LeaveRequest::where('emp_id', $employeeId)
+    ->where('leave_applications.leave_status', 2) // Filter for approved leave requests
+    ->where(function ($query) use ($startDate, $endDate) {
+        $query->whereDate('from_date', '<=', $endDate)
+            ->whereDate('to_date', '>=', $startDate);
+    })
+    ->join('status_types', 'status_types.status_code', '=', 'leave_applications.leave_status') // Join status_types table
+    ->select('leave_applications.*', 'status_types.status_name') // Select the fields you need
+    ->get();
+   
+
+        $totalMinutes = 0;
+        $workingDaysCount = 0;
+
+        // Determine if the current month is involved
+        $today = Carbon::now();
+        $isCurrentMonth = Carbon::parse($startDate)->isSameMonth($today) && Carbon::parse($endDate)->isSameMonth($today);
+
+        // Calculate the total working days in the date range
+        $currentDate = Carbon::parse($startDate);
+        $endDate = Carbon::parse($endDate);
+
+        while ($currentDate <= $endDate) {
+            // Skip the current date if it's in the current month and it's today
+            if ($isCurrentMonth && $currentDate->isSameDay($today)) {
+                $currentDate->addDay();
+                continue;
+            }
+
+            $isWeekend = $currentDate->isWeekend();
+            $isHoliday = HolidayCalendar::where('date', $currentDate->toDateString())->exists();
+
+            // Check if the date is a leave day
+            $isOnLeave = $leaveRequests->contains(function ($leaveRequest) use ($currentDate) {
+                return $currentDate->between($leaveRequest->from_date, $leaveRequest->to_date);
+            });
+
+            // Count the day as a working day if it's not a weekend, holiday, or leave day
+            if (!$isWeekend && !$isHoliday && !$isOnLeave) {
+                $workingDaysCount++;
+            }
+
+            $currentDate->addDay();
+        }
+        foreach ($dailySwipes as $date => $swipesForDay) {
+            $inTime = null;
+            $dayMinutes = 0;
+            $carbonDate = Carbon::parse($date);
+
+            // Check if the date is a weekend or a holiday
+            $isWeekend = $carbonDate->isWeekend();
+            $isHoliday = HolidayCalendar::where('date', $carbonDate->toDateString())->exists();
+
+            // Check if the date is a leave day
+            $isOnLeave = $leaveRequests->contains(function ($leaveRequest) use ($carbonDate) {
+                return $carbonDate->between($leaveRequest->from_date, $leaveRequest->to_date);
+            });
+
+            // Process the day only if it's a working day and not a leave day
+            if (!$isWeekend && !$isHoliday && !$isOnLeave) {
+                foreach ($swipesForDay as $swipe) {
+                    if ($swipe->in_or_out === 'IN') {
+                        $inTime = Carbon::parse($swipe->swipe_time);
+                    }
+
+                    // If the swipe is 'OUT' and there was a previous 'IN' time
+                    if ($swipe->in_or_out === 'OUT' && $inTime) {
+                        $outTime = Carbon::parse($swipe->swipe_time);
+                        // Calculate the difference in minutes and add it to the day's total
+                        $dayMinutes += $inTime->diffInMinutes($outTime);
+                        $inTime = null; // Reset the 'IN' time after the calculation
+                    }
+                }
+
+                // If there was an 'IN' time but no 'OUT' time, the total minutes for the day should be 0
+                if ($inTime && $dayMinutes === 0) {
+                    $dayMinutes = 0;
+                }
+
+                // Add the day's total minutes to the overall total
+                $totalMinutes += $dayMinutes;
+            }
+        }
+
+        // Calculate the average minutes per working day
+        if ($workingDaysCount > 0) {
+            $averageMinutes = $totalMinutes / $workingDaysCount;
+        } else {
+            $averageMinutes = 0; // Set to 0 or any fallback value if there are no working days
+        }
+
+        $hours = intdiv($averageMinutes, 60);
+        $minutes = $averageMinutes % 60;
+
+        $averageWorkHours = sprintf('%02d:%02d', $hours, $minutes);
+        
+        return $averageWorkHours;
+    }
+    public function getEmployeesByType()
+    {
+        $emptype=$this->employeeType;
+        $query = EmployeeDetails::query();
+        // Example logic to fetch employees based on the selected type
+        switch ($emptype) {
+            case 'current':
+                $query->where('employee_status', 'active');
+                break;
+            case 'past':
+                $query->where('employee_status', 'terminated')->orWhere('employee_status','resigned');
+                break;
+            case 'interns':
+                $query->where('job_role', 'intern');
+                break;
+            default:
+                // If "all" is selected, no additional filtering for status
+                break;
+        }
+        if (!empty($this->searchTerm)) {
+            $query->where(function ($query) {
+                $query->where('first_name', 'like', '%' . $this->searchTerm . '%')
+                      ->orWhere('last_name', 'like', '%' . $this->searchTerm . '%')
+                      ->orWhere('emp_id', 'like', '%' . $this->searchTerm . '%');
+            });
+        }
+    
+        // Get the filtered employees
+        return $query->get();
+    
+    }
+    // This method runs when the selected employee type changes
+   
 
     public function updatedFromDate($value)
     {
@@ -1268,6 +1318,8 @@ class HrAttendanceInfo extends Component
             $this->showSR = true;
             $student = SwipeRecord::find($id);
             $this->view_student_emp_id = $student->emp_id;
+            $this->view_student_first_name=EmployeeDetails::where('emp_id',$this->view_student_emp_id)->value('first_name');
+            $this->view_student_last_name=EmployeeDetails::where('emp_id',$this->view_student_emp_id)->value('last_name');
             $this->view_student_swipe_time = $student->swipe_time;
             $this->view_student_in_or_out = $student->in_or_out;
         } catch (\Exception $e) {
@@ -1312,6 +1364,7 @@ class HrAttendanceInfo extends Component
     public function openSwipes()
     {
         try {
+            
             $this->showSR = true;
         } catch (\Exception $e) {
             Log::error('Error in openSwipes method: ' . $e->getMessage());
@@ -1321,6 +1374,9 @@ class HrAttendanceInfo extends Component
     public function closeSWIPESR()
     {
         try {
+            $this->view_student_emp_id = '';
+            $this->view_student_swipe_time = '';
+            $this->view_student_in_or_out = '';
             $this->showSR = false;
         } catch (\Exception $e) {
             Log::error('Error in closeSWIPESR method: ' . $e->getMessage());
@@ -1487,7 +1543,7 @@ class HrAttendanceInfo extends Component
             $this->showRegularisationDialog = true;
             $employeeId = $this->selectedEmployeeId;
             $regularisationRecords = RegularisationDates::where('emp_id', $employeeId)
-                ->where('status', 'approved')
+                ->where('status', 2)
                 ->get();
             $dateFound = false;
             $result = null;
@@ -1533,17 +1589,14 @@ class HrAttendanceInfo extends Component
             $this->regularised_reason = null;
         }
     }
+   
   
     public function searchforEmployee()
     {
           $this->searchEmployee=1;
        
     }
-    public function updatesearchTerm()
-    {
-        $this->searchTerm=$this->searchTerm;
-       dd( $this->searchTerm);
-    }
+  
     public function updateselectedEmployee($empId)
     {
     
@@ -1568,20 +1621,13 @@ class HrAttendanceInfo extends Component
    
     public function render()
     {
-        $this->employees = EmployeeDetails::where(function ($query) {
-            $query->where(function ($query) {
-                $query->where('first_name', 'like', '%' . $this->searchTerm . '%')
-                      ->orWhere('last_name', 'like', '%' . $this->searchTerm . '%')
-                      ->orWhere('emp_id', 'like', '%' . $this->searchTerm . '%');
-            });
-        })->get();
-      
-                $this->generateCalendar();
+        $this->employees = $this->getEmployeesByType();
+        $this->generateCalendar();
         $this->dynamicDate = now()->format('Y-m-d');
         $employeeId = $this->selectedEmployeeId;
         $this->employeeIdForRegularisation = $this->selectedEmployeeId;
         $this->swiperecord = SwipeRecord::where('swipe_records.emp_id', $employeeId)
-            ->where('is_regularised', 1)
+            ->where('is_regularized', 1)
             ->join('employee_details', 'swipe_records.emp_id', '=', 'employee_details.emp_id')
             ->select('swipe_records.*', 'employee_details.first_name', 'employee_details.last_name')
             ->get();

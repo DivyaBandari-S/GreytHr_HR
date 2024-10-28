@@ -14,7 +14,7 @@ class EmpDocument extends Component
     use WithFileUploads;
     public $requests;
 
-
+    public $selectedOption = 'all'; 
     public $searchTerm = '';
     public $peopleData =[];
   
@@ -146,27 +146,31 @@ class EmpDocument extends Component
         })->values()->toArray(); // Reindexing the selectedPeopleData
     
         // Optionally, update the employees list or other data if necessary
-        $this->employees = $this->employees->filter(function ($employee) use ($empId) {
-            return $employee->emp_id !== $empId;
-        });
+  
      
     }
     public $combinedRequests=[];
  
-
     public function selectPerson($emp_id)
     {
+        if (!empty($this->selectedPeople) && !in_array($emp_id, $this->selectedPeople)) {
+            // Flash an error message to the session
+            session()->flash('warning', 'You can only select one employee ');
+            return; // Stop further execution
+        }
+    
+
         try {
+         
             // Ensure $this->selectedPeople is initialized as an array
             if (!is_array($this->selectedPeople)) {
                 $this->selectedPeople = [];
             }
     
+         
             // Find the selected person from the list of employees
             $selectedPerson = $this->employees->where('emp_id', $emp_id)->first();
-           
-      
-
+    
             if ($selectedPerson) {
                 // Check if person is already selected
                 if (in_array($emp_id, $this->selectedPeople)) {
@@ -215,106 +219,173 @@ class EmpDocument extends Component
         } catch (\Exception $e) {
             // Handle the exception
             // Optionally, you can log the error or display a user-friendly message
-            $this->dispatchBrowserEvent('error', ['message' => 'An error occurred: ' . $e->getMessage()]);
+            $this->dispatch('error', ['message' => 'An error occurred: ' . $e->getMessage()]);
         }
     }
-
-  
-
     
 
-    public function mount()
+    public function updateSelected($option)
     {
-        // Retrieve the logged-in user's emp_id from the 'hr' guard
-        if (auth()->guard('hr')->check()) {
-            $loggedInEmpID = auth()->guard('hr')->user()->emp_id;
-        } else {
-            // Debug if user is not authenticated
+        $this->selectedOption = $option; 
         
+        // Check if the user is logged in with the 'hr' guard
+        if (!auth()->guard('hr')->check()) {
             return;
         }
-        $companyID = EmployeeDetails::where('emp_id', $loggedInEmpID)
-        ->pluck('company_id')
-        ->first(); // Assuming company_id is unique for emp_id
+    
+        // Get the logged-in employee ID
+        $loggedInEmpID = auth()->guard('hr')->user()->emp_id;
+    
+        // Fetch the first company_id associated with the logged-in employee
+        $companyId = EmployeeDetails::where('emp_id', $loggedInEmpID)
+            ->pluck('company_id') 
+            ->first();
+    
+        // Handle cases where the company ID is an array or not
+        if (is_array($companyId)) {
+            $firstCompanyID = $companyId[0]; 
+        } else {
+            $firstCompanyID = $companyId; 
+        }
+    
+        // Initialize the query for employees based on company_id
+        $query = EmployeeDetails::whereJsonContains('company_id', $firstCompanyID);
+    
+        // Apply the filters based on the selected option
+        switch ($this->selectedOption) {
+            case 'current':
+                $query->where('employee_status', 'active'); // Filter for current employees
+                break;
+    
+            case 'past':
+                $query->whereIn('employee_status', ['rejected', 'terminated']); // Filter for past employees
+                break;
+    
+            case 'intern':
+                $query->where('job_role', 'intern'); // Filter for interns
+                break;
+    
+           
+            default:
+                // No additional filtering, fetch all employees
+                case 'all':
+                    $query=EmployeeDetails::whereJsonContains('company_id', $firstCompanyID);
+                break;
+        }
+    
+        // Fetch the employee IDs after filtering
+        $this->employeeIds = $query->pluck('emp_id')->toArray(); // Fetch the filtered employee IDs
+        $this->employees = $query->get(); // Fetch the employee data for rendering in the view
+  
+    
+    
 
-        // Fetch all letter requests, ensuring it's a collection even if empty
-        $this->requests = collect();
-        $this->requests = LetterRequest::all(); 
-        Log::info('Selected People: ' . json_encode($this->selectedPeople));
-        // Fetch all letter requests if selectedPeople is not empty
-        if (!empty($this->selectedPeople)) {
-            $this->requests = LetterRequest::whereIn('emp_id', (array) $this->selectedPeople)->get();
-            Log::info('Letter Requests: ' . $this->requests->toJson()); // Log the result of the query
-        } else {
-            $requests = collect(); // Return empty collection
-        }
-        
-        // If no search term, fetch all employees for the logged-in user's company
-        if (empty($this->searchTerm)) {
-            $this->employees = EmployeeDetails::whereJsonContains('company_id', $companyID)->get();
-        }
-        
-  
-        // Retrieve the company_id associated with the logged-in emp_id
-        $employeeDetails = EmployeeDetails::where('emp_id', $loggedInEmpID)->first();
-        
-        if (!$employeeDetails) {
-            // Debug if no employee details are found for this emp_id
-      
-            return;
-        }
     
-        $companyID = $employeeDetails->company_id;
+   }
+
     
-        if (!$companyID) {
-            // Handle the case where companyID is null
-        
-            $this->employeeIds = [];
-            return;
-        }
-    
-        // Fetch all emp_id values where company_id matches the logged-in user's company_id
-        $this->employeeIds = EmployeeDetails::whereJsonContains('company_id', $companyID)->pluck('emp_id')->toArray();
-    
-        if (empty($this->employeeIds)) {
-            // Handle the case where no employees are found
-         
-            return;
-        }
-    
-        // Initialize employees based on search term and company_id
-        $employeesQuery = EmployeeDetails::whereJsonContains('company_id', $companyID)
-            ->where(function ($query) {
-                $query->where('first_name', 'like', '%' . $this->searchTerm . '%')
-                      ->orWhere('last_name', 'like', '%' . $this->searchTerm . '%')
-                      ->orWhere('emp_id', 'like', '%' . $this->searchTerm . '%');
-            })
-            ->orderBy('first_name')
-            ->orderBy('last_name');
-    
-        // Fetch the employees
-        $employees = $employeesQuery->get();
-  
-        if ($employees->isEmpty()) {
-            // Handle the case where no employees match the search term
-         
-        }
-    
-        // Debug output for fetched employees
+
+
+   public function mount()
+   {
+       // Retrieve the logged-in user's emp_id from the 'hr' guard
+       if (auth()->guard('hr')->check()) {
+           $loggedInEmpID = auth()->guard('hr')->user()->emp_id;
+           // Debugging to ensure correct emp_id is fetched
+      // Check if emp_id is correct
+       } else {
+           return;
+       }
+       $loggedInEmpID = auth()->guard('hr')->user()->emp_id;
+       $companyId = EmployeeDetails::where('emp_id', $loggedInEmpID)
+->pluck('company_id') // This returns the array of company IDs
+->first();
+if (is_array($companyId)) {
+   $firstCompanyID = $companyId[0]; // Get the first element from the array
+} else {
+   $firstCompanyID = $companyId; // Handle case where it's not an array
+}
+
+
+       // Fetch the company_id associated with the employee
+       $companyID = EmployeeDetails::where('emp_id', $firstCompanyID)
+           ->pluck('company_id')
+           ->first(); // This will return the first company ID for the employee
+
+       // Outputs the company_id based on whether it's a parent or not
+       
+   
+       // Retrieve the company_id associated with the logged-in emp_id
+       $employeeDetails = EmployeeDetails::where('emp_id', $loggedInEmpID)->first();
+   
+       if (!$employeeDetails) {
+           // Debug if no employee details are found for this emp_id
      
+           return;
+       }
+   
+       $companyID = $employeeDetails->company_id;
+
+       if (!$companyID) {
+           // Handle the case where companyID is null
+       
+           $this->employeeIds = [];
+           return;
+       }
+   
+       // Fetch all emp_id values where company_id matches the logged-in user's company_id
+       $this->employeeIds = EmployeeDetails::whereJsonContains('company_id', $firstCompanyID)->pluck('emp_id')->toArray();
     
-        // Set the component's employee data
-        $this->employees = $employees;
-        $this->employeess = EmployeeDetails::whereJsonContains('company_id', $companyID)
-        ->orderBy('hire_date', 'desc') // Order by hire_date descending
+
+  
+  
+       // Fetch the employee IDs after filtering
       
-        ->take(5) // Limit to 5 records
-        ->get();
-        // Initialize other properties
-        $this->peopleData = $this->filteredPeoples ? $this->filteredPeoples : $this->employees;
-        $this->selectedPeople = [];
-        $this->selectedPeopleNames = [];
-    }
+       
+       if (empty($this->employeeIds)) {
+           // Handle the case where no employees are found
+        
+           return;
+       }
+   
+       // Initialize employees based on search term and company_id
+       $employeesQuery = EmployeeDetails::whereJsonContains('company_id', $firstCompanyID)
+           ->where(function ($query) {
+               $query->where('first_name', 'like', '%' . $this->searchTerm . '%')
+                     ->orWhere('last_name', 'like', '%' . $this->searchTerm . '%')
+                     ->orWhere('emp_id', 'like', '%' . $this->searchTerm . '%');
+           })
+           ->orderBy('first_name')
+           ->orderBy('last_name');
+   
+       // Fetch the employees
+       $employees = $employeesQuery->get();
+ 
+       if ($employees->isEmpty()) {
+           // Handle the case where no employees match the search term
+        
+       }
+       
+   
+       // Debug output for fetched employees
+    
+   
+       // Set the component's employee data
+       $this->employees = $employees;
+     
+
+     
+       $this->employeess = EmployeeDetails::whereJsonContains('company_id', $firstCompanyID)
+       ->orderBy('hire_date', 'desc') // Order by hire_date descending
+     
+       ->take(5) // Limit to 5 records
+       ->get();
+       // Initialize other properties
+       $this->peopleData = $this->filteredPeoples ? $this->filteredPeoples : $this->employees;
+       $this->selectedPeople = [];
+       $this->selectedPeopleNames = [];
+   }
+
     
     public function searchforEmployee()
     {
@@ -386,10 +457,42 @@ class EmpDocument extends Component
     public function render()
     {
         $loggedInEmpID = auth()->guard('hr')->user()->emp_id;
+        $employeeId = auth()->user()->emp_id;
+        if (auth()->guard('hr')->check()) {
+            $loggedInEmpID = auth()->guard('hr')->user()->emp_id;
+            // Debugging to ensure correct emp_id is fetched
+       // Check if emp_id is correct
+        } else {
+            return;
+        }
+       
+   
+        
+    
+        $loggedInEmpID = auth()->guard('hr')->user()->emp_id;
+
+        // Fetch the company_id associated with the employee
         $companyID = EmployeeDetails::where('emp_id', $loggedInEmpID)
             ->pluck('company_id')
-            ->first(); // Assuming company_id is unique for emp_id
+            ->first(); // This will return the first company ID for the employee
+        
+ 
+        $companyId = EmployeeDetails::where('emp_id', $loggedInEmpID)
+        ->pluck('company_id') // This returns the array of company IDs
+        ->first();
+        if (is_array($companyId)) {
+            $firstCompanyID = $companyId[0]; // Get the first element from the array
+        } else {
+            $firstCompanyID = $companyId; // Handle case where it's not an array
+        }
+                    
+
+
+        // Determine if there are people found
+        $peopleFound = $this->employees->count() > 0;
             $this->requests = collect();
+            
+
         // Initialize the requests collection to prevent undefined errors
         $this->requests = LetterRequest::all(); 
         Log::info('Selected People: ' . json_encode($this->selectedPeople));
@@ -402,14 +505,9 @@ class EmpDocument extends Component
         }
         
         
-    
-        // If no search term, fetch all employees for the logged-in user's company
-        if (empty($this->searchTerm)) {
-            $this->employees = EmployeeDetails::whereJsonContains('company_id', $companyID)->get();
-        }
-    
-        // Determine if there are people found
-        $peopleFound = $this->employees->count() > 0;
+  
+
+
     
         return view('livewire.emp-document', [
             'employees' => $this->employees,
