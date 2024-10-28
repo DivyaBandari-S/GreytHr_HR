@@ -16,7 +16,7 @@ class Hr extends Authenticatable
     const ROLE_SUPER_ADMIN = 2;
     protected $primaryKey = 'hr_emp_id';
     public $incrementing = false;
-    protected $table = 'hr';
+    protected $table = 'hr_employees';
 
     protected $fillable = [
         'hr_emp_id',

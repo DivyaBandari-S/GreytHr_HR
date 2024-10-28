@@ -196,7 +196,7 @@ td {
         text-align: right; /* Align content to the right */
     border-radius: 5px;
     padding: 5px;
-    margin-left:760px;
+    margin-left:930px;
    
 }
 
@@ -206,7 +206,7 @@ td {
     border: 1px solid #d1d1d1; /* Light border */
     border-radius: 5px; /* Rounded corners */
     padding: 10px 15px; /* Space around the text */
-    font-size: 16px; /* Font size */
+    font-size: 12px; /* Font size */
     font-family: Arial, sans-serif; /* Font family */
     color: #333; /* Text color */
     cursor: pointer; /* Pointer on hover */
@@ -217,6 +217,7 @@ td {
     background-position: center right 8px; /* Position the arrow at the bottom */
     background-size: 12px; /* Adjust the size of the arrow */
     margin-left: 10px; /* Align the dropdown */
+    float: right;
     margin-top: 5px;
 }
 
@@ -365,11 +366,11 @@ select {
     </select>
 </div>
 
-        <div style="display:flex;flex-direction:row;justify-content:space-between; align-items:center;">
+        <div style="display:flex;flex-direction:row;justify-content:space-between; align-items:center;margin-left: 15px;">
         <div class="gap-4" style="display:flex;flex-direction:row;">
             
             <div class="custom-dropdown">
-                    <select class="dropdown-right-for-month" style="margin-top:40px; margin-left:10px;" wire:model="selectedMonth" wire:change="updateselectedMonth">
+                    <select class="dropdown-right-for-month" style="font-size:12px;margin-top:40px; margin-left:10px;" wire:model="selectedMonth" wire:change="updateselectedMonth">
                         @foreach($months as $month)
                             <option value="{{ $month['value'] }}">
                                 {{ $month['name'] }} {{ $selectedYear }}
@@ -380,7 +381,7 @@ select {
             </div>
             
            <div class="dropdown-for-employee">
-                    <button class="dropdown-button-for-employee">Employee: {{ ucfirst($selectedOption) }} <span class="arrow-for-employee"></span></button>
+                    <button class="dropdown-button-for-employee"><span style="font-size:12px;">Employee: {{ ucfirst($selectedOption) }}</span> <span class="arrow-for-employee"></span></button>
                     <div class="dropdown-content-for-employee">
                         <a href="#" wire:click.prevent="updateSelected('all')">All</a>
                         <a href="#" wire:click.prevent="updateSelected('current')">Current</a>
@@ -396,8 +397,8 @@ select {
             
         </div>
         
-    <button style="border:1px solid blue;margin-top:40px;background-color:white;color:blue;border-radius:5px;padding:8px 10px;font-size:14px;"wire:click="downloadExcel">
-        Export Excel
+    <button style="border:1px solid blue;margin-right:40px;margin-top:40px;background-color:white;color:blue;border-radius:5px;padding:8px 10px;font-size:14px;"wire:click="downloadExcel">
+        <span style="font-size:12px;">Export Excel</span>
     </button>
     
 </div>

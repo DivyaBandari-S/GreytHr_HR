@@ -73,7 +73,7 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
         Route::get('/emp-document', EmpDocument::class)->name('emp-document');
         Route::get('/bank-account', EmpDocument::class)->name('bank-account');
         //HR Leave-Main Submodule Routes
-        Route::get('/user/attendance-overview', HrAttendanceOverviewNew::class)->name('attendance-overview');
+        Route::get('/user/hr-attendance-overview', HrAttendanceOverviewNew::class)->name('attendance-overview');
         Route::get('/user/who-is-in-chart-hr', WhoIsInChartHr::class)->name('who-is-in-chart-hr');
         Route::get('/user/attendance-info', HrAttendanceInfo::class)->name('attendance-info');
 
