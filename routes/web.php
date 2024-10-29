@@ -13,6 +13,7 @@ use App\Livewire\EmpLeaveGranterDetails;
 use App\Livewire\EmployeeAsset;
 use App\Livewire\GrantLeaveBalance;
 use App\Livewire\UpdateEmployeeDetails;
+use App\Livewire\Resignationrequests;
 use App\Livewire\EmployeeDirectory;
 use App\Livewire\EmployeeLeave;
 use App\Livewire\EmployeeProfile;
@@ -58,9 +59,10 @@ Route::middleware(['auth:hr'])->group(function () {
 
         //like this  Route: /hr/hello
         Route::get('/hello', Dashboard::class)->name('hello');
-        //home page routes
+        //Employee list, Onboarding and Offboarding routes.
         Route::get('/add-employee-details/{employee?}', AddEmployeeDetails::class)->name('add-employee-details');
         Route::get('/update-employee-details', UpdateEmployeeDetails::class)->name('update-employee-details');
+        Route::get('/resig-requests', Resignationrequests::class)->name('resig-requests');
 
 
         //HR Employee-Main Submodule Routes
