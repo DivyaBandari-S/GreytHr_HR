@@ -1,51 +1,117 @@
-<div>
-    <div class="leaveSettings">
-        <div class="leaveGranter-container">
-            <div class="leaveGranter-header">
-                <h3>Leave Settings</h3>
+<div class="leaveSettings">
+    <div class="leaveGranter-container">
+        <div class="leaveGranter-header mb-2">
+            <div class="d-flex flex-column text-start">
+                <h3 class="mb-0">Leave Settings</h3>
                 <p>This page helps you to configure leave policy.</p>
-                <span>Jan 2024 - Dec 2024</span>
+            </div>
+            <span class="subTextValue">Jan 2024 - Dec 2024</span>
+        </div>
+
+        <div class="accordion d-flex flex-column gap-3" id="leaveAccordion">
+            <!-- Casual Leave -->
+            <div class="accordion-item border rounded">
+                <h2 class="accordion-header" id="headingCasual">
+                    <button class="accordion-button collapsed p-0" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCasual" aria-expanded="false" aria-controls="collapseCasual">
+                        <div class="d-flex py-2 px-4 w-100 align-items-center justify-content-between">
+                            <div class="col p-0 text-start">
+                                <span class="subText">Leave Name & Code</span><br>
+                                <span class="subTextValue">Casual Leave | CL</span>
+                            </div>
+                            <div class="col p-0 text-start">
+                                <span class="subText">Grant Days & Frequency</span><br>
+                                <span class="subTextValue">6 | Annual</span>
+                            </div>
+                            <div class="iconAccordion">
+                                <i class="fas fa-pen leaveGranter-edit"></i>
+                            </div>
+                        </div>
+                    </button>
+                </h2>
+                <div id="collapseCasual" class="accordion-collapse collapse" aria-labelledby="headingCasual" data-bs-parent="#leaveAccordion">
+                    <div class="accordion-body rounded">
+                        <p>Details about Casual Leave. Configure frequency, duration, etc.</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Earned Leave -->
+            <div class="accordion-item border rounded">
+                <h2 class="accordion-header" id="headingCasual">
+                    <button class="accordion-button collapsed p-0" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCasual" aria-expanded="false" aria-controls="collapseCasual">
+                        <div class="d-flex py-2 px-4 w-100 align-items-center justify-content-between">
+                            <div class="col p-0 text-start">
+                                <span class="subText">Leave Name & Code</span><br>
+                                <span class="subTextValue">Casual Leave | CL</span>
+                            </div>
+                            <div class="col p-0 text-start">
+                                <span class="subText">Grant Days & Frequency</span><br>
+                                <span class="subTextValue">6 | Annual</span>
+                            </div>
+                            <div class="iconAccordion">
+                                <i class="fas fa-pen leaveGranter-edit"></i>
+                            </div>
+                        </div>
+                    </button>
+                </h2>
+                <div id="collapseCasual" class="accordion-collapse collapse" aria-labelledby="headingCasual" data-bs-parent="#leaveAccordion">
+                    <div class="accordion-body rounded">
+                        <p>Details about Casual Leave. Configure frequency, duration, etc.</p>
+                    </div>
+                </div>
             </div>
 
-            <div class="accordion" id="accordionPanelsStayOpenExample">
-                <div class="accordion-item">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
-                            Accordion Item #1
-                        </button>
-                    </h2>
-                    <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show">
-                        <div class="accordion-body">
-                            <strong>This is the first item's accordion body.</strong> It is shown by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+            <!-- Maternity Leave -->
+            <div class="accordion-item border rounded">
+                <h2 class="accordion-header" id="headingCasual">
+                    <button class="accordion-button collapsed p-0" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCasual" aria-expanded="false" aria-controls="collapseCasual">
+                        <div class="d-flex py-2 px-4 w-100 align-items-center justify-content-between">
+                            <div class="col p-0 text-start">
+                                <span class="subText">Leave Name & Code</span><br>
+                                <span class="subTextValue">Casual Leave | CL</span>
+                            </div>
+                            <div class="col p-0 text-start">
+                                <span class="subText">Grant Days & Frequency</span><br>
+                                <span class="subTextValue">6 | Annual</span>
+                            </div>
+                            <div class="iconAccordion">
+                                <i class="fas fa-pen leaveGranter-edit"></i>
+                            </div>
                         </div>
-                    </div>
-                </div>
-                <div class="accordion-item">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="false" aria-controls="panelsStayOpen-collapseTwo">
-                            Accordion Item #2
-                        </button>
-                    </h2>
-                    <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse">
-                        <div class="accordion-body">
-                            <strong>This is the second item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
-                        </div>
-                    </div>
-                </div>
-                <div class="accordion-item">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseThree" aria-expanded="false" aria-controls="panelsStayOpen-collapseThree">
-                            Accordion Item #3
-                        </button>
-                    </h2>
-                    <div id="panelsStayOpen-collapseThree" class="accordion-collapse collapse">
-                        <div class="accordion-body">
-                            <strong>This is the third item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
-                        </div>
+                    </button>
+                </h2>
+                <div id="collapseCasual" class="accordion-collapse collapse" aria-labelledby="headingCasual" data-bs-parent="#leaveAccordion">
+                    <div class="accordion-body rounded">
+                        <p>Details about Casual Leave. Configure frequency, duration, etc.</p>
                     </div>
                 </div>
             </div>
-            <button class="leaveGranter-button">OK & Continue</button>
+
+            <!-- Sick Leave -->
+            <div class="accordion-item border rounded">
+                <h2 class="accordion-header" id="headingCasual">
+                    <button class="accordion-button collapsed p-0" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCasual" aria-expanded="false" aria-controls="collapseCasual">
+                        <div class="d-flex py-2 px-4 w-100 align-items-center justify-content-between">
+                            <div class="col p-0 text-start">
+                                <span class="subText">Leave Name & Code</span><br>
+                                <span class="subTextValue">Casual Leave | CL</span>
+                            </div>
+                            <div class="col p-0 text-start">
+                                <span class="subText">Grant Days & Frequency</span><br>
+                                <span class="subTextValue">6 | Annual</span>
+                            </div>
+                            <div class="iconAccordion">
+                                <i class="fas fa-pen leaveGranter-edit"></i>
+                            </div>
+                        </div>
+                    </button>
+                </h2>
+                <div id="collapseCasual" class="accordion-collapse collapse" aria-labelledby="headingCasual" data-bs-parent="#leaveAccordion">
+                    <div class="accordion-body rounded">
+                        <p>Details about Casual Leave. Configure frequency, duration, etc.</p>
+                    </div>
+                </div>
+            </div>
         </div>
+        <button class="submit-btn mt-3">OK & Continue</button>
     </div>
 </div>
