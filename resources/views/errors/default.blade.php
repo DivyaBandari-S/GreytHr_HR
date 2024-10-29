@@ -1,14 +1,16 @@
+<!-- resources/views/connection-refused.blade.php -->
+
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>CSRF Token Mismatch</title>
+    <title>Connection Refused</title>
     <style>
         body {
-            background-color: #ffff;
             font-family: 'Arial', sans-serif;
+            background-color: #f5f5f5;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -19,19 +21,18 @@
 
         .error-container {
             text-align: center;
-            background-color: #ffffff;
-            padding: 20px;
-            border-radius: 10px;
         }
 
         .error-image {
-            height: 300px;
+            height: 350px;
+            width: 550px;
+            margin-bottom: 20px;
         }
 
         h1 {
             font-size: 2em;
             margin-bottom: 10px;
-            color:  rgb(2, 17, 79);
+            color: #333;
         }
 
         p {
@@ -59,12 +60,20 @@
 
 <body>
 
-    <!-- resources/views/livewire/csrf-token-mismatch.blade.php -->
     <div class="error-container">
-        <img src="https://th.bing.com/th/id/R.2d8eebf00a6cfceb533277c9530e50c5?rik=mdTIVVS4FOYIpw&riu=http%3a%2f%2fbsm.birlacane.com%2fBOOTSTRAP_IMAGES%2fsession-expire.jpg&ehk=sC0FyYsOgofL300RZtnNP53I431EqKu3uUIerxYXJU0%3d&risl=&pid=ImgRaw&r=0" alt="Page Not Found" class="error-image">
-        <h1>Page Expired</h1>
-        <p>Your session has expired. Please refresh the page to continue.</p>
+        <img src=" https://windowslovers.com/wp-content/uploads/2015/09/Err_connection_refused-1024x651.jpg" alt="Connection Refused" class="error-image">
+        <h1>{{ $statusCode }} - Error</h1>
+        <p>Our site is currently undergoing maintenance. Please try again later.</p>
+
+
+        <button class="refresh-btn" onclick="refreshPage()">Refresh Page</button>
     </div>
+
+    <script>
+        function refreshPage() {
+            location.reload();
+        }
+    </script>
 
 </body>
 
