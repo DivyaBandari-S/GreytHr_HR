@@ -13,22 +13,19 @@ class Finance extends Authenticatable
     use HasFactory;
     protected $primaryKey = 'fi_emp_id';
     public $incrementing = false;
-    protected $table = 'finance';
+    protected $table = 'finance_employees';
 
     protected $fillable = [
-        'fi_emp_id','image',
-        'company_id', 'employee_name', 'date_of_birth','role', 'salary', 'hire_date',
-        'department', 'work_location', 'manager_name', 'bank_name',
-        'account_number', 'routing_number', 'beneficiary_name', 'beneficiary_relationship',
-        'emergency_contact_name', 'emergency_contact_number', 'address','password',
-        'phone_number', 'email', 'company_email', 'is_active'
+        'fi_emp_id','image','emp_id',
+        'employee_name', 'date_of_birth',
+        'emergency_contact_number','password',
+        'phone_number', 'email','is_active'
     ];
 
-    protected $casts = [
-        'salary' => 'decimal:2',
-        'hire_date' => 'date',
-        'is_active' => 'boolean',
-    ];
+    public function employeeDetails()
+    {
+        return $this->belongsTo(EmployeeDetails::class, 'emp_id', 'emp_id');
+    }
 
     public function com()
     {
