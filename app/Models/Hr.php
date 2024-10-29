@@ -11,30 +11,44 @@ class Hr extends Authenticatable
 {
     use HasFactory;
     use Notifiable;
+    const ROLE_USER = 0;
+    const ROLE_ADMIN = 1;
+    const ROLE_SUPER_ADMIN = 2;
     protected $primaryKey = 'hr_emp_id';
     public $incrementing = false;
-    protected $table = 'hr';
+    protected $table = 'hr_employees';
 
     protected $fillable = [
-        'hr_emp_id','image',
-        'company_id', 'employee_name', 'position', 'department',
-        'email', 'company_email','phone_number', 'emergency_contact_number',
-        'date_of_birth', 'address', 'nationality', 'marital_status', 'gender',
-        'password','tax_id', 'salary', 'joining_date', 'is_active'
+        'hr_emp_id',
+        'emp_id',
+        'password',
+        'is_active',
+        'role',
     ];
 
     protected $casts = [
-        'date_of_birth' => 'date',
-        'joining_date' => 'date',
-        'is_active' => 'boolean',
+        'password',
     ];
-
-    public function com()
-    {
-        return $this->belongsTo(Company::class, 'company_id', 'company_id');
-    }
     public function emp()
     {
         return $this->belongsTo(EmployeeDetails::class, 'emp_id', 'emp_id');
+    }
+
+    public function isUser()
+    {
+        return $this->role === self::ROLE_USER;
+    }
+    public function isAdmin()
+    {
+        return $this->role === self::ROLE_ADMIN;
+    }
+
+    public function isSuperAdmin()
+    {
+        return $this->role === self::ROLE_SUPER_ADMIN;
+    }
+    public function hasRole($role)
+    {
+        return $this->role == $role;
     }
 }

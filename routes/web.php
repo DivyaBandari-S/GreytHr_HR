@@ -47,19 +47,14 @@ Route::middleware(['checkauth'])->group(function () {
     Route::get('/hrlogin', HrLogin::class)->name('hrlogin');
 });
 
-Route::middleware(['auth:hr'])->group(function () {
-    // Root route, protected by auth:hr middleware
-    // Route::get('/', Dashboard::class)->name('dashboard');
-    Route::get('/', function () {
-        return redirect('/hr/dashboard');
-    });
-    Route::get('/hr/dashboard', HomeDashboard::class)->name('admin-home');
+Route::middleware(['auth:hr', 'handleSession'])->group(function () {
+
+    Route::get('/', HomeDashboard::class)->name('home');
     // Group routes under the 'hr' prefix
     Route::prefix('hr')->group(function () {
 
-        //like this  Route: /hr/hello
-        Route::get('/hello', Dashboard::class)->name('hello');
-        //Employee list, Onboarding and Offboarding routes.
+
+        //home page routes
         Route::get('/add-employee-details/{employee?}', AddEmployeeDetails::class)->name('add-employee-details');
         Route::get('/update-employee-details', UpdateEmployeeDetails::class)->name('update-employee-details');
         Route::get('/resig-requests', Resignationrequests::class)->name('resig-requests');
@@ -80,14 +75,14 @@ Route::middleware(['auth:hr'])->group(function () {
         Route::get('/emp-document', EmpDocument::class)->name('emp-document');
         Route::get('/bank-account', EmpDocument::class)->name('bank-account');
         //HR Leave-Main Submodule Routes
-        Route::get('/user/attendance-overview', HrAttendanceOverviewNew::class)->name('attendance-overview');
+        Route::get('/user/hr-attendance-overview', HrAttendanceOverviewNew::class)->name('attendance-overview');
         Route::get('/user/who-is-in-chart-hr', WhoIsInChartHr::class)->name('who-is-in-chart-hr');
         Route::get('/user/attendance-info', HrAttendanceInfo::class)->name('attendance-info');
 
         //HR Leave-Infomation Submodule Routes
         Route::get('/user/employee-leave', EmployeeLeave::class)->name('employee-leave');
 
-    //HR Leave Related Routes
+        //HR Leave Related Routes
 
         //HR Leave-Main Submodule Routes
         Route::get('/user/leave-overview', HrLeaveOverview::class)->name('leave-overview');

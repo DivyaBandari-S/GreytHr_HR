@@ -56,7 +56,7 @@ class HrLeaveOverview extends Component
     {
         $this->leavesCount = array_fill(0, 12, 0);
         $currentYear = now()->year;
-        $query = LeaveRequest::where('status', 'approved')
+        $query = LeaveRequest::where('leave_status', 2)
             ->whereYear('from_date', $currentYear);
         if ($this->monthFilterLeaveType !== 'all') {
             $query->where('leave_type', $this->monthFilterLeaveType);
@@ -183,7 +183,7 @@ class HrLeaveOverview extends Component
     {
         $this->leavesCount = array_fill(0, 12, 0);
         $currentYear = now()->year;
-        $query = LeaveRequest::where('status', 'approved')
+        $query = LeaveRequest::where('leave_status', 2)
             ->whereYear('from_date', $currentYear)
             ->where('leave_type', $leaveType); 
         $monthlyLeaves = $query
@@ -198,7 +198,7 @@ class HrLeaveOverview extends Component
 
     public function getFilteredLeaveRequests()
     {
-        $query = LeaveRequest::with('employee')->where('status', 'approved');
+        $query = LeaveRequest::with('employee')->where('leave_status', 2);
         if ($this->teamOnLeaveType && $this->teamOnLeaveType !== 'all') {
             $query->where('leave_type', $this->teamOnLeaveType);
         }

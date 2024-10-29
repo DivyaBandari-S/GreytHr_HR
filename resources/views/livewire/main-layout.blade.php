@@ -11,7 +11,7 @@
 				<a href="#" class="active"><i class="ph-house-fill"></i></a>
 				<ul class="sidebar__submenu">
 					<li class="title">Home</li>
-					<li><a href="/hr/dashboard">Home</a></li>
+					<li><a href="{{route('home')}}">Home</a></li>
 				</ul>
 			</li>
 			<li>
@@ -101,8 +101,8 @@
 					<li>
 						<a href="#">Main <i class="ph-caret-right-fill"></i></a>
 						<ul class="sidebar__dropdown-menu">
-							<li><a href="/hr/user/leave-overview">Leave Overview</a></li>
-							<li><a href="/hr/user/attendance-overview">Attendance Overview</a></li>
+							<li><a href="/hr/user/overview">Leave Overview</a></li>
+							<li><a href="/hr/user/hr-attendance-overview">Attendance Overview</a></li>
 							<li><a href="/hr/user/hremployeedirectory">Leave Calendar</a></li>
 							<li><a href="/hr/user/who-is-in-chart-hr">Who is in?</a></li>
 						</ul>
@@ -139,7 +139,7 @@
 						<ul class="sidebar__dropdown-menu">
 							<li><a href="/home">Holiday List</a></li>
 							<li><a href="/user">weekend Override</a></li>
-							<li><a href="/user">Swipe Managment</a></li>
+							<li><a href="/hr/user">Swipe Managment</a></li>
 							<li><a href="/user">Shift Rotation Calendar</a></li>
 							<li><a href="/home">Employee Week Days</a></li>
 							<li><a href="/user">Leave Type Reviewer</a></li>
@@ -185,7 +185,7 @@
 			<div class="main__top__title">
 				<h3>Admin Dashboard</h3>
 				<ul class="breadcrumbs">
-					<li><a href="/hr/dashboard">Home</a></li>
+					<li><a href="{{route('home')}}">Home</a></li>
 					<li class="divider">/</li>
 					<li><a href="#" class="active">Dashboard</a></li>
 				</ul>
@@ -356,6 +356,6 @@
 
 
 		<!-- Logout Modal -->
-	
+
 	</section>
 </div>
