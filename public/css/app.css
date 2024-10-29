@@ -39,9 +39,9 @@ body {
 }
 /* Horizontal scrollbar */
 ::-webkit-scrollbar:horizontal {
-    height: 5px; /* Height for horizontal scrollbar */
+    height: 5px;
 }
- 
+
 ::-webkit-scrollbar-thumb:horizontal {
     background: #9f9e9e;
     border-radius: 10px;
