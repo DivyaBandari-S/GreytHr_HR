@@ -74,8 +74,9 @@
                         </div>
                         <div class="col-md-3 py-2 px-0">
                             <div class="d-flex justify-content-end">
-                            <!-- wire:click="showGrantLeaveTab" -->
-                                <button class="submit-btn" ><a href="/hr/user/grantLeave">Grant Leave</a></button>
+                                <!--
+                             <a href="/hr/user/grantLeave">Grant Leave</a> -->
+                                <button class="submit-btn" wire:click="showGrantLeaveTab"> Grant Leave</button>
                             </div>
                         </div>
                     </div>
@@ -116,9 +117,13 @@
 
                 @if($showActiveGrantLeave)
                 <div class="grantLeaveTab px-3 py-2">
-                    <div class="row m-0 p-0">
-                        <div class="date-picker d-flex justify-content-end p-0">
-                            <input type="text" value="Jan 2024 - Dec 2024" readonly />
+                    <div class="row g-2 m-0 p-0">
+                        <div class="col-md-6"></div>
+                        <div class="col-md-6 d-flex justify-content-end gap-2">
+                            <div class="date-picker p-0">
+                                <input type="text" value="Jan 2024 - Dec 2024" readonly />
+                            </div>
+                            <button class="submit-btn" type="button"><a href="/hr/user/leavePolicySettings">Leave Settings</a></button>
                         </div>
                     </div>
                     <div class="radio-buttons">
@@ -132,38 +137,38 @@
                         </label>
                     </div>
                     <div class="grid">
-                    <div class="periodicity mt-2">
-                        <label class="labelText" for="period">Periodicity</label>
-                        <div class="custom-dropdown">
-                            <div class="dropdown-selected">Monthly</div>
-                            <div class="dropdown-options">
-                                <div class="dropdown-option">Quaterly</div>
-                                <div class="dropdown-option">Half yearly</div>
-                                <div class="dropdown-option">Yearly</div>
+                        <div class="periodicity mt-2">
+                            <label class="labelText" for="period">Periodicity</label>
+                            <div class="custom-dropdown">
+                                <div class="dropdown-selected">Monthly</div>
+                                <div class="dropdown-options">
+                                    <div class="dropdown-option">Quaterly</div>
+                                    <div class="dropdown-option">Half yearly</div>
+                                    <div class="dropdown-option">Yearly</div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="periodicity mt-2">
-                        <label class="labelText" for="period">Period</label>
-                        <div class="custom-dropdown">
-                            <div class="dropdown-selected">October 2024</div>
-                            <div class="dropdown-options">
-                                <div class="dropdown-option">November 2024</div>
-                                <div class="dropdown-option">January 2024</div>
+                        <div class="periodicity mt-2">
+                            <label class="labelText" for="period">Period</label>
+                            <div class="custom-dropdown">
+                                <div class="dropdown-selected">October 2024</div>
+                                <div class="dropdown-options">
+                                    <div class="dropdown-option">November 2024</div>
+                                    <div class="dropdown-option">January 2024</div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="periodicity  mt-2">
-                        <label class="labelText" for="period">Leave Scheme</label>
-                        <div class="custom-dropdown">
-                            <div class="dropdown-selected">General</div>
-                            <div class="dropdown-options">
-                                <div class="dropdown-option">Quaterly</div>
-                                <div class="dropdown-option">Half yearly</div>
-                                <div class="dropdown-option">Yearly</div>
+                        <div class="periodicity  mt-2">
+                            <label class="labelText" for="period">Leave Scheme</label>
+                            <div class="custom-dropdown">
+                                <div class="dropdown-selected">General</div>
+                                <div class="dropdown-options">
+                                    <div class="dropdown-option">Quaterly</div>
+                                    <div class="dropdown-option">Half yearly</div>
+                                    <div class="dropdown-option">Yearly</div>
+                                </div>
                             </div>
                         </div>
-                    </div>
                     </div>
                 </div>
 

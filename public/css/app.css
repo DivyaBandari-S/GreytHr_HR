@@ -2435,3 +2435,9 @@ input[type="date"]::before {
     font-size: var(--normal-font-size);
 }
 /*Shift Roster Hr SubM
+
+
+/* ///leave setting policy// */
+.leaveSettings{
+    padding: 20px;
+}
