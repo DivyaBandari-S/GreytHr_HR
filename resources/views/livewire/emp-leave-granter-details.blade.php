@@ -26,9 +26,6 @@
                     <div class="row main-overview-help">
                         <div class="col-md-11 col-10 d-flex flex-column">
                             <p class="main-overview-text mb-1">The <span class="msgHeighlighter">Leave Granter</span> page displays a summary of all leaves credited (granted) to employees for the current leave year. Click the icons present adjacent to each row to further manage the data. Leave is usually granted automatically as per schedule. However, you can also grant leave manually by clicking the <span class="msgHeighlighter">Grant Leave</span> button. </p>
-                            <p class="main-overview-text mb-0">Explore greytHR by <span class="main-overview-highlited-text">
-                                    Help-Doc</span>, watching<span class="main-overview-highlited-text"> How-to Videos</span>
-                                and<span class="main-overview-highlited-text"> FAQ</span>.</p>
                         </div>
                         <div class="hide-main-overview-help col-md-1 col-2 d-flex align-items-start">
                             <span wire:click="hideHelp">Hide Help</span>

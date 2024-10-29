@@ -2462,3 +2462,8 @@ input[type="date"]::before {
 .leaveSettings{
     padding: 20px;
 }
+.accordion-button:focus {
+    z-index: 3;
+    outline: 0;
+    box-shadow: none;
+}
