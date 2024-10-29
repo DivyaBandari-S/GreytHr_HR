@@ -26,6 +26,32 @@ body {
     --main-table-heading-bg-color: #cfdbe4c2;
     --main-table-heading-text-color: #545658;
 }
+/* //global styles for scrollbars  */
+::-webkit-scrollbar {
+    width: 5px;
+}
+::-webkit-scrollbar-thumb {
+    background: #9f9e9e;
+    border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #9f9e9e;
+}
+/* Horizontal scrollbar */
+::-webkit-scrollbar:horizontal {
+    height: 5px; /* Height for horizontal scrollbar */
+}
+ 
+::-webkit-scrollbar-thumb:horizontal {
+    background: #9f9e9e;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:horizontal:hover {
+    background: #9f9e9e;
+}
+
+/* end of scrollbars */
 .loginform {
     display: flex;
     flex-direction: column;
@@ -1632,12 +1658,7 @@ input[type="date"]::before {
     margin-top: 20px;
      height:auto;
      width:70%;
-<<<<<<< HEAD
      box-shadow: "0 4px 8px rgba(0, 0, 0, 0.1);"
-
-=======
-     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
->>>>>>> cdea2ed8bd41b9ef2eaeb59ee28daab689c47661
 }
 @media (max-width: 768px) {
     .card-profile {
