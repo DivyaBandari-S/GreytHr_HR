@@ -8,20 +8,24 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use Illuminate\Http\Request;
+use App\Models\EmployeeDocument;
 
 class EmpDocument extends Component
 {
     use WithFileUploads;
     public $requests;
     public $showConfDialog=false;
-
+     public $filePath;
     public $selectedOption = 'all'; 
     public $searchTerm = '';
     public $peopleData =[];
+    public $empId;
   
     public $selectedEmployeeId='';
     
     public $employeeName;
+    public $currentEmpId;
 
 
     public $searchEmployee;
@@ -43,8 +47,10 @@ class EmpDocument extends Component
     public $MotherDateOfBirth;
     public $MotherBloodGroup;
     public $MotherAddress;
-   
+   public $employeeId;
+   public $publishToPortal;
     public $hrempid;
+    public $fullName;
     public $description;
     public $showDetails = true;
     public $priority;
@@ -74,9 +80,18 @@ class EmpDocument extends Component
     public $recentHires = [];
 
     public $employees;
-   
+   public $documentName;
+   public $category;
+ 
+
     public $employeeDetails = [];
     public $editingField = false;
+    protected $rules = [
+        'documentName' => 'required|string|max:255',
+        'category' => 'required|string',
+        'description' => 'nullable|string',
+    
+    ];
     public function toggleDetails()
     {
         $this->showDetails = !$this->showDetails;
@@ -222,6 +237,9 @@ class EmpDocument extends Component
     
                 // Update the cc_to field with the unique names
                 $this->cc_to = implode(', ', array_unique(array_column($this->selectedPeopleData, 'name')));
+                    // After setting currentEmpId
+    $this->currentEmpId = $emp_id;
+    Log::info('Current emp_id set to: ' . $this->currentEmpId);
             }
         } catch (\Exception $e) {
             // Handle the exception
@@ -303,6 +321,7 @@ class EmpDocument extends Component
        } else {
            return;
        }
+       
        $loggedInEmpID = auth()->guard('hr')->user()->emp_id;
        $companyId = EmployeeDetails::where('emp_id', $loggedInEmpID)
 ->pluck('company_id') // This returns the array of company IDs
@@ -313,7 +332,7 @@ if (is_array($companyId)) {
    $firstCompanyID = $companyId; // Handle case where it's not an array
 }
 
-
+$this->empId = auth()->user()->emp_id;
        // Fetch the company_id associated with the employee
        $companyID = EmployeeDetails::where('emp_id', $firstCompanyID)
            ->pluck('company_id')
@@ -393,7 +412,11 @@ if (is_array($companyId)) {
        $this->selectedPeopleNames = [];
    }
 
-    
+   public function showModal($empId)
+   {
+       $this->empId = $empId; // Set empId when showing the modal
+       $this->showDocDialog = true; // Show the modal
+   }
     public function searchforEmployee()
     {
         if (!empty($this->searchTerm)) {
@@ -458,6 +481,58 @@ if (is_array($companyId)) {
         $this->selectedEmployeeFirstName='';
         $this->selectedEmployeeLastName='';
         $this->searchTerm='';
+    }
+    public function submit()
+    {
+      
+        $this->validate();
+      
+
+        $fileContent = null;
+        $mime_type = null;
+        $file_name = null;
+
+        if ($this->file_path) {
+            $fileContent = file_get_contents($this->file_path->getRealPath());
+
+            if ($fileContent === false) {
+                Log::error('Failed to read the uploaded file.', [
+                    'file_path' => $this->file_path->getRealPath(),
+                ]);
+                session()->flashError('error', 'Failed to read the uploaded file.');
+                return;
+            }
+
+            // Check if the file content is too large
+            $maxFileSize = 16777215; // 16MB for MEDIUMBLOB
+            if (strlen($fileContent) > $maxFileSize) {
+                session()->flashError( 'File size exceeds the allowed limit.');
+                return;
+            }
+
+            $mime_type = $this->file_path->getMimeType();
+            $file_name = $this->file_path->getClientOriginalName();
+        }
+        $empId = $this->currentEmpId; // This should set the selected employee ID correctly
+
+        // Create document record in database
+        EmployeeDocument::create([
+            'employee_id' => $empId,
+            'document_name' => $this->documentName,
+            'category' => $this->category,
+            'description' => $this->description,
+            'file_path' => $fileContent, // Store the binary file data
+            'file_name' => $file_name,
+            'mime_type' => $mime_type,
+            'publish_to_portal' => $this->publishToPortal,
+        ]);
+
+        // Reset the form
+        $this->reset(['file_path', 'documentName', 'description', 'category', 'publishToPortal']);
+
+        // Redirect or return response
+        session()->flash('success', 'Document uploaded successfully!');
+        return redirect()->back();
     }
 
 
