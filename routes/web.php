@@ -13,6 +13,7 @@ use App\Livewire\EmpLeaveGranterDetails;
 use App\Livewire\EmployeeAsset;
 use App\Livewire\GrantLeaveBalance;
 use App\Livewire\UpdateEmployeeDetails;
+use App\Livewire\Resignationrequests;
 use App\Livewire\EmployeeDirectory;
 use App\Livewire\EmployeeLeave;
 use App\Livewire\EmployeeProfile;
@@ -21,6 +22,7 @@ use App\Livewire\HrAttendanceInfo;
 use App\Livewire\HrAttendanceOverviewNew;
 use App\Livewire\HrLeaveOverview;
 use App\Livewire\HrMainOverview;
+use App\Livewire\LeaveSettingPolicy;
 use App\Livewire\ParentDetails;
 use App\Livewire\PositionHistory;
 use App\Livewire\ShiftRosterHr;
@@ -56,6 +58,7 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
         //home page routes
         Route::get('/add-employee-details/{employee?}', AddEmployeeDetails::class)->name('add-employee-details');
         Route::get('/update-employee-details', UpdateEmployeeDetails::class)->name('update-employee-details');
+        Route::get('/resig-requests', Resignationrequests::class)->name('resig-requests');
 
 
         //HR Employee-Main Submodule Routes
@@ -95,7 +98,8 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
 
         //HR Leave-Admin Submodule Routes
         Route::get('/user/grantLeave', GrantLeaveBalance::class)->name('grantLeave');
-        Route::get('/user/grant-summary', EmpLeaveGranterDetails::class)->name(name: 'grant-summary');
+        Route::get('/user/grant-summary', EmpLeaveGranterDetails::class)->name( 'grant-summary');
+        Route::get('/user/leavePolicySettings', LeaveSettingPolicy::class)->name( 'leavePolicySettings');
 
 
         //HR Leave-SetUp Submodule Routes

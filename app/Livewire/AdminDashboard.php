@@ -27,6 +27,10 @@ class AdminDashboard extends Component
     public $loginEmployee;
     public $hrRequests;
     public $hrRequestsCount;
+    public $activeEmployeesCount;
+    public $activeEmployees;
+    public $newEmployees;
+    public $newEmployeedeparts;
     public $activeTab = 'summary';
 
     public function setActiveTab($tab)
@@ -39,16 +43,18 @@ class AdminDashboard extends Component
     {
 
         try {
+
             $this->setActiveTab($this->activeTab);
             $employeeId = auth()->guard('hr')->user()->emp_id;
-
-            $this->loginEmployee = Hr::where('emp_id', $employeeId)->select('emp_id', 'employee_name')->first();
+            // dd( $employeeId);
+            // $this->loginEmployee = Hr::where('emp_id', $employeeId)->select('emp_id', 'employee_name')->first();
             $companyId = EmployeeDetails::where('emp_id', $employeeId)->value('company_id');
             //Hr Requests
 
             $this->getHrRequests($companyId);
+            $this->getEmployeesCount($companyId);
             // Count total employees
-            $this->totalEmployeeCount = EmployeeDetails::where('company_id', $companyId)->count();
+            // $this->totalEmployeeCount = EmployeeDetails::where('company_id', $companyId)->count();
 
             // Get total employees grouped by location
             $this->employeeCountsByLocation = EmployeeDetails::select('job_location', DB::raw('count(*) as count'))
@@ -125,23 +131,36 @@ class AdminDashboard extends Component
             return redirect()->back();
         }
     }
-    public function getHrRequests($companyId)
-    {
-        $this->hrRequests = collect();
+    public function getHrRequests($companyIds)
+{
+    // Retrieve HR requests where the company_id contains any of the given company IDs
+    $this->hrRequests = EmpResignations::join('employee_details', 'employee_details.emp_id', '=', 'emp_resignations.emp_id')
+        ->where('emp_resignations.status', 'Pending')
+        ->where(function ($query) use ($companyIds) {
+            foreach ($companyIds as $companyId) {
+                $query->orWhereRaw('JSON_CONTAINS(employee_details.company_id, ?)', [json_encode($companyId)]);
+            }
+        })
+        ->get();
+// dd( $this->hrRequests);
+    // Count the number of HR requests
+    $this->hrRequestsCount = $this->hrRequests->count();
+}
+    public function getEmployeesCount($companyIds){
+        $thirtyDaysAgo = Carbon::now()->subDays(30);
+        // dd( $thirtyDaysAgo);
 
-        foreach ($companyId as $company) {
-            $requests = EmpResignations::join('employee_details', 'employee_details.emp_id', '=', 'emp_resignations.emp_id')
-                ->where('emp_resignations.status', 'Pending')
-                ->whereRaw('JSON_CONTAINS(employee_details.company_id, ?)', [json_encode($company)])
-                ->get();
-
-            $this->hrRequests = $this->hrRequests->merge($requests);
-        }
-
-        // Output the hrRequestsCount
-        $this->hrRequestsCount=$this->hrRequests->count();
-
-
+        $this->activeEmployees = EmployeeDetails::where('status', 1)
+        ->where(function($query) use ($companyIds) {
+            foreach ($companyIds as $companyId) {
+                $query->orWhereJsonContains('company_id', $companyId);
+            }
+        })
+        ->get();
+        $this->activeEmployeesCount = $this->activeEmployees->count();
+        $this->newEmployees = $this->activeEmployees->where('hire_date', '>=', $thirtyDaysAgo)->count();
+        $this->newEmployeedeparts=$this->activeEmployees->where('hire_date', '>=', $thirtyDaysAgo)->unique('dept_id')->count();
+        // dd( $this->newEmployeedeparts);
     }
 
 
