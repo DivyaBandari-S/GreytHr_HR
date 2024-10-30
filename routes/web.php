@@ -22,6 +22,7 @@ use App\Livewire\HrAttendanceInfo;
 use App\Livewire\HrAttendanceOverviewNew;
 use App\Livewire\HrLeaveOverview;
 use App\Livewire\HrMainOverview;
+use App\Livewire\LeaveSettingPolicy;
 use App\Livewire\ParentDetails;
 use App\Livewire\PositionHistory;
 use App\Livewire\ShiftRosterHr;
@@ -106,7 +107,8 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
 
         //HR Leave-Admin Submodule Routes
         Route::get('/user/grantLeave', GrantLeaveBalance::class)->name('grantLeave');
-        Route::get('/user/grant-summary', EmpLeaveGranterDetails::class)->name(name: 'grant-summary');
+        Route::get('/user/grant-summary', EmpLeaveGranterDetails::class)->name( 'grant-summary');
+        Route::get('/user/leavePolicySettings', LeaveSettingPolicy::class)->name( 'leavePolicySettings');
 
 
         //HR Leave-SetUp Submodule Routes

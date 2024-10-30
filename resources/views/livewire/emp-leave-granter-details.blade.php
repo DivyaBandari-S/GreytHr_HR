@@ -26,9 +26,6 @@
                     <div class="row main-overview-help">
                         <div class="col-md-11 col-10 d-flex flex-column">
                             <p class="main-overview-text mb-1">The <span class="msgHeighlighter">Leave Granter</span> page displays a summary of all leaves credited (granted) to employees for the current leave year. Click the icons present adjacent to each row to further manage the data. Leave is usually granted automatically as per schedule. However, you can also grant leave manually by clicking the <span class="msgHeighlighter">Grant Leave</span> button. </p>
-                            <p class="main-overview-text mb-0">Explore greytHR by <span class="main-overview-highlited-text">
-                                    Help-Doc</span>, watching<span class="main-overview-highlited-text"> How-to Videos</span>
-                                and<span class="main-overview-highlited-text"> FAQ</span>.</p>
                         </div>
                         <div class="hide-main-overview-help col-md-1 col-2 d-flex align-items-start">
                             <span wire:click="hideHelp">Hide Help</span>
@@ -74,8 +71,9 @@
                         </div>
                         <div class="col-md-3 py-2 px-0">
                             <div class="d-flex justify-content-end">
-                            <!-- wire:click="showGrantLeaveTab" -->
-                                <button class="submit-btn" ><a href="/hr/user/grantLeave">Grant Leave</a></button>
+                                <!--
+                             <a href="/hr/user/grantLeave">Grant Leave</a> -->
+                                <button class="submit-btn" wire:click="showGrantLeaveTab"> Grant Leave</button>
                             </div>
                         </div>
                     </div>
@@ -116,9 +114,13 @@
 
                 @if($showActiveGrantLeave)
                 <div class="grantLeaveTab px-3 py-2">
-                    <div class="row m-0 p-0">
-                        <div class="date-picker d-flex justify-content-end p-0">
-                            <input type="text" value="Jan 2024 - Dec 2024" readonly />
+                    <div class="row g-2 m-0 p-0">
+                        <div class="col-md-6"></div>
+                        <div class="col-md-6 d-flex justify-content-end gap-2">
+                            <div class="date-picker p-0">
+                                <input type="text" value="Jan 2024 - Dec 2024" readonly />
+                            </div>
+                            <button class="submit-btn" type="button"><a href="/hr/user/leavePolicySettings">Leave Settings</a></button>
                         </div>
                     </div>
                     <div class="radio-buttons">
@@ -132,38 +134,38 @@
                         </label>
                     </div>
                     <div class="grid">
-                    <div class="periodicity mt-2">
-                        <label class="labelText" for="period">Periodicity</label>
-                        <div class="custom-dropdown">
-                            <div class="dropdown-selected">Monthly</div>
-                            <div class="dropdown-options">
-                                <div class="dropdown-option">Quaterly</div>
-                                <div class="dropdown-option">Half yearly</div>
-                                <div class="dropdown-option">Yearly</div>
+                        <div class="periodicity mt-2">
+                            <label class="labelText" for="period">Periodicity</label>
+                            <div class="custom-dropdown">
+                                <div class="dropdown-selected">Monthly</div>
+                                <div class="dropdown-options">
+                                    <div class="dropdown-option">Quaterly</div>
+                                    <div class="dropdown-option">Half yearly</div>
+                                    <div class="dropdown-option">Yearly</div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="periodicity mt-2">
-                        <label class="labelText" for="period">Period</label>
-                        <div class="custom-dropdown">
-                            <div class="dropdown-selected">October 2024</div>
-                            <div class="dropdown-options">
-                                <div class="dropdown-option">November 2024</div>
-                                <div class="dropdown-option">January 2024</div>
+                        <div class="periodicity mt-2">
+                            <label class="labelText" for="period">Period</label>
+                            <div class="custom-dropdown">
+                                <div class="dropdown-selected">October 2024</div>
+                                <div class="dropdown-options">
+                                    <div class="dropdown-option">November 2024</div>
+                                    <div class="dropdown-option">January 2024</div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="periodicity  mt-2">
-                        <label class="labelText" for="period">Leave Scheme</label>
-                        <div class="custom-dropdown">
-                            <div class="dropdown-selected">General</div>
-                            <div class="dropdown-options">
-                                <div class="dropdown-option">Quaterly</div>
-                                <div class="dropdown-option">Half yearly</div>
-                                <div class="dropdown-option">Yearly</div>
+                        <div class="periodicity  mt-2">
+                            <label class="labelText" for="period">Leave Scheme</label>
+                            <div class="custom-dropdown">
+                                <div class="dropdown-selected">General</div>
+                                <div class="dropdown-options">
+                                    <div class="dropdown-option">Quaterly</div>
+                                    <div class="dropdown-option">Half yearly</div>
+                                    <div class="dropdown-option">Yearly</div>
+                                </div>
                             </div>
                         </div>
-                    </div>
                     </div>
                 </div>
 
