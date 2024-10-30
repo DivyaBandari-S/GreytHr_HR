@@ -61,9 +61,9 @@
             </thead>
             @foreach($hrRequests as $index => $hrRequest)
             <tbody>
-                <td>{{$index}}</td>
+                <td>{{$index+1}}</td>
                 <td>{{$hrRequest->emp_id}}</td>
-                <td class="whitespace-nowrap">{{$hrRequest->first_name}} {{$hrRequest->last_name}}</td>
+                <td class="whitespace-nowrap">{{$hrRequest->employee->first_name}} {{$hrRequest->employee->last_name}}</td>
                 <td>{{\Carbon\Carbon::parse($hrRequest->created_at)->format('d M Y')}}</td>
                 <td>{{\Carbon\Carbon::parse($hrRequest->resignation_date)->format('d M Y')}}</td>
                 <td>{{$hrRequest->reason}}</td>
@@ -71,13 +71,13 @@
 
 
 
-                            @if ($record->file_path)
-                            @if(strpos($record->mime_type, 'image') !== false)
-                            <a href="#" class="anchorTagDetails" wire:click.prevent="showImage('{{ $record->getImageUrlAttribute() }}')">
+                            @if ($hrRequest->signature)
+                            @if(strpos($hrRequest->mime_type, 'image') !== false)
+                            <a href="#" class="" wire:click="showImage('{{ $hrRequest->getImageUrlAttribute() }}')">
                                 View Image
                             </a>
                             @else
-                            <a class="anchorTagDetails" href="{{ route('file.show', $record->id) }}" download="{{ $record->file_name }}" style="margin-top: 10px;">
+                            <a class="" href="{{ route('file.show', $hrRequest->id) }}" download="{{ $hrRequest->file_name }}" style="margin-top: 10px;">
                                 Download file
                             </a>
 
@@ -98,7 +98,7 @@
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="submit-btn" wire:click.prevent="downloadImage">Download</button>
-                                            <button type="button" class="cancel-btn1" wire:click="closeImageDialog">Close</button>
+                                            <button type="button" class="submit-btn" wire:click="closeImageDialog">Close</button>
                                         </div>
                                     </div>
                                 </div>
