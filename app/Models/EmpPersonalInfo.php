@@ -34,7 +34,7 @@
             'designation',
             'experience',
             'present_address',
-            'permenant_address',
+            'permanent_address',
             'passport_no',
             'pan_no',
             'adhar_no',

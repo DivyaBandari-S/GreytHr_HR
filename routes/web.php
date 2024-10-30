@@ -27,6 +27,7 @@ use App\Livewire\PositionHistory;
 use App\Livewire\ShiftRosterHr;
 use App\Livewire\WhoIsInChartHr;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Response;
 
 /*
 |--------------------------------------------------------------------------
@@ -58,6 +59,14 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
         Route::get('/add-employee-details/{employee?}', AddEmployeeDetails::class)->name('add-employee-details');
         Route::get('/update-employee-details', UpdateEmployeeDetails::class)->name('update-employee-details');
         Route::get('/resig-requests', Resignationrequests::class)->name('resig-requests');
+        Route::get('/file/{id}', function ($id) {
+            $file = Resignationrequests::findOrFail($id);
+
+            return Response::make($file->signature, 200, [
+                'Content-Type' => $file->mime_type,
+                'Content-Disposition' => (strpos($file->mime_type, 'image') === false ? 'attachment' : 'inline') . '; filename="' . $file->file_name . '"',
+            ]);
+        })->name('file.show');
 
 
         //HR Employee-Main Submodule Routes

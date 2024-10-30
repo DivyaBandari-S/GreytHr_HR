@@ -173,7 +173,7 @@
 
                                 </div>
 
-                                <div class="col-md-6 mb-4" style="cursor: pointer;">
+                                <a class="col-md-6 mb-4" href='/hr/resig-requests'  style="cursor: pointer;">
 
                                     <div class="row m-0 hrReqCard">
 
@@ -193,7 +193,7 @@
 
                                     </div>
 
-                                </div>
+                                </a>
 
                             </div>
 
