@@ -166,15 +166,15 @@
                                         <label class="mt-1">Gender <span class="text-danger onboard-Valid">*</span> </label>
                                         <div>
                                             <div class="form-check form-check-inline mb-0 mx-2">
-                                                <input type="radio" class="form-check-input" wire:model="gender" value="Male" id="maleRadio" name="gender">
+                                                <input type="radio" class="form-check-input" wire:model="gender" value="MALE" id="maleRadio" name="gender">
                                                 <label class="form-check-label-options mt-1 mb-0" for="maleRadio">Male</label>
                                             </div>
                                             <div class="form-check form-check-inline mb-0 mx-2">
-                                                <input type="radio" class="form-check-input" wire:model="gender" value="Female" id="femaleRadio" name="gender">
+                                                <input type="radio" class="form-check-input" wire:model="gender" value="FEMALE" id="femaleRadio" name="gender">
                                                 <label class="form-check-label-options mt-1 mb-0" for="femaleRadio">Female</label>
                                             </div>
                                             <div class="form-check form-check-inline mb-0 mx-2">
-                                                <input type="radio" class="form-check-input" wire:model="gender" value="Others" id="othersRadio" name="gender">
+                                                <input type="radio" class="form-check-input" wire:model="gender" value="OTHER" id="othersRadio" name="gender">
                                                 <label class="form-check-label-options mt-1 mb-0" for="femaleRadio">Others</label>
                                             </div>
 
@@ -605,11 +605,11 @@
                                         <label class="mt-1">Physically Challenge</label>
                                         <div>
                                             <div class="form-check form-check-inline">
-                                                <input class="form-check-input  mb-2" type="radio" wire:model="physically_challenge" value="Yes" id="yesRadio" name="physically_challenge_group">
+                                                <input class="form-check-input  mb-2" type="radio" wire:model="physically_challenge" value="yes" id="yesRadio" name="physically_challenge_group">
                                                 <label class="form-check-label-options mt-1" for="yesRadio">Yes</label>
                                             </div>
                                             <div class="form-check form-check-inline">
-                                                <input class="form-check-input  mb-2" type="radio" wire:model="physically_challenge" value="No" id="noRadio" name="physically_challenge_group" checked>
+                                                <input class="form-check-input  mb-2" type="radio" wire:model="physically_challenge" value="no" id="noRadio" name="physically_challenge_group" checked>
                                                 <label class="form-check-label-options mt-1" for="noRadio">No</label>
                                             </div>
                                         </div>
@@ -947,7 +947,7 @@
                         <fieldset>
                             <div class=" m-0 row ">
                                 <div class="row m-0 mb-2 mt-3" style="text-align: center">
-                                    <h2 class="fs-subtitle">Employee Address Details</h2>
+                                    <h2 class="fs-subtitle">Employee Spouse Details</h2>
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label class="mt-1" for="spouse_first_name"> Spouse First Name </label>

@@ -152,9 +152,9 @@
                     <label for="" style="margin-right: 2px;">Gender:</label>
                     <select class="form-control   placeholder-small m-0  " wire:change='fetchEmployeeDetails' wire:model="emp_gender" style="height: 30px;width:fit-content ">
                         <option value="">All</option>
-                        <option value="Male">Male</option>
-                        <option value="Female">Female</option>
-                        <option value="Others">Others</option>
+                        <option value="MALE">Male</option>
+                        <option value="FEMALE">Female</option>
+                        <option value="OTHER">Others</option>
 
                     </select>
                 </div>
@@ -220,9 +220,9 @@
                         @endif
                         @else
                         <!-- Default images based on gender -->
-                        @if($employee['gender'] == 'Male')
+                        @if($employee['gender'] == 'MALE')
                         <img src="{{ asset('images/male-default.png') }}" class="employee-profile-image-placeholder img-thumbnail" style='height:50px;width:50px' alt="Default Image">
-                        @elseif($employee['gender'] == 'Female')
+                        @elseif($employee['gender'] == 'FEMALE')
                         <img src="{{ asset('images/female-default.jpg') }}" class="employee-profile-image-placeholder img-thumbnail" style='height:50px;width:50px' alt="Default Image">
                         @else
                         <img src="{{ asset('images/user.jpg') }}" class="employee-profile-image-placeholder img-thumbnail" style='height:50px;width:50px' alt="Default Image">
@@ -234,7 +234,7 @@
 
                     <td class="whitespace-nowrap">{{ $employee['first_name'] }} {{ $employee['last_name'] }}</td>
                     <td class="aaa">{{ $employee['email'] }}</td>
-                    <td class="whitespace-nowrap">{{ $employee['gender'] }}</td>
+                    <td class="whitespace-nowrap">{{ucfirst(strtolower( $employee['gender'])) }}</td>
                     {{-- <td class="whitespace-nowrapp">
                                 {{ \Carbon\Carbon::parse($employee['date_of_birth'])->format('d M Y') }}
                     </td>--}}
