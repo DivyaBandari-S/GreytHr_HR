@@ -44,7 +44,21 @@
         margin-bottom: 8px;
         line-height: 1.5;
     }
-    
+    .dropdown-container {
+        width: 100%; /* Ensure the container spans full width */
+        text-align: right; /* Align content to the right */
+    border-radius: 5px;
+    padding: 5px;
+    margin-left:930px;
+   
+}
+.dropdown-container {
+    display: inline-block;
+    height: 40px;
+    width: auto;
+
+ 
+}
     .custom-list li::before {
         content: '\2022'; /* Bullet character */
         color: #3498db; /* Change the color as needed */
@@ -54,13 +68,22 @@
         top: 50%; /* Adjust the top property to move the bullet upwards */
         transform: translateY(-50%); /* Center the bullet vertically */
     }
-    
+    .dropdown-right
+            {
+                float: right;
+            }
     .custom-list li:nth-child(2)::before {
         color: #2ecc71; /* Change the color for the second item */
     }
     
     .custom-list li:nth-child(3)::before {
         color: #e74c3c; /* Change the color for the third item */
+    }
+    .month-with-year
+    {
+        display: inline-block;
+        width: 50px; /* Adjust width as needed */
+        margin: 10px;
     }
         </style>    
         @if($showHelp==false)
@@ -77,6 +100,35 @@
         <button style="background-color: white; margin-top: -20px; float: right; color: #0000FF; border: 1px solid #ffff; border-radius: 5px; cursor: pointer; padding: 10px 20px;font-weight:bold;"wire:click="showhelp">Show&nbsp;&nbsp;Help</button>
            
         @endif
+        <div class="dropdown-container">
+                <select class="dropdown-right" wire:model="selectedYear" wire:change="updateSelectedYear">
+        <option value="{{ $previousYear }}">
+            {{ \Carbon\Carbon::createFromDate($previousYear, 1, 1)->format('M') }} {{ $previousYear }} - 
+            {{ \Carbon\Carbon::createFromDate($previousYear, 12, 1)->format('M') }} {{ $previousYear }}
+        </option>
+        <option value="{{ $currentYear }}">
+            {{ \Carbon\Carbon::createFromDate($currentYear, 1, 1)->format('M') }} {{ $currentYear }} - 
+            {{ \Carbon\Carbon::createFromDate($currentYear, 12, 1)->format('M') }} {{ $currentYear }}
+        </option>
+        <option value="{{ $nextYear }}">
+            {{ \Carbon\Carbon::createFromDate($nextYear, 1, 1)->format('M') }} {{ $nextYear }} - 
+            {{ \Carbon\Carbon::createFromDate($nextYear, 12, 1)->format('M') }} {{ $nextYear }}
+        </option>
+    </select>
+    </div>
+    <div class="row with-white-background">
+    <div class="d-flex flex-wrap">
+        @foreach($monthNumbers as $month)
+            
+            <div class="month-with-year mx-2 text-center"style="cursor:pointer;"@if($month == $monthNumber) style="background-color: blue;color:white;border-radius:5px;padding:5px;" @endif>
+                <div><span style="padding-left:2px;">{{ $month }}</span></div> <!-- Month number -->
+                <div><span style="font-size:12px;">{{ $selectedYear }}</span></div> <!-- Current year -->
+            </div>
+
+        @endforeach
+    </div>
+    
+    </div>
         <div class="row with-white-background">
         <!-- Heading above the row -->
        
@@ -88,6 +140,7 @@
                                                         </button>
                         </h4>
                 </div>
+                
                 @if(count($regularisations)>0)
     @foreach($regularisations as $r)
     @php
@@ -320,40 +373,24 @@
                                         <h6 style="text-align:left; font-weight:600; color: rgba(103,122,142,1);">Who's In?</h6>
                     <!-- Table for the first container goes here -->
                            <div style="display:flex;flex-direction:row;justify-content:space-between">
-                                                        <div class="input-group" style="width: 200px;">
-                                                                <select class="form-control">
-                                                                        <div class="input-group-append">
-                                                                            <span class="input-group-text">
-                                                                                <i class="fas fa-caret-down"></i>
-                                                                            </span>
-                                                                        </div>
-                                                                    <option value="all">Date: 14 Feb 2024</option>
-                                                                    <!-- Add more options as needed -->
-                                                                </select>
-                                                                
-                                                        </div>   
-                                            <div class="input-group" style="width: 200px;">
-                                                        <select class="form-control">
-                                                                <div class="input-group-append">
-                                                                    <span class="input-group-text">
-                                                                        <i class="fas fa-caret-down"></i>
-                                                                    </span>
-                                                                </div>
-                                                            <option value="all">Category: All</option>
-                                                            <!-- Add more options as needed -->
-                                                        </select>
-                                                        
-                                            </div>  
+                                      
+
+                          
+
+                        <!-- <select name="date" id="date" class="form-select"wire:model="selectedDateForDropdown"wire:change="updateSelectedDateForDropdown">
+                            <option value="{{ $today }}">{{ $today }}</option>
+                            <option value="{{ $yesterday }}">{{ $yesterday }}</option>
+                            <option value="{{ $dayBeforeYesterday }}">{{ $dayBeforeYesterday }}</option>
+                        </select> -->
+
+   
                                                
                            </div>   
                            
-                           <ul class="custom-list">
-                                <li><p style="color:rgba(103,122,142,1);">Not Yet In:<span style="font-weight:bold;color:black;margin-left: 5px;">{{$absentemployeescount}}</span></p></li>
-                                <li><p style="color:rgba(103,122,142,1);">On Time:<span style="font-weight:bold;color:black;margin-left: 5px;">{{$earlyemployeescount}}</span></p></li>
-                                <li><p style="color:rgba(103,122,142,1);">Late In:<span style="font-weight:bold;color:black;margin-left: 5px;">{{$lateemployeescount}}</span></p></li>
-                           </ul>
-                                             
+                           
+                    <canvas id="employeeStatusChart" width="150" height="150"></canvas>                               
                 </div>
+              
                 <div class="col-sm-6 mb-3" style="border: 1px solid #dddddd; padding: 5px; border-radius: 5px;margin-right:-40px;">
                                                         <button style="border: 1px solid #0000FF; color: #0000FF; float:right; font-weight:bold;background-color: transparent; padding: 5px; border-radius: 5px; font-size: 13px;"wire:click="downloadexcelForAttendanceType">
                                                            <i class="fas fa-download"></i>  Download  
@@ -362,7 +399,7 @@
                                         
                     <!-- Table for the first container goes here -->
                            <div style="display:flex;flex-direction:row;justify-content:space-between">
-                                                        <div class="input-group" style="width: 200px;">
+                                                        <!-- <div class="input-group" style="width: 200px;">
                                                                 <select class="form-control">
                                                                         <div class="input-group-append">
                                                                             <span class="input-group-text">
@@ -370,11 +407,11 @@
                                                                             </span>
                                                                         </div>
                                                                     <option value="all">Date: 14 Feb 2024</option>
-                                                                    <!-- Add more options as needed -->
+                                                                    
                                                                 </select>
                                                                 
-                                                        </div>   
-                                            <div class="input-group" style="width: 200px;">
+                                                        </div>    -->
+                                            <!-- <div class="input-group" style="width: 200px;">
                                                         <select class="form-control">
                                                                 <div class="input-group-append">
                                                                     <span class="input-group-text">
@@ -382,18 +419,14 @@
                                                                     </span>
                                                                 </div>
                                                             <option value="all">Category: All</option>
-                                                            <!-- Add more options as needed -->
+                                                         
                                                         </select>
                                                         
-                                            </div>  
+                                            </div>   -->
                                                
                            </div>   
-                           
-                           <ul class="custom-list">
-                                <li><p style="color:rgba(103,122,142,1);">Mobile Sign In:<span style="font-weight:bold;color:black;margin-left: 5px;">{{$mobileEmployeeCount}}</span></p></li>
-                                <li><p style="color:rgba(103,122,142,1);">Web Sign In:<span style="font-weight:bold;color:black;margin-left: 5px;">{{$laptopEmployeeCount}}</span></p></li>
-                                <li><p style="color:rgba(103,122,142,1);">Astra:<span style="font-weight:bold;color:black;margin-left: 5px;">0</span></p></li>
-                           </ul>
+                           {{$absentemployeescount}}
+                           <canvas id="employeeAttendanceTypeChart" width="150" height="150"></canvas>    
          
                            <p style="color: blue; cursor: pointer;" data-toggle="modal" data-target="#moreModal">+2 More</p>
     <!----Open Modal---->                       
@@ -429,6 +462,90 @@
     
     </div> 
     
-    
+  <script>
+    var ctx = document.getElementById('employeeStatusChart').getContext('2d');
+var employeeStatusChart = new Chart(ctx, {
+    type: 'pie',
+    data: {
+        labels: [
+            'Not Yet In: {{$absentemployeescount}}',
+            'On Time: {{$earlyemployeescount}}',
+            'Late In: {{$lateemployeescount}}'
+        ],
+        datasets: [{
+            data: [{{$absentemployeescount}}, {{$earlyemployeescount}}, {{$lateemployeescount}}],
+            backgroundColor: [
+                'rgba(255, 99, 132, 0.2)', // Color for "Not Yet In"
+                'rgba(75, 192, 192, 0.2)',  // Color for "On Time"
+                'rgba(255, 159, 64, 0.2)'   // Color for "Late In"
+            ],
+            borderColor: [
+                'rgba(255, 99, 132, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(255, 159, 64, 1)'
+            ],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: true, // Allow resizing to custom dimensions
+        plugins: {
+            legend: {
+                position: 'top',
+                labels: {
+                    usePointStyle: true,
+                    pointStyle: 'circle'
+                }
+            },
+            tooltip: {
+                enabled: true
+            }
+        }
+    }
+});
+var ctx = document.getElementById('employeeAttendanceTypeChart').getContext('2d');
+var employeeAttendanceTypeChart = new Chart(ctx, {
+    type: 'pie',
+    data: {
+        labels: [
+            'Mobile Sign In: {{$mobileEmployeeCount}}',
+            'Web Sign In: {{$laptopEmployeeCount}}',
+            'Astra: 0'
+        ],
+        datasets: [{
+            data: [{{$mobileEmployeeCount}}, {{$laptopEmployeeCount}}, 0],
+            backgroundColor: [
+                'rgba(255, 99, 132, 0.2)', // Color for "Not Yet In"
+                'rgba(75, 192, 192, 0.2)',  // Color for "On Time"
+                'rgba(255, 159, 64, 0.2)'   // Color for "Late In"
+            ],
+            borderColor: [
+                'rgba(255, 99, 132, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(255, 159, 64, 1)'
+            ],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: true, // Allow resizing to custom dimensions
+        plugins: {
+            legend: {
+                position: 'top',
+                labels: {
+                    usePointStyle: true,
+                    pointStyle: 'circle'
+                }
+            },
+            tooltip: {
+                enabled: true
+            }
+        }
+    }
+});
+
+  </script>
     </div>
     
