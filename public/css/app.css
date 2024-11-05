@@ -2380,13 +2380,13 @@ input[type="date"]::before {
 .submit-btn:hover {
     background-color: #357ab8;
     border-color: #357ab8;
-    opacity: 0.8; /* Adjust opacity to create a fading effect */
+    opacity: 0.8;
     box-shadow: 0 2px 2px rgba(53, 122, 184, 0.4);
 }
 .cancel-btn:hover{
     border-color: #357ab8;
     color: #357ab8;
-    opacity: 0.8; /* Adjust opacity to create a fading effect */
+    opacity: 0.8; 
     box-shadow: 0 2px 2px rgba(53, 122, 184, 0.4);
 }
 
