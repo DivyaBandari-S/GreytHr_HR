@@ -23,6 +23,32 @@ body {
     --main-table-heading-bg-color: #cfdbe4c2;
     --main-table-heading-text-color: #545658;
 }
+/* //global styles for scrollbars  */
+::-webkit-scrollbar {
+    width: 5px;
+}
+::-webkit-scrollbar-thumb {
+    background: #9f9e9e;
+    border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #9f9e9e;
+}
+/* Horizontal scrollbar */
+::-webkit-scrollbar:horizontal {
+    height: 5px;
+}
+
+::-webkit-scrollbar-thumb:horizontal {
+    background: #9f9e9e;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:horizontal:hover {
+    background: #9f9e9e;
+}
+
+/* end of scrollbars */
 .loginform {
     display: flex;
     flex-direction: column;
@@ -1629,12 +1655,7 @@ input[type="date"]::before {
     margin-top: 20px;
      height:auto;
      width:70%;
-<<<<<<< HEAD
      box-shadow: "0 4px 8px rgba(0, 0, 0, 0.1);"
-
-=======
-     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
->>>>>>> cdea2ed8bd41b9ef2eaeb59ee28daab689c47661
 }
 @media (max-width: 768px) {
     .card-profile {
@@ -2432,3 +2453,83 @@ input[type="date"]::before {
     font-size: var(--normal-font-size);
 }
 /*Shift Roster Hr SubM
+
+
+/* ///leave setting policy// */
+.leaveSettings{
+    padding: 20px;
+}
+.accordion-button:focus {
+    z-index: 3;
+    outline: 0;
+    box-shadow: none;
+}
+
+.leaveGranter-container {
+    width: 100%;
+    margin: 0 auto;
+    padding: 20px 50px;
+    background: #f8fafc;
+    border-radius: 8px;
+}
+.leaveGranter-header{
+    width: 60%;
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+}
+.leaveGranter-header h3 {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--main-heading-color);
+}
+.subText{
+    color: var(--label-color);
+    font-size: var(--sub-headings-font-size);
+}
+.subTextValue{
+    color: var(--main-heading-color);
+    font-size: var(--sub-headings-font-size);
+    font-weight: 500;
+}
+.leaveGranter-header p {
+    font-size: var(--sub-headings-font-size);
+    color: var(--label-color);
+    margin-bottom: 0;
+}
+
+
+.accordion-button {
+    font-size: 14px;
+    background: #f8fafc;
+    border: none;
+    padding: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.leaveGranter-edit {
+    color: var(--main-heading-color);
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.accordion-body {
+    padding: 15px;
+    background-color: #f9fafb;
+    font-size: 14px;
+}
+
+.accordion-button::after {
+    display: none;
+}
+.accordion-button:not(.collapsed) {
+    border-radius: 0px;
+}
+#leaveAccordion{
+    width: 60%;
+}
+.collapsed{
+    border-radius: 5px;
+}

@@ -202,14 +202,14 @@
               <td style="font-weight:700;font-size:10px;">{{$e1->shift_start_time}}</td>
               
               <td style="text-align:right;">
-                     <button class="arrow-btn" style="background-color:#fff;float:right;margin-top:-2px;margin-right:20px;cursor:pointer;color:{{ $openAccordionForAbsent === $index ? '#3a9efd' : '#778899' }};border:1px solid {{ $openAccordionForAbsent === $index ? '#3a9efd' : '#778899'}}" wire:click="toggleAccordionForAbsent({{ $index }})">
-                          <i class="fa fa-angle-{{ $openAccordionForAbsent === $index ? 'down' : 'up' }}"style="color:{{ $openAccordionForAbsent === $index ? '#3a9efd' : '#778899' }}"></i>
+                     <button class="arrow-btn" style="background-color:#fff;float:right;margin-top:-2px;margin-right:20px;cursor:pointer;color:{{ in_array($index, $openAccordionsForAbsentees) ? '#3a9efd' : '#778899' }};border:1px solid {{ in_array($index, $openAccordionsForAbsentees) ? '#3a9efd' : '#778899'}}" wire:click="toggleAccordionForAbsent({{ $index }})">
+                          <i class="fa fa-angle-{{ in_array($index, $openAccordionsForAbsentees)? 'down' : 'up' }}"style="color:{{ in_array($index, $openAccordionsForAbsentees) ? '#3a9efd' : '#778899' }}"></i>
                     </button>
                 </td>
 
             </tr>
-            @if($openAccordionForAbsent === $index)
-            <tr>
+            @if( in_array($index, $openAccordionsForAbsentees))
+            <tr class="row-for-absent-employee">
                 <td colspan="4">
                     <div style="padding: 10px;">
                     <div style="height: 50px; background-color: #f0f0f0; padding: 5px; width: 100%;">
@@ -226,7 +226,7 @@
                         <!-- Add more details here -->
                         <p style="font-size:12px;font-weight:700;">Contact Details</p>
                         <p style="font-size:10px;font-weight:600;">Email&nbsp;ID:&nbsp;&nbsp;<span style="font-weight:500;">{{$e1->email}}</span></p>
-                        <p style="font-size:10px;font-weight:600;">Phone Number:&nbsp;&nbsp;<span style="font-weight:500;">{{$e1->mobile_number}}</span></p>
+                        <p style="font-size:10px;font-weight:600;">Phone Number:&nbsp;&nbsp;<span style="font-weight:500;">{{$e1->emergency_contact}}</span></p>
                         <p style="font-size:12px;font-weight:700;">Categories Details</p>
                         <p style="font-size:10px;font-weight:600;">Designation:&nbsp;&nbsp;<span style="font-weight:500;">{{$e1->job_role}}</span></p>
                         <p style="font-size:10px;font-weight:600;">Location:&nbsp;&nbsp;<span style="font-weight:500;">{{$e1->job_location}}</span></p>
@@ -294,14 +294,14 @@
               </td>
               <td style="font-weight:700;font-size:10px;padding-left:12px;text-align: center;">{{$lateArrivalTime}}<br /><span class="text-muted" style="font-size:10px;font-weight:300;">{{$s1->swipe_time}}</span></td>
               <td style="text-align:right;">
-              <button class="arrow-btn" style="background-color:#fff;cursor:pointer;color:{{ $openAccordionForLate === $index ? '#3a9efd' : '#778899' }};border:1px solid {{ $openAccordionForLate === $index ? '#3a9efd' : '#778899'}}" wire:click="toggleAccordionForLate({{ $index }})">
-                          <i class="fa fa-angle-{{ $openAccordionForLate === $index ? 'down' : 'up' }}"style="color:{{ $openAccordionForLate === $index ? '#3a9efd' : '#778899' }}"></i>
+              <button class="arrow-btn" style="background-color:#fff;cursor:pointer;color:{{ in_array($index, $openAccordionForLateComers) ? '#3a9efd' : '#778899' }};border:1px solid {{ in_array($index, $openAccordionForLateComers) ? '#3a9efd' : '#778899'}}" wire:click="toggleAccordionForLate({{ $index }})">
+                          <i class="fa fa-angle-{{ in_array($index, $openAccordionForLateComers) ? 'down' : 'up' }}"style="color:{{ in_array($index, $openAccordionForLateComers) ? '#3a9efd' : '#778899' }}"></i>
                     </button>
                 </td>
             </tr>
             @endif
-            @if($openAccordionForLate === $index)
-            <tr>
+            @if(in_array($index, $openAccordionForLateComers))
+            <tr class="row-for-absent-employee">
                 <td colspan="4">
                     <div>
                         <!-- Add more details here -->
@@ -318,7 +318,7 @@
                         </div>
                         <p style="font-size:12px;font-weight:700;padding-left: 10px;">Contact Details</p>
                         <p style="font-size:10px;font-weight:600;padding-left: 10px;">Email&nbsp;ID:&nbsp;&nbsp;<span style="font-weight:500;">{{$s1->email}}</span></p>
-                        <p style="font-size:10px;font-weight:600;padding-left: 10px;">Phone Number:&nbsp;&nbsp;<span style="font-weight:500;">{{$s1->mobile_number}}</span></p>
+                        <p style="font-size:10px;font-weight:600;padding-left: 10px;">Phone Number:&nbsp;&nbsp;<span style="font-weight:500;">{{$s1->emergency_contact}}</span></p>
                         <p style="font-size:12px;font-weight:700;padding-left: 10px;">Categories Details</p>
                         <p style="font-size:10px;font-weight:600;padding-left: 10px;">Designation:&nbsp;&nbsp;<span style="font-weight:500;">{{$s1->job_role}}</span></p>
                         <p style="font-size:10px;font-weight:600;padding-left: 10px;">Location:&nbsp;&nbsp;<span style="font-weight:500;">{{$s1->job_location}}</span></p>
@@ -383,15 +383,15 @@
               data-placement="top" title="{{ ucwords(strtolower($s1->first_name)) }} {{ ucwords(strtolower($s1->last_name)) }}">{{ ucwords(strtolower($s1->first_name)) }} {{ ucwords(strtolower($s1->last_name)) }}<br /><span class="text-muted" style="font-weight:normal;font-size:10px;">#{{$s1->emp_id}}</span></td>
               <td style="font-weight:700;font-size:10px;text-align: center;">{{$earlyArrivalTime}}<br /><span class="text-muted" style="font-size:10px;font-weight:300;">{{$s1->swipe_time}}</span></td>
               <td style="text-align:right;">
-              <button class="arrow-btn" style="background-color:#fff;float:right;margin-top:-2px;margin-right:20px;cursor:pointer;color:{{ $openAccordionForEarly === $index ? '#3a9efd' : '#778899' }};border:1px solid {{ $openAccordionForEarly === $index ? '#3a9efd' : '#778899'}}" wire:click="toggleAccordionForEarly({{ $index }})">
-                          <i class="fa fa-angle-{{ $openAccordionForEarly === $index ? 'down' : 'up' }}"style="color:{{ $openAccordionForEarly === $index ? '#3a9efd' : '#778899' }}"></i>
+              <button class="arrow-btn" style="background-color:#fff;float:right;margin-top:-2px;margin-right:20px;cursor:pointer;color:{{ in_array($index, $openAccordionForEarlyComers) ? '#3a9efd' : '#778899' }};border:1px solid {{ in_array($index, $openAccordionForEarlyComers) ? '#3a9efd' : '#778899'}}" wire:click="toggleAccordionForEarly({{ $index }})">
+                          <i class="fa fa-angle-{{ in_array($index, $openAccordionForEarlyComers) ? 'down' : 'up' }}"style="color:{{ in_array($index, $openAccordionForEarlyComers) ? '#3a9efd' : '#778899' }}"></i>
                     </button>
                 </td>
             </tr>
 
               @endif
-              @if($openAccordionForEarly === $index)
-            <tr>
+              @if(in_array($index, $openAccordionForEarlyComers))
+            <tr class="row-for-absent-employee">
                 <td colspan="4">
                     <div>
                     <div style="height: 50px; background-color: #f0f0f0; padding: 10px; margin:10px;   width: 85%;">
@@ -408,7 +408,7 @@
                         <!-- Add more details here -->
                         <p style="font-size:12px;font-weight:700;">Contact Details</p>
                         <p style="font-size:10px;font-weight:600;">Email&nbsp;ID:&nbsp;&nbsp;<span style="font-weight:500;">{{$s1->email}}</span></p>
-                        <p style="font-size:10px;font-weight:600;">Phone Number:&nbsp;&nbsp;<span style="font-weight:500;">{{$s1->mobile_number}}</span></p>
+                        <p style="font-size:10px;font-weight:600;">Phone Number:&nbsp;&nbsp;<span style="font-weight:500;">{{$s1->emergency_contact}}</span></p>
                         <p style="font-size:12px;font-weight:700;">Categories Details</p>
                         <p style="font-size:10px;font-weight:600;">Designation:&nbsp;&nbsp;<span style="font-weight:500;">{{$s1->job_role}}</span></p>
                         <p style="font-size:10px;font-weight:600;">Location:&nbsp;&nbsp;<span style="font-weight:500;">{{$s1->job_location}}</span></p>
@@ -491,20 +491,21 @@
                 </div>
               </td>
               <td style="text-align:right;">
-                    <button class="arrow-btn" style="background-color:#fff;float:right;margin-top:-2px;margin-right:20px;cursor:pointer;color:{{ $openAccordionForLeave === $index ? '#3a9efd' : '#778899' }};border:1px solid {{ $openAccordionForLeave === $index ? '#3a9efd' : '#778899'}}" wire:click="toggleAccordionForLeave({{ $index }})">
-                          <i class="fa fa-angle-{{ $openAccordionForLeave === $index ? 'down' : 'up' }}"style="color:{{ $openAccordionForLeave === $index ? '#3a9efd' : '#778899' }}"></i>
+                    <button class="arrow-btn" style="background-color:#fff;float:right;margin-top:-2px;margin-right:20px;cursor:pointer;color:{{ in_array($index, $openAccordionsForEmployeesOnLeave) ? '#3a9efd' : '#778899' }};border:1px solid {{ in_array($index, $openAccordionsForEmployeesOnLeave) ? '#3a9efd' : '#778899'}}" wire:click="toggleAccordionForLeave({{ $index }})">
+                          <i class="fa fa-angle-{{ in_array($index, $openAccordionsForEmployeesOnLeave) ? 'down' : 'up' }}"style="color:{{ in_array($index, $openAccordionsForEmployeesOnLeave) ? '#3a9efd' : '#778899' }}"></i>
                     </button>
                 </td>
             </tr>
-            @if($openAccordionForLeave === $index)
-            <tr>
+            @if(in_array($index, $openAccordionsForEmployeesOnLeave))
+            <tr class="row-for-absent-employee">
                 <td colspan="4">
                     <div>
                         <!-- Add more details here -->
                         <p style="font-size:10px;display:flex;font-weight:600;">Leave Dates:<span style="margin-left:5px;font-weight:500;">
-                                                  {{ implode(', ', array_map(function($date) {
+                        {{ implode(', ', array_map(function($date) {
                                       return \Carbon\Carbon::parse($date)->format('jS M Y');
                                   }, $alr->leave_dates)) }}
+
                         </span></p> 
                         <p style="font-size:10px;font-weight:600;">Leave Type:<span style="margin-left:5px;font-weight:500;">{{$alr->leave_type}}</span></p> 
                         <div style="height: 50px; background-color: #f0f0f0; padding: 5px; margin-top: 10px; width: 100%;">
@@ -520,7 +521,7 @@
                         </div>
                         <p style="font-size:12px;font-weight:700;">Contact Details</p>
                         <p style="font-size:10px;font-weight:600;">Email&nbsp;ID:<span style="margin-left:5px;font-weight:500;">{{$alr->email}}</span></p>
-                        <p style="font-size:10px;font-weight:600;">Phone Number:<span style="margin-left:5px;font-weight:500;">{{$alr->mobile_number}}</span></p>
+                        <p style="font-size:10px;font-weight:600;">Phone Number:<span style="margin-left:5px;font-weight:500;">{{$alr->emergency_contact}}</span></p>
                         <p style="font-size:12px;font-weight:700;">Categories Details</p>
                         <p style="font-size:10px;font-weight:600;">Designation:<span style="margin-left:5px;font-weight:500;">{{$alr->job_role}}</span></p>
                         <p style="font-size:10px;font-weight:600;">Location:<span style="margin-left:5px;font-weight:500;">{{$alr->job_location}}</span></p>

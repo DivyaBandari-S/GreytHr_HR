@@ -151,6 +151,8 @@ class EmployeeShiftExport implements FromCollection,WithStyles
     // Convert column count to Excel letter range (e.g., 'A' to 'Z', 'A' to 'AA')
     $lastColumn = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($totalColumns);
 
+    if($this->selectedOption!='past')
+    {
     // Apply styles based on the employee status
     foreach ($this->employees as $index => $employee) {
         // Start from the second row (first row is headings)
@@ -165,6 +167,7 @@ class EmployeeShiftExport implements FromCollection,WithStyles
             ]);
         }
     }
+   }
 }
     public function calculateOffdays($sy,$sm)
     {

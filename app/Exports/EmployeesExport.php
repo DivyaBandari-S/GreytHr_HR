@@ -29,7 +29,6 @@ class EmployeesExport implements FromCollection,WithHeadings,WithStyles
         $this->selectedMonth = $selectedMonth;
         $this->selectedYear = $selectedYear;
         $this->selectedOption = $selectedOption;
-      
     }
     public function collection()
     {
@@ -84,7 +83,7 @@ class EmployeesExport implements FromCollection,WithHeadings,WithStyles
         })
         ->toArray();
         $approvedLeaveRequests1 =   LeaveRequest::join('employee_details', 'leave_applications.emp_id', '=', 'employee_details.emp_id')
-            ->where('leave_applications.status', 'approved')
+            ->where('leave_applications.leave_status', 2)
             ->whereIn('leave_applications.emp_id', $empIds)
             ->whereDate('from_date', '>=', $this->selectedYear . '-' . $this->selectedMonth . '-01') // Dynamically set year and month
             ->whereDate('to_date', '<=', $this->selectedYear . '-' . $this->selectedMonth . '-31') // Dynamically set year and month
@@ -185,23 +184,26 @@ class EmployeesExport implements FromCollection,WithHeadings,WithStyles
     }
     public function styles(Worksheet $sheet)
     {
-        $rows = $sheet->getHighestRow();
-        $columns = $sheet->getHighestColumn(); // Get the last column (e.g., 'Z')
-    
-        // Loop through each row to apply styles for resigned or terminated employees
-        for ($row = 2; $row <= $rows; $row++) {
-            $employeeId = $sheet->getCell('A' . $row)->getValue(); // Get employee ID
-    
-            // Check employee status from the stored data
-            $employeeStatus = $this->employeeStatuses[$employeeId] ?? null;
-    
-            if (in_array(strtolower($employeeStatus), ['resigned', 'terminated'])) {
-                // Apply red color styling to the entire row from A to the last column
-                $sheet->getStyle("A{$row}:{$columns}{$row}")->applyFromArray([
-                    'font' => [
-                        'color' => ['rgb' => 'FF0000'], // Red color
-                    ],
-                ]);
+        if($this->selectedOption!='past')
+        {
+            $rows = $sheet->getHighestRow();
+            $columns = $sheet->getHighestColumn(); // Get the last column (e.g., 'Z')
+        
+            // Loop through each row to apply styles for resigned or terminated employees
+            for ($row = 2; $row <= $rows; $row++) {
+                $employeeId = $sheet->getCell('A' . $row)->getValue(); // Get employee ID
+        
+                // Check employee status from the stored data
+                $employeeStatus = $this->employeeStatuses[$employeeId] ?? null;
+        
+                if (in_array(strtolower($employeeStatus), ['resigned', 'terminated'])) {
+                    // Apply red color styling to the entire row from A to the last column
+                    $sheet->getStyle("A{$row}:{$columns}{$row}")->applyFromArray([
+                        'font' => [
+                            'color' => ['rgb' => 'FF0000'], // Red color
+                        ],
+                    ]);
+                }
             }
         }
     }
