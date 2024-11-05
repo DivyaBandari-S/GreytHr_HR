@@ -20,6 +20,7 @@ use App\Livewire\EmployeeProfile;
 use App\Livewire\Feeds;
 use App\Livewire\HrAttendanceInfo;
 use App\Livewire\HrAttendanceOverviewNew;
+use App\Livewire\HrHolidayList;
 use App\Livewire\HrLeaveOverview;
 use App\Livewire\HrMainOverview;
 use App\Livewire\LeaveSettingPolicy;
@@ -112,7 +113,7 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
 
 
         //HR Leave-SetUp Submodule Routes
-
+        Route::get('/user/holidayList', HrHolidayList::class)->name('holidayList');
 
 
     });
