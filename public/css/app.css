@@ -755,6 +755,15 @@ input {
     font-size: var(--normal-font-size);
     border: 1px solid var(--main-button-color) !important;
 }
+.approve-btn{
+    background-color: rgb(10, 201, 42);
+    color: white;
+    font-weight: 500;
+    border-radius: 5px;
+    padding: 6px 12px;
+    font-size: var(--normal-font-size);
+   border: none;
+}
 /* button styles ended*/
 
 /* analytics hub styles started */
@@ -1570,14 +1579,14 @@ input[type="date"]::before {
 }
 .custom-checkbox-information:checked{
     background-color: var(--main-button-color);
-   
+
 }
 .custom-checkbox-information{
    appearance: none; /* Remove default checkbox styling */
     /* Set the height of the checkbox */
- 
+
      outline: none; /* Remove outline on focus */
-     cursor: pointer; 
+     cursor: pointer;
 }
 .custom-file-upload {
     display: inline-flex;
@@ -1750,7 +1759,7 @@ input[type="date"]::before {
 }
 .secondary-text {
     font-size: 12px;
-    
+
     font-weight: 200;
 }
 
