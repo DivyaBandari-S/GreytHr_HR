@@ -370,7 +370,7 @@ select {
         <div class="gap-4" style="display:flex;flex-direction:row;">
             
             <div class="custom-dropdown">
-                    <select class="dropdown-right-for-month" style="font-size:12px;margin-top:40px; margin-left:10px;" wire:model="selectedMonth" wire:change="updateselectedMonth">
+                    <select class="dropdown-content-for-employee" style="font-size:12px;margin-top:40px; margin-left:10px;" wire:model="selectedMonth" wire:change="updateselectedMonth">
                         @foreach($months as $month)
                             <option value="{{ $month['value'] }}">
                                 {{ $month['name'] }} {{ $selectedYear }}
