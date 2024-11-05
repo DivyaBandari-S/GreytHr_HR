@@ -20,6 +20,7 @@ use App\Livewire\EmployeeProfile;
 use App\Livewire\Feeds;
 use App\Livewire\HrAttendanceInfo;
 use App\Livewire\HrAttendanceOverviewNew;
+use App\Livewire\HrHolidayList;
 use App\Livewire\HrLeaveOverview;
 use App\Livewire\HrMainOverview;
 use App\Livewire\LeaveSettingPolicy;
@@ -27,6 +28,7 @@ use App\Livewire\ParentDetails;
 use App\Livewire\PositionHistory;
 use App\Livewire\ShiftRosterHr;
 use App\Livewire\WhoIsInChartHr;
+use App\Models\EmpResignations;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Response;
 
@@ -48,6 +50,14 @@ use Illuminate\Support\Facades\Response;
 Route::middleware(['checkauth'])->group(function () {
     Route::get('/hrlogin', HrLogin::class)->name('hrlogin');
 });
+Route::get('/file/{id}', function ($id) {
+    $file = EmpResignations::findOrFail($id);
+
+    return Response::make($file->signature, 200, [
+        'Content-Type' => $file->mime_type,
+        'Content-Disposition' => (strpos($file->mime_type, 'image') === false ? 'attachment' : 'inline') . '; filename="' . $file->file_name . '"',
+    ]);
+})->name('file.show');
 
 Route::middleware(['auth:hr', 'handleSession'])->group(function () {
 
@@ -60,14 +70,7 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
         Route::get('/add-employee-details/{employee?}', AddEmployeeDetails::class)->name('add-employee-details');
         Route::get('/update-employee-details', UpdateEmployeeDetails::class)->name('update-employee-details');
         Route::get('/resig-requests', Resignationrequests::class)->name('resig-requests');
-        Route::get('/file/{id}', function ($id) {
-            $file = Resignationrequests::findOrFail($id);
 
-            return Response::make($file->signature, 200, [
-                'Content-Type' => $file->mime_type,
-                'Content-Disposition' => (strpos($file->mime_type, 'image') === false ? 'attachment' : 'inline') . '; filename="' . $file->file_name . '"',
-            ]);
-        })->name('file.show');
 
 
         //HR Employee-Main Submodule Routes
@@ -112,7 +115,7 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
 
 
         //HR Leave-SetUp Submodule Routes
-
+        Route::get('/user/holidayList', HrHolidayList::class)->name('holidayList');
 
 
     });
