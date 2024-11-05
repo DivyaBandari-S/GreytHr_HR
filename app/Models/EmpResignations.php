@@ -13,8 +13,10 @@ class EmpResignations extends Model
         'emp_id',
         'reason',
         'resignation_date',
+        'approved_date',
         'last_working_day',
-        'comments',
+        'mime_type',
+        'file_name',
         'signature',
         'status'
     ];
