@@ -3,6 +3,8 @@
         <form wire:submit.prevent="grantLeavesForEmp">
             <p style="color: #778899;">Grant Leaves</p>
             <hr>
+            
+            <!-- Employee Selection -->
             <div class="form-group">
                 <label for="emp_id" style="cursor: pointer;color: #778899;display:flex;align-items:center;gap:5px;">
                     <div wire:ignore class="icon-container" wire:click="openEmployeeIds" style="display: flex; justify-content: center; align-items: center;position:relative;">
@@ -22,7 +24,7 @@
             </div>
 
             <!-- Employee IDs selection -->
-            @if($showEmployees=='true')
+            @if($showEmployees == 'true')
                 <div class="bg-white border rounded p-2 d-flex flex-column" style="width:30%;max-height: 150px;overflow-y:auto;font-size:12px;color:#778899;position:absolute;">
                     <div wire:click="closeEmployeeIds" style="display: flex;justify-content:end;cursor:pointer;font-weight:500;color:#778899;">X</div>
                     @foreach($employeeIds as $emp_id)
@@ -33,25 +35,19 @@
                 </div>
             @endif
 
-            <!-- Rest of your form code -->
+            <!-- Leave Policies Selection -->
             <div class="form-group">
-                <label for="leave_type" style="color: #778899;font-size:12px;">Leave Type</label>
-                <select class="form-control placeholder-small" wire:model="leave_type">
-                    <option value="">Select Leave Type</option>
-                    <option value="Casual Leave Probation">Causal Leave Probation</option>
-                    <option value="Maternity Leave">Maternity Leave</option>
-                    <option value="Loss Of Pay">Loss Of Pay</option>
-                    <option value="Sick Leave">Sick Leave</option>
-                    <option value="Marriage Leave">Marriage Leave</option>
-                    <option value="Casual Leave">Causal Leave</option>
+                <label for="leave_policies" style="color: #778899;font-size:12px;">Leave Policies</label>
+                <select class="form-control" wire:model="selectedLeavePolicies" multiple>
+                    <option value="">Select Leave Policies</option>
+                    @foreach($leavePolicies as $policy)
+                        <option value="{{ $policy->id }}">{{ $policy->leave_name }}</option>
+                    @endforeach
                 </select>
-                @error('leave_type') <span class="text-danger">{{ $message }}</span> @enderror
+                @error('selectedLeavePolicies') <span class="text-danger">{{ $message }}</span> @enderror
             </div>
-            <div class="form-group">
-                <label for="quota" style="color: #778899;font-size:12px;">Number of Leaves</label>
-                <input type="number" class="form-control" wire:model="leave_balance">
-                @error('leave_balance') <span class="text-danger">{{ $message }}</span> @enderror
-            </div>
+
+            <!-- Date Range -->
             <div class="form-group">
                 <label for="from_date" style="color: #778899;font-size:12px;">From Date</label>
                 <input type="date" class="form-control placeholder-small" wire:model="from_date">
@@ -62,10 +58,10 @@
                 <input type="date" class="form-control placeholder-small" wire:model="to_date">
                 @error('to_date') <span class="text-danger">{{ $message }}</span> @enderror
             </div>
+
             <div class="d-flex align-items-center justify-content-center mt-2">
                 <button type="submit" class="btn btn-primary" wire:loading.attr="disabled" style="background: rgb(2, 17, 79);border:none;font-size:12px;">Submit</button>
             </div>
         </form>
     </div>
 </div>
-

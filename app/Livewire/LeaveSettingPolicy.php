@@ -15,10 +15,13 @@ class LeaveSettingPolicy extends Component
     public $grant_days;
     public $leave_frequency;
     public $is_active = 1;
+    public $allowedLeavesAsPerPolicy = [];
     public $leave_code;
     public $company_id;
     public $companyID;
     public $showAddForm = false;
+    public $leavePolicy;
+    public $leavePolicies = [];
     protected $rules = [
         'leave_name' => 'required|string|max:50',
         'grant_days' => 'required|integer',
@@ -27,7 +30,9 @@ class LeaveSettingPolicy extends Component
         'company_id' => 'required|exists:companies,company_id',
     ];
 
-    public function mount(){
+    public function mount()
+    {
+        $this->leavePolicies = LeavePolicySetting::all()->keyBy('id')->toArray();
         $loggedInEmpID = auth()->guard('hr')->user()->emp_id;
 
         // Step 2: Find the employee's details
@@ -45,11 +50,52 @@ class LeaveSettingPolicy extends Component
                 $this->company_id = $company->company_id; // Set the fetched company_id
             }
         }
+        $this->getLeaveTypes();
+    }
+    public function getLeaveTypes()
+    {
+        $this->allowedLeavesAsPerPolicy = LeavePolicySetting::where('company_id', $this->company_id)->get();
     }
     public function toggleAddForm()
     {
         $this->showAddForm = !$this->showAddForm; // Toggle the form visibility
     }
+    public function editPolicy($policyId)
+    {
+        $policyData = $this->leavePolicies[$policyId];
+
+        // Update the policy in the database
+        $policy = LeavePolicySetting::find($policyId);
+        $policy->update([
+            'leave_name' => $policyData['leave_name'],
+            'leave_code' => $policyData['leave_code'],
+            'leave_frequency' => $policyData['leave_frequency'],
+            'grant_days' => $policyData['grant_days'],
+        ]);
+
+        FlashMessageHelper::flashSuccess('Leave policy updated successfully!.');
+    }
+    public function deletePolicy($policyId)
+    {
+        // Find the policy by ID
+        $policy = LeavePolicySetting::find($policyId);
+
+        // Check if policy exists
+        if ($policy) {
+            // Delete the policy
+            $policy->delete();
+
+            // Optionally, send a success message
+            FlashMessageHelper::flashSuccess( 'Policy deleted successfully!');
+
+            // Optionally, you can refresh the list or update the array after deletion
+            $this->leavePolicies = LeavePolicySetting::all()->keyBy('id')->toArray(); // Refresh policies list
+        } else {
+            FlashMessageHelper::flashError( 'Policy not found!');
+        }
+        $this->getLeaveTypes();
+    }
+
     public function addNewType()
     {
         try {
@@ -61,10 +107,11 @@ class LeaveSettingPolicy extends Component
                 'leave_code' => $this->leave_code,
                 'company_id' => json_encode($this->company_id),
             ]);
-
+            if ($check) {
+                $this->getLeaveTypes();
+            }
             // Reset fields after submission
             $this->reset(['leave_name', 'grant_days', 'leave_frequency', 'leave_code', 'company_id']);
-
             // Optionally, add a success message
             FlashMessageHelper::flashSuccess('Leave policy added successfully!');
         } catch (\Exception $e) {
@@ -75,8 +122,9 @@ class LeaveSettingPolicy extends Component
 
     public function render()
     {
-        return view('livewire.leave-setting-policy',[
-            'company_id' => $this->company_id
+        return view('livewire.leave-setting-policy', [
+            'company_id' => $this->company_id,
+            'allowedLeavesAsPerPolicy' => $this->allowedLeavesAsPerPolicy
         ]);
     }
 }
