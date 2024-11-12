@@ -101,7 +101,7 @@
 					<li>
 						<a href="#">Main <i class="ph-caret-right-fill"></i></a>
 						<ul class="sidebar__dropdown-menu">
-							<li><a href="/hr/user/overview">Leave Overview</a></li>
+							<li><a href="/hr/user/leave-overview">Leave Overview</a></li>
 							<li><a href="/hr/user/hr-attendance-overview">Attendance Overview</a></li>
 							<li><a href="/hr/user/hremployeedirectory">Leave Calendar</a></li>
 							<li><a href="/hr/user/who-is-in-chart-hr">Who is in?</a></li>
@@ -113,8 +113,8 @@
 							<li><a href="/hr/user/employee-leave">Employee Leave</a></li>
 							<li><a href="/hr/user/shift-roster-hr">Shift Roaster</a></li>
 							<li><a href="/user">Employee Swipes</a></li>
-							<li><a href="/hr/user/attendance-muster-hr">Attenance Muster</a></li>
-							<li><a href="/hr/user/attendance-info">Attenance Info</a></li>
+							<li><a href="/hr/user/attendance-muster-hr">Attendance Muster</a></li>
+							<li><a href="/hr/user/attendance-info">Attendance Info</a></li>
 						</ul>
 					</li>
 
@@ -137,7 +137,7 @@
 					<li>
 						<a href="#">Setup <i class="ph-caret-right-fill"></i></a>
 						<ul class="sidebar__dropdown-menu">
-							<li><a href="/home">Holiday List</a></li>
+							<li><a href="/hr/user/holidayList">Holiday List</a></li>
 							<li><a href="/user">weekend Override</a></li>
 							<li><a href="/hr/user">Swipe Managment</a></li>
 							<li><a href="/user">Shift Rotation Calendar</a></li>

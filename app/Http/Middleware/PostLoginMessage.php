@@ -307,7 +307,7 @@ class PostLoginMessage
                         <img src="images/hr_new_blue.png" alt="Company Logo" style="width: 14em !important; margin-bottom: 30px">
                     </div>
                     <div id="message" style="width: 100%; margin-bottom: 30px">
-                        Hi <span class="name">' . $userName . '</span>, just a moment, we\'re getting things ready for you
+                        Hi <span class="name">' . $userName . '</span>, just a moment, we are getting things ready for you
                     </div>
                     <div style="width: 100%; text-align: center">
                         <svg class="pl" width="240" height="240" viewBox="0 0 240 240">

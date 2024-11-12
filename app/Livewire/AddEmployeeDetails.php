@@ -26,6 +26,7 @@ use App\Models\CompanyProjects;
 use App\Models\EmpDepartment;
 use App\Models\EmpSubDepartments;
 use App\Models\EmpBankDetail;
+use App\Models\EmpExperience;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Contracts\Encryption\DecryptException;
@@ -83,7 +84,7 @@ class AddEmployeeDetails extends Component
     public $religion;
     public $marital_status = 'married';
     public $spouse;
-    public $physically_challenge;
+    public $physically_challenge='no';
     public $inter_emp;
     public $job_location = '';
     public $job_locations_array = [];
@@ -200,14 +201,17 @@ class AddEmployeeDetails extends Component
     public $ifsc_code;
     public $bank_address;
 
-    public  $selectedEmployees;
+    public $selectedEmployees;
     public $currentStep = 1;
-
     public $parentscurrentStep = 1;
     public $showAlert = false;
     public $successModal = false;
     public $action = 'add';
     public $email_domain = '';
+    public $employeeListModal = false;
+    public $employeeList;
+    public $searchedEmployee, $selectedManager;
+    public $managers;
 
 
 
@@ -227,7 +231,7 @@ class AddEmployeeDetails extends Component
     public function validateImageType()
     {
 
-        // Get file extension
+
         $extension = $this->image->extension();
 
         // Custom validation logic to check for valid image types
@@ -298,7 +302,7 @@ class AddEmployeeDetails extends Component
 
         if ($this->currentStep == 1) {
 
-            // dd($this->Projects);
+
             if ($this->action != 'reJoin') {
                 $existingEmployee = EmployeeDetails::where('email', $this->company_email)
                     ->where('emp_id', '!=', $this->emp_id)
@@ -377,7 +381,7 @@ class AddEmployeeDetails extends Component
                 ->select('emp_bank_details.*', 'employee_details.status')
                 ->where('employee_details.status', '!=', 0)
                 ->first();
-                // dd( $existingaccno);
+            // dd( $existingaccno);
 
             // dd( $existingEmployee);
             if ($existingaccno) {
@@ -531,7 +535,7 @@ class AddEmployeeDetails extends Component
             'last_name' => 'required|regex:/^[a-zA-Z\s]+$/|max:100',
             'mobile_number' => 'required|string|size:10|different:alternate_mobile_number',
             'company_email' => 'required|email|different:email',
-            'gender' => 'required|in:Male,Female,Others',
+            'gender' => 'required|in:MALE,FEMALE,OTHER',
             'imageBinary' => 'required',
             'image' => 'nullable',
             'com_id' => 'required',
@@ -769,6 +773,7 @@ class AddEmployeeDetails extends Component
             if ($this->action == 'reJoin') {
                 $this->emp_id = '';
             }
+            $this->com_id = [ $this->company_id];
             // dd( $this->emp_id);
             EmployeeDetails::updateorCreate(
                 ['emp_id' => $this->emp_id],
@@ -796,8 +801,8 @@ class AddEmployeeDetails extends Component
                     'probation_Period' => $this->probation_period,
                     'confirmation_date' => $this->confirmation_date,
                     'shift_type' => $this->shift_name,
-                    'shift_start_time' => $this->shift_start_time,
-                    'shift_end_time' => $this->shift_end_time,
+                    // 'shift_start_time' => $this->shift_start_time,
+                    // 'shift_end_time' => $this->shift_end_time,
                 ]
             );
 
@@ -817,24 +822,22 @@ class AddEmployeeDetails extends Component
 
     public function registerEmployeeJobDetails()
     {
-
+        // dd($this->address);
 
         try {
             EmpPersonalInfo::updateorCreate(
                 ['emp_id' => $this->emp_id],
                 [
-                    'first_name' => $this->first_name,
-                    'last_name' => $this->last_name,
                     'date_of_birth' => $this->date_of_birth,
-                    'gender' => $this->gender,
+                    // 'gender' => $this->gender,
                     'blood_group' => $this->blood_group,
-                    'signature' => $this->signature_image,
+                    // 'signature' => $this->signature_image,
                     'nationality' => $this->nationality,
                     'religion' => $this->religion,
                     'marital_status' => $this->marital_status,
                     'physically_challenge' => $this->physically_challenge,
                     'email' => $this->email,
-                    'mobile_number' => $this->mobile_number,
+                    // 'mobile_number' => $this->mobile_number,
                     'alternate_mobile_number' => $this->alternate_mobile_number,
                     'city' => $this->city,
                     'state' => $this->state,
@@ -842,7 +845,7 @@ class AddEmployeeDetails extends Component
                     'country' => $this->country,
                     'company_name' => $this->company_name,
                     'present_address' => $this->present_address,
-                    'permenant_address' => $this->address,
+                    'permanent_address' => $this->address,
                     'passport_no' => $this->passport_no,
                     'pan_no' => strtoupper($this->pan_no) ? strtoupper($this->pan_no) : "",
                     'adhar_no' => $this->adhar_no,
@@ -988,7 +991,7 @@ class AddEmployeeDetails extends Component
     public function addExperienceDetails()
     {
         try {
-            EmpPersonalInfo::updateorCreate(
+            EmpExperience::updateorCreate(
                 ['emp_id' => $this->emp_id],
                 [
                     // 'qualification' => json_encode($this->education),
@@ -1020,17 +1023,14 @@ class AddEmployeeDetails extends Component
         if (is_array($this->company_id)) {
             $this->selectedId = Company::where('company_id', $this->com_id)->first();
             // dd( $this->selectedId);
-
             if ($this->selectedId) {
-
                 $this->company_name = $this->selectedId->company_name;
                 $this->job_locations_array = $this->selectedId->branch_locations;
                 $this->email_domain = $this->selectedId->email_domain;
 
-
                 $this->shift_details = CompanyShifts::where('company_id',  $this->com_id)->get();
                 $this->Projects = CompanyProjects::where('company_id',  $this->com_id)->get();
-                // dd( $this->Projects);
+
 
                 // $this->shift_details = Company_Shifts::where('company_id', $this->com_id)
                 // ->selectRaw("shift_name, DATE_FORMAT(shift_start_time, '%H:%i') as shift_start_time, DATE_FORMAT(shift_end_time, '%H:%i') as shift_end_time")
@@ -1048,7 +1048,8 @@ class AddEmployeeDetails extends Component
                 $this->departments = EmpDepartment::whereIn('company_id', $this->company_id)->get();
 
                 // Fetch managers for the department
-                $managers = EmployeeDetails::where('dept_id', $this->department_id)
+                // $managers = EmployeeDetails::where('dept_id', $this->department_id)
+                $managers = EmployeeDetails::where('status', 1)
                     ->pluck('manager_id')
                     ->unique()
                     ->toArray();
@@ -1059,7 +1060,41 @@ class AddEmployeeDetails extends Component
         }
     }
 
+    public function openEMployeeListModel()
+    {
 
+        $this->employeeListModal = true;
+    }
+    public function searchEmployees()
+    {
+        $this->employeeList = EmployeeDetails::where('status', 1)
+            ->whereNotIn('emp_id', $this->managers)
+            ->where('first_name', 'like', '%' . $this->searchedEmployee . '%')
+            ->orWhere('last_name', 'like', '%' . $this->searchedEmployee . '%')
+            ->orWhere('emp_id', 'like', '%' . $this->searchedEmployee . '%')
+            ->get();
+    }
+    public function closeEmployeeList()
+    {
+        $this->employeeListModal = false;
+    }
+    public function  SelectReportingTo()
+    {
+        $this->manager_id = '';
+        // $this->manager_id= $this->selectedManager;
+
+        if (!in_array($this->selectedManager, $this->managers)) {
+            $this->managers[] = $this->selectedManager;
+        }
+        //    dd( $managers );
+
+        $this->managerIds = EmployeeDetails::whereIn('emp_id', $this->managers)
+            ->get(['emp_id', 'first_name', 'last_name', 'manager_id']);
+
+
+        $this->employeeListModal = false;
+        // dd($this->manager_id);
+    }
 
     public function selectedDepartment($value)
     {
@@ -1108,16 +1143,41 @@ class AddEmployeeDetails extends Component
         $hr = auth()->guard('hr')->user()->emp_id;
         $employee = EmployeeDetails::find($hr);
 
+        $this->managers = EmployeeDetails::where('status', 1)
+            ->pluck('manager_id')
+            ->unique()
+            ->filter() // Removes any null values if there are any
+            ->toArray();
+
+        $this->employeeList = EmployeeDetails::where('status', 1)->whereNotIn('emp_id', $this->managers)->select('first_name', 'last_name', 'emp_id')->get();
+
         $empCompanyId = $employee->company_id;
+        $this->company_id = $employee->company_id[0];
+
+
+// dd($this->com_id);
+        $this->selectedId = Company::where('company_id',  $this->company_id)->first();
+        // dd( $this->selectedId);
+
+        $this->company_name = $this->selectedId->company_name;
+        $this->job_locations_array = $this->selectedId->branch_locations;
+        $this->email_domain = $this->selectedId->email_domain;
+
+        $this->shift_details = CompanyShifts::where('company_id',  $this->company_id)->get();
+        $this->Projects = CompanyProjects::where('company_id',  $this->company_id)->get();
+        // Fetch departments based on the selected company
+        $this->departments = EmpDepartment::where('company_id',  $this->company_id)->get();
 
         $this->companieIds = Company::wherein('company_id', $empCompanyId)->select('company_id', 'company_name')->get();
+        if (count($this->companieIds) == 1) {
+            $this->com_id = $this->companieIds[0]->company_id;
+        }
 
         $companieIdsLength = count($this->companieIds);
         if ($companieIdsLength == 1) {
             $this->company_id = $this->companieIds->first()->company_id;
         }
 
-        $this->departments = EmpDepartment::whereIn('company_id', $empCompanyId)->get();
 
         $this->editEmployee();
     }
@@ -1161,6 +1221,7 @@ class AddEmployeeDetails extends Component
                 $this->com_id = $this->company_id[0];
                 if ($this->com_id) {
                     $this->selectedId = Company::where('company_id', $this->com_id)->first();
+                    // dd();
                     $this->job_locations_array = $this->selectedId->branch_locations;
 
                     $this->shift_details = CompanyShifts::where('company_id',  $this->com_id)->get();
@@ -1168,6 +1229,7 @@ class AddEmployeeDetails extends Component
 
                 $this->employee_type = $empdetails->employee_type;
                 $this->manager_id = $empdetails->manager_id;
+                // dd($this->manager_id);
                 $this->department_id = $empdetails->dept_id;
                 //    $this->sub_department_id=$empdetails->sub_dept_id;
                 if ($this->department_id) {
@@ -1211,6 +1273,7 @@ class AddEmployeeDetails extends Component
 
                 // Employee Personal details
                 $empPersonalDetails = EmpPersonalInfo::where('emp_id', $this->emp_id)->first();
+                // dd($empPersonalDetails);
                 if ($empPersonalDetails != null) {
                     $this->date_of_birth = $empPersonalDetails->date_of_birth;
                     $this->blood_group = $empPersonalDetails->blood_group;
@@ -1225,7 +1288,7 @@ class AddEmployeeDetails extends Component
                     $this->postal_code = $empPersonalDetails->postal_code;
                     $this->country = $empPersonalDetails->country;
                     $this->present_address = $empPersonalDetails->present_address;
-                    $this->address = $empPersonalDetails->permenant_address;
+                    $this->address = $empPersonalDetails->permanent_address;
                     $this->passport_no = $empPersonalDetails->passport_no;
                     $this->pan_no = $empPersonalDetails->pan_no;
                     $this->adhar_no = $empPersonalDetails->adhar_no;

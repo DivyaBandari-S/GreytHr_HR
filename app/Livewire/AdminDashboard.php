@@ -135,7 +135,7 @@ class AdminDashboard extends Component
 {
     // Retrieve HR requests where the company_id contains any of the given company IDs
     $this->hrRequests = EmpResignations::join('employee_details', 'employee_details.emp_id', '=', 'emp_resignations.emp_id')
-        ->where('emp_resignations.status', 'Pending')
+        ->where('emp_resignations.status', '5')
         ->where(function ($query) use ($companyIds) {
             foreach ($companyIds as $companyId) {
                 $query->orWhereRaw('JSON_CONTAINS(employee_details.company_id, ?)', [json_encode($companyId)]);

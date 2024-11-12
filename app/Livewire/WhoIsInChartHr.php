@@ -26,6 +26,9 @@ class WhoIsInChartHr extends Component
 
     public $eveningShiftEmployeesCount;
     
+    public $openAccordionsForAbsentees = [];
+
+    public $openAccordionForLateComers=[];
     public $approvedLeaveRequests;
     public $currentDate;
     public $notFound;
@@ -35,6 +38,8 @@ class WhoIsInChartHr extends Component
 
     public $employeesOnLeaveCount;
     public $absentEmployeesCount;
+
+    public $openAccordionsForEmployeesOnLeave=[];
     public $toggleButton=false;
     public $isToggled = false;
 
@@ -49,6 +54,8 @@ class WhoIsInChartHr extends Component
     public $openAccordionForLate=null;
 
     public $openAccordionForEarly=null;
+
+    public $openAccordionForEarlyComers=[];
 
     public $openAccordionForLeave=null;
     public $shiftsforAttendance;
@@ -71,37 +78,44 @@ class WhoIsInChartHr extends Component
     }
     public function toggleAccordionForAbsent($index)
     {
-        // Toggle the open state for the clicked accordion
-        if ($this->openAccordionForAbsent === $index) {
-            $this->openAccordionForAbsent = null; // Close the accordion if it's already open
+        if (in_array($index, $this->openAccordionsForAbsentees)) {
+            // Remove from open accordions if already open
+            $this->openAccordionsForAbsentees = array_diff($this->openAccordionsForAbsentees, [$index]);
         } else {
-            $this->openAccordionForAbsent = $index; // Open the clicked accordion
+            // Add to open accordions if not open
+            $this->openAccordionsForAbsentees[] = $index;
         }
+       
     }
     public function toggleAccordionForLate($index)
     {
         // Toggle the open state for the clicked accordion
-        if ($this->openAccordionForLate === $index) {
-            $this->openAccordionForLate = null; // Close the accordion if it's already open
+        if (in_array($index, $this->openAccordionForLateComers)) {
+            // Remove from open accordions if already open
+            $this->openAccordionForLateComers = array_diff($this->openAccordionForLateComers, [$index]);
         } else {
-            $this->openAccordionForLate = $index; // Open the clicked accordion
+            // Add to open accordions if not open
+            $this->openAccordionForLateComers[] = $index;
         }
     }
     public function toggleAccordionForEarly($index)
     {
-        // Toggle the open state for the clicked accordion
-        if ($this->openAccordionForEarly === $index) {
-            $this->openAccordionForEarly = null; // Close the accordion if it's already open
+        if (in_array($index, $this->openAccordionForEarlyComers)) {
+            // Remove from open accordions if already open
+            $this->openAccordionForEarlyComers = array_diff($this->openAccordionForEarlyComers, [$index]);
         } else {
-            $this->openAccordionForEarly = $index; // Open the clicked accordion
+            // Add to open accordions if not open
+            $this->openAccordionForEarlyComers[] = $index;
         }
     }
     public function toggleAccordionForLeave($index)
     {
-        if ($this->openAccordionForLeave === $index) {
-            $this->openAccordionForLeave = null; // Close the accordion if it's already open
+        if (in_array($index, $this->openAccordionsForEmployeesOnLeave)) {
+            // Remove from open accordions if already open
+            $this->openAccordionsForEmployeesOnLeave = array_diff($this->openAccordionsForEmployeesOnLeave, [$index]);
         } else {
-            $this->openAccordionForLeave = $index; // Open the clicked accordion
+            // Add to open accordions if not open
+            $this->openAccordionsForEmployeesOnLeave[] = $index;
         }
 
     }
@@ -142,9 +156,25 @@ class WhoIsInChartHr extends Component
                 })
                 ->join('employee_details', 'swipe_records.emp_id', '=', 'employee_details.emp_id')
                 ->leftJoin('emp_personal_infos', 'swipe_records.emp_id', '=', 'emp_personal_infos.emp_id')
-                ->select('swipe_records.*', 'employee_details.*')
+                ->leftJoin('company_shifts', function ($join) {
+                    // Join with company_shifts using JSON_UNQUOTE to extract company_id from employee_details
+                    $join->on('company_shifts.company_id', '=', DB::raw("JSON_UNQUOTE(JSON_EXTRACT(employee_details.company_id, '$[0]'))"))
+                         ->on('company_shifts.shift_name', '=', 'employee_details.shift_type');
+                })
+                ->select(
+                    'swipe_records.*',
+                    'employee_details.*',
+                    
+                    'company_shifts.shift_start_time',
+                    'company_shifts.shift_end_time',
+                    'company_shifts.shift_name'
+                )
+                ->where('employee_details.employee_status', 'active')
+                ->orderByDesc('swipe_records.swipe_time')
                 ->distinct('swipe_records.emp_id')
                 ->get();
+        
+           
             $data = [
                 ['List of Late Arrival Employees on ' . Carbon::parse($currentDate)->format('jS F, Y')],
                 ['Employee ID', 'Name', 'Sign In Time', 'Late By(HH:MM)'],
@@ -199,6 +229,7 @@ class WhoIsInChartHr extends Component
 
 
             
+                
                 $swipes = SwipeRecord::whereIn('swipe_records.id', function ($query) use ($employees, $approvedLeaveRequests, $currentDate) {
                     $query->selectRaw('MIN(swipe_records.id)')
                         ->from('swipe_records')
@@ -209,11 +240,26 @@ class WhoIsInChartHr extends Component
                 })
                 ->join('employee_details', 'swipe_records.emp_id', '=', 'employee_details.emp_id')
                 ->leftJoin('emp_personal_infos', 'swipe_records.emp_id', '=', 'emp_personal_infos.emp_id')
-                ->select('swipe_records.*', 'employee_details.*')
+                ->leftJoin('company_shifts', function ($join) {
+                    // Join with company_shifts using JSON_UNQUOTE to extract company_id from employee_details
+                    $join->on('company_shifts.company_id', '=', DB::raw("JSON_UNQUOTE(JSON_EXTRACT(employee_details.company_id, '$[0]'))"))
+                         ->on('company_shifts.shift_name', '=', 'employee_details.shift_type');
+                })
+                ->select(
+                    'swipe_records.*',
+                    'employee_details.*',
+                    
+                    'company_shifts.shift_start_time',
+                    'company_shifts.shift_end_time',
+                    'company_shifts.shift_name'
+                )
+                ->where('employee_details.employee_status', 'active')
+                ->orderByDesc('swipe_records.swipe_time')
+                ->distinct('swipe_records.emp_id')
                 ->get();
             $data = [
                 ['List of On Time Employees on ' . Carbon::parse($currentDate)->format('jS F, Y')],
-                ['Employee ID', 'Name', 'Sign In Time', 'Late By(HH:MM)'],
+                ['Employee ID', 'Name', 'Sign In Time', 'Early By(HH:MM)'],
 
             ];
             foreach ($swipes as $employee) {
@@ -248,36 +294,37 @@ class WhoIsInChartHr extends Component
             } else {
                 $currentDate = $this->from_date;
             }
-
+            
             $approvedLeaveRequests = LeaveRequest::join('employee_details', 'leave_applications.emp_id', '=', 'employee_details.emp_id')
-            ->leftjoin('emp_personal_infos', 'leave_applications.emp_id', '=', 'emp_personal_infos.emp_id') // Joining with emp_personal_infos
-            ->where('leave_applications.leave_status', 2)
-            ->where('employee_details.employee_status','active')
-            ->whereIn('leave_applications.emp_id', $employees->pluck('emp_id'))
-            ->whereDate('from_date', '<=', $currentDate)
-            ->whereDate('to_date', '>=', $currentDate)
-            ->get([
-                'leave_applications.*', // To get leave date and leave type
-                'employee_details.*', 
-               
-            ]) 
-            ->map(function ($leaveRequest) {
-                // Calculating the number of leave days
-                $fromDate = Carbon::parse($leaveRequest->from_date);
-                $toDate = Carbon::parse($leaveRequest->to_date);
-                $leaveRequest->number_of_days = $fromDate->diffInDays($toDate) + 1;
-        
-                // Generating all dates between from_date and to_date
-                $leave_dates = [];
-                for ($date = $fromDate->copy(); $date->lte($toDate); $date->addDay()) {
-                    $leave_dates[] = $date->format('Y-m-d');
-                }
-        
-                // Set the leave_dates attribute using setAttribute
-                $leaveRequest->setAttribute('leave_dates', $leave_dates);
-        
-                return $leaveRequest;
-            });
+                            ->join('status_types', 'leave_applications.leave_status', '=', 'status_types.status_code') // Join with status_types
+                            ->where('leave_applications.leave_status', 2)
+                            ->whereIn('leave_applications.emp_id', $employees->pluck('emp_id'))
+                            ->whereDate('from_date', '<=', $currentDate)
+                            ->whereDate('to_date', '>=', $currentDate)
+                            ->where('employee_details.employee_status', 'active')
+                            ->get([
+                            'leave_applications.*',
+                            'employee_details.first_name', 
+                            'employee_details.last_name', 
+                            'status_types.status_name as leave_status' // Select status_name as leave_status
+                            ])
+                            ->map(function ($leaveRequest) {
+                            $fromDate = Carbon::parse($leaveRequest->from_date);
+                            $toDate = Carbon::parse($leaveRequest->to_date);
+
+                            // Calculate the number of days excluding weekends
+                            $numberOfDays = 0;
+                            while ($fromDate->lte($toDate)) {
+                            // Check if the day is not a weekend
+                            if (!$fromDate->isWeekend()) {
+                                $numberOfDays++;
+                            }
+                            $fromDate->addDay();
+                            }
+
+                            $leaveRequest->number_of_days = $numberOfDays;
+                            return $leaveRequest;
+                            });
             $data = [
                 ['List of On Leave Employees on ' . Carbon::parse($currentDate)->format('jS F, Y')],
                 ['Employee ID', 'Name', 'Leave Type', 'Leave Days'],
@@ -389,6 +436,10 @@ class WhoIsInChartHr extends Component
         try {
             $this->isdatepickerclicked = 1;
             $this->currentDate = $this->from_date;
+            $this->openAccordionForEarlyComers=[];
+            $this->openAccordionsForEmployeesOnLeave=[];
+            $this->openAccordionForLateComers=[];
+            $this->openAccordionsForAbsentees=[];
         } catch (\Exception $e) {
             Log::error('Error updating date: ' . $e->getMessage());
             session()->flash('error', 'An error occurred while updating the date. Please try again.');
@@ -440,34 +491,38 @@ class WhoIsInChartHr extends Component
             $currentDate = $this->from_date;
         }
         $approvedLeaveRequests = LeaveRequest::join('employee_details', 'leave_applications.emp_id', '=', 'employee_details.emp_id')
-    ->leftjoin('emp_personal_infos', 'leave_applications.emp_id', '=', 'emp_personal_infos.emp_id') // Joining with emp_personal_infos
-    ->where('leave_applications.leave_status', 2)
-    ->where('employee_details.employee_status','active')
-    ->whereIn('leave_applications.emp_id', $employees->pluck('emp_id'))
-    ->whereDate('from_date', '<=', $currentDate)
-    ->whereDate('to_date', '>=', $currentDate)
-    ->get([
-        'leave_applications.*', // To get leave date and leave type
-        'employee_details.*', 
-        
-    ]) 
-    ->map(function ($leaveRequest) {
-        // Calculating the number of leave days
-        $fromDate = Carbon::parse($leaveRequest->from_date);
-        $toDate = Carbon::parse($leaveRequest->to_date);
-        $leaveRequest->number_of_days = $fromDate->diffInDays($toDate) + 1;
+        ->leftJoin('emp_personal_infos', 'leave_applications.emp_id', '=', 'emp_personal_infos.emp_id') // Joining with emp_personal_infos
+        ->where('leave_applications.leave_status', 2)
+        ->whereIn('leave_applications.emp_id', $employees->pluck('emp_id'))
+        ->whereDate('from_date', '<=', $currentDate)
+        ->whereDate('to_date', '>=', $currentDate)
+        ->where('employee_details.employee_status', 'active')
+        ->get([
+            'leave_applications.*', // To get leave date and leave type
+            'employee_details.*',
+        ])
+        ->map(function ($leaveRequest) {
+            // Calculating the number of leave days excluding weekends
+            $fromDate = Carbon::parse($leaveRequest->from_date);
+            $toDate = Carbon::parse($leaveRequest->to_date);
 
-        // Generating all dates between from_date and to_date
-        $leave_dates = [];
-        for ($date = $fromDate->copy(); $date->lte($toDate); $date->addDay()) {
-            $leave_dates[] = $date->format('Y-m-d');
-        }
+            // Generate all dates between from_date and to_date, excluding weekends
+            $leave_dates = [];
+            for ($date = $fromDate->copy(); $date->lte($toDate); $date->addDay()) {
+                // Exclude weekends (Saturday=6, Sunday=7)
+                if (!$date->isWeekend()) {
+                    $leave_dates[] = $date->format('Y-m-d');
+                }
+            }
 
-        // Set the leave_dates attribute using setAttribute
-        $leaveRequest->setAttribute('leave_dates', $leave_dates);
+            // Set the leave_dates attribute using setAttribute
+            $leaveRequest->setAttribute('leave_dates', $leave_dates);
 
-        return $leaveRequest;
-    });
+            // Calculate the number of leave days excluding weekends
+            $leaveRequest->number_of_days = count($leave_dates);
+
+            return $leaveRequest;
+        });
 
 
 

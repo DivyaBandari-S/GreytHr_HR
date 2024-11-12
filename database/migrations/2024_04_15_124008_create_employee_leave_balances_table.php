@@ -26,6 +26,13 @@ return new class extends Migration
             ->onDelete('cascade')
             ->onUpdate('cascade');
             $table->unique(['emp_id']);
+            $table->smallInteger('leave_policy_id')->nullable(); // Add the foreign key column
+
+            $table->foreign('leave_policy_id')
+                ->references('id')
+                ->on('leave_policy_settings')
+                ->onDelete('set null')
+                ->onUpdate('cascade');
         });
     }
 
