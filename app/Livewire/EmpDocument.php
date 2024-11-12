@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Helpers\FlashMessageHelper;
 use App\Models\EmployeeDetails;
 use App\Models\LetterRequest;
 use Illuminate\Support\Facades\Auth;
@@ -29,6 +30,7 @@ class EmpDocument extends Component
 
 
     public $searchEmployee;
+    public $documents;
     public $selectedPeopleImages = [];  
 
     public $selectedEmployeeFirstName;
@@ -177,7 +179,7 @@ class EmpDocument extends Component
     {
         if (!empty($this->selectedPeople) && !in_array($emp_id, $this->selectedPeople)) {
             // Flash an error message to the session
-            session()->flash('warning', 'You can only select one employee ');
+            FlashMessageHelper::flashWarning('You can only select one employee ');
             return; // Stop further execution
         }
     
@@ -309,6 +311,60 @@ class EmpDocument extends Component
    }
 
     
+   public $showImageDialog = false;
+   public $imageUrl;
+   public function downloadImage()
+   {
+       if ($this->imageUrl) {
+           // Decode the Base64 data if necessary
+           $fileData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $this->imageUrl));
+
+           // Determine MIME type and file extension
+           $finfo = finfo_open(FILEINFO_MIME_TYPE);
+           $mimeType = finfo_buffer($finfo, $fileData);
+           finfo_close($finfo);
+
+           $extension = '';
+           switch ($mimeType) {
+               case 'image/jpeg':
+                   $extension = 'jpg';
+                   break;
+               case 'image/png':
+                   $extension = 'png';
+                   break;
+               case 'image/gif':
+                   $extension = 'gif';
+                   break;
+               default:
+                   return abort(415, 'Unsupported Media Type');
+           }
+
+           // Prepare file name and response
+           $fileName = 'image-' . time() . '.' . $extension;
+           return response()->streamDownload(
+               function () use ($fileData) {
+                   echo $fileData;
+               },
+               $fileName,
+               [
+                   'Content-Type' => $mimeType,
+                   'Content-Disposition' => 'attachment; filename="' . $fileName . '"',
+               ]
+           );
+       }
+       return abort(404, 'Image not found');
+   }
+   public function showImage($url)
+   {
+       $this->imageUrl = $url;
+       $this->showImageDialog = true;
+   }
+
+   public function closeImageDialog()
+   {
+       $this->showImageDialog = false;
+   }
+
 
 
    public function mount()
@@ -321,7 +377,11 @@ class EmpDocument extends Component
        } else {
            return;
        }
-       
+       $this->documents = EmployeeDocument::where('employee_id', $this->currentEmpId)->orderBy('created_at', 'desc')
+       ->get();
+ 
+       // Adjust this line based on your actual database column for category
+    
        $loggedInEmpID = auth()->guard('hr')->user()->emp_id;
        $companyId = EmployeeDetails::where('emp_id', $loggedInEmpID)
 ->pluck('company_id') // This returns the array of company IDs
@@ -532,8 +592,25 @@ $this->empId = auth()->user()->emp_id;
 
         // Redirect or return response
         session()->flash('success', 'Document uploaded successfully!');
-        return redirect()->back();
+        $this->dispatch('goBackToEmpDocument');
+
+
     }
+    public function loadDocuments()
+{
+    $query = EmployeeDocument::where('employee_id', $this->currentEmpId);
+
+    // Apply category filter if it’s not "All"
+    if ($this->category !== 'All') {
+        // Ensure $this->category is an array for whereIn
+        $categories = is_array($this->category) ? $this->category : [$this->category];
+        $query->whereIn('category', $categories);
+    }
+
+    // Order by created_at in descending order
+    $this->documents = $query->orderBy('created_at', 'desc')->get();
+}
+
 
 
     public function render()
@@ -548,11 +625,11 @@ $this->empId = auth()->user()->emp_id;
             return;
         }
        
+        $this->documents = EmployeeDocument::where('employee_id', $this->currentEmpId)
+        ->orderBy('created_at', 'desc') ->get();
    
-        
-    
         $loggedInEmpID = auth()->guard('hr')->user()->emp_id;
-
+    
         // Fetch the company_id associated with the employee
         $companyID = EmployeeDetails::where('emp_id', $loggedInEmpID)
             ->pluck('company_id')
@@ -588,7 +665,7 @@ $this->empId = auth()->user()->emp_id;
         
         
   
-
+     
 
     
         return view('livewire.emp-document', [
@@ -597,7 +674,8 @@ $this->empId = auth()->user()->emp_id;
             'peopleFound' => $peopleFound,
             'records' => $this->records,
             'combinedRequests' => $this->combinedRequests,
-            'requests' => $this->requests, // Pass the requests collection to the view
+            'requests' => $this->requests,
+            'documents'=>$this->documents // Pass the requests collection to the view
         ]);
     }
     

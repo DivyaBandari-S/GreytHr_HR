@@ -33,6 +33,10 @@ class EmployeeDocument extends Model
     {
         return $this->belongsTo(EmployeeDetails::class, 'employee_id', 'id');
     }
+    public function getImageUrlAttribute()
+    {
+        return $this->file_path ? 'data:image/jpeg;base64,' . base64_encode($this->file_path) : null;
+    }
 
     /**
      * Accessor to get the file's full URL.

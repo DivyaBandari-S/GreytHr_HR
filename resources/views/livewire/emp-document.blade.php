@@ -1,5 +1,88 @@
 <div >
+<style>/* Card Container */
+.document-card {
 
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 16px;
+border:1px solid  #c6c6c6;
+background-color: #f0f0f0; 
+    margin: 16px;
+    width:400px;
+}
+
+/* Header */
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+ background-color: #f0f0f0; 
+    border-bottom: solid 1px #c6c6c6;
+    max-width: 400px;
+    border-radius: 8px;
+}
+
+.card-header h2 {
+    font-size: 20px;
+    color: #333;
+    margin: 0;
+}
+
+.status-unpublished {
+    background-color:#fff8f0;
+    padding: 4px 8px;
+    border-radius: 20px;
+    border:1px solid #f09541;
+    font-size: 10px;
+    color: #e07a1b;
+}
+.status-published {
+    background-color:#fff8f0;
+    padding: 4px 8px;
+    border-radius: 20px;
+    border:1px solid #f09541;
+    font-size: 10px;
+    color: #e07a1b;
+}
+/* Content */
+.card-content p {
+    font-size: 16px;
+    color: #555;
+    margin: 8px 0;
+
+}
+
+/* Footer */
+.card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 16px;
+  
+}
+
+.footer-left .date-time {
+    font-size: 14px;
+    color: #888;
+}
+
+.footer-right .document-thumbnail {
+    width: 50px;
+    height: 50px;
+    border-radius: 4px;
+    object-fit: cover;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+.helpdesk-toggler{
+    position: absolute;
+     right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+}
+
+
+</style>
 <div class="main__body" >
 <ul class="nav nav-tabs custom-nav-tabs" role="tablist" style="margin-top:67px">
     <li class="nav-item" role="presentation">
@@ -346,25 +429,29 @@ aria-describedby="basic-addon1"
 <div class="col-md-3">
 <div class="dropdown">
 
-<select class="custom-select-doc" name="category" onchange="this.form.submit()">
-    <option value="All">All</option>
-    <option value="Accounts & Statutory">Accounts & Statutory</option>
-    <option value="Address" selected>Address</option>
-    <option value="Background Verification">Background Verification</option>
-    <option value="Education">Education</option>
-    <option value="Experience">Experience</option>
-    <option value="Joining Kit">Joining Kit</option>
-    <option value="Previous Employment">Previous Employment</option>
-    <option value="Projects">Projects</option>
-    <option value="Qualification">Qualification</option>
-    <option value="Vaccination Certificate">Vaccination Certificate</option>
-</select>
+    <select class="custom-select-doc dropdown-toggle" name="category"  wire:model="category" onchange="this.form.submit()" >
+    <div class="select__trigger"><span> </span>
+            <div class="arrow">Category :</div>
+        </div>
+ <option value="All" selected>All</option>
+        <option value="Accounts & Statutory">Accounts & Statutory</option>
+        <option value="Address" >Address</option>
+        <option value="Background Verification">Background Verification</option>
+        <option value="Education">Education</option>
+        <option value="Experience">Experience</option>
+        <option value="Joining Kit">Joining Kit</option>
+        <option value="Previous Employment">Previous Employment</option>
+        <option value="Projects">Projects</option>
+        <option value="Qualification">Qualification</option>
+        <option value="Vaccination Certificate">Vaccination Certificate</option>
+    </select>
+    <i class="bi bi-box dropdown-icon"></i> <!-- Use the box icon here -->
+</div>
 
-            </div>
 </div>
 
 <!-- Second Dropdown -->
-<div class="col-md-2 ml-2">
+<div class="col-md-1" style="margin-left: -60px;">
 <div class="dropdown">
 
 <select class="custom-select-doc" name="view" onchange="this.form.submit()" >
@@ -377,41 +464,40 @@ aria-describedby="basic-addon1"
             </div>
 </div>
 
-    <div class="col-md-4 ">
+    <div class="col-md-6 " style="margin-left:60px">
         <button class="btn btn-primary " style="font-size:12px;" wire:click="addDocs">Add Documents</button>
     </div>
     <div class="mt-2 bg-white d-flex align-items-center">
     <div class="d-flex ">
     @if($showDocDialog)
-<div class="modal" tabindex="-1" role="dialog" style="display: block; overflow-y: auto;">
+<div class="modal fade show" tabindex="-1" role="dialog" style="display: block; overflow-y: auto;">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header helpdesk-modal align-items-center">
                 <h5 class="modal-title helpdesk-title"><b>Documents</b></h5>
                 <button type="button" class="btn-close" wire:click="$set('showDocDialog', false)" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
-                <div class="row mb-3 align-items-center">
-                    <label for="employeeId" class="col-form-label col-auto" style="font-size:12px; width:30%">Employee</label>
-                    <div class="col" style="font-size:12px">
-                        <input type="text" class="form-control" id="employeeId" name="employeeId" readonly style="font-size:12px"
-                               value="{{ $fullName }}@if($empId) (#{{ strtoupper($empId) }}) @endif">
-                    </div>
-                </div>
+            <div class="modal-body" style="overflow-y: auto; max-height: 500px; padding: 20px;">
 
-                <div class="row mb-3 align-items-center">
-                    <label for="documentName" class="col-form-label col-auto" style="font-size:12px; width:30%">Document Name</label>
-                    <div class="col">
-                        <input type="text" class="form-control" id="documentName" name="documentName" wire:model.defer="documentName" required>
-                        @error('documentName') <span class="text-danger">{{ $message }}</span> @enderror
-                    </div>
-                </div>
-
+                <!-- Employee Field -->
                 <div class="mb-3">
-                    <div class="form-group emp-doc">
-                        <label for="category" style="width:30%">Category</label>
-                        <select class="form-control emp-doc-form" id="category" name="category" wire:model.defer="category" required>
-                            <option value="" disabled selected>Select a category</option>
+                    <label for="employeeId" class="col-form-label" style="font-size: 12px;">Employee</label>
+                    <input type="text" class="form-control" id="employeeId" name="employeeId" readonly value="{{ $fullName }}@if($empId) (#{{ strtoupper($empId) }}) @endif" style="font-size: 12px;">
+                </div>
+
+                <!-- Document Name Field -->
+                <div class="mb-3">
+                    <label for="documentName" class="col-form-label" style="font-size: 12px;">Document Name<span style="color:red">*</span></label>
+                    <input type="text" class="form-control" id="documentName" name="documentName" wire:model.defer="documentName" required>
+                    @error('documentName') <span class="text-danger" style="font-size: 10px;">{{ $message }}</span> @enderror
+                </div>
+
+                <!-- Category Dropdown -->
+                <div class="mb-3">
+                    <label for="category" class="col-form-label" style="font-size: 12px;">Category <span style="color:red">*</span></label>
+                    <select wire:model.lazy="category" wire:keydown.debounce.500ms="validateField('category')" id="category" name="category" class="form-control" style="font-size: 12px;">
+                        <option style="color: #778899;" value="">Select Category</option>
+                        <optgroup label="HR">
                             <option value="Accounts & Statutory">Accounts & Statutory</option>
                             <option value="Address">Address</option>
                             <option value="Background Verification">Background Verification</option>
@@ -422,43 +508,50 @@ aria-describedby="basic-addon1"
                             <option value="Projects">Projects</option>
                             <option value="Qualification">Qualification</option>
                             <option value="Vaccination Certificate">Vaccination Certificate</option>
-                        </select>
-                        @error('category') <span class="text-danger">{{ $message }}</span> @enderror
+                        </optgroup>
+                    </select>
+                    @error('category') <span class="text-danger" style="font-size: 10px;">{{ $message }}</span> @enderror
+                </div>
+
+                <!-- Description Field -->
+                <div class="mb-3">
+                    <label for="description" class="form-label" style="font-size: 12px;">Description<span style="color:red">*</span></label>
+                    <textarea class="form-control" id="description" name="description" wire:model.defer="description" style="font-size: 12px; height: 40px;"></textarea>
+                    @error('description') <span class="text-danger" style="font-size: 10px;">{{ $message }}</span> @enderror
+                </div>
+
+                <!-- File Upload Field -->
+                <div class="mb-3">
+                    <label for="file" class="form-label" style="font-size: 12px;">File :</label>
+                    <input type="file" id="file" name="file" class="d-none" accept=".pdf,.xls,.xlsx,.doc,.docx,.txt,.ppt,.pptx,.gif,.jpg,.png" wire:model="file_path" required>
+                    <label for="file" class="upload-button d-inline-flex align-items-center" style="cursor: pointer;">
+                        <i class="bx bx-upload upload-icon me-1"></i> 
+                        <span class="text-primary">Upload File</span>
+                    </label>
+                    <div class="mt-2">
+                        <span class="text-muted" style="font-size: 12px;">
+                            @if($file_path)
+                                Selected file: {{ $file_path->getClientOriginalName() }}
+                            @else
+                                No file chosen
+                            @endif
+                        </span>
                     </div>
-                </div>
-
-                <div class="mb-3">
-                    <label for="description" class="form-label">Description</label>
-                    <textarea class="form-control" id="description" name="description" wire:model.defer="description"></textarea>
-                    @error('description') <span class="text-danger">{{ $message }}</span> @enderror
-                </div>
-
-                <div class="mb-3">
-                <div class="row mt-2">
-                            <div class="col">
-                                <label for="fileInput" class="helpdesk-label" >
-                                    <i class="fa fa-paperclip"></i> Attach Image
-                                </label>
-                            </div>
-                            @error('file_path') <span class="text-danger">{{ $message }}</span> @enderror
-                        </div>
-
-                        <div>
-                            <input type="file" wire:model="file_path" class="form-control">
-
-                        </div>
+                    @error('file') <span class="text-danger" style="font-size: 10px;">{{ $message }}</span> @enderror
                     <p class="form-text text-muted" style="font-size: 8px;">Note: Only PDF, XLS, XLSX, DOC, DOCX, TXT, PPT, PPTX, GIF, JPG, PNG files are accepted.</p>
                 </div>
 
+                <!-- Publish Checkbox -->
                 <div class="form-check mb-3">
                     <input type="checkbox" class="form-check-input" id="publishToPortal" name="publishToPortal" wire:model="publishToPortal">
-                    <label class="form-check-label" for="publishToPortal">Publish to Employee Portal</label>
+                    <label class="form-check-label" for="publishToPortal" style="font-size: 12px;">Publish to Employee Portal</label>
                 </div>
             </div>
 
-            <div class="ml-0 p-0 mt-3 d-flex gap-3 justify-content-center">
+            <!-- Submit and Cancel Buttons -->
+            <div class="modal-footer justify-content-center" style="padding: 10px;">
                 <button wire:click="submit" class="submit-btn" type="button">Submit</button>
-                <button wire:click="$set('showDocDialog', false)" class="cancel-btn" type="button" style="border: 1px solid rgb(2, 17, 79);">Cancel</button>
+                <button wire:click="$set('showDocDialog', false)" class="cancel-btn" type="button">Cancel</button>
             </div>
         </div>
     </div>
@@ -469,14 +562,79 @@ aria-describedby="basic-addon1"
 
 
 
+
     </div>
 </div>
 
 </div>
 </div>
+@if ($documents->isNotEmpty())
+        @foreach ($documents as $document)
+<!-- Card Container -->
+<div class="document-card">
+    <div class="card-header ">
+    <img  src="{{ asset('images/emp-document.png') }}"  style="height:40px;width:40px;margin-top:-30px">
+    <div class="col" >
+    <div class="row">
+        <p style="margin-bottom: 5px;">{{ $document->document_name }}</p>
+        <p  class="main-text" style="margin-top: -5px;">{{ $document->description }}</p>
+        <p  class="main-text" style="margin-top: -15px;">{{ $document->created_at ? $document->created_at->format('d-m-y h:i A') : 'N/A' }}</p>
+    </div>
 
-     
-  
+    </div>
+    <button class="{{ $document->publish_to_portal === null ? 'status-unpublished' : 'status-published' }}" >
+    {{ $document->publish_to_portal === null ? 'Unpublished' : 'Published' }}
+</button>
+
+    </div>
+
+    <div class="card-content">
+   
+    </div>
+
+    <div class="card-footer">
+        <div class="footer-left">
+        @if ($document->file_path)
+        @if(strpos($document->mime_type, 'image') !== false)
+            <span class="date-time">{{ $document->file_name ?? 'No file name available' }}<i class="bx bx-download" style="font-size: 1.2em; color: blue;margin-left:5px;margin-top:10px;cursor:pointer"     wire:click.prevent="showImage('{{ $document->getImageUrlAttribute() }}')"></i>
+
+
+            </span>
+            @endif
+            @endif
+        </div>
+        <div class="footer-right">
+           
+        @if ($showImageDialog)
+                            <div class="modal fade show d-block" tabindex="-1" role="dialog">
+                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">View File</h5>
+                                        </div>
+                                        <div class="modal-body text-center">
+                                            <img src="{{ $imageUrl }}" src="data:image/jpeg;base64,{{ ($imageUrl) }}" class="img-fluid" alt="Image preview" style="width:50%;height:50%">
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="submit-btn" wire:click.prevent="downloadImage">Download</button>
+                                            <button type="button" class="cancel-btn" wire:click="closeImageDialog">Close</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-backdrop fade show"></div>
+                            @endif
+        </div>
+    </div>
+</div>
+@endforeach
+@else
+        <!-- Alert message if no documents are available -->
+        <div class="alert alert-info d-flex align-items-center mt-5" role="alert" style="width:60%">
+            <p class="main-text mb-0">There are no documents available!</p>
+        </div>
+  @endif
+
 
                         <div id="details" style="display:none;">
                          
@@ -595,6 +753,15 @@ aria-describedby="basic-addon1"
         // You can implement further logic here, such as submitting a form or updating the UI.
     }
 </script>
+<script>
+    document.addEventListener('livewire:load', function () {
+        Livewire.on('goBackToEmpDocument', () => {
+            console.log('Event received');
+            Livewire.navigate('/hr/emp-document');
+        });
+    });
+</script>
+
 
 
 
