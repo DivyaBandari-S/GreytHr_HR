@@ -1,25 +1,15 @@
 <div >
 <style>/* Card Container */
-.document-card {
 
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 16px;
-border:1px solid  #c6c6c6;
-background-color: #f0f0f0; 
-    margin: 16px;
-    width:400px;
-}
 
-/* Header */
+/* General Styles */
 .card-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 8px;
- background-color: #f0f0f0; 
     border-bottom: solid 1px #c6c6c6;
-    max-width: 400px;
+    max-width: 100%;
     border-radius: 8px;
 }
 
@@ -29,28 +19,21 @@ background-color: #f0f0f0;
     margin: 0;
 }
 
-.status-unpublished {
-    background-color:#fff8f0;
-    padding: 4px 8px;
-    border-radius: 20px;
-    border:1px solid #f09541;
-    font-size: 10px;
-    color: #e07a1b;
-}
+.status-unpublished,
 .status-published {
-    background-color:#fff8f0;
+    background-color: #fff8f0;
     padding: 4px 8px;
     border-radius: 20px;
-    border:1px solid #f09541;
+    border: 1px solid #f09541;
     font-size: 10px;
     color: #e07a1b;
 }
+
 /* Content */
 .card-content p {
     font-size: 16px;
     color: #555;
     margin: 8px 0;
-
 }
 
 /* Footer */
@@ -59,14 +42,15 @@ background-color: #f0f0f0;
     justify-content: space-between;
     align-items: center;
     margin-top: 16px;
-  
 }
 
+/* Left footer - Date */
 .footer-left .date-time {
     font-size: 14px;
     color: #888;
 }
 
+/* Right footer - Document thumbnail */
 .footer-right .document-thumbnail {
     width: 50px;
     height: 50px;
@@ -74,12 +58,108 @@ background-color: #f0f0f0;
     object-fit: cover;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
-.helpdesk-toggler{
-    position: absolute;
-     right: 8px;
-      top: 50%;
-      transform: translateY(-50%);
+
+/* Card container */
+.document-card {
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 16px;
+    border: 1px solid #c6c6c6;
+    background-color: white;
+    margin: 16px;
+    width: 50%;
 }
+
+/* Mobile Responsiveness */
+@media (max-width: 767px) {
+    /* Adjusting card container for mobile screens */
+    .document-card {
+        width: 100%; /* Full width on mobile */
+        margin: 8px 0; /* Reduce margin */
+    }
+
+    /* Adjust the card header for smaller screens */
+    .card-header {
+        flex-direction: column; /* Stack items vertically */
+        align-items: flex-start;
+    }
+
+    /* Make text larger for readability on small screens */
+    .card-header h2 {
+        font-size: 18px;
+    }
+
+    /* Center the "status" button and reduce its size */
+    .status-unpublished,
+    .status-published {
+        font-size: 8px;
+        padding: 2px 6px;
+        margin-top: 8px;
+    }
+
+    /* Adjust the footer layout */
+    .card-footer {
+        flex-direction: column; /* Stack footer items vertically */
+        align-items: flex-start; /* Align left */
+        margin-top: 12px;
+    }
+
+    .footer-left,
+    .footer-right {
+        margin-bottom: 8px; /* Add margin for spacing */
+    }
+
+    /* Make the upload button and file input more compact */
+    .upload-button {
+        font-size: 12px;
+        margin-top: 8px;
+    }
+
+    .form-check-label {
+        font-size: 12px;
+    }
+
+    /* Adjust modal dialog for smaller screens */
+    .modal-dialog {
+        max-width: 90%; /* Make modal wider on small screens */
+    }
+
+    /* Adjust button sizes */
+    .submit-btn,
+    .cancel-btn {
+        font-size: 12px;
+        padding: 6px 12px;
+    }
+
+    /* Adjust select dropdowns for smaller screens */
+    .custom-select-doc {
+        font-size: 12px;
+    }
+
+    /* Adjust the dropdown for the second select */
+    .dropdown {
+        margin-left: 0;
+    }
+
+    /* Reduce button sizes in the modal */
+    .modal-footer button {
+        font-size: 12px;
+        padding: 8px 12px;
+    }
+}
+
+/* Larger screens (Tablets and above) */
+@media (min-width: 768px) and (max-width: 1024px) {
+    .document-card {
+        width: 70%; /* Adjust width for medium-sized screens */
+    }
+
+    .card-header {
+        flex-direction: row; /* Restore horizontal layout */
+        align-items: center;
+    }
+}
+
 
 
 </style>
@@ -397,7 +477,7 @@ aria-describedby="basic-addon1"
 
 
 @if($employee)
-<div class="row" style="margin:0 auto;width:100%;justify-content:center;align-items:center;margin-left:120px">
+<div class="row" style="margin:0 auto;width:100%;justify-content:center;align-items:center;margin-left:70px">
     <!-- Tabs Navigation -->
     <ul class="nav nav-tabs">
         <li class="nav-item">
@@ -419,229 +499,190 @@ aria-describedby="basic-addon1"
 
     <!-- Tabs Content -->
     <div class="tab-content">
-        @if($activeTab1 === 'tab1')
-            <div class="tab-pane fade show active">
+    @if($activeTab1 === 'tab1')
+        <div class="tab-pane fade show active">
             <div class="container mt-3">
                 <div class="row justify-content-center">
-                <div class="row mt-3">
-    <!-- First Dropdown -->
-<!-- First Dropdown -->
-<div class="col-md-3">
-<div class="dropdown">
+                    <div class="row mt-3">
+                        <!-- First Dropdown -->
+                        <div class="col-12 col-md-3 mb-2">
+                            <select class="custom-select-doc dropdown-toggle" name="category" wire:model="filter_option" wire:change="loadDocuments">
+                                <option value="All">All</option>
+                                <option value="Accounts & Statutory">Accounts & Statutory</option>
+                                <option value="Address">Address</option>
+                                <option value="Background Verification">Background Verification</option>
+                                <option value="Education">Education</option>
+                                <option value="Experience">Experience</option>
+                                <option value="Joining Kit">Joining Kit</option>
+                                <option value="Previous Employment">Previous Employment</option>
+                                <option value="Projects">Projects</option>
+                                <option value="Qualification">Qualification</option>
+                                <option value="Vaccination Certificate">Vaccination Certificate</option>
+                            </select>
+                        </div>
 
-    <select class="custom-select-doc dropdown-toggle" name="category"  wire:model="category" onchange="this.form.submit()" >
-    <div class="select__trigger"><span> </span>
-            <div class="arrow">Category :</div>
-        </div>
- <option value="All" selected>All</option>
-        <option value="Accounts & Statutory">Accounts & Statutory</option>
-        <option value="Address" >Address</option>
-        <option value="Background Verification">Background Verification</option>
-        <option value="Education">Education</option>
-        <option value="Experience">Experience</option>
-        <option value="Joining Kit">Joining Kit</option>
-        <option value="Previous Employment">Previous Employment</option>
-        <option value="Projects">Projects</option>
-        <option value="Qualification">Qualification</option>
-        <option value="Vaccination Certificate">Vaccination Certificate</option>
-    </select>
-    <i class="bi bi-box dropdown-icon"></i> <!-- Use the box icon here -->
-</div>
+                        <!-- Second Dropdown -->
+                        <div class="col-12 col-md-2 mb-2">
+                            <select class="custom-select-doc" name="view" wire:model="filter_publishtype" wire:change="publishType">
+                                <option value="All" selected>All</option>
+                                <option value="Published">Published</option>
+                                <option value="Unpublished">Unpublished</option>
+                            </select>
+                        </div>
 
-</div>
-
-<!-- Second Dropdown -->
-<div class="col-md-1" style="margin-left: -60px;">
-<div class="dropdown">
-
-<select class="custom-select-doc" name="view" onchange="this.form.submit()" >
-
-                        <option value="All" selected>All</option>
-                        <option value="Published">Published</option>
-                        <option value="Unpublished" >Unpublished</option>
-                       
-                    </select>
-            </div>
-</div>
-
-    <div class="col-md-6 " style="margin-left:60px">
-        <button class="btn btn-primary " style="font-size:12px;" wire:click="addDocs">Add Documents</button>
-    </div>
-    <div class="mt-2 bg-white d-flex align-items-center">
-    <div class="d-flex ">
-    @if($showDocDialog)
-<div class="modal fade show" tabindex="-1" role="dialog" style="display: block; overflow-y: auto;">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header helpdesk-modal align-items-center">
-                <h5 class="modal-title helpdesk-title"><b>Documents</b></h5>
-                <button type="button" class="btn-close" wire:click="$set('showDocDialog', false)" aria-label="Close"></button>
-            </div>
-            <div class="modal-body" style="overflow-y: auto; max-height: 500px; padding: 20px;">
-
-                <!-- Employee Field -->
-                <div class="mb-3">
-                    <label for="employeeId" class="col-form-label" style="font-size: 12px;">Employee</label>
-                    <input type="text" class="form-control" id="employeeId" name="employeeId" readonly value="{{ $fullName }}@if($empId) (#{{ strtoupper($empId) }}) @endif" style="font-size: 12px;">
-                </div>
-
-                <!-- Document Name Field -->
-                <div class="mb-3">
-                    <label for="documentName" class="col-form-label" style="font-size: 12px;">Document Name<span style="color:red">*</span></label>
-                    <input type="text" class="form-control" id="documentName" name="documentName" wire:model.defer="documentName" required>
-                    @error('documentName') <span class="text-danger" style="font-size: 10px;">{{ $message }}</span> @enderror
-                </div>
-
-                <!-- Category Dropdown -->
-                <div class="mb-3">
-                    <label for="category" class="col-form-label" style="font-size: 12px;">Category <span style="color:red">*</span></label>
-                    <select wire:model.lazy="category" wire:keydown.debounce.500ms="validateField('category')" id="category" name="category" class="form-control" style="font-size: 12px;">
-                        <option style="color: #778899;" value="">Select Category</option>
-                        <optgroup label="HR">
-                            <option value="Accounts & Statutory">Accounts & Statutory</option>
-                            <option value="Address">Address</option>
-                            <option value="Background Verification">Background Verification</option>
-                            <option value="Education">Education</option>
-                            <option value="Experience">Experience</option>
-                            <option value="Joining Kit">Joining Kit</option>
-                            <option value="Previous Employment">Previous Employment</option>
-                            <option value="Projects">Projects</option>
-                            <option value="Qualification">Qualification</option>
-                            <option value="Vaccination Certificate">Vaccination Certificate</option>
-                        </optgroup>
-                    </select>
-                    @error('category') <span class="text-danger" style="font-size: 10px;">{{ $message }}</span> @enderror
-                </div>
-
-                <!-- Description Field -->
-                <div class="mb-3">
-                    <label for="description" class="form-label" style="font-size: 12px;">Description<span style="color:red">*</span></label>
-                    <textarea class="form-control" id="description" name="description" wire:model.defer="description" style="font-size: 12px; height: 40px;"></textarea>
-                    @error('description') <span class="text-danger" style="font-size: 10px;">{{ $message }}</span> @enderror
-                </div>
-
-                <!-- File Upload Field -->
-                <div class="mb-3">
-                    <label for="file" class="form-label" style="font-size: 12px;">File :</label>
-                    <input type="file" id="file" name="file" class="d-none" accept=".pdf,.xls,.xlsx,.doc,.docx,.txt,.ppt,.pptx,.gif,.jpg,.png" wire:model="file_path" required>
-                    <label for="file" class="upload-button d-inline-flex align-items-center" style="cursor: pointer;">
-                        <i class="bx bx-upload upload-icon me-1"></i> 
-                        <span class="text-primary">Upload File</span>
-                    </label>
-                    <div class="mt-2">
-                        <span class="text-muted" style="font-size: 12px;">
-                            @if($file_path)
-                                Selected file: {{ $file_path->getClientOriginalName() }}
-                            @else
-                                No file chosen
-                            @endif
-                        </span>
+                        <!-- Add Document Button -->
+                        <div class="col-12 col-md-6 mb-2">
+                            <button class="btn btn-primary" style="font-size: 12px;" wire:click="addDocs">Add Documents</button>
+                        </div>
                     </div>
-                    @error('file') <span class="text-danger" style="font-size: 10px;">{{ $message }}</span> @enderror
-                    <p class="form-text text-muted" style="font-size: 8px;">Note: Only PDF, XLS, XLSX, DOC, DOCX, TXT, PPT, PPTX, GIF, JPG, PNG files are accepted.</p>
-                </div>
 
-                <!-- Publish Checkbox -->
-                <div class="form-check mb-3">
-                    <input type="checkbox" class="form-check-input" id="publishToPortal" name="publishToPortal" wire:model="publishToPortal">
-                    <label class="form-check-label" for="publishToPortal" style="font-size: 12px;">Publish to Employee Portal</label>
-                </div>
-            </div>
+                    <!-- Modal for Document -->
+                    @if($showDocDialog)
+                    <div class="modal fade show" tabindex="-1" role="dialog" style="display: block; overflow-y: auto;">
+                        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header helpdesk-modal align-items-center">
+                                    <h5 class="modal-title helpdesk-title"><b>Documents</b></h5>
+                                    <button type="button" class="btn-close" wire:click="$set('showDocDialog', false)" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body" style="overflow-y: auto; max-height: 500px; padding: 20px;">
+                                    <div class="mb-3">
+                                        <label for="employeeId" class="col-form-label" style="font-size: 12px;">Employee</label>
+                                        <input type="text" class="form-control" id="employeeId" name="employeeId" readonly value="{{ $fullName }}@if($empId) (#{{ strtoupper($empId) }}) @endif" style="font-size: 12px;">
+                                    </div>
 
-            <!-- Submit and Cancel Buttons -->
-            <div class="modal-footer justify-content-center" style="padding: 10px;">
-                <button wire:click="submit" class="submit-btn" type="button">Submit</button>
-                <button wire:click="$set('showDocDialog', false)" class="cancel-btn" type="button">Cancel</button>
-            </div>
-        </div>
-    </div>
-</div>
+                                    <div class="mb-3">
+                                        <label for="documentName" class="col-form-label" style="font-size: 12px;">Document Name<span style="color:red">*</span></label>
+                                        <input type="text" class="form-control" id="documentName" name="documentName" wire:model.defer="documentName" required>
+                                        @error('documentName') <span class="text-danger" style="font-size: 10px;">{{ $message }}</span> @enderror
+                                    </div>
 
-<div class="modal-backdrop fade show"></div>
-@endif
+                                    <div class="mb-3">
+                                        <label for="category" class="col-form-label" style="font-size: 12px;">Category <span style="color:red">*</span></label>
+                                        <select wire:model.lazy="category" wire:keydown.debounce.500ms="validateField('category')" id="category" name="category" class="form-control" style="font-size: 12px;">
+                                            <option style="color: #778899;" value="">Select Category</option>
+                                            <optgroup label="HR">
+                                                <option value="Accounts & Statutory">Accounts & Statutory</option>
+                                                <option value="Address">Address</option>
+                                                <option value="Background Verification">Background Verification</option>
+                                                <option value="Education">Education</option>
+                                                <option value="Experience">Experience</option>
+                                                <option value="Joining Kit">Joining Kit</option>
+                                                <option value="Previous Employment">Previous Employment</option>
+                                                <option value="Projects">Projects</option>
+                                                <option value="Qualification">Qualification</option>
+                                                <option value="Vaccination Certificate">Vaccination Certificate</option>
+                                            </optgroup>
+                                        </select>
+                                        @error('category') <span class="text-danger" style="font-size: 10px;">{{ $message }}</span> @enderror
+                                    </div>
 
+                                    <div class="mb-3">
+                                        <label for="description" class="form-label" style="font-size: 12px;">Description<span style="color:red">*</span></label>
+                                        <textarea class="form-control" id="description" name="description" wire:model.defer="description" style="font-size: 12px; height: 40px;"></textarea>
+                                        @error('description') <span class="text-danger" style="font-size: 10px;">{{ $message }}</span> @enderror
+                                    </div>
 
-
-
-    </div>
-</div>
-
-</div>
-</div>
-@if ($documents->isNotEmpty())
-        @foreach ($documents as $document)
-<!-- Card Container -->
-<div class="document-card">
-    <div class="card-header ">
-    <img  src="{{ asset('images/emp-document.png') }}"  style="height:40px;width:40px;margin-top:-30px">
-    <div class="col" >
-    <div class="row">
-        <p style="margin-bottom: 5px;">{{ $document->document_name }}</p>
-        <p  class="main-text" style="margin-top: -5px;">{{ $document->description }}</p>
-        <p  class="main-text" style="margin-top: -15px;">{{ $document->created_at ? $document->created_at->format('d-m-y h:i A') : 'N/A' }}</p>
-    </div>
-
-    </div>
-    <button class="{{ $document->publish_to_portal === null ? 'status-unpublished' : 'status-published' }}" >
-    {{ $document->publish_to_portal === null ? 'Unpublished' : 'Published' }}
-</button>
-
-    </div>
-
-    <div class="card-content">
-   
-    </div>
-
-    <div class="card-footer">
-        <div class="footer-left">
-        @if ($document->file_path)
-        @if(strpos($document->mime_type, 'image') !== false)
-            <span class="date-time">{{ $document->file_name ?? 'No file name available' }}<i class="bx bx-download" style="font-size: 1.2em; color: blue;margin-left:5px;margin-top:10px;cursor:pointer"     wire:click.prevent="showImage('{{ $document->getImageUrlAttribute() }}')"></i>
-
-
-            </span>
-            @endif
-            @endif
-        </div>
-        <div class="footer-right">
-           
-        @if ($showImageDialog)
-                            <div class="modal fade show d-block" tabindex="-1" role="dialog">
-                                <div class="modal-dialog modal-dialog-centered" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title">View File</h5>
+                                    <div class="mb-3">
+                                        <label for="file" class="form-label" style="font-size: 12px;">File:</label>
+                                        <input type="file" id="file" name="file" class="d-none" accept=".pdf,.xls,.xlsx,.doc,.docx,.txt,.ppt,.pptx,.gif,.jpg,.png" wire:model="file_path" required>
+                                        <label for="file" class="upload-button d-inline-flex align-items-center" style="cursor: pointer;">
+                                            <i class="bx bx-upload upload-icon me-1"></i> 
+                                            <span class="text-primary">Upload File</span>
+                                        </label>
+                                        <div class="mt-2">
+                                            <span class="text-muted" style="font-size: 12px;">
+                                                @if($file_path)
+                                                    Selected file: {{ $file_path->getClientOriginalName() }}
+                                                @else
+                                                    No file chosen
+                                                @endif
+                                            </span>
                                         </div>
-                                        <div class="modal-body text-center">
-                                            <img src="{{ $imageUrl }}" src="data:image/jpeg;base64,{{ ($imageUrl) }}" class="img-fluid" alt="Image preview" style="width:50%;height:50%">
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="submit-btn" wire:click.prevent="downloadImage">Download</button>
-                                            <button type="button" class="cancel-btn" wire:click="closeImageDialog">Close</button>
-                                        </div>
+                                        @error('file') <span class="text-danger" style="font-size: 10px;">{{ $message }}</span> @enderror
+                                        <p class="form-text text-muted" style="font-size: 8px;">Note: Only PDF, XLS, XLSX, DOC, DOCX, TXT, PPT, PPTX, GIF, JPG, PNG files are accepted.</p>
+                                    </div>
+
+                                    <div class="form-check mb-3">
+                                        <input type="checkbox" class="form-check-input" id="publishToPortal" name="publishToPortal" wire:model="publishToPortal">
+                                        <label class="form-check-label" for="publishToPortal" style="font-size: 12px;">Publish to Employee Portal</label>
                                     </div>
                                 </div>
+
+                                <div class="modal-footer justify-content-center" style="padding: 10px;">
+                                    <button wire:click="submit" class="submit-btn" type="button">Submit</button>
+                                    <button wire:click="$set('showDocDialog', false)" class="cancel-btn" type="button">Cancel</button>
+                                </div>
                             </div>
-                            <div class="modal-backdrop fade show"></div>
-                            @endif
-        </div>
-    </div>
-</div>
-@endforeach
-@else
-        <!-- Alert message if no documents are available -->
-        <div class="alert alert-info d-flex align-items-center mt-5" role="alert" style="width:60%">
-            <p class="main-text mb-0">There are no documents available!</p>
-        </div>
-  @endif
-
-
-                        <div id="details" style="display:none;">
-                         
                         </div>
-                  
+                    </div>
+                    <div class="modal-backdrop fade show"></div>
+                    @endif
                 </div>
             </div>
+
+            <!-- Document Cards -->
+            @if ($documents && $documents->isNotEmpty())
+                @foreach ($documents as $document)
+                    <div class="document-card col-12 col-md-6 col-lg-4 mb-3">
+                        <div class="card-header">
+                            <img src="{{ asset('images/emp-document.png') }}" style="height:40px;width:40px;">
+                            <div class="col">
+                                <div class="row">
+                                    <p style="margin-bottom: 5px;">{{ $document->document_name }}</p>
+                                    <p class="main-text" style="margin-top: -5px;">{{ $document->description }}</p>
+                                    <p class="main-text" style="margin-top: -15px;">{{ $document->category }}</p>
+                                    <p class="main-text" style="margin-top: -15px;">{{ $document->created_at ? $document->created_at->format('d-m-y h:i A') : 'N/A' }}</p>
+                                </div>
+                            </div>
+                            <button class="{{ $document->publish_to_portal === null ? 'status-unpublished' : 'status-published' }}">
+                                {{ $document->publish_to_portal === null ? 'Unpublished' : 'Published' }}
+                            </button>
+                        </div>
+
+                        <div class="card-footer">
+                            <div class="footer-left">
+                                @if ($document->file_path)
+                                    @if(strpos($document->mime_type, 'image') !== false)
+                                        <span class="date-time">{{ $document->file_name ?? 'No file name available' }}
+                                            <i class="bx bx-download" style="font-size: 1.2em; color: blue;margin-left:5px;margin-top:10px;cursor:pointer" wire:click.prevent="showImage('{{ $document->getImageUrlAttribute() }}')"></i>
+                                        </span>
+                                    @endif
+                                @endif
+                            </div>
+                            <div class="footer-right">
+                                @if ($showImageDialog)
+                                    <div class="modal fade show d-block" tabindex="-1" role="dialog">
+                                        <div class="modal-dialog modal-dialog-centered" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">View File</h5>
+                                                </div>
+                                                <div class="modal-body text-center">
+                                                    <img src="{{ $imageUrl }}" class="img-fluid" alt="Image preview" style="width:50%;height:50%">
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="submit-btn" wire:click.prevent="downloadImage">Download</button>
+                                                    <button type="button" class="cancel-btn" wire:click="closeImageDialog">Close</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-backdrop fade show"></div>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            @else
+                <div class="alert alert-info d-flex align-items-center mt-5" role="alert" style="width:60%">
+                    <p class="main-text mb-0">There are no documents available!</p>
+                </div>
+            @endif
+        </div>
+  
+
+
             @elseif($activeTab1 === 'tab2')
     <div class="tab-pane fade show active">
 

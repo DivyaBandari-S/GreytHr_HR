@@ -1560,7 +1560,15 @@ input[type="date"]::before {
 #info-emp {
     z-index: 1000;
 }
-
+.document-card {
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 16px;
+    border: 1px solid #c6c6c6;
+    background-color: white;
+    margin: 16px;
+    width: 50%;
+}
 .info-emp {
     font-size: 0.8125rem;
     display: flex; /* Change to flex for better alignment */

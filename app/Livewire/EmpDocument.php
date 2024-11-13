@@ -20,6 +20,8 @@ class EmpDocument extends Component
      public $filePath;
     public $selectedOption = 'all'; 
     public $searchTerm = '';
+    public $filter_option = 'All';
+    public $filter_publishtype ='All';
     public $peopleData =[];
     public $empId;
   
@@ -366,7 +368,8 @@ class EmpDocument extends Component
    }
 
 
-
+ 
+   
    public function mount()
    {
        // Retrieve the logged-in user's emp_id from the 'hr' guard
@@ -471,7 +474,53 @@ $this->empId = auth()->user()->emp_id;
        $this->selectedPeople = [];
        $this->selectedPeopleNames = [];
    }
-
+   public function updatedFilterOption()
+   {
+        // Debug: Ensure this is updating correctly
+       $this->loadDocuments();  // Re-load documents when filter changes
+   }
+   public function loadDocuments()
+   {
+         // Debug to see the value of filter_option
+       
+       $query = EmployeeDocument::where('employee_id', $this->currentEmpId)
+           ->orderBy('created_at', 'desc');
+   
+       if ($this->filter_option && $this->filter_option !== 'All') {
+           $query->where('category', $this->filter_option);
+       }
+     
+       $this->documents = $query->get(); 
+        // Execute the query to get documents
+   }
+   public function updatedFilterPublishOption()
+   {
+        // Debug: Ensure this is updating correctly
+       $this->publishType();  // Re-load documents when filter changes
+   }
+   public function publishType()
+   {
+       // Debugging the filter option
+    
+       
+       $query = EmployeeDocument::where('employee_id', $this->currentEmpId)
+           ->orderBy('created_at', 'desc');
+   
+       // Filter logic
+       if ($this->filter_publishtype && $this->filter_publishtype !== 'All') {
+           if ($this->filter_publishtype === 'Published') {
+               $query->where('publish_to_portal', true);
+           } elseif ($this->filter_publishtype === 'Unpublished') {
+               $query->where(function($query) {
+                   $query->where('publish_to_portal', false)
+                         ->orWhereNull('publish_to_portal');
+               });
+           }
+       }
+       
+       $this->documents = $query->get(); 
+   }
+   
    public function showModal($empId)
    {
        $this->empId = $empId; // Set empId when showing the modal
@@ -596,20 +645,7 @@ $this->empId = auth()->user()->emp_id;
 
 
     }
-    public function loadDocuments()
-{
-    $query = EmployeeDocument::where('employee_id', $this->currentEmpId);
 
-    // Apply category filter if it’s not "All"
-    if ($this->category !== 'All') {
-        // Ensure $this->category is an array for whereIn
-        $categories = is_array($this->category) ? $this->category : [$this->category];
-        $query->whereIn('category', $categories);
-    }
-
-    // Order by created_at in descending order
-    $this->documents = $query->orderBy('created_at', 'desc')->get();
-}
 
 
 
@@ -625,8 +661,7 @@ $this->empId = auth()->user()->emp_id;
             return;
         }
        
-        $this->documents = EmployeeDocument::where('employee_id', $this->currentEmpId)
-        ->orderBy('created_at', 'desc') ->get();
+
    
         $loggedInEmpID = auth()->guard('hr')->user()->emp_id;
     
@@ -664,8 +699,34 @@ $this->empId = auth()->user()->emp_id;
         }
         
         
-  
-     
+        $query = EmployeeDocument::where('employee_id', $this->currentEmpId)
+           ->orderBy('created_at', 'desc');
+   
+       if ($this->filter_option && $this->filter_option !== 'All') {
+           $query->where('category', $this->filter_option);
+       }
+       
+           // Debugging the filter option
+            // This will show the selected value
+   
+       
+           // Filter logic
+           if ($this->filter_publishtype && $this->filter_publishtype !== 'All') {
+               if ($this->filter_publishtype === 'Published') {
+                   $query->where('publish_to_portal', true);
+               } elseif ($this->filter_publishtype === 'Unpublished') {
+                   $query->where(function($query) {
+                       $query->where('publish_to_portal', false)
+                             ->orWhereNull('publish_to_portal');
+                   });
+               }
+           }
+           
+        
+       
+       
+         
+        $this->documents = $query->get();
 
     
         return view('livewire.emp-document', [
