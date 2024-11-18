@@ -709,7 +709,7 @@ label {
 }
 
 .btn-btn {
-    background: rgb(2, 17, 79);
+    background: var(--main-button-color);
     border: none;
 }
 .closed-btn {
@@ -1560,7 +1560,15 @@ input[type="date"]::before {
 #info-emp {
     z-index: 1000;
 }
-
+.document-card {
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 16px;
+    border: 1px solid #c6c6c6;
+    background-color: white;
+    margin: 16px;
+    width: 50%;
+}
 .info-emp {
     font-size: 0.8125rem;
     display: flex; /* Change to flex for better alignment */
@@ -1738,7 +1746,7 @@ input[type="date"]::before {
     height:35px;
     font-size: 12px;
     align-items: center;
-    width: 100%; /* or any specific width */
+    width:auto; /* or any specific width */
     cursor: pointer;
     transition: background-color 0.3s ease; /* Smooth transition for background color */
 }
@@ -2441,7 +2449,7 @@ input[type="date"]::before {
 }
 
 .leave-table td button.delete-btn:hover {
-    color: #b52b27;
+    color: #b52b
 }
 .modal-title {
     color: #fff;
@@ -2468,6 +2476,43 @@ input[type="date"]::before {
     font-family: "Montserrat", sans-serif;
     font-weight: normal;
 }
+/* Employee Documents in Information started*/
+
+.upload-button {
+    display: inline-flex;
+    align-items: center;
+     height: 30px;
+     width:100px;
+     justify-content: center;
+    font-size: 10px;
+    color: var(--main-button-color);
+    border: 1px solid var(--main-button-color);
+    border-radius: 4px;
+    cursor: pointer;
+    background-color: #f9f9f9;
+}
+
+.upload-icon {
+    color: blue;
+    margin-right: 8px;
+    font-size: 14px;
+}
+.hidden-input {
+    display: none;
+}
+
+.emp-doc{
+    margin-top: 10px;
+    max-width: auto;
+    display: flex; align-items: center; gap: 10px;
+}
+.emp-doc-form{
+    width:auto;
+    margin-top: 5px;
+    margin-left: 5px;
+    font-size: 12px;
+}
+/* Employee Documents in Information ended*/
 .error-text {
     font-size: var(--normal-font-size);
 }
