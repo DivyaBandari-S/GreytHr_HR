@@ -1,6 +1,3 @@
-/* @import url(https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css);
-@import url(https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swa); */
-
 @charset "UTF-8";
 @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap");
 
@@ -712,7 +709,7 @@ label {
 }
 
 .btn-btn {
-    background: rgb(2, 17, 79);
+    background: var(--main-button-color);
     border: none;
 }
 .closed-btn {
@@ -747,6 +744,7 @@ input {
     padding: 7px 12px;
     font-size: var(--normal-font-size);
     border: none;
+    transition: all 0.3s ease;
 }
 
 .cancel-btn {
@@ -755,8 +753,18 @@ input {
     font-weight: 500;
     border-radius: 5px;
     padding: 6px 12px;
+    transition: all 0.3s ease;
     font-size: var(--normal-font-size);
     border: 1px solid var(--main-button-color) !important;
+}
+.approve-btn{
+    background-color: rgb(10, 201, 42);
+    color: white;
+    font-weight: 500;
+    border-radius: 5px;
+    padding: 6px 12px;
+    font-size: var(--normal-font-size);
+   border: none;
 }
 /* button styles ended*/
 
@@ -1552,7 +1560,15 @@ input[type="date"]::before {
 #info-emp {
     z-index: 1000;
 }
-
+.document-card {
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 16px;
+    border: 1px solid #c6c6c6;
+    background-color: white;
+    margin: 16px;
+    width: 50%;
+}
 .info-emp {
     font-size: 0.8125rem;
     display: flex; /* Change to flex for better alignment */
@@ -1573,14 +1589,14 @@ input[type="date"]::before {
 }
 .custom-checkbox-information:checked{
     background-color: var(--main-button-color);
-   
+
 }
 .custom-checkbox-information{
    appearance: none; /* Remove default checkbox styling */
     /* Set the height of the checkbox */
- 
+
      outline: none; /* Remove outline on focus */
-     cursor: pointer; 
+     cursor: pointer;
 }
 .custom-file-upload {
     display: inline-flex;
@@ -1730,7 +1746,7 @@ input[type="date"]::before {
     height:35px;
     font-size: 12px;
     align-items: center;
-    width: 100%; /* or any specific width */
+    width:auto; /* or any specific width */
     cursor: pointer;
     transition: background-color 0.3s ease; /* Smooth transition for background color */
 }
@@ -1753,7 +1769,7 @@ input[type="date"]::before {
 }
 .secondary-text {
     font-size: 12px;
-    
+
     font-weight: 200;
 }
 
@@ -2370,8 +2386,16 @@ input[type="date"]::before {
 
 /* Hover effect for the button */
 .submit-btn:hover {
-    background-color: #357ab8; /* Darker blue on hover */
+    background-color: #357ab8;
     border-color: #357ab8;
+    opacity: 0.8;
+    box-shadow: 0 2px 2px rgba(53, 122, 184, 0.4);
+}
+.cancel-btn:hover{
+    border-color: #357ab8;
+    color: #357ab8;
+    opacity: 0.8;
+    box-shadow: 0 2px 2px rgba(53, 122, 184, 0.4);
 }
 
 .date-picker input {
@@ -2425,7 +2449,7 @@ input[type="date"]::before {
 }
 
 .leave-table td button.delete-btn:hover {
-    color: #b52b27;
+    color: #b52b
 }
 .modal-title {
     color: #fff;
@@ -2452,6 +2476,43 @@ input[type="date"]::before {
     font-family: "Montserrat", sans-serif;
     font-weight: normal;
 }
+/* Employee Documents in Information started*/
+
+.upload-button {
+    display: inline-flex;
+    align-items: center;
+     height: 30px;
+     width:100px;
+     justify-content: center;
+    font-size: 10px;
+    color: var(--main-button-color);
+    border: 1px solid var(--main-button-color);
+    border-radius: 4px;
+    cursor: pointer;
+    background-color: #f9f9f9;
+}
+
+.upload-icon {
+    color: blue;
+    margin-right: 8px;
+    font-size: 14px;
+}
+.hidden-input {
+    display: none;
+}
+
+.emp-doc{
+    margin-top: 10px;
+    max-width: auto;
+    display: flex; align-items: center; gap: 10px;
+}
+.emp-doc-form{
+    width:auto;
+    margin-top: 5px;
+    margin-left: 5px;
+    font-size: 12px;
+}
+/* Employee Documents in Information ended*/
 .error-text {
     font-size: var(--normal-font-size);
 }
@@ -2476,7 +2537,7 @@ input[type="date"]::before {
     border-radius: 8px;
 }
 .leaveGranter-header{
-    width: 60%;
+    width: 100%;
     display: flex;
     justify-content: space-between;
     align-items: end;
@@ -2488,6 +2549,7 @@ input[type="date"]::before {
 }
 .subText{
     color: var(--label-color);
+    font-weight: 500;
     font-size: var(--sub-headings-font-size);
 }
 .subTextValue{
@@ -2513,9 +2575,12 @@ input[type="date"]::before {
 }
 
 .leaveGranter-edit {
-    color: var(--main-heading-color);
+    color: var(--label-color);
     font-size: 14px;
     cursor: pointer;
+}
+.leaveGranter-delete{
+    color:var(--label-color);
 }
 
 .accordion-body {
@@ -2531,8 +2596,20 @@ input[type="date"]::before {
     border-radius: 0px;
 }
 #leaveAccordion{
-    width: 60%;
+    width: 100%;
 }
 .collapsed{
     border-radius: 5px;
+}
+.active-edit{
+    color: var(--main-button-color);
+}
+.form-container .form-group{
+    width: 50%;
+}
+.form-group input{
+    border: 1px solid #ccd9e7;
+}
+.required{
+    color: red;
 }

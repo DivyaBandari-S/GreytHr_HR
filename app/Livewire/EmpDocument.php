@@ -2,34 +2,44 @@
 
 namespace App\Livewire;
 
+use App\Helpers\FlashMessageHelper;
 use App\Models\EmployeeDetails;
 use App\Models\LetterRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use Illuminate\Http\Request;
+use App\Models\EmployeeDocument;
 
 class EmpDocument extends Component
 {
     use WithFileUploads;
     public $requests;
-
+    public $showConfDialog=false;
+     public $filePath;
     public $selectedOption = 'all'; 
     public $searchTerm = '';
+    public $filter_option = 'All';
+    public $filter_publishtype ='All';
     public $peopleData =[];
+    public $empId;
   
     public $selectedEmployeeId='';
     
     public $employeeName;
+    public $currentEmpId;
 
 
     public $searchEmployee;
+    public $documents;
     public $selectedPeopleImages = [];  
 
     public $selectedEmployeeFirstName;
   
     public $selectedEmployeeLastName;
     public $selectedEmployee;
+    public $showDocDialog=false;
     public $isNames = false;
     public $record;
     public $subject;
@@ -41,8 +51,10 @@ class EmpDocument extends Component
     public $MotherDateOfBirth;
     public $MotherBloodGroup;
     public $MotherAddress;
-   
+   public $employeeId;
+   public $publishToPortal;
     public $hrempid;
+    public $fullName;
     public $description;
     public $showDetails = true;
     public $priority;
@@ -72,9 +84,18 @@ class EmpDocument extends Component
     public $recentHires = [];
 
     public $employees;
-   
+   public $documentName;
+   public $category;
+ 
+
     public $employeeDetails = [];
     public $editingField = false;
+    protected $rules = [
+        'documentName' => 'required|string|max:255',
+        'category' => 'required|string',
+        'description' => 'nullable|string',
+    
+    ];
     public function toggleDetails()
     {
         $this->showDetails = !$this->showDetails;
@@ -129,6 +150,11 @@ class EmpDocument extends Component
 
    
     }
+    public function addDocs()
+    {
+        $this->showDocDialog = true;
+    }
+ 
 
     public function removePerson($empId)
     {
@@ -155,7 +181,7 @@ class EmpDocument extends Component
     {
         if (!empty($this->selectedPeople) && !in_array($emp_id, $this->selectedPeople)) {
             // Flash an error message to the session
-            session()->flash('warning', 'You can only select one employee ');
+            FlashMessageHelper::flashWarning('You can only select one employee ');
             return; // Stop further execution
         }
     
@@ -215,6 +241,9 @@ class EmpDocument extends Component
     
                 // Update the cc_to field with the unique names
                 $this->cc_to = implode(', ', array_unique(array_column($this->selectedPeopleData, 'name')));
+                    // After setting currentEmpId
+    $this->currentEmpId = $emp_id;
+    Log::info('Current emp_id set to: ' . $this->currentEmpId);
             }
         } catch (\Exception $e) {
             // Handle the exception
@@ -284,8 +313,63 @@ class EmpDocument extends Component
    }
 
     
+   public $showImageDialog = false;
+   public $imageUrl;
+   public function downloadImage()
+   {
+       if ($this->imageUrl) {
+           // Decode the Base64 data if necessary
+           $fileData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $this->imageUrl));
+
+           // Determine MIME type and file extension
+           $finfo = finfo_open(FILEINFO_MIME_TYPE);
+           $mimeType = finfo_buffer($finfo, $fileData);
+           finfo_close($finfo);
+
+           $extension = '';
+           switch ($mimeType) {
+               case 'image/jpeg':
+                   $extension = 'jpg';
+                   break;
+               case 'image/png':
+                   $extension = 'png';
+                   break;
+               case 'image/gif':
+                   $extension = 'gif';
+                   break;
+               default:
+                   return abort(415, 'Unsupported Media Type');
+           }
+
+           // Prepare file name and response
+           $fileName = 'image-' . time() . '.' . $extension;
+           return response()->streamDownload(
+               function () use ($fileData) {
+                   echo $fileData;
+               },
+               $fileName,
+               [
+                   'Content-Type' => $mimeType,
+                   'Content-Disposition' => 'attachment; filename="' . $fileName . '"',
+               ]
+           );
+       }
+       return abort(404, 'Image not found');
+   }
+   public function showImage($url)
+   {
+       $this->imageUrl = $url;
+       $this->showImageDialog = true;
+   }
+
+   public function closeImageDialog()
+   {
+       $this->showImageDialog = false;
+   }
 
 
+ 
+   
    public function mount()
    {
        // Retrieve the logged-in user's emp_id from the 'hr' guard
@@ -296,6 +380,11 @@ class EmpDocument extends Component
        } else {
            return;
        }
+       $this->documents = EmployeeDocument::where('employee_id', $this->currentEmpId)->orderBy('created_at', 'desc')
+       ->get();
+ 
+       // Adjust this line based on your actual database column for category
+    
        $loggedInEmpID = auth()->guard('hr')->user()->emp_id;
        $companyId = EmployeeDetails::where('emp_id', $loggedInEmpID)
 ->pluck('company_id') // This returns the array of company IDs
@@ -306,7 +395,7 @@ if (is_array($companyId)) {
    $firstCompanyID = $companyId; // Handle case where it's not an array
 }
 
-
+$this->empId = auth()->user()->emp_id;
        // Fetch the company_id associated with the employee
        $companyID = EmployeeDetails::where('emp_id', $firstCompanyID)
            ->pluck('company_id')
@@ -385,8 +474,58 @@ if (is_array($companyId)) {
        $this->selectedPeople = [];
        $this->selectedPeopleNames = [];
    }
-
+   public function updatedFilterOption()
+   {
+        // Debug: Ensure this is updating correctly
+       $this->loadDocuments();  // Re-load documents when filter changes
+   }
+   public function loadDocuments()
+   {
+         // Debug to see the value of filter_option
+       
+       $query = EmployeeDocument::where('employee_id', $this->currentEmpId)
+           ->orderBy('created_at', 'desc');
+   
+       if ($this->filter_option && $this->filter_option !== 'All') {
+           $query->where('category', $this->filter_option);
+       }
+     
+       $this->documents = $query->get(); 
+        // Execute the query to get documents
+   }
+   public function updatedFilterPublishOption()
+   {
+        // Debug: Ensure this is updating correctly
+       $this->publishType();  // Re-load documents when filter changes
+   }
+   public function publishType()
+   {
+       // Debugging the filter option
     
+       
+       $query = EmployeeDocument::where('employee_id', $this->currentEmpId)
+           ->orderBy('created_at', 'desc');
+   
+       // Filter logic
+       if ($this->filter_publishtype && $this->filter_publishtype !== 'All') {
+           if ($this->filter_publishtype === 'Published') {
+               $query->where('publish_to_portal', true);
+           } elseif ($this->filter_publishtype === 'Unpublished') {
+               $query->where(function($query) {
+                   $query->where('publish_to_portal', false)
+                         ->orWhereNull('publish_to_portal');
+               });
+           }
+       }
+       
+       $this->documents = $query->get(); 
+   }
+   
+   public function showModal($empId)
+   {
+       $this->empId = $empId; // Set empId when showing the modal
+       $this->showDocDialog = true; // Show the modal
+   }
     public function searchforEmployee()
     {
         if (!empty($this->searchTerm)) {
@@ -452,6 +591,62 @@ if (is_array($companyId)) {
         $this->selectedEmployeeLastName='';
         $this->searchTerm='';
     }
+    public function submit()
+    {
+      
+        $this->validate();
+      
+
+        $fileContent = null;
+        $mime_type = null;
+        $file_name = null;
+
+        if ($this->file_path) {
+            $fileContent = file_get_contents($this->file_path->getRealPath());
+
+            if ($fileContent === false) {
+                Log::error('Failed to read the uploaded file.', [
+                    'file_path' => $this->file_path->getRealPath(),
+                ]);
+                session()->flashError('error', 'Failed to read the uploaded file.');
+                return;
+            }
+
+            // Check if the file content is too large
+            $maxFileSize = 16777215; // 16MB for MEDIUMBLOB
+            if (strlen($fileContent) > $maxFileSize) {
+                session()->flashError( 'File size exceeds the allowed limit.');
+                return;
+            }
+
+            $mime_type = $this->file_path->getMimeType();
+            $file_name = $this->file_path->getClientOriginalName();
+        }
+        $empId = $this->currentEmpId; // This should set the selected employee ID correctly
+
+        // Create document record in database
+        EmployeeDocument::create([
+            'employee_id' => $empId,
+            'document_name' => $this->documentName,
+            'category' => $this->category,
+            'description' => $this->description,
+            'file_path' => $fileContent, // Store the binary file data
+            'file_name' => $file_name,
+            'mime_type' => $mime_type,
+            'publish_to_portal' => $this->publishToPortal,
+        ]);
+
+        // Reset the form
+        $this->reset(['file_path', 'documentName', 'description', 'category', 'publishToPortal']);
+
+        // Redirect or return response
+        session()->flash('success', 'Document uploaded successfully!');
+        $this->dispatch('goBackToEmpDocument');
+
+
+    }
+
+
 
 
     public function render()
@@ -466,11 +661,10 @@ if (is_array($companyId)) {
             return;
         }
        
-   
-        
-    
-        $loggedInEmpID = auth()->guard('hr')->user()->emp_id;
 
+   
+        $loggedInEmpID = auth()->guard('hr')->user()->emp_id;
+    
         // Fetch the company_id associated with the employee
         $companyID = EmployeeDetails::where('emp_id', $loggedInEmpID)
             ->pluck('company_id')
@@ -505,8 +699,34 @@ if (is_array($companyId)) {
         }
         
         
-  
-
+        $query = EmployeeDocument::where('employee_id', $this->currentEmpId)
+           ->orderBy('created_at', 'desc');
+   
+       if ($this->filter_option && $this->filter_option !== 'All') {
+           $query->where('category', $this->filter_option);
+       }
+       
+           // Debugging the filter option
+            // This will show the selected value
+   
+       
+           // Filter logic
+           if ($this->filter_publishtype && $this->filter_publishtype !== 'All') {
+               if ($this->filter_publishtype === 'Published') {
+                   $query->where('publish_to_portal', true);
+               } elseif ($this->filter_publishtype === 'Unpublished') {
+                   $query->where(function($query) {
+                       $query->where('publish_to_portal', false)
+                             ->orWhereNull('publish_to_portal');
+                   });
+               }
+           }
+           
+        
+       
+       
+         
+        $this->documents = $query->get();
 
     
         return view('livewire.emp-document', [
@@ -515,7 +735,8 @@ if (is_array($companyId)) {
             'peopleFound' => $peopleFound,
             'records' => $this->records,
             'combinedRequests' => $this->combinedRequests,
-            'requests' => $this->requests, // Pass the requests collection to the view
+            'requests' => $this->requests,
+            'documents'=>$this->documents // Pass the requests collection to the view
         ]);
     }
     
