@@ -130,6 +130,7 @@
     
     </div>
     <div class="row with-white-background">
+    <h4 style="text-align:left; font-weight:600;color: rgba(103,122,142,1); padding-bottom: 5px;font-size:14px;">Regularization Details</h4>
     @if(count($regularisations)>0)
     @foreach($regularisations as $r)
     @php
@@ -320,7 +321,7 @@
     @endif
     </div>
     <div class="row with-white-background">
-                           <div class="col-sm-6"style="border: 1px solid #dddddd; padding: 5px; border-radius: 5px;margin-right:-40px;">
+                           <div class="col-sm-4"style="border: 1px solid #dddddd; padding: 5px; border-radius: 5px;margin-right:-40px;">
                                 <h4 style="text-align:left; font-weight:600;color: rgba(103,122,142,1);border-bottom: 1px solid #dddddd; padding-bottom: 5px;font-size:14px;">Summary</h4>
                                 <ul style="list-style-type: none; padding: 0; margin-top: 20px; color: rgba(103,122,142,1); font-size: 14px;">
                                         <li style="margin-bottom: 10px;">
@@ -333,6 +334,11 @@
                                             <strong>Holidays in the Month:</strong> {{ $holidaysInMonth ?? 'N/A' }}
                                         </li>
                                     </ul>
+                            </div>
+                            <div class="col-sm-6"style="border: 1px solid #dddddd; padding: 5px; border-radius: 5px;margin-left:60px;">
+                                <h4 style="text-align:left; font-weight:600;color: rgba(103,122,142,1);border-bottom: 1px solid #dddddd; padding-bottom: 5px;font-size:14px;">Work Hours Summary</h4>
+                                @livewire('work-hours-chart')
+                                
                             </div>
     </div>
         <div class="row with-white-background">
@@ -447,30 +453,8 @@
                            {{$absentemployeescount}}
                            <canvas id="employeeAttendanceTypeChart" width="150" height="150"></canvas>    
          
-                           <p style="color: blue; cursor: pointer;" data-toggle="modal" data-target="#moreModal">+2 More</p>
-    <!----Open Modal---->                       
-    <div class="modal fade" id="moreModal" tabindex="-1" role="dialog" aria-labelledby="moreModalLabel" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="moreModalLabel">More Information</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <!-- Add content for the modal body here -->
-            <p>This is additional information...</p>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <!-- Add additional buttons if needed -->
-          </div>
-        </div>
-      </div>
-    </div>
-    <!---Close Modal--->
-    <!-- <canvas id="myChart1" width="800" height="400" style="max-width:100%;"></canvas>                   -->
+                           <p style="color: blue; cursor: pointer;"wire:click="openSelector">+2 More</p>
+                          
                 </div>
         </div>
         <!-- Trigger for Modal -->
@@ -478,7 +462,31 @@
     
     <!-- Modal -->
     
-    
+    @if ($openshiftselectorforcheck==true)
+            <div class="modal d-block" tabindex="-1" role="dialog">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">
+                                <b>ERFGHJBKN</b>
+                            </h5>
+                            <button type="button" class="btn-close btn-primary" data-dismiss="modal"
+                                aria-label="Close" wire:click="closeAllAbsentEmployees">
+                            </button>
+                        </div>
+                        <div class="modal-body" style="max-height:300px;overflow-y:auto">
+                            <div class="team-leave d-flex flex-row gap-3">
+                                HII PRANITA AND KUMAR
+                                <canvas id="employeeAttendanceTypeChartmodal" width="30" height="30"></canvas>    
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-backdrop fade show blurred-backdrop"></div>
+        @endif
+ 
     </div> 
     
   <script>
@@ -564,7 +572,48 @@ var employeeAttendanceTypeChart = new Chart(ctx, {
         }
     }
 });
-
+var ctx = document.getElementById('employeeAttendanceTypeChartmodal').getContext('2d');
+var employeeAttendanceTypeChartmodal = new Chart(ctx, {
+    type: 'pie',
+    data: {
+        labels: [
+            'Mobile Sign In: {{$mobileEmployeeCount}}',
+            'Web Sign In: {{$laptopEmployeeCount}}',
+            'Astra: 0'
+        ],
+        datasets: [{
+            data: [{{$mobileEmployeeCount}}, {{$laptopEmployeeCount}}, 0],
+            backgroundColor: [
+                'rgba(255, 99, 132, 0.2)', // Color for "Not Yet In"
+                'rgba(75, 192, 192, 0.2)',  // Color for "On Time"
+                'rgba(255, 159, 64, 0.2)'   // Color for "Late In"
+            ],
+            borderColor: [
+                'rgba(255, 99, 132, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(255, 159, 64, 1)'
+            ],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: true, // Allow resizing to custom dimensions
+        plugins: {
+            legend: {
+                position: 'top',
+                labels: {
+                    usePointStyle: true,
+                    pointStyle: 'circle'
+                }
+            },
+            tooltip: {
+                enabled: true
+            }
+        }
+    }
+});
   </script>
+  
     </div>
     

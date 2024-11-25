@@ -54,6 +54,7 @@ class HrAttendanceOverviewNew extends Component
     
     public $employeeEmailForRejection;
    
+    public $openshiftselectorforcheck=false;
     public $isdateSelected=0;
     public $monthNumber;
     public $currentMonth;
@@ -75,6 +76,7 @@ class HrAttendanceOverviewNew extends Component
     public $currentYearForSummary;
     public function mount()
     {
+        $this->generateWorkHoursData();
         $currentDate = now()->toDateString();
         $currentDate = Carbon::today();
         $today = $currentDate->toDateString(); // Get today's date in 'Y-m-d' format
@@ -117,6 +119,28 @@ class HrAttendanceOverviewNew extends Component
                     ->where('month', $this->currentMonthForSummary)
                     ->count();
         $this->absentDays=$this->findAbsentDaysForEmployees($this->currentYearForSummary,$this->currentMonthForSummary);
+    }
+
+    public function generateWorkHoursData()
+    {
+        $currentMonth = Carbon::now()->month;
+        $currentYear = Carbon::now()->year;
+        
+        $daysInMonth = Carbon::now()->daysInMonth;
+        $this->days = range(1, $daysInMonth);
+
+        // Initialize work hours array with 0 for each day
+        $this->workHours = array_fill(0, $daysInMonth, 0);
+
+        // Assuming you have a model SwipeRecord that records the work hours per day
+        $records = SwipeRecord::whereMonth('created_at', $currentMonth)
+                              ->whereYear('created_at', $currentYear)
+                              ->get();
+
+        foreach ($records as $record) {
+            $day = (int)$record->created_at->format('d');
+            $this->workHours[$day - 1] += $record->total_hours; // Adjust `total_hours` based on your model's field
+        }
     }
 
     private function findAbsentDaysForEmployees($currentYearForSummary, $currentMonthForSummary)
@@ -299,9 +323,13 @@ class HrAttendanceOverviewNew extends Component
            
             if ($employee->sign_in_device === 'Mobile') {
                 $deviceLabel = 'Mobile Sign In';
-            } elseif ($employee->sign_in_device === 'Desktop/Laptop' ) {
+            } elseif ($employee->sign_in_device === 'Desktop' ) {
                 $deviceLabel = 'Web Sign In';
-            } else {
+            }
+            elseif ($employee->sign_in_device === 'Laptop' ) {
+                $deviceLabel = 'Web Sign In';
+            }
+             else {
                 $deviceLabel = 'Unknown Device';
             }
             $data[] = [$employee->emp_id, ucwords(strtolower($employee->first_name)).' '.ucwords(strtolower($employee->last_name)),$employee->swipe_time,$employee->job_role,$employee->job_location,$deviceLabel];
@@ -491,6 +519,45 @@ class HrAttendanceOverviewNew extends Component
     // Send email to manager
       Mail::to($this->employeeEmailForApproval)->send(new RegularisationApprovalMail($details));
     }
+    private function calculateWeekdaysDiff(Carbon $startDate, Carbon $endDate)
+{
+    $weekdays = 0;
+    while ($startDate->lte($endDate)) {
+        $checkholidayflag=$this->isHolidayOnDate($startDate);
+        if (!$startDate->isWeekend()&&$checkholidayflag==1) { // Exclude weekends
+            $weekdays++;
+        }
+        $startDate->addDay();
+    }
+    return $weekdays;
+}
+
+private function isHolidayOnDate($date)
+{
+   $holidayflag=0;
+   $holidayexists=HolidayCalendar::where('date',$date)->exists();
+   if($holidayexists)
+   {
+      $holidayflag=1;
+   }
+   return $holidayflag;
+}
+private function calculateWorkdaysDiff(Carbon $startDate, Carbon $endDate)
+{
+    $workdays = 0;
+    while ($startDate->lte($endDate)) {
+        // Count only if the day is neither a weekend nor a holiday
+        if (!$startDate->isWeekend() && !$this->isHolidayOnDate($startDate)) {
+            $workdays++;
+        }
+        $startDate->addDay();
+    }
+    return $workdays;
+}
+public function openSelector()
+{
+    $this->openshiftselectorforcheck = true;
+}
     public function render()
     {
        
@@ -513,13 +580,28 @@ class HrAttendanceOverviewNew extends Component
         })->pluck('emp_id');
        
         $this->regularisations = RegularisationDates::where('is_withdraw', 0) // Only records with is_withdraw set to 0
-        ->where('status', 5)
-        ->whereIn('emp_id', $empIds) // Filter by emp_id
-        ->selectRaw('*, JSON_LENGTH(regularisation_entries) AS regularisation_entries_count')
-        ->whereRaw('JSON_LENGTH(regularisation_entries) > 0')
-        ->whereRaw('DATEDIFF(CURRENT_DATE, updated_at) > 3')  // Check if the difference from today is greater than 3 days
-        ->with('employee')
-        ->get();
+    ->where('status', 5)
+    ->whereIn('emp_id', $empIds) // Filter by emp_id
+    ->selectRaw('*, JSON_LENGTH(regularisation_entries) AS regularisation_entries_count')
+    ->whereRaw('JSON_LENGTH(regularisation_entries) > 0')
+    ->whereDate('updated_at', '>', Carbon::today()->subDays(3)) // Initial filter for calendar days
+    ->with('employee')
+    ->get()
+    ->filter(function ($record) {
+        $createdDate = Carbon::parse($record->created_at);
+        $today = Carbon::now();
+        $weekdaysDiff = $this->calculateWeekdaysDiff($createdDate, $today);
+
+        // Log the details for debugging
+        Log::info('Record ID: ' . $record->id);
+        Log::info('Created Date: ' . $createdDate->toDateString());
+        Log::info('Today\'s Date: ' . $today->toDateString());
+        Log::info('Weekdays Difference: ' . $weekdaysDiff);
+
+        // Keep records where weekdays difference is greater than 3
+        return $weekdaysDiff > 3;
+    });
+   
         
         
         $companyId =auth()->guard('hr')->user()->emp_id;
@@ -696,7 +778,10 @@ $this->laptopEmployeeCount = 0;
 foreach ($employees as $employee) {
     if ($employee->sign_in_device === 'Mobile') {
         $this->mobileEmployeeCount++;
-    } elseif ($employee->sign_in_device === 'Desktop/Laptop') {
+    } elseif ($employee->sign_in_device === 'Desktop') {
+        $this->laptopEmployeeCount++;
+    }
+    elseif ($employee->sign_in_device === 'Laptop') {
         $this->laptopEmployeeCount++;
     }
 }

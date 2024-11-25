@@ -24,11 +24,11 @@
             @if(!empty($details['regularisationRequests']) && is_array($details['regularisationRequests']))
                     @foreach($details['regularisationRequests'] as $entry)
                         <tr>
-                            <td>{{ $details['sender_id']}}</td>
-                            <td> {{ \Carbon\Carbon::parse($entry['date'])->format('jS F Y') }} </td>
-                            <td>{{ htmlspecialchars($entry['from']) }}</td>
-                            <td>{{ htmlspecialchars($entry['to']) }}</td>
-                            <td>{{ htmlspecialchars($entry['reason']) }}</td>
+                            <td class="text-center">{{ $details['sender_id']}}</td>
+                            <td class="text-center"> {{ \Carbon\Carbon::parse($entry['date'])->format('jS F Y') }} </td>
+                            <td class="text-center">{{ htmlspecialchars($entry['from']) }}</td>
+                            <td class="text-center">{{ htmlspecialchars($entry['to']) }}</td>
+                            <td class="text-center">{{ htmlspecialchars($entry['reason']) }}</td>
                         </tr>
                     @endforeach
                   
