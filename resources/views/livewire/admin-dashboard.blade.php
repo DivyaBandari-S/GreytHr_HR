@@ -127,7 +127,7 @@
 
                                             <div class="col-8 p-0 m-0" style="text-align: start;">
 
-                                                <h4 class="countOfNum m-0">{{$totalNewEmployeeCount}}</h4>
+                                                <h4 class="countOfNum m-0">{{$newEmployees}}</h4>
 
                                             </div>
 
@@ -139,9 +139,9 @@
 
                                         </div>
 
-                                        <p class="p-0  subHeading">New Employees</p>
+                                        <p class="p-0  subHeading">New Employee(s)</p>
 
-                                        <span class="p-0 pb-3" style="color: #778899;font-size:12px;">{{$departmentCount}} Department</span>
+                                        <span class="p-0 pb-3" style="color: #778899;font-size:12px;">{{$newEmployeedeparts}} Department</span>
 
                                     </div>
 
@@ -159,7 +159,7 @@
 
                                             <p class="totalEmpText">Total Employees</p>
 
-                                            <h4 class="countOfNum">{{ $totalEmployeeCount }}+</h4>
+                                            <h4 class="countOfNum">{{ $this->activeEmployeesCount }}</h4>
 
                                         </div>
 
@@ -173,13 +173,13 @@
 
                                 </div>
 
-                                <div class="col-md-6 mb-4" style="cursor: pointer;">
+                                <a class="col-md-6 mb-4" href='/hr/resig-requests'  style="cursor: pointer;">
 
                                     <div class="row m-0 hrReqCard">
 
                                         <div class="col-8 p-0 pb-5 pt-3">
 
-                                            <p class="totalEmpText">HR Requests</p>
+                                            <p class="totalEmpText">Resignation Request(s)</p>
 
                                             <h4 class="countOfNum">{{$hrRequestsCount}}</h4>
 
@@ -193,7 +193,7 @@
 
                                     </div>
 
-                                </div>
+                                </a>
 
                             </div>
 

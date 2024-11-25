@@ -26,6 +26,32 @@ body {
     --main-table-heading-bg-color: #cfdbe4c2;
     --main-table-heading-text-color: #545658;
 }
+/* //global styles for scrollbars  */
+::-webkit-scrollbar {
+    width: 5px;
+}
+::-webkit-scrollbar-thumb {
+    background: #9f9e9e;
+    border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #9f9e9e;
+}
+/* Horizontal scrollbar */
+::-webkit-scrollbar:horizontal {
+    height: 5px;
+}
+
+::-webkit-scrollbar-thumb:horizontal {
+    background: #9f9e9e;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:horizontal:hover {
+    background: #9f9e9e;
+}
+
+/* end of scrollbars */
 .loginform {
     display: flex;
     flex-direction: column;
@@ -1519,32 +1545,94 @@ input[type="date"]::before {
 .tab-container {
     margin-top: 20px;
 }
-.tab-buttons {
-    display: flex;
-    font-size: 12px;
+.content {
+    padding: 1.5em;
 }
 
-.tab-buttons button {
-    padding: 10px 20px;
+#info-emp {
+    z-index: 1000;
+}
+
+.info-emp {
+    font-size: 0.8125rem;
+    display: flex; /* Change to flex for better alignment */
+    justify-content: start;
+    width:fit-content; /* Center the tabs */
+    margin-top:60px;
+}
+
+.emp-info {
+    padding: 1em 1.6em;
     cursor: pointer;
-    background-color: #f1f1f1;
-    border: none;
-    border-bottom: 2px solid transparent;
-    outline: none;
-    transition: 0.3s;
+    transition: all ease .3s;
+    color:silver;
 }
-.tab-buttons button.active {
-    background-color: white;
-    border-bottom: 2px solid #007bff;
+
+.emp-info:hover {
+    color:white;
 }
-.tab-content-custom {
- display: none;
-    padding: 15px;
-    border: none;
-    background-color: transparent; /* Remove white background */
+.custom-checkbox-information:checked{
+    background-color: var(--main-button-color);
+   
 }
-.tab-content-custom.active {
-    display: block;
+.custom-checkbox-information{
+   appearance: none; /* Remove default checkbox styling */
+    /* Set the height of the checkbox */
+ 
+     outline: none; /* Remove outline on focus */
+     cursor: pointer; 
+}
+.custom-file-upload {
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+    font-size: 12px;
+    height:25px;
+    background-color: var(--main-button-color); /* Button background color */
+    color: white; /* Text color */
+    padding: 10px 15px; /* Padding for button */
+    border-radius: 5px; /* Rounded corners */
+    border:1px solid silver;
+    transition: background-color 0.3s; /* Smooth transition */
+}
+.custom-info-item {
+    padding: 8px 16px;
+    font-size: 14px;
+    text-decoration: none;
+    color: #3b4452;
+    display: block; /* Ensure block display */
+}
+
+.custom-info-item:hover {
+    background-color: var(--main-button-color) ; /* Change to your desired hover background color */
+    color: white; /* Change text color on hover if needed */
+}
+
+.dropdown-menu .updated-drodown a.dropdown-item:hover {
+    background-color: #f0f0f0; /* Ensure dropdown menu has a hover effect */
+    color: #000; /* Change text color on hover if needed */
+}
+
+.dp-info{
+    background-color: var(--main-button-color);
+    color:white;
+}
+
+.dp-info:hover {
+    background-color: var(--main-button-color);
+    color:white;
+}
+
+.custom-file-upload i {
+    margin-right: 5px; /* Space between icon and text */
+}
+
+.file-name {
+    margin-left: 5px; /* Space between icon and text */
+}
+.emp-info.active {
+    color: white;
+    border-bottom: 3px solid rgb(60, 180, 250); /* Add an underline for active tab */
 }
 .edit-headings {
     font-size: 12px;
@@ -1570,7 +1658,7 @@ input[type="date"]::before {
     margin-top: 20px;
      height:auto;
      width:70%;
-     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+     box-shadow: "0 4px 8px rgba(0, 0, 0, 0.1);"
 }
 @media (max-width: 768px) {
     .card-profile {
@@ -1622,10 +1710,50 @@ input[type="date"]::before {
 
     color: #778899;
 }
+.custom-nav-link {
+    color: white; /* Default color */
+}
 
+.custom-nav-link:hover {
+    color: black; /* Hover color */
+}
+
+.custom-nav-link.active {
+    color: black; /* Active tab color */
+    background-color: transparent; /* Keep the background transparent if needed */
+}
+
+.custom-select-doc {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    height:35px;
+    font-size: 12px;
+    align-items: center;
+    width: 100%; /* or any specific width */
+    cursor: pointer;
+    transition: background-color 0.3s ease; /* Smooth transition for background color */
+}
+
+.custom-select-doc:hover {
+    background-color: #b4e0f4; /* Change background on hover */
+}
+
+.custom-select-doc option {
+    background-color: white; /* Ensures the options retain the default background */
+}
+.custom-select-doc option:hover {
+    background-color:skyblue; /* Ensures the options retain the default background */
+}
+
+
+.custom-select-doc:focus {
+    outline: none; /* Remove default outline */
+   /* Shadow on focus */
+}
 .secondary-text {
     font-size: 12px;
-    margin-top: 10px;
+    
     font-weight: 200;
 }
 
@@ -1661,22 +1789,7 @@ input[type="date"]::before {
     padding: 0 10px;
 }
 
-.input-group-append .btn {
-    background-color: rgb(2, 17, 79);
-    color: #fff;
-    border: none;
-}
 
-.input-group-append .close {
-    background-color: rgb(2, 17, 79);
-    height: 30px;
-    width: 30px;
-    margin-left: 5px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 5px;
-}
 
 /* Responsive styles */
 
@@ -1747,6 +1860,18 @@ input[type="date"]::before {
       width:fit-content;
       margin-left:5px;
       margin-top:5px
+}
+.updated-dropdown {
+    width: 100%;
+    display: flex;
+    margin-left: 5px;
+    height:30px;
+    transition: height 0.3s ease; /* Smooth transition */
+}
+
+.updated-dropdown:hover {
+    height: 30px; /* Change height on hover */
+    background-color: grey; /* Optional: change background color on hover */
 }
 .selected-name{
     margin-left: 10px;
@@ -1881,7 +2006,8 @@ input[type="date"]::before {
         }
         .search-bar{
             border-radius: 5px;
-            background-color: grey;
+            background-color:white;
+            border: 1px solid silver;
              padding: 8px;
              width: 330px;
               margin-top: 10px;
@@ -2330,3 +2456,83 @@ input[type="date"]::before {
     font-size: var(--normal-font-size);
 }
 /*Shift Roster Hr SubM
+
+
+/* ///leave setting policy// */
+.leaveSettings{
+    padding: 20px;
+}
+.accordion-button:focus {
+    z-index: 3;
+    outline: 0;
+    box-shadow: none;
+}
+
+.leaveGranter-container {
+    width: 100%;
+    margin: 0 auto;
+    padding: 20px 50px;
+    background: #f8fafc;
+    border-radius: 8px;
+}
+.leaveGranter-header{
+    width: 60%;
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+}
+.leaveGranter-header h3 {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--main-heading-color);
+}
+.subText{
+    color: var(--label-color);
+    font-size: var(--sub-headings-font-size);
+}
+.subTextValue{
+    color: var(--main-heading-color);
+    font-size: var(--sub-headings-font-size);
+    font-weight: 500;
+}
+.leaveGranter-header p {
+    font-size: var(--sub-headings-font-size);
+    color: var(--label-color);
+    margin-bottom: 0;
+}
+
+
+.accordion-button {
+    font-size: 14px;
+    background: #f8fafc;
+    border: none;
+    padding: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.leaveGranter-edit {
+    color: var(--main-heading-color);
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.accordion-body {
+    padding: 15px;
+    background-color: #f9fafb;
+    font-size: 14px;
+}
+
+.accordion-button::after {
+    display: none;
+}
+.accordion-button:not(.collapsed) {
+    border-radius: 0px;
+}
+#leaveAccordion{
+    width: 60%;
+}
+.collapsed{
+    border-radius: 5px;
+}
