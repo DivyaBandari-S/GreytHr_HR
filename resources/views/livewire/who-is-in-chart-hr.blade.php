@@ -89,7 +89,7 @@
         </div>
         <!-- Collapsible Content -->
         <div class="text-center" style="margin-top: 70px;">
-          <button type="button" class="btn save-selectshift-button-who-is-in">Save</button>
+          <button type="button" class="btn save-selectshift-button-who-is-in"wire:click="checkShiftForEmployees">Save</button>
         </div>
 
       </div>
@@ -211,10 +211,11 @@
             @if( in_array($index, $openAccordionsForAbsentees))
             <tr class="row-for-absent-employee">
                 <td colspan="4">
-                    <div style="padding: 10px;">
-                    <div style="height: 50px; background-color: #f0f0f0; padding: 5px; width: 100%;">
+                    <div>
+                        <!-- Add more details here -->
+                        <div style="margin: 10px;padding: 10px;width: 90%;height: 60px;background-color: #f0f0f0; margin-top: 10px; ">
                             <div style="font-size: 10px;">
-                              <span style="font-size: 10px;">{{ \Carbon\Carbon::parse($e1->shift_start_time)->format('h:i A') }} to 
+                              <span>{{ \Carbon\Carbon::parse($e1->shift_start_time)->format('h:i A') }} to
                               {{ \Carbon\Carbon::parse($e1->shift_end_time)->format('h:i A') }}</span>
                             </div>  
                               <div style="font-size: 8px; margin-top: 5px;">
@@ -223,14 +224,13 @@
                                         <span style="display: inline-block;">{{ \Carbon\Carbon::parse($e1->shift_end_time)->format('H:i') }}</span>
                               </div>
                         </div>
-                        <!-- Add more details here -->
-                        <p style="font-size:12px;font-weight:700;">Contact Details</p>
-                        <p style="font-size:10px;font-weight:600;">Email&nbsp;ID:&nbsp;&nbsp;<span style="font-weight:500;">{{$e1->email}}</span></p>
-                        <p style="font-size:10px;font-weight:600;">Phone Number:&nbsp;&nbsp;<span style="font-weight:500;">{{$e1->emergency_contact}}</span></p>
-                        <p style="font-size:12px;font-weight:700;">Categories Details</p>
-                        <p style="font-size:10px;font-weight:600;">Designation:&nbsp;&nbsp;<span style="font-weight:500;">{{$e1->job_role}}</span></p>
-                        <p style="font-size:10px;font-weight:600;">Location:&nbsp;&nbsp;<span style="font-weight:500;">{{$e1->job_location}}</span></p>
-                        
+                        <p style="font-size:12px;font-weight:700;padding-left: 10px;">Contact Details</p>
+                        <p style="font-size:10px;font-weight:600;padding-left: 10px;">Email&nbsp;ID:&nbsp;&nbsp;<span style="font-weight:500;">{{$e1->email}}</span></p>
+                        <p style="font-size:10px;font-weight:600;padding-left: 10px;">Phone Number:&nbsp;&nbsp;<span style="font-weight:500;">{{$e1->emergency_contact}}</span></p>
+                        <p style="font-size:12px;font-weight:700;padding-left: 10px;">Categories Details</p>
+                        <p style="font-size:10px;font-weight:600;padding-left: 10px;">Designation:&nbsp;&nbsp;<span style="font-weight:500;">{{$e1->job_role}}</span></p>
+                        <p style="font-size:10px;font-weight:600;padding-left: 10px;">Location:&nbsp;&nbsp;<span style="font-weight:500;">{{$e1->job_location}}</span></p>
+                       
                     </div>
                 </td>
             </tr>

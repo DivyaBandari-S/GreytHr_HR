@@ -129,19 +129,9 @@
     </div>
     
     </div>
-        <div class="row with-white-background">
-        <!-- Heading above the row -->
-       
-                <div class="col-sm-12">
-                    
-                        <h4 style="text-align:left;font-weight:600;font-size:14px;">Access Card Details
-                                                        <button style="border: 1px solid #0000FF; color: #0000FF; float:right; background-color: transparent; padding: 5px; border-radius: 5px; font-size: 13px;margin-top:-10px;"wire:click="downloadexcelForNotAssigned">
-                                                           <i class="fas fa-download"></i>  Download  
-                                                        </button>
-                        </h4>
-                </div>
-                
-                @if(count($regularisations)>0)
+    <div class="row with-white-background">
+    <h4 style="text-align:left; font-weight:600;color: rgba(103,122,142,1); padding-bottom: 5px;font-size:14px;">Regularization Details</h4>
+    @if(count($regularisations)>0)
     @foreach($regularisations as $r)
     @php
     $regularisationEntries = json_decode($r->regularisation_entries, true);
@@ -155,7 +145,7 @@
     $numberOfEntries-=1;
     @endphp
     @endif
-
+ 
     @endforeach
     @if (session()->has('success'))
             <div class="alert alert-success">
@@ -163,7 +153,7 @@
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
-
+ 
             </div>
     @elseif (session()->has('success'))
            <div class="alert alert-danger">
@@ -171,94 +161,94 @@
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
-
+ 
             </div>
     @endif
-
-
+ 
+ 
     <div class="accordion bg-white border mb-3 rounded">
         <div class="accordion-heading rounded">
-
-            <div class="accordion-title p-2 rounded">
-
+ 
+            <div class="accordion-title p-2 rounded d-flex align-items-center justify-content-between">
+ 
                 <!-- Display leave details here based on $leaveRequest -->
-
+ 
                 <div class="accordion-content col">
-
-                    <span style="color: #778899; font-size: 12px; font-weight: 500;">{{ucwords(strtolower($r->employee->first_name))}}&nbsp;{{ucwords(strtolower($r->employee->last_name))}}</span>
-
+ 
+                    <span style="color: #778899; font-size: 12px; font-weight: 500;">{{ucwords(strtolower($r->employee->first_name))}}&nbsp;{{ucwords(strtolower($r->employee->last_name))}}</span><br>
+ 
                     <span style="color: #36454F; font-size: 10px; font-weight: 500;">{{$r->emp_id}}</span>
-
+ 
                 </div>
-
-
-
+ 
+ 
+ 
                 <div class="accordion-content col">
-
-                    <span style="color: #778899; font-size: 12px; font-weight: 500;">No. of Days</span>
-
+ 
+                    <span style="color: #778899; font-size: 12px; font-weight: 500;">No. of Days</span><br>
+ 
                     <span style="color: #36454F; font-size: 12px; font-weight: 500;">
                         {{$numberOfEntries}}
                     </span>
-
+ 
                 </div>
-
-
+ 
+ 
                 <!-- Add other details based on your leave request structure -->
-
-
-
+ 
+ 
+ 
                 <div class="arrow-btn"wire:click="toggleActiveAccordion({{ $r->id }})"style="color:{{ $openAccordionForActive === $r->id ? '#3a9efd' : '#778899' }};border:1px solid {{ $openAccordionForActive === $r->id ? '#3a9efd' : '#778899' }}">
                 <i class="fa fa-angle-{{ $openAccordionForActive === $r->id ? 'up' : 'down' }}"style="color:{{ $openAccordionForActive === $r->id ? '#3a9efd' : '#778899' }}"></i>
                 </div>
-
+ 
             </div>
-
+ 
         </div>
         <div class="accordion-body m-0 p-0"style="display:{{ $openAccordionForActive === $r->id ? 'block' : 'none' }} ">
-
+ 
             <div style="width:100%; height:1px; border-bottom:1px solid #ccc;"></div>
-
+ 
             <div class="content px-4 py-2">
-
+ 
                 <span style="color: #778899; font-size: 12px; font-weight: 500;">Dates Applied:</span>
-
+ 
                 <span style="font-size: 11px;">
                     @if($r->regularisation_entries_count>1)
                     <span style="font-size: 11px; font-weight: 500;"></span>
-
+ 
                     {{ date('(d', strtotime($firstItem['date'])) }} -
-
+ 
                     <span style="font-size: 11px; font-weight: 500;"></span>
-
+ 
                     @if (!empty($lastItem['date']))
                     {{ date('d)', strtotime($lastItem['date'])) }} {{ date('M Y', strtotime($lastItem['date'])) }}
                     @endif
                     @else
                     {{ date('d', strtotime($firstItem['date'])) }} {{ date('M Y', strtotime($lastItem['date'])) }}
                     @endif
-
+ 
                 </span>
-
+ 
             </div>
-
-
-
+ 
+ 
+ 
             <div style="width:100%; height:1px; border-bottom:1px solid #ccc; margin-bottom:10px;"></div>
-
+ 
             <div style="display:flex; flex-direction:row; justify-content:space-between;">
-
+ 
                 <div class="content mb-2 mt-0 px-4">
-
+ 
                     <span style="color: #778899; font-size: 12px; font-weight: 500;">Applied on:</span>
-
+ 
                     <span style="color: #333; font-size:12px; font-weight: 500;">{{ \Carbon\Carbon::parse($r->created_at)->format('d M, Y') }}
                     </span>
-
+ 
                 </div>
-
+ 
                 <div class="content mb-2 px-4 d-flex gap-2">
-                    <a href="" style="color:rgb(2,17,79);font-size:12px;margin-top:3px;">View Details</a>
+                    <a href="{{ route('review-pending-regularisation-for-hr', ['id' => $r->id,'emp_id' => $r->emp_id]) }}" style="color:rgb(2,17,79);font-size:12px;margin-top:3px;">View Details</a>
                     <button class="rejectBtn"wire:click="openRejectModal">Reject</button>
                     <button class="approveBtn"wire:click="openApproveModal">Approve</button>
                 </div>
@@ -277,7 +267,7 @@
                                             <label for="remarks" style="font-size:12px;color:#666;font-weight:400;">Remarks</label>
                                             <input type="text" class="form-control placeholder-small" id="remarks" placeholder="Enter reason here" wire:model="remarks" style="height: 100px; padding-bottom: 70px;">
                                     </div>
-
+ 
                             </div>
                             <div class="modal-footer">
                                 <button type="button"class="approveBtn"wire:click="reject({{$r->id}})">Confirm</button>
@@ -301,14 +291,14 @@
                                             <p style="font-size:14px;">Are you sure you want to approve this application?</p>
                                             <div class="form-group">
                                                     <label for="remarks" style="font-size:12px;color:#666;font-weight:400;">Remarks</label>
-                                                    <input type="text" class="form-control" id="remarks" placeholder="Enter reason here" wire:model="remarks" style="height: 100px; padding-bottom: 70px;">
+                                                    <input type="text" class="form-control placeholder-small" id="remarks" placeholder="Enter reason here" wire:model="remarks" style="height: 100px; padding-bottom: 70px;">
                                             </div>
-
+ 
                                     </div>
                                     <div class="modal-footer">
                                             <button type="button"class="approveBtn"wire:click="approve({{$r->id}})">Confirm</button>
                                             <button type="button"class="rejectBtn"wire:click="closeApproveModal">Cancel</button>
-                                            
+                                           
                                     </div>
                                 </div>
                             </div>
@@ -317,9 +307,9 @@
                 @endif
             </div>
         </div>
-
-
-
+ 
+ 
+ 
     </div>
       @endforeach
     @else
@@ -329,6 +319,41 @@
                             </p>
             </div>
     @endif
+    </div>
+    <div class="row with-white-background">
+                           <div class="col-sm-4"style="border: 1px solid #dddddd; padding: 5px; border-radius: 5px;margin-right:-40px;">
+                                <h4 style="text-align:left; font-weight:600;color: rgba(103,122,142,1);border-bottom: 1px solid #dddddd; padding-bottom: 5px;font-size:14px;">Summary</h4>
+                                <ul style="list-style-type: none; padding: 0; margin-top: 20px; color: rgba(103,122,142,1); font-size: 14px;">
+                                        <li style="margin-bottom: 10px;">
+                                            <strong>Average Work Hours:</strong> {{ $averageWorkHours ?? 'N/A' }}
+                                        </li>
+                                        <li style="margin-bottom: 10px;">
+                                            <strong>Number of Absent Days:</strong> {{ $absentDays ?? 'N/A' }}
+                                        </li>
+                                        <li style="margin-bottom: 10px;">
+                                            <strong>Holidays in the Month:</strong> {{ $holidaysInMonth ?? 'N/A' }}
+                                        </li>
+                                    </ul>
+                            </div>
+                            <div class="col-sm-6"style="border: 1px solid #dddddd; padding: 5px; border-radius: 5px;margin-left:60px;">
+                                <h4 style="text-align:left; font-weight:600;color: rgba(103,122,142,1);border-bottom: 1px solid #dddddd; padding-bottom: 5px;font-size:14px;">Work Hours Summary</h4>
+                                @livewire('work-hours-chart')
+                                
+                            </div>
+    </div>
+        <div class="row with-white-background">
+        <!-- Heading above the row -->
+       
+                <div class="col-sm-12">
+                    
+                        <h4 style="text-align:left;font-weight:600;font-size:14px;">Access Card Details
+                                                        <button style="border: 1px solid #0000FF; color: #0000FF; float:right; background-color: transparent; padding: 5px; border-radius: 5px; font-size: 13px;margin-top:-10px;"wire:click="downloadexcelForNotAssigned">
+                                                           <i class="fas fa-download"></i>  Download  
+                                                        </button>
+                        </h4>
+                </div>
+                
+    
                 <div class="row"style="justify-content:space-between;">
                             <div class="col-sm-6 mb-3" style="border: 1px solid #dddddd; padding: 5px; border-radius: 5px;">
                                         <h4 style="text-align:left; font-weight:600; color: rgba(103,122,142,1);font-size:14px;">Not Assigned</h4>
@@ -428,30 +453,8 @@
                            {{$absentemployeescount}}
                            <canvas id="employeeAttendanceTypeChart" width="150" height="150"></canvas>    
          
-                           <p style="color: blue; cursor: pointer;" data-toggle="modal" data-target="#moreModal">+2 More</p>
-    <!----Open Modal---->                       
-    <div class="modal fade" id="moreModal" tabindex="-1" role="dialog" aria-labelledby="moreModalLabel" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="moreModalLabel">More Information</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <!-- Add content for the modal body here -->
-            <p>This is additional information...</p>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <!-- Add additional buttons if needed -->
-          </div>
-        </div>
-      </div>
-    </div>
-    <!---Close Modal--->
-    <!-- <canvas id="myChart1" width="800" height="400" style="max-width:100%;"></canvas>                   -->
+                           <p style="color: blue; cursor: pointer;"wire:click="openSelector">+2 More</p>
+                          
                 </div>
         </div>
         <!-- Trigger for Modal -->
@@ -459,7 +462,31 @@
     
     <!-- Modal -->
     
-    
+    @if ($openshiftselectorforcheck==true)
+            <div class="modal d-block" tabindex="-1" role="dialog">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">
+                                <b>ERFGHJBKN</b>
+                            </h5>
+                            <button type="button" class="btn-close btn-primary" data-dismiss="modal"
+                                aria-label="Close" wire:click="closeAllAbsentEmployees">
+                            </button>
+                        </div>
+                        <div class="modal-body" style="max-height:300px;overflow-y:auto">
+                            <div class="team-leave d-flex flex-row gap-3">
+                                HII PRANITA AND KUMAR
+                                <canvas id="employeeAttendanceTypeChartmodal" width="30" height="30"></canvas>    
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-backdrop fade show blurred-backdrop"></div>
+        @endif
+ 
     </div> 
     
   <script>
@@ -545,7 +572,48 @@ var employeeAttendanceTypeChart = new Chart(ctx, {
         }
     }
 });
-
+var ctx = document.getElementById('employeeAttendanceTypeChartmodal').getContext('2d');
+var employeeAttendanceTypeChartmodal = new Chart(ctx, {
+    type: 'pie',
+    data: {
+        labels: [
+            'Mobile Sign In: {{$mobileEmployeeCount}}',
+            'Web Sign In: {{$laptopEmployeeCount}}',
+            'Astra: 0'
+        ],
+        datasets: [{
+            data: [{{$mobileEmployeeCount}}, {{$laptopEmployeeCount}}, 0],
+            backgroundColor: [
+                'rgba(255, 99, 132, 0.2)', // Color for "Not Yet In"
+                'rgba(75, 192, 192, 0.2)',  // Color for "On Time"
+                'rgba(255, 159, 64, 0.2)'   // Color for "Late In"
+            ],
+            borderColor: [
+                'rgba(255, 99, 132, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(255, 159, 64, 1)'
+            ],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: true, // Allow resizing to custom dimensions
+        plugins: {
+            legend: {
+                position: 'top',
+                labels: {
+                    usePointStyle: true,
+                    pointStyle: 'circle'
+                }
+            },
+            tooltip: {
+                enabled: true
+            }
+        }
+    }
+});
   </script>
+  
     </div>
     
