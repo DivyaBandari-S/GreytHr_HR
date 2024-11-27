@@ -12,6 +12,7 @@ use App\Livewire\EmpDocument;
 use App\Livewire\EmpLeaveGranterDetails;
 use App\Livewire\EmployeeAsset;
 use App\Livewire\GrantLeaveBalance;
+use App\Livewire\RegularisationPendingForHr;
 use App\Livewire\UpdateEmployeeDetails;
 use App\Livewire\Resignationrequests;
 use App\Livewire\EmployeeDirectory;
@@ -92,7 +93,7 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
         Route::get('/user/hr-attendance-overview', HrAttendanceOverviewNew::class)->name('attendance-overview');
         Route::get('/user/who-is-in-chart-hr', WhoIsInChartHr::class)->name('who-is-in-chart-hr');
         Route::get('/user/attendance-info', HrAttendanceInfo::class)->name('attendance-info');
-
+        Route::get('/review-pending-regularisation-for-hr/{id}/{emp_id}', RegularisationPendingForHr::class)->name('review-pending-regularisation-for-hr');
         //HR Leave-Infomation Submodule Routes
         Route::get('/user/employee-leave', EmployeeLeave::class)->name('employee-leave');
 

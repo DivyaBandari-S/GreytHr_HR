@@ -345,6 +345,14 @@ class WhoIsInChartHr extends Component
             return redirect()->back();
         }
     }
+    public function checkShiftForEmployees()
+{
+   
+    $this->selectedShift=$this->selectedShift;
+   
+    $this->openshiftselectorforcheck=false;
+    
+}
     //This function will help us to get the details of employees who are absent in excel sheet
     public function downloadExcelForAbsent()
     {
@@ -448,7 +456,7 @@ class WhoIsInChartHr extends Component
     public function checkshift()
 {
     $this->selectedShift=$this->selectedShift;
-    dd($this->selectedShift);
+   
     $this->openshiftselector=false;
 }
     //After seraching about any particular employee it will remove the data from the search bar
@@ -491,38 +499,46 @@ class WhoIsInChartHr extends Component
             $currentDate = $this->from_date;
         }
         $approvedLeaveRequests = LeaveRequest::join('employee_details', 'leave_applications.emp_id', '=', 'employee_details.emp_id')
-        ->leftJoin('emp_personal_infos', 'leave_applications.emp_id', '=', 'emp_personal_infos.emp_id') // Joining with emp_personal_infos
-        ->where('leave_applications.leave_status', 2)
-        ->whereIn('leave_applications.emp_id', $employees->pluck('emp_id'))
-        ->whereDate('from_date', '<=', $currentDate)
-        ->whereDate('to_date', '>=', $currentDate)
-        ->where('employee_details.employee_status', 'active')
-        ->get([
-            'leave_applications.*', // To get leave date and leave type
-            'employee_details.*',
-        ])
-        ->map(function ($leaveRequest) {
-            // Calculating the number of leave days excluding weekends
-            $fromDate = Carbon::parse($leaveRequest->from_date);
-            $toDate = Carbon::parse($leaveRequest->to_date);
+    ->leftJoin('emp_personal_infos', 'leave_applications.emp_id', '=', 'emp_personal_infos.emp_id') // Joining with emp_personal_infos
+    ->leftJoin('company_shifts', function ($join) {
+        $join->on('company_shifts.company_id', '=', DB::raw("JSON_UNQUOTE(JSON_EXTRACT(employee_details.company_id, '$[0]'))"))
+        ->on('company_shifts.shift_name', '=', 'employee_details.shift_type'); // Matching shift_type with shift_name
+    })
+    ->where('leave_applications.leave_status', 2)
+    ->whereIn('leave_applications.emp_id', $employees->pluck('emp_id'))
+    ->whereDate('from_date', '<=', $currentDate)
+    ->whereDate('to_date', '>=', $currentDate)
+    ->where('employee_details.employee_status', 'active')
+    ->get([
+        'leave_applications.*', // To get leave date and leave type
+        'employee_details.*', // Explicitly select employee details you need
+        'company_shifts.shift_start_time', // Fetching shift_start_time from company_shifts
+        'company_shifts.shift_end_time',   // Fetching shift_end_time from company_shifts
+        'company_shifts.shift_name',       // Fetching shift_name from company_shifts
+    ])
+    ->map(function ($leaveRequest) {
+        // Calculating the number of leave days excluding weekends
+        $fromDate = Carbon::parse($leaveRequest->from_date);
+        $toDate = Carbon::parse($leaveRequest->to_date);
 
-            // Generate all dates between from_date and to_date, excluding weekends
-            $leave_dates = [];
-            for ($date = $fromDate->copy(); $date->lte($toDate); $date->addDay()) {
-                // Exclude weekends (Saturday=6, Sunday=7)
-                if (!$date->isWeekend()) {
-                    $leave_dates[] = $date->format('Y-m-d');
-                }
+        // Generate all dates between from_date and to_date, excluding weekends
+        $leave_dates = [];
+        for ($date = $fromDate->copy(); $date->lte($toDate); $date->addDay()) {
+            // Exclude weekends (Saturday=6, Sunday=7)
+            if (!$date->isWeekend()) {
+                $leave_dates[] = $date->format('Y-m-d');
             }
+        }
 
-            // Set the leave_dates attribute using setAttribute
-            $leaveRequest->setAttribute('leave_dates', $leave_dates);
+        // Set the leave_dates attribute using setAttribute
+        $leaveRequest->setAttribute('leave_dates', $leave_dates);
 
-            // Calculate the number of leave days excluding weekends
-            $leaveRequest->number_of_days = count($leave_dates);
+        // Calculate the number of leave days excluding weekends
+        $leaveRequest->number_of_days = count($leave_dates);
 
-            return $leaveRequest;
-        });
+        return $leaveRequest;
+    });
+      
 
 
 
