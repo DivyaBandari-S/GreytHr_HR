@@ -122,7 +122,7 @@
 						<a href="#">Admin <i class="ph-caret-right-fill"></i></a>
 						<ul class="sidebar__dropdown-menu">
 							<li><a href="/hr/user/grant-summary">Leave Granter</a></li>
-							<li><a href="/user">Year End Process</a></li>
+							<li><a href="/hr/user/leaveYearEndProcess">Year End Process</a></li>
 							<li><a href="/user">Assign Attendnace Scheme</a></li>
 							<li><a href="/user">Process Attendance</a></li>
 							<li><a href="/home">Attendance Period Finalisation</a></li>

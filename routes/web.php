@@ -28,6 +28,7 @@ use App\Livewire\ParentDetails;
 use App\Livewire\PositionHistory;
 use App\Livewire\ShiftRosterHr;
 use App\Livewire\WhoIsInChartHr;
+use App\Livewire\YearEndProcess;
 use App\Models\EmpResignations;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Response;
@@ -112,6 +113,7 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
         Route::get('/user/grantLeave', GrantLeaveBalance::class)->name('grantLeave');
         Route::get('/user/grant-summary', EmpLeaveGranterDetails::class)->name( 'grant-summary');
         Route::get('/user/leavePolicySettings', LeaveSettingPolicy::class)->name( 'leavePolicySettings');
+        Route::get('/user/leaveYearEndProcess', YearEndProcess::class)->name( 'year-end-process');
 
 
         //HR Leave-SetUp Submodule Routes

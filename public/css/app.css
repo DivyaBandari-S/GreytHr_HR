@@ -20,8 +20,8 @@ body {
     --normal-font-size: 0.75rem;
     --sub-headings-font-size: 0.8rem;
     --main-headings-font-size: 1rem;
-    --main-table-heading-bg-color: #cfdbe4c2;
-    --main-table-heading-text-color: #545658;
+    --main-table-heading-bg-color: #d4e6f4;
+    --main-table-heading-text-color:#4c4e4f ;
 }
 /* //global styles for scrollbars  */
 ::-webkit-scrollbar {
@@ -2520,6 +2520,22 @@ input[type="date"]::before {
 
 
 /* ///leave setting policy// */
+.employee-checkbox-container {
+    display: flex;
+    flex-direction: column;
+    width: 25%;
+    max-height: 200px;
+    overflow-y: auto;
+    background-color: white;
+    padding: 10px;
+}
+
+.form-check {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .leaveSettings{
     padding: 20px;
 }
@@ -2562,7 +2578,6 @@ input[type="date"]::before {
     color: var(--label-color);
     margin-bottom: 0;
 }
-
 
 .accordion-button {
     font-size: 14px;
@@ -2612,4 +2627,30 @@ input[type="date"]::before {
 }
 .required{
     color: red;
+}
+
+/* end of leave policy settings */
+
+
+/* start of year end process */
+.pendingLeaveTable .table-light th{
+    background: var(--main-table-heading-bg-color);
+    color: var(--main-table-heading-text-color);
+    font-size: var(--sub-headings-font-size);
+}
+.pendingLeaveTable  td{
+    color: var(--label-color);
+    font-size: var(--normal-font-size);
+}
+.pendingLeaveTable tbody tr:nth-of-type(odd) {
+    background-color: #f6f6f6 !important; /* Light gray */
+}
+
+.pendingLeaveTable tbody tr:nth-of-type(even) {
+    background-color: #ffffff !important; /* White */
+}
+
+/* Row hover effect */
+.pendingLeaveTable .table-hover tbody tr:hover {
+    background-color: var(--main-table-heading-bg-color) !important;
 }

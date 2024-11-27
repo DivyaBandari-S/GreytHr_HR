@@ -18,7 +18,7 @@ class EmployeeLeave extends Component
 {
     public $search = '';
     public $employeeType = 'active'; // Default to 'active'
-    public $employees = [];
+    public $employees ;
     public $showContainer = false;
     public $selectedEmployee = null; 
     public $activeTab = 'Overview';
