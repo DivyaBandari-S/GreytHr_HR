@@ -20,8 +20,8 @@ return new class extends Migration
             $table->string('status')->default('Granted');
             $table->string('period','25')->nullable();
             $table->string('periodicity','25')->nullable();
+            $table->boolean('is_lapsed')->default(false);
             $table->timestamps();
-
         });
     }
 

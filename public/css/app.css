@@ -2535,6 +2535,14 @@ input[type="date"]::before {
     align-items: center;
     justify-content: center;
 }
+.managerFilter{
+    font-size: 14px;
+    color: var(--main-heading-color);
+}
+.form-select{
+    font-size: var(--normal-font-size);
+    color: var(--label-color);
+}
 
 .leaveSettings{
     padding: 20px;
@@ -2653,4 +2661,24 @@ input[type="date"]::before {
 /* Row hover effect */
 .pendingLeaveTable .table-hover tbody tr:hover {
     background-color: var(--main-table-heading-bg-color) !important;
+}
+
+.yearEnd-accordion{
+    width: 80%;
+    padding: 10px 20px;
+}
+.accordion-button{
+    color: var(--main-heading-color);
+    font-size: var(--main-headings-font-size);
+    font-weight: 600;
+}
+.editIcon{
+    color: var(--main-heading-color);
+    font-size: var(--normal-font-size);
+    cursor: pointer;
+}
+.leaveType{
+    color: var(--main-heading-color);
+    font-size: var(--sub-headings-font-size);
+    font-weight: 500;
 }
