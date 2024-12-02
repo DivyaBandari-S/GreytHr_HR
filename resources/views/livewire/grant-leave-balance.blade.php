@@ -3,7 +3,7 @@
         <form wire:submit.prevent="grantLeavesForEmp">
             <p style="color: #778899;">Grant Leaves</p>
             <hr>
-            
+
             <!-- Employee Selection -->
             <div class="form-group">
                 <label for="emp_id" style="cursor: pointer;color: #778899;display:flex;align-items:center;gap:5px;">
@@ -25,27 +25,36 @@
 
             <!-- Employee IDs selection -->
             @if($showEmployees == 'true')
-                <div class="bg-white border rounded p-2 d-flex flex-column" style="width:30%;max-height: 150px;overflow-y:auto;font-size:12px;color:#778899;position:absolute;">
-                    <div wire:click="closeEmployeeIds" style="display: flex;justify-content:end;cursor:pointer;font-weight:500;color:#778899;">X</div>
-                    @foreach($employeeIds as $emp_id)
-                        <label class="checkbox-container" style="display: flex;gap: 5px;align-items: center;">
-                            <input type="checkbox" wire:model="selectedEmpIds" value="{{ $emp_id }}"> {{ $emp_id }}
-                        </label>
-                    @endforeach
-                </div>
+            <div class="bg-white border rounded p-2 d-flex flex-column" style="width:30%;max-height: 150px;overflow-y:auto;font-size:12px;color:#778899;position:absolute;">
+                <div wire:click="closeEmployeeIds" style="display: flex;justify-content:end;cursor:pointer;font-weight:500;color:#778899;">X</div>
+                @foreach($employeeIds as $emp_id)
+                <label class="checkbox-container" style="display: flex;gap: 5px;align-items: center;">
+                    <input type="checkbox" wire:model="selectedEmpIds" value="{{ $emp_id }}"> {{ $emp_id }}
+                </label>
+                @endforeach
+            </div>
             @endif
 
             <!-- Leave Policies Selection -->
-            <div class="form-group">
-                <label for="leave_policies" style="color: #778899;font-size:12px;">Leave Policies</label>
-                <select class="form-control" wire:model="selectedLeavePolicies" multiple>
-                    <option value="">Select Leave Policies</option>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th style="font-size: 12px;">Select</th>
+                        <th style="font-size: 12px;">Leave Name</th>
+                    </tr>
+                </thead>
+                <tbody>
                     @foreach($leavePolicies as $policy)
-                        <option value="{{ $policy->id }}">{{ $policy->leave_name }}</option>
+                    <tr>
+                        <td style="font-size: 12px;">
+                            <!-- Checkbox for each leave policy -->
+                            <input type="checkbox" wire:model="selectedLeavePolicies" value="{{ $policy->id }}">
+                        </td>
+                        <td style="font-size: 12px;">{{ $policy->leave_name }}</td>
+                    </tr>
                     @endforeach
-                </select>
-                @error('selectedLeavePolicies') <span class="text-danger">{{ $message }}</span> @enderror
-            </div>
+                </tbody>
+            </table>
 
             <!-- Date Range -->
             <div class="form-group">

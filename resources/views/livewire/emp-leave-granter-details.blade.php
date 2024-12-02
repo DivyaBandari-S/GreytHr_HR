@@ -118,11 +118,21 @@
                         <div class="col-md-6"></div>
                         <div class="col-md-6 d-flex justify-content-end gap-2">
                             <div class="date-picker p-0">
-                                <input type="text" value="Jan 2024 - Dec 2024" readonly />
+                                <!-- Start Year Dropdown -->
+                                <select wire:model="selectedYear" wire:change="updateDateRange" class="form-control">
+                                    <option value="" disabled>Select Year</option>
+                                    @foreach($yearRange as $year)
+                                    <option value="{{ $year }}">{{ $year }}</option>
+                                    @endforeach
+                                </select>
+                                </select>
                             </div>
-                            <button class="submit-btn" type="button"><a href="/hr/user/leavePolicySettings">Leave Settings</a></button>
+                            <button class="submit-btn" type="button">
+                                <a href="/hr/user/leavePolicySettings">Leave Settings</a>
+                            </button>
                         </div>
                     </div>
+
                     <div class="radio-buttons">
                         <label class="radioLabel">
                             <input type="radio" name="grantEmployees" value="all" checked>
@@ -133,43 +143,114 @@
                             Grant for Newly Joined Employees
                         </label>
                     </div>
-                    <div class="grid">
-                        <div class="periodicity mt-2">
-                            <label class="labelText" for="period">Periodicity</label>
-                            <div class="custom-dropdown">
-                                <div class="dropdown-selected">Monthly</div>
-                                <div class="dropdown-options">
-                                    <div class="dropdown-option">Quaterly</div>
-                                    <div class="dropdown-option">Half yearly</div>
-                                    <div class="dropdown-option">Yearly</div>
+                    <div>
+                        <!-- Employee Selection -->
+                        <div wire:click="toggleEmployeeList">
+                            <label for="employees">Select Employees</label>
+
+                            @if($showEmployeeList)
+                            <div class="employee-checkbox-container">
+                                <!-- Select All Checkbox -->
+                                <div class="form-check">
+                                    <input
+                                        type="checkbox"
+                                        class="form-check-input"
+                                        id="select_all"
+                                        wire:model="selectAll"
+                                        wire:click="toggleSelectAll">
+                                    <label class="form-check-label" for="select_all">
+                                        Select All
+                                    </label>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="periodicity mt-2">
-                            <label class="labelText" for="period">Period</label>
-                            <div class="custom-dropdown">
-                                <div class="dropdown-selected">October 2024</div>
-                                <div class="dropdown-options">
-                                    <div class="dropdown-option">November 2024</div>
-                                    <div class="dropdown-option">January 2024</div>
+
+                                <!-- Employee List -->
+                                @foreach($employeeIds as $empId => $empName)
+                                <div class="form-check">
+                                    <input
+                                        type="checkbox"
+                                        class="form-check-input"
+                                        wire:model="selectedEmployeeIds"
+                                        value="{{ $empId }}"
+                                        id="employee_{{ $empId }}">
+                                    <label class="form-check-label" for="employee_{{ $empId }}">
+                                        {{ $empName }}
+                                    </label>
                                 </div>
+                                @endforeach
                             </div>
+                            @endif
                         </div>
-                        <div class="periodicity  mt-2">
-                            <label class="labelText" for="period">Leave Scheme</label>
-                            <div class="custom-dropdown">
-                                <div class="dropdown-selected">General</div>
-                                <div class="dropdown-options">
-                                    <div class="dropdown-option">Quaterly</div>
-                                    <div class="dropdown-option">Half yearly</div>
-                                    <div class="dropdown-option">Yearly</div>
-                                </div>
-                            </div>
+
+
+
+
+                        <!-- Periodicity and Period -->
+                        <div>
+                            <label for="periodicity">Periodicity</label>
+                            <select wire:model="periodicity" wire:change="updatePeriodOptions" class="form-control mb-3">
+                                <option value="Monthly">Monthly</option>
+                                <option value="Quarterly">Quarterly</option>
+                                <option value="Half yearly">Half yearly</option>
+                                <option value="Yearly">Yearly</option>
+                            </select>
+
+                            <!-- Period Dropdown -->
+                            <label for="period">Period</label>
+                            <select wire:model="period" class="form-control mb-3">
+                                @if($periodicity == 'Monthly')
+                                @foreach($months as $month)
+                                <option value="{{ $month }}">{{ $month }}</option>
+                                @endforeach
+                                @elseif($periodicity == 'Quarterly')
+                                @foreach($quarters as $quarter)
+                                <option value="{{ $quarter }}">{{ $quarter }}</option>
+                                @endforeach
+                                @elseif($periodicity == 'Half yearly')
+                                @foreach($halfYear as $half)
+                                <option value="{{ $half }}">{{ $half }}</option>
+                                @endforeach
+                                @elseif($periodicity == 'Yearly')
+                                @foreach($years as $year)
+                                <option value="{{ $year }}">{{ $year }}</option>
+                                @endforeach
+                                @endif
+                            </select>
                         </div>
+
+
+                        <!-- Leave Policies Table -->
+                        <div>
+                            <label for="leavePolicyIds">Select Leave Policies</label>
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Select</th>
+                                        <th>Leave Name</th>
+                                        <th>Grant Days</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($leavePolicies as $policy)
+                                    <tr>
+                                        <td>
+                                            <input type="checkbox" wire:model="selectedPolicyIds" value="{{ $policy->id }}">
+                                        </td>
+                                        <td>{{ $policy->leave_name }}</td>
+                                        <td>{{ $policy->grant_days }}</td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Grant Leave Button -->
+                        <button wire:click="storeLeaveBalance" class="btn btn-primary">Grant Leave</button>
                     </div>
                 </div>
 
                 @endif
+
+
             </div>
 
             <div class="tab-pane" id="dashboard-tab-pane" role="tabpanel" aria-labelledby="dashboard-tab" tabindex="0">
@@ -185,28 +266,3 @@
     </div>
 
 </div>
-<script>
-    document.querySelectorAll('.dropdown-selected').forEach(dropdown => {
-        dropdown.addEventListener('click', function() {
-            const options = this.nextElementSibling;
-            options.style.display = options.style.display === 'block' ? 'none' : 'block'; // Toggle dropdown
-        });
-    });
-
-    document.querySelectorAll('.dropdown-option').forEach(option => {
-        option.addEventListener('click', function() {
-            const selected = this.parentElement.previousElementSibling;
-            selected.textContent = this.textContent; // Update selected text
-            this.parentElement.style.display = 'none'; // Hide options
-        });
-    });
-
-    // Close dropdown when clicking outside
-    window.addEventListener('click', function(e) {
-        if (!e.target.matches('.dropdown-selected')) {
-            document.querySelectorAll('.dropdown-options').forEach(options => {
-                options.style.display = 'none';
-            });
-        }
-    });
-</script>

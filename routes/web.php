@@ -12,6 +12,7 @@ use App\Livewire\EmpDocument;
 use App\Livewire\EmpLeaveGranterDetails;
 use App\Livewire\EmployeeAsset;
 use App\Livewire\GrantLeaveBalance;
+use App\Livewire\RegularisationPendingForHr;
 use App\Livewire\UpdateEmployeeDetails;
 use App\Livewire\Resignationrequests;
 use App\Livewire\EmployeeDirectory;
@@ -28,6 +29,7 @@ use App\Livewire\ParentDetails;
 use App\Livewire\PositionHistory;
 use App\Livewire\ShiftRosterHr;
 use App\Livewire\WhoIsInChartHr;
+use App\Livewire\YearEndProcess;
 use App\Models\EmpResignations;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Response;
@@ -91,7 +93,7 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
         Route::get('/user/hr-attendance-overview', HrAttendanceOverviewNew::class)->name('attendance-overview');
         Route::get('/user/who-is-in-chart-hr', WhoIsInChartHr::class)->name('who-is-in-chart-hr');
         Route::get('/user/attendance-info', HrAttendanceInfo::class)->name('attendance-info');
-
+        Route::get('/review-pending-regularisation-for-hr/{id}/{emp_id}', RegularisationPendingForHr::class)->name('review-pending-regularisation-for-hr');
         //HR Leave-Infomation Submodule Routes
         Route::get('/user/employee-leave', EmployeeLeave::class)->name('employee-leave');
 
@@ -112,6 +114,7 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
         Route::get('/user/grantLeave', GrantLeaveBalance::class)->name('grantLeave');
         Route::get('/user/grant-summary', EmpLeaveGranterDetails::class)->name( 'grant-summary');
         Route::get('/user/leavePolicySettings', LeaveSettingPolicy::class)->name( 'leavePolicySettings');
+        Route::get('/user/leaveYearEndProcess', YearEndProcess::class)->name( 'year-end-process');
 
 
         //HR Leave-SetUp Submodule Routes
