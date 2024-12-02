@@ -27,6 +27,8 @@ use App\Livewire\HrMainOverview;
 use App\Livewire\LeaveSettingPolicy;
 use App\Livewire\ParentDetails;
 use App\Livewire\PositionHistory;
+use App\Livewire\Request;
+use App\Livewire\Requests;
 use App\Livewire\ShiftRosterHr;
 use App\Livewire\WhoIsInChartHr;
 use App\Livewire\YearEndProcess;
@@ -64,6 +66,7 @@ Route::get('/file/{id}', function ($id) {
 Route::middleware(['auth:hr', 'handleSession'])->group(function () {
 
     Route::get('/', HomeDashboard::class)->name('home');
+    Route::get('/request', Requests::class)->name('request');
     // Group routes under the 'hr' prefix
     Route::prefix('hr')->group(function () {
 
