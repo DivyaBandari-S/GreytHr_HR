@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Helpers\FlashMessageHelper;
 use App\Models\Asset;
 use Livewire\Component;
 use App\Models\EmployeeDetails;
@@ -17,6 +18,7 @@ class EmployeeAsset extends Component
 
     public $searchTerm = '';
     public $selectedEmployeeId;
+    public $showDocDialog=false;
     public $searchEmployee;
     public $peopleData=[];
 
@@ -48,6 +50,8 @@ class EmployeeAsset extends Component
     public $selectedPerson = null;
     public $cc_to;
     public $peoples;
+    
+    public $currentEmpId;
     public $filteredPeoples;
     public $selectedPeopleNames = [];
     public $selectedPeople = [];
@@ -71,6 +75,9 @@ class EmployeeAsset extends Component
   
     public $employees;
     public $emp_id;
+    public $showDialog=false;
+    public $filePath;
+   public $selectedOption = 'all'; 
     public $asset_type;
     public $asset_status;
     public $asset_details;
@@ -87,31 +94,273 @@ class EmployeeAsset extends Component
     public $editingField = false;
   
     
-    public function toggleDetails()
+    public function updatesearchTerm()
     {
-        $this->showDetails = !$this->showDetails;
+        $this->searchTerm= $this->searchTerm;
+       
+       
     }
-
-
-    public function filter()
-    {
-        $companyId = Auth::user()->company_id;
-        $trimmedSearchTerm = trim($this->searchTerm);
-
-        $this->filteredPeoples = EmployeeDetails::where('company_id', $companyId)
-            ->where(function ($query) use ($trimmedSearchTerm) {
-                $query->where(DB::raw("CONCAT(first_name, ' ', last_name)"), 'like', '%' . $trimmedSearchTerm . '%')
-                    ->orWhere('emp_id', 'like', '%' . $trimmedSearchTerm . '%');
-            })
-            ->get();
-
-        $this->peopleFound = count($this->filteredPeoples) > 0;
-    }
-
     public function updatedSelectedPeople()
     {
         $this->cc_to = implode(', ', array_unique($this->selectedPeopleNames));
+      
+        
     }
+
+    public $selectedPeopleData=[];
+    public $activeTab1 = 'tab1';
+
+    public function switchTab($tab)
+    {
+        $this->activeTab1 = $tab;
+    }
+    
+    public function NamesSearch()
+    {
+        $this->isNames = true;
+        $this->selectedPeopleNames = [];
+        $this->cc_to = '';
+    }
+
+    public function closePeoples()
+    {
+        $this->isNames = false;
+    }
+    public function filter()
+    {
+
+        $employeeId = auth()->user()->emp_id;
+
+        $companyId = Auth::user()->company_id;
+
+
+        $this->peopleData = EmployeeDetails::where('first_name', 'like', '%' . $this->searchTerm . '%')
+            ->orWhere('last_name', 'like', '%' . $this->searchTerm . '%')
+            ->orWhere('emp_id', 'like', '%' . $this->searchTerm . '%')
+            ->get();
+
+        $this->filteredPeoples = $this->searchTerm ? $this->employees : null;
+
+   
+    }
+    public function addDocs()
+    {
+        $this->showDocDialog = true;
+    }
+ 
+
+    public function removePerson($empId)
+    {
+        // Remove the person from the selectedPeople array
+        if (($key = array_search($empId, $this->selectedPeople)) !== false) {
+            unset($this->selectedPeople[$key]);
+        }
+        
+        // Reindex the array to avoid gaps in the index
+        $this->selectedPeople = array_values($this->selectedPeople);
+    
+        // Update the selectedPeopleData array to remove the person
+        $this->selectedPeopleData = collect($this->selectedPeopleData)->filter(function ($person) use ($empId) {
+            return $person['emp_id'] !== $empId;
+        })->values()->toArray(); // Reindexing the selectedPeopleData
+    
+        // Optionally, update the employees list or other data if necessary
+  
+     
+    }
+    public $combinedRequests=[];
+ 
+    public function selectPerson($emp_id)
+    {
+        if (!empty($this->selectedPeople) && !in_array($emp_id, $this->selectedPeople)) {
+            // Flash an error message to the session
+            FlashMessageHelper::flashWarning('You can only select one employee ');
+            return; // Stop further execution
+        }
+    
+
+        try {
+         
+            // Ensure $this->selectedPeople is initialized as an array
+            if (!is_array($this->selectedPeople)) {
+                $this->selectedPeople = [];
+            }
+    
+         
+            // Find the selected person from the list of employees
+            $selectedPerson = $this->employees->where('emp_id', $emp_id)->first();
+    
+            if ($selectedPerson) {
+                // Check if person is already selected
+                if (in_array($emp_id, $this->selectedPeople)) {
+                    // Person is already selected, so remove them
+    
+                    // Remove from selectedPeople array
+                    $this->selectedPeople = array_diff($this->selectedPeople, [$emp_id]);
+    
+                    // Remove the person's entry from the selectedPeopleData array
+                    $this->selectedPeopleData = array_filter(
+                        $this->selectedPeopleData,
+                        fn($data) => $data['emp_id'] !== $emp_id
+                    );
+                } else {
+                    // Person is not selected, so add them
+                    $this->selectedPeople[] = $emp_id;
+    
+                    // Create the person's name string
+                    $personName = $selectedPerson->first_name . ' ' . $selectedPerson->last_name . ' #(' . $selectedPerson->emp_id . ')';
+    
+                    // Determine the image URL
+                    if ($selectedPerson->image && $selectedPerson->image !== 'null') {
+                        $imageUrl = 'data:image/jpeg;base64,' . base64_encode($selectedPerson->image);
+                    } else {
+                        // Add default image based on gender
+                        if ($selectedPerson->gender == "Male") {
+                            $imageUrl = asset('images/male-default.png');
+                        } elseif ($selectedPerson->gender == "Female") {
+                            $imageUrl = asset('images/female-default.jpg');
+                        } else {
+                            $imageUrl = asset('images/user.jpg');
+                        }
+                    }
+    
+                    // Add the person's data to the combined array
+                    $this->selectedPeopleData[] = [
+                        'name' => $personName,
+                        'image' => $imageUrl,
+                        'emp_id' => $emp_id
+                    ];
+                }
+    
+                // Update the cc_to field with the unique names
+                $this->cc_to = implode(', ', array_unique(array_column($this->selectedPeopleData, 'name')));
+                    // After setting currentEmpId
+    $this->currentEmpId = $emp_id;
+    Log::info('Current emp_id set to: ' . $this->currentEmpId);
+            }
+        } catch (\Exception $e) {
+            // Handle the exception
+            // Optionally, you can log the error or display a user-friendly message
+            $this->dispatch('error', ['message' => 'An error occurred: ' . $e->getMessage()]);
+        }
+    }
+    
+
+    public function updateSelected($option)
+    {
+        $this->selectedOption = $option; 
+        
+        // Check if the user is logged in with the 'hr' guard
+        if (!auth()->guard('hr')->check()) {
+            return;
+        }
+    
+        // Get the logged-in employee ID
+        $loggedInEmpID = auth()->guard('hr')->user()->emp_id;
+    
+        // Fetch the first company_id associated with the logged-in employee
+        $companyId = EmployeeDetails::where('emp_id', $loggedInEmpID)
+            ->pluck('company_id') 
+            ->first();
+    
+        // Handle cases where the company ID is an array or not
+        if (is_array($companyId)) {
+            $firstCompanyID = $companyId[0]; 
+        } else {
+            $firstCompanyID = $companyId; 
+        }
+    
+        // Initialize the query for employees based on company_id
+        $query = EmployeeDetails::whereJsonContains('company_id', $firstCompanyID);
+    
+        // Apply the filters based on the selected option
+        switch ($this->selectedOption) {
+            case 'current':
+                $query->where('employee_status', 'active'); // Filter for current employees
+                break;
+    
+            case 'past':
+                $query->whereIn('employee_status', ['rejected', 'terminated']); // Filter for past employees
+                break;
+    
+            case 'intern':
+                $query->where('job_role', 'intern'); // Filter for interns
+                break;
+    
+           
+            default:
+                // No additional filtering, fetch all employees
+                case 'all':
+                    $query=EmployeeDetails::whereJsonContains('company_id', $firstCompanyID);
+                break;
+        }
+    
+        // Fetch the employee IDs after filtering
+        $this->employeeIds = $query->pluck('emp_id')->toArray(); // Fetch the filtered employee IDs
+        $this->employees = $query->get(); // Fetch the employee data for rendering in the view
+  
+    
+    
+
+    
+   }
+
+    
+   public $showImageDialog = false;
+   public $imageUrl;
+   public function downloadImage()
+   {
+       if ($this->imageUrl) {
+           // Decode the Base64 data if necessary
+           $fileData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $this->imageUrl));
+
+           // Determine MIME type and file extension
+           $finfo = finfo_open(FILEINFO_MIME_TYPE);
+           $mimeType = finfo_buffer($finfo, $fileData);
+           finfo_close($finfo);
+
+           $extension = '';
+           switch ($mimeType) {
+               case 'image/jpeg':
+                   $extension = 'jpg';
+                   break;
+               case 'image/png':
+                   $extension = 'png';
+                   break;
+               case 'image/gif':
+                   $extension = 'gif';
+                   break;
+               default:
+                   return abort(415, 'Unsupported Media Type');
+           }
+
+           // Prepare file name and response
+           $fileName = 'image-' . time() . '.' . $extension;
+           return response()->streamDownload(
+               function () use ($fileData) {
+                   echo $fileData;
+               },
+               $fileName,
+               [
+                   'Content-Type' => $mimeType,
+                   'Content-Disposition' => 'attachment; filename="' . $fileName . '"',
+               ]
+           );
+       }
+       return abort(404, 'Image not found');
+   }
+   public function showImage($url)
+   {
+       $this->imageUrl = $url;
+       $this->showImageDialog = true;
+   }
+
+   public function closeImageDialog()
+   {
+       $this->showImageDialog = false;
+   }
+
+
     public function setEmpId($emp_id)
     {
         $this->emp_id = $emp_id;
@@ -247,108 +496,6 @@ class EmployeeAsset extends Component
     
     
 
-    
-
-    public function NamesSearch()
-    {
-        $this->isNames = true;
-        $this->selectedPeopleNames = [];
-        $this->cc_to = '';
-    }
-
-    public function closePeoples()
-    {
-        $this->isNames = false;
-    }
-
- 
-
-
-    public $selectedPeopleData=[];
-    public function removePerson($empId)
-    {
-        // Remove the person from the selectedPeople array
-        if (($key = array_search($empId, $this->selectedPeople)) !== false) {
-            unset($this->selectedPeople[$key]);
-        }
-        
-        // Reindex the array to avoid gaps in the index
-        $this->selectedPeople = array_values($this->selectedPeople);
-    
-        // Update the selectedPeopleData array to remove the person
-        $this->selectedPeopleData = collect($this->selectedPeopleData)->filter(function ($person) use ($empId) {
-            return $person['emp_id'] !== $empId;
-        })->values()->toArray(); // Reindexing the selectedPeopleData
-    
-        // Optionally, update the employees list or other data if necessary
-        $this->employees = $this->employees->filter(function ($employee) use ($empId) {
-            return $employee->emp_id !== $empId;
-        });
-     
-    }
-    public function selectPerson($emp_id)
-    {
-        try {
-            // Ensure $this->selectedPeople is initialized as an array
-            if (!is_array($this->selectedPeople)) {
-                $this->selectedPeople = [];
-            }
-    
-            // Find the selected person from the list of employees
-            $selectedPerson = $this->employees->where('emp_id', $emp_id)->first();
-    
-            if ($selectedPerson) {
-                // Create the person's name string
-                $personName = $selectedPerson->first_name . ' ' . $selectedPerson->last_name . ' #(' . $selectedPerson->emp_id . ')';
-    
-                if (in_array($emp_id, $this->selectedPeople)) {
-                    // Person is already selected, so remove them
-                    $this->selectedPeople = array_diff($this->selectedPeople, [$emp_id]);
-    
-                    // Remove the person's entry from the combined data
-                    $this->selectedPeopleData = array_filter(
-                        $this->selectedPeopleData,
-                        fn($data) => $data['emp_id'] !== $emp_id
-                    );
-                } else {
-                    // Person is not selected, so add them
-                    $this->selectedPeople[] = $emp_id;
-    
-                    // Determine the image URL
-                    if ($selectedPerson->image && $selectedPerson->image !== 'null') {
-                        $imageUrl = 'data:image/jpeg;base64,' . base64_encode($selectedPerson->image);
-                    } else {
-                        // Add default image based on gender
-                        if ($selectedPerson->gender == "Male") {
-                            $imageUrl = asset('images/male-default.png');
-                        } elseif ($selectedPerson->gender == "Female") {
-                            $imageUrl = asset('images/female-default.jpg');
-                        } else {
-                            $imageUrl = asset('images/user.jpg');
-                        }
-                    }
-    
-                    // Add the person's data to the combined array
-                    $this->selectedPeopleData[] = [
-                        'name' => $personName,
-                        'image' => $imageUrl,
-                        'emp_id' => $emp_id
-                    ];
-                }
-    
-                // Update the cc_to field with the unique names
-                $this->cc_to = implode(', ', array_unique(array_column($this->selectedPeopleData, 'name')));
-            }
-        } catch (\Exception $e) {
-            // Handle the exception
-            // Optionally, you can log the error or display a user-friendly message
-            $this->dispatchBrowserEvent('error', ['message' => 'An error occurred: ' . $e->getMessage()]);
-        }
-    }
- 
-
-    
-    
     
 
     
