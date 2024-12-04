@@ -12,6 +12,7 @@
 				<ul class="sidebar__submenu">
 					<li class="title">Home</li>
 					<li><a href="{{route('home')}}">Home</a></li>
+					<li><a href="{{route('request')}}">Request</a></li>
 				</ul>
 			</li>
 			<li>

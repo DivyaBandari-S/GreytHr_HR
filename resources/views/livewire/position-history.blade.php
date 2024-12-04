@@ -449,8 +449,8 @@ aria-describedby="basic-addon1"
                     <form>
      <!-- Category Type Input (Label and Input in One Line) -->
      <div class="form-group row align-items-center ">
-        <label for="categoryType" class="col-md-4 col-form-label " style="margin-left:90px">Category Type</label>
-        <div class="col-md-4 mt-2">
+        <label for="categoryType" class="col-md-4 col-form-label " style="margin-left:70px">Category Type</label>
+        <div class="col-md-4 mt-3">
         <p style="font-size:12px">Designation</p>
         </div>
     </div>

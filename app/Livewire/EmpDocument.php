@@ -96,6 +96,12 @@ class EmpDocument extends Component
         'description' => 'nullable|string',
     
     ];
+    protected $messages = [
+        'documentName' => 'Document name is required',
+        'category' => 'Category is required',
+        'description' => 'Description is required',
+    
+    ];
     public function toggleDetails()
     {
         $this->showDetails = !$this->showDetails;
@@ -638,10 +644,10 @@ $this->empId = auth()->user()->emp_id;
 
         // Reset the form
         $this->reset(['file_path', 'documentName', 'description', 'category', 'publishToPortal']);
-
+        $this->showDocDialog = false;
         // Redirect or return response
         session()->flash('success', 'Document uploaded successfully!');
-        $this->dispatch('goBackToEmpDocument');
+       
 
 
     }

@@ -1547,7 +1547,305 @@ input[type="date"]::before {
 }
 /*Ending of Who Is In Submodule*/
 /* analytics hub view all styles ended */
+/*Request Started  */
 
+.card-body {
+    background-color: white;
+    padding: 20px;
+    width: 80%;
+    margin-top: 30px;
+    border-radius: 5px;
+}
+.newReq{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: end;
+    gap: 10px;
+}
+.people-search-btn {
+    color: #fff;
+}
+
+.text-danger {
+    font-size: var(--normal-font-size);
+}
+
+.rotate {
+    transition: transform 0.5s;
+}
+
+.rotate.rotate-180 {
+    transform: rotate(180deg);
+}
+.request-search-container {
+    margin-top: 30px;
+    margin-bottom: 15px;
+}
+
+
+.request-input-group-container {
+    width: 230px;
+}
+
+.request-search-input {
+    font-size: var(--normal-font-size);
+    border-radius: 5px 0 0 5px;
+    height: 32px;
+}
+
+.request-search-btn {
+    height: 32px;
+    width: 40px;
+    position: relative;
+    border-radius: 0 5px 5px 0;
+    background-color: var(--main-button-color);
+    color: #fff;
+    border: none;
+    margin-right: 10px;
+}
+
+.request-search-icon {
+    position: absolute;
+    top: 9px;
+    left: 11px;
+    color: #fff;
+}
+
+
+.helpdesk-btn {
+    font-size: 12px;
+    background-color: var(--main-button-color);
+    color: white;
+    border-radius: 5px;
+    padding: 4px 10px;
+}
+
+.helpdesk-modal {
+    background-color:var(--main-button-color);
+    height: 50px
+}
+
+.helpdesk-title {
+    padding: 5px;
+    color: white;
+    font-size: 15px;
+}
+
+.helpdesk-label {
+    color: #778899;
+    font-weight: 500;
+    font-size: 12px;
+}
+
+.helpdesk-toggler {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.select-ccto {
+    font-size: 12px;
+    color: #778899;
+    margin-bottom: 10px;
+    font-weight: 500;
+}
+
+.add-button {
+    border-radius: 50%;
+    color: #778899;
+    border: 1px solid #778899;
+}
+
+.helpdesk-rotate {
+    border-radius: 5px;
+    background-color: grey;
+    padding: 8px;
+    width: 330px;
+    margin-top: 10px;
+    height: 200px;
+    overflow-y: auto;
+}
+
+.helpdesk-container {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.helpdesk-search-term {
+    font-size: 10px;
+    cursor: pointer;
+    border-radius: 5px 0 0 5px;
+    width: 250px;
+    height: 30px;
+    padding: 5px;
+}
+
+.hepldesk-close-people {
+    background-color:var(--main-button-color);
+    height: 30px;
+    width: 30px;
+    margin-left: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.help-desk-table {
+    width: 100%;
+    background-color: white;
+    margin-top: 10px;
+    overflow-x: auto;
+}
+
+.help-desk-table-main {
+    width: 100%;
+    background-color: white;
+
+    border-collapse: collapse;
+    overflow-x: auto;
+}
+
+.help-desk-table-row {
+    background-color:var(--main-button-color);
+
+    color: white;
+}
+
+.help-desk-table-column {
+    padding: 10px;
+    font-size: 12px;
+    text-align: center;
+}
+
+.custom-button {
+    border-radius: 5px;
+    padding: 5px 10px;
+    color: white;
+    cursor: pointer;
+}
+
+.helpdesk-request {
+    padding: 10px;
+    font-size: 12px;
+    text-align: center;
+    text-transform: capitalize;
+}
+
+.help-desk-table-main th,
+td {
+    border-bottom: none;
+}
+
+.submit-button {
+    background-color: green;
+}
+
+.cancel-button {
+    background-color: red;
+}
+
+.custom-checkbox-helpdesk:checked {
+    background-color: var(--main-button-color);
+    border-color: var(--main-button-color);
+}
+
+.custom-checkbox-helpdesk {
+    appearance: none;
+    /* Remove default checkbox styling */
+    /* Set the height of the checkbox */
+
+    outline: none;
+    /* Remove outline on focus */
+    cursor: pointer;
+    /* Pointer cursor for hover effect */
+    /* Smooth transition */
+}
+
+.dropdown-options {
+    display: none;
+    /* Hidden by default */
+    position: absolute;
+    background-color: var(--main-color);
+    border-radius: 5px;
+    z-index: 1;
+    width: 100%;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.form-select-category option {
+    background-color: var(--main-color);
+    /* Background for options */
+    /* Text color for options */
+    padding: 5px;
+    cursor: pointer;
+}
+
+/* Default option styling */
+.option-default {
+    color: var(--main-color);
+}
+.modal-dialog{
+    font-size: 12px;
+}
+.form-control {
+    color: #778899;
+    font-weight: 500;
+    font-size: 12px;
+}
+/* General styling for nav links */
+.custom-nav-link {
+    color: var(--label-color, #333);
+    padding: 10px 20px;
+    text-decoration: none;
+    display: block;
+    transition: all 0.3s ease;
+    border: 1px solid transparent;
+    border-radius: 50px; /* Rounded pill shape */
+    box-sizing: border-box;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+/* Hover state for tabs */
+.custom-nav-link:hover {
+    color: var(--main-button-color, #007bff) !important;
+    background-color: #fff;
+    border-color: var(--main-button-color, #007bff);
+    transform: translateY(-2px); /* Subtle lift effect */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Shadow on hover */
+}
+
+/* Active tab styling */
+.custom-nav-link.active {
+    color: white !important;
+    background-color: var(--main-button-color, #007bff) !important;
+    border-color: var(--main-button-color, #007bff);
+    border-bottom-color: transparent;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Slight shadow for active tab */
+    transform: translateY(0); /* No lift for active */
+}
+
+/* Smooth animations for hover and active state */
+.custom-nav-link.active,
+.custom-nav-link:hover {
+    transition: all 0.4s ease-in-out;
+}
+
+/* Responsive design for smaller screens */
+@media (max-width: 768px) {
+    .custom-nav-link {
+        padding: 8px 15px;
+        font-size: 14px;
+    }
+}
+
+
+/* Request Ended */
 /* Employee Information started*/
 /* Basic styles for the tabs */
 .tab-container {

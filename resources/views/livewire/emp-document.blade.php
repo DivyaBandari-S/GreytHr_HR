@@ -49,6 +49,13 @@
     font-size: 14px;
     color: #888;
 }
+.modal {
+ 
+    justify-content: center;
+    align-items: center;
+    overflow: hidden; /* Prevents content overflow */
+}
+
 
 /* Right footer - Document thumbnail */
 .footer-right .document-thumbnail {
@@ -121,7 +128,7 @@
 
     /* Adjust modal dialog for smaller screens */
     .modal-dialog {
-        max-width: 90%; /* Make modal wider on small screens */
+        max-width: 70%; /* Make modal wider on small screens */
     }
 
     /* Adjust button sizes */
@@ -249,6 +256,7 @@
     </p>
     @foreach($selectedPeopleData as $personData)
     <span class="selected-person d-flex align-items-center">
+
         <img class="profile-image-selected" src="data:image/jpeg;base64,{{ $personData['image'] ?? '-' }}">
 
         <p class="selected-name mb-0">
@@ -539,8 +547,8 @@ aria-describedby="basic-addon1"
                     <!-- Modal for Document -->
                     @if($showDocDialog)
                     <div class="modal fade show" tabindex="-1" role="dialog" style="display: block; overflow-y: auto;">
-                        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-                            <div class="modal-content">
+                        <div class="modal-dialog modal-dialog-centered modal-lg align-items-center justify-content-center" role="document">
+                            <div class="modal-content  " style="width:60%;">
                                 <div class="modal-header helpdesk-modal align-items-center">
                                     <h5 class="modal-title helpdesk-title"><b>Documents</b></h5>
                                     <button type="button" class="btn-close" wire:click="$set('showDocDialog', false)" aria-label="Close"></button>
@@ -548,44 +556,49 @@ aria-describedby="basic-addon1"
                                 <div class="modal-body" style="overflow-y: auto; max-height: 500px; padding: 20px;">
                                     <div class="mb-3">
                                         <label for="employeeId" class="col-form-label" style="font-size: 12px;">Employee</label>
-                                        <input type="text" class="form-control" id="employeeId" name="employeeId" readonly value="{{ $fullName }}@if($empId) (#{{ strtoupper($empId) }}) @endif" style="font-size: 12px;">
+                                        <input type="text" class="form-control" id="employeeId" name="employeeId" readonly value="{{ $fullName }}@if($empId) (#{{ strtoupper($empId) }}) @endif" style="font-size: 12px;width:70%">
                                     </div>
 
                                     <div class="mb-3">
                                         <label for="documentName" class="col-form-label" style="font-size: 12px;">Document Name<span style="color:red">*</span></label>
-                                        <input type="text" class="form-control" id="documentName" name="documentName" wire:model.defer="documentName" required>
+                                        <input type="text" class="form-control" id="documentName" name="documentName" wire:model.defer="documentName" style="width:70%" >
                                         @error('documentName') <span class="text-danger" style="font-size: 10px;">{{ $message }}</span> @enderror
                                     </div>
 
                                     <div class="mb-3">
                                         <label for="category" class="col-form-label" style="font-size: 12px;">Category <span style="color:red">*</span></label>
-                                        <select wire:model.lazy="category" wire:keydown.debounce.500ms="validateField('category')" id="category" name="category" class="form-control" style="font-size: 12px;">
-                                            <option style="color: #778899;" value="">Select Category</option>
-                                            <optgroup label="HR">
-                                                <option value="Accounts & Statutory">Accounts & Statutory</option>
-                                                <option value="Address">Address</option>
-                                                <option value="Background Verification">Background Verification</option>
-                                                <option value="Education">Education</option>
-                                                <option value="Experience">Experience</option>
-                                                <option value="Joining Kit">Joining Kit</option>
-                                                <option value="Previous Employment">Previous Employment</option>
-                                                <option value="Projects">Projects</option>
-                                                <option value="Qualification">Qualification</option>
-                                                <option value="Vaccination Certificate">Vaccination Certificate</option>
-                                            </optgroup>
-                                        </select>
+                                        <div class="dropdown-container ">
+    <select wire:model.lazy="category" wire:keydown.debounce.500ms="validateField('category')" 
+            id="category" name="category" class="form-control dropdown-toggle" style="font-size: 12px;width:70%">
+        <option style="color: #778899;" value="">Select Category</option>
+      
+            <option value="Accounts & Statutory">Accounts & Statutory</option>
+            <option value="Address">Address</option>
+            <option value="Background Verification">Background Verification</option>
+            <option value="Education">Education</option>
+            <option value="Experience">Experience</option>
+            <option value="Joining Kit">Joining Kit</option>
+            <option value="Previous Employment">Previous Employment</option>
+            <option value="Projects">Projects</option>
+            <option value="Qualification">Qualification</option>
+            <option value="Vaccination Certificate">Vaccination Certificate</option>
+   
+    </select>
+    <i class="bi bi-caret-down dropdown-icon"></i>
+</div>
+
                                         @error('category') <span class="text-danger" style="font-size: 10px;">{{ $message }}</span> @enderror
                                     </div>
 
                                     <div class="mb-3">
                                         <label for="description" class="form-label" style="font-size: 12px;">Description<span style="color:red">*</span></label>
-                                        <textarea class="form-control" id="description" name="description" wire:model.defer="description" style="font-size: 12px; height: 40px;"></textarea>
+                                        <textarea class="form-control" id="description" name="description" wire:model.defer="description" style="font-size: 12px; height: 40px;width:70%"></textarea>
                                         @error('description') <span class="text-danger" style="font-size: 10px;">{{ $message }}</span> @enderror
                                     </div>
 
                                     <div class="mb-3">
                                         <label for="file" class="form-label" style="font-size: 12px;">File:</label>
-                                        <input type="file" id="file" name="file" class="d-none" accept=".pdf,.xls,.xlsx,.doc,.docx,.txt,.ppt,.pptx,.gif,.jpg,.png" wire:model="file_path" required>
+                                        <input type="file" id="file" name="file" class="d-none" accept=".pdf,.xls,.xlsx,.doc,.docx,.txt,.ppt,.pptx,.gif,.jpg,.png" wire:model="file_path" >
                                         <label for="file" class="upload-button d-inline-flex align-items-center" style="cursor: pointer;">
                                             <i class="bx bx-upload upload-icon me-1"></i> 
                                             <span class="text-primary">Upload File</span>
@@ -610,7 +623,7 @@ aria-describedby="basic-addon1"
                                 </div>
 
                                 <div class="modal-footer justify-content-center" style="padding: 10px;">
-                                    <button wire:click="submit" class="submit-btn" type="button">Submit</button>
+                                    <button wire:click="submit" class="submit-btn" type="button" >Submit</button>
                                     <button wire:click="$set('showDocDialog', false)" class="cancel-btn" type="button">Cancel</button>
                                 </div>
                             </div>
@@ -787,6 +800,14 @@ aria-describedby="basic-addon1"
 </div>
        </div> <!-- Tab buttons -->
 </div>
+<script>
+    window.addEventListener('/hr/emp-document', () => {
+        // Go back to the previous page without refreshing
+        history.back();
+    });
+</script>
+
+
 
 <script>
     function selectOption(option) {

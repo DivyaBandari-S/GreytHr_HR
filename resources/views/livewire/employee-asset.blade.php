@@ -1,34 +1,89 @@
 <div >
+<style>
+        .filter-container {
+            display: flex;
+        justify-content: flex-start; /* Align items to the start */
+        align-items: center;
+        gap: 2px; /* Reduce the gap between dropdowns */
+        flex-wrap: wrap;
+        margin: 10px auto;
+        padding: 10px;
+      
 
-<div class="main__body">
-       <div class="tab-container">
-       <div class="tab-pane">
-                    <button
-                        type="button"
-                        data-tab-pane="active"
-                        class="tab-pane-item active"
-                        onclick="tabToggle()">
-                        <span class="tab-pane-item-title">01</span>
-                        <span class="tab-pane-item-subtitle">main</span>
-                    </button>
-                    <button
-                        type="button"
-                        data-tab-pane="in-review"
-                        class="tab-pane-item after"
-                        onclick="tabToggle()">
-                        <span class="tab-pane-item-title">02</span>
-                        <span class="tab-pane-item-subtitle">Activity</span>
-                    </button>
-                   
-                </div>
+        border-radius: 8px;
+        }
+        .asset-dropdown {
+            position: relative;
+            margin: 5px;
+        }
+        .asset-dropdown-toggle {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color:white;
+            font-size: 12px;
+         margin-left: 80px;
+            text-decoration: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .asset-dropdown-toggle:hover {
+            background-color: #0056b3;
+        }
+        .asset-dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            width: 200px;
+        }
+        .asset-dropdown:hover .asset-dropdown-menu {
+            display: block;
+        }
+        .asset-dropdown-menu ul {
+            list-style: none;
+            padding: 10px;
+            margin: 0;
+        }
+        .asset-dropdown-menu li {
+            padding: 8px 10px;
+            cursor: pointer;
+        }
+        .asset-dropdown-menu li:hover {
+            background-color: #f1f1f1;
+        }
+        .asset-search{
+            width: calc(100% - 20px);
+            margin: 0 auto 10px;
+            margin-top: 10px;
+           margin-left: 10px;
+           height:30px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+    </style>
+<div class="main__body" >
+<ul class="nav nav-tabs custom-nav-tabs" role="tablist" style="margin-top:67px">
+    <li class="nav-item" role="presentation">
+        <a class="nav-link active custom-nav-link" id="simple-tab-0" data-bs-toggle="tab" href="#simple-tabpanel-0" role="tab" aria-controls="simple-tabpanel-0" aria-selected="true">Main</a>
+    </li>
+    <li class="nav-item" role="presentation">
+        <a class="nav-link custom-nav-link" id="simple-tab-1" data-bs-toggle="tab" href="#simple-tabpanel-1" role="tab" aria-controls="simple-tabpanel-1" aria-selected="false">Activity</a>
+    </li>
+</ul>
 
-<!-- Tab Content -->
-<div class="tab-page active" data-tab-page="active">
-<div class="row justify-content-center"  >
-                        <div class="col-md-8 custom-container d-flex flex-column">
+<div class="tab-content pt-5" id="tab-content">
+  <div class="tab-pane active" id="simple-tabpanel-0" role="tabpanel" aria-labelledby="simple-tab-0" style="overflow-x: hidden;">
+    <div class="row justify-content-center"  >
+                        <div class="col-md-9 custom-container d-flex flex-column">
                         <div class="d-flex align-items-center mb-2">
     <p class="main-text mb-0" style="width:88%">
-        This page allows you to add/edit the profile details of an employee. The page helps you to keep the employee information up to date.
+    View and manage soft copies of an employee's documents from the Employee Documents page. Documents available under the Documents tab can be Education Documents, Address Proof Documents, Previous employment-related documents, etc. Click Add Documents to add new documents. 
     </p>
     <p class="hide-text" style="cursor: pointer;" wire:click="toggleDetails">
         {{ $showDetails ? 'Hide Details' : 'Info' }}
@@ -39,7 +94,7 @@
                                 
                            
                             <div class="secondary-text">
-    Explore greytHR by 
+    Explore HR Xpert by 
     <span class="hide-text">Help-Doc</span>, watching How-to 
     <span class="hide-text">Videos</span> and 
     <span class="hide-text">FAQ</span>
@@ -51,7 +106,7 @@
                  
 
                 <div class="row justify-content-center mt-2 "  >
-                <div class="col-md-8 custom-container d-flex flex-column bg-white">
+                <div class="col-md-9 custom-container d-flex flex-column bg-white" >
     <div class="row justify-content-center mt-3 flex-column m-0 employee-details-main" >
         <div class="col-md-9">
             <div class="row " style="display:flex;">
@@ -59,8 +114,34 @@
                     <p class="emp-heading" >Start searching to see specific employee details here</p>
                     <div class="col mt-3" style="display: flex;">
              
-                        <p class="main-text">Employee Type:</p>
-                        <p  class="edit-heading ml-2">Current Employees</p>
+                        <p class="main-text mt-1">Employee Type:</p>
+                       
+                        <div class="dropdown">
+                        <button class="btn btn dropdown-toggle dp-info" type="button" data-bs-toggle="dropdown" style="font-size:12px">
+    {{ ucfirst($selectedOption) }} Employees
+    <span class="arrow-for-employee"></span><span class="caret"></span>
+</button>
+
+    <span class="caret"></span></button>
+    <ul class="dropdown-menu" style="font-size:12px; ">
+    <li class="updated-drodown" >
+        <a href="#" wire:click.prevent="updateSelected('all')" class="dropdown-item custom-info-item">All Employees</a>
+    </li>
+    <li class="updated-drodown" >
+        <a href="#" wire:click.prevent="updateSelected('current')" class="dropdown-item custom-info-item">Current Employees</a>
+    </li>
+    <li class="updated-drodown" >
+        <a href="#" wire:click.prevent="updateSelected('past')" class="dropdown-item custom-info-item">Resigned Employees</a>
+    </li>
+    <li class="updated-drodown" >
+        <a href="#" wire:click.prevent="updateSelected('intern')" class="dropdown-item custom-info-item">Intern </a>
+    </li>
+</ul>
+
+  </div>
+         
+
+                      
                     </div>
                  
                     <div class="profile" >
@@ -72,26 +153,41 @@
     </p>
     @foreach($selectedPeopleData as $personData)
     <span class="selected-person d-flex align-items-center">
+
         <img class="profile-image-selected" src="data:image/jpeg;base64,{{ $personData['image'] ?? '-' }}">
 
         <p class="selected-name mb-0">
-            @php
-                // Split the name into parts
-                $nameParts = explode(' ', $personData['name']);
+        @php
 
-                // Capitalize the first letter of the first name
-                $firstName = isset($nameParts[0]) ? ucfirst(strtolower($nameParts[0])) : '';
+        // Split the name into parts (excluding emp_id)
+        $nameParts = explode(' ', $personData['name']);
 
-                // Get the last name parts (excluding emp_id)
-                $lastNameParts = array_slice($nameParts, 1); // Get all parts after the first name
+        // Capitalize the first letter of the first name
+        $firstName = isset($nameParts[0]) ? ucfirst(strtolower($nameParts[0])) : '';
 
-                // Capitalize each part of the last name
-                $formattedLastName = implode(' ', array_map('ucfirst', array_map('strtolower', $lastNameParts)));
+        // Get the last name parts, excluding the first name and emp_id
+        $lastNameParts = array_filter($nameParts, function($part) {
+            return !preg_match('/#\(.+\)/', $part); // Exclude emp_id in the form #(EMP_ID)
+        });
 
-                // Combine first and last names
-                $fullName = trim($firstName . ' ' . $formattedLastName);
-            @endphp
-            {{ $fullName }} <!-- Display only the full name -->
+        // Capitalize each part of the last name
+        $formattedLastName = implode(' ', array_map('ucfirst', array_map('strtolower', $lastNameParts)));
+
+        // Combine first name and formatted last name
+        $fullName = trim( ' ' . $formattedLastName);
+
+        // Extract emp_id (already in uppercase) from the name string
+        preg_match('/#\((.*)\)/', $personData['name'], $matches);
+        $empId = isset($matches[1]) ? $matches[1] : '';
+    @endphp
+
+    <!-- Display the formatted name and uppercase emp_id -->
+    <div>
+        <strong>{{ $fullName }}</strong> @if($empId) (#{{ strtoupper($empId) }}) @endif
+    </div>
+ 
+
+<!-- Display only the full name -->
         </p>
 
         <p class="emp-id mb-0" style="font-size: 12px; color: white;">
@@ -172,8 +268,20 @@ aria-describedby="basic-addon1"
                                         No People Found
                                     </div>
                                     @else
-                                 
-                                    @foreach($peopleData as $employee)
+                                    @if(count($employees) > 0)
+                                    @if (session()->has('warning'))
+    <div class="alert alert-warning alert-dismissible fade show" role="alert" style="font-size: 12px; padding: 5px 10px; width: 100%; max-width: 500px; margin: 10px auto;">
+        {{ session('warning') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" style="margin-left: 2px; font-size: 8px;">
+            &times;
+        </button>
+    </div>
+@endif
+
+
+
+                                    @foreach($employees as $employee)
+
     @if(stripos($employee->first_name . ' ' . $employee->last_name, $searchTerm) !== false)
         <label wire:click="selectPerson('{{ $employee->emp_id }}')" class="search-container">
             <div class="row align-items-center">
@@ -181,11 +289,12 @@ aria-describedby="basic-addon1"
                     <input type="checkbox" id="employee-{{ $employee->emp_id }}" 
                            wire:click="updateselectedEmployee('{{ $employee->emp_id }}')"  
                            wire:model="selectedPeople" 
-                           value="{{ $employee->emp_id }}" 
+                           value="{{ $employee->emp_id }}" class="form-check-input custom-checkbox-information"
                            {{ in_array($employee->emp_id, $selectedPeople) || $employee->isChecked ? 'checked' : '' }}>
                 </div>
                 <div class="col-auto">
                     @if($employee->image && $employee->image !== 'null')
+                    
                         <img class="profile-image"  src="data:image/jpeg;base64,{{($people->image ??'-') }}" >
                     @else
                         @if($employee->gender == "Male")
@@ -216,6 +325,7 @@ aria-describedby="basic-addon1"
         </label>
     @endif
 @endforeach
+@endif
 
 @endif
 
@@ -238,7 +348,7 @@ aria-describedby="basic-addon1"
                 <div class="col-md-1">
     <!-- Modified image container to have a fixed height -->
     <div class="image-container d-flex align-items-end" >
-        <img src="https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcTrb080MeuXwgT6ZB-x7qWZ3i_xQks-9xsRz5F9wWIyKbEEbGzL" alt="Employee Image" style="height: 180px; width:300px;align-items:end">
+        <img src="{{ asset('images/employeeleave.png') }}"  alt="Employee Image" style="height: 180px; width:280px;align-items:end">
     </div>
 </div>
 
@@ -253,10 +363,83 @@ aria-describedby="basic-addon1"
                 
         </div>
     </div>
-
+        
+ 
     @if(!empty($selectedPeople))
     <div class="row mt-3 p-0 justify-content-center">
-   
+    <div class="filter-container">
+        <!-- Status Dropdown -->
+        <div class="asset-dropdown">
+            <a class="asset-dropdown-toggle"  data-bs-toggle="dropdown">Status: All     <span class="caret"></span></a>
+            <div class="asset-dropdown-menu">
+                <input class="search asset-search" type="text" placeholder="Search Status">
+                <ul>
+                    <li>All</li>
+                    <li>Available</li>
+                    <li>Damaged</li>
+                    <li>Decommissioned</li>
+                    <li>Issued</li>
+                    <li>Lost</li>
+                    <li>Returned</li>
+                    <li>Under Repair</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Asset Group Dropdown -->
+        <div class="asset-dropdown">
+            <a class="asset-dropdown-toggle">Asset Group: All <i class="caret"></i></a>
+            <div class="asset-dropdown-menu">
+                <input class="search" type="text" placeholder="Search Asset Group">
+                <ul>
+                    <li>All</li>
+                    <li>Admin Asset</li>
+                    <li>IT Asset</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Asset Type Dropdown -->
+        <div class="asset-dropdown">
+            <a class="asset-dropdown-toggle">Asset Type: All <i class="caret"></i></a>
+            <div class="asset-dropdown-menu">
+                <input class="search" type="text" placeholder="Search Asset Type">
+                <ul>
+                    <li>All</li>
+                    <li>Data Card</li>
+                    <li>Laptop</li>
+                    <li>Pen Drive</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Active Status Dropdown -->
+        <div class="asset-dropdown">
+            <a class="asset-dropdown-toggle">Active: Active <i class="caret"></i></a>
+            <div class="asset-dropdown-menu">
+                <input class="search" type="text" placeholder="Search Active Status">
+                <ul>
+                    <li>All</li>
+                    <li>Active</li>
+                    <li>Inactive</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Employee Dropdown -->
+        <div class="asset-dropdown">
+            <a class="asset-dropdown-toggle">Employee: All <i class="caret"></i></a>
+            <div class="asset-dropdown-menu">
+                <input class="search" type="text" placeholder="Type employee name or number">
+                <ul>
+                    <li>All</li>
+                    <li>Employee 1</li>
+                    <li>Employee 2</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
     </div>
     
     @if($employee)
