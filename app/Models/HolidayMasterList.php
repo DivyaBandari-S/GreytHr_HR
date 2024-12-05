@@ -5,11 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class HolidayCalendar extends Model
+class HolidayMasterList extends Model
 {
     use HasFactory;
-    protected $fillable=[
-       'day' ,'date', 'month', 'year', 'festivals', 'status'
-     ];
-
+    protected $fillable = ['occasion', 'date', 'day', 'state'];
 }
