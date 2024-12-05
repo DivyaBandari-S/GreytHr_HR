@@ -484,9 +484,11 @@ class YearEndProcess extends Component
         }
 
         foreach ($lapsedData as $data) {
-            $data->update(['is_lapsed' => true]);
+            $data->update([
+                'is_lapsed' => true,
+                'lapsed_date' => now()
+            ]);
         }
-
         FlashMessageHelper::flashSuccess('success');
         $this->showYearEndProcessModal = false;
     }

@@ -17,7 +17,9 @@ class EmployeeLeaveBalances extends Model
         'status',
         'periodicity',
         'leave_policy_id',
-        'is_lapsed'
+        'is_lapsed',
+        'lapsed_date',
+        'batch_id'
     ];
 
     protected static function boot()
@@ -27,6 +29,7 @@ class EmployeeLeaveBalances extends Model
     /**
      * Get the employee associated with the leave balance.
      */
+    
     public function employee()
     {
         return $this->belongsTo(EmployeeDetails::class, 'emp_id', 'emp_id');

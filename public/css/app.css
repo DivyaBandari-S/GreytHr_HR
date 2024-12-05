@@ -717,7 +717,7 @@ label {
     border: none;
 }
 .form-check-label-options {
-    font-size: 13px;
+    font-size: 12px;
     margin-left: 5px;
 }
 .onboarding-check-boxes {
@@ -728,7 +728,7 @@ input {
     margin-bottom: 0px;
 }
 .form-check-label {
-    font-size: 10px;
+    font-size: 12px;
 }
 .custom-select {
     color: #2c3e50;
@@ -2681,7 +2681,13 @@ td {
 .dropdown-option:hover {
     background-color: #dbedf4; /* Light blue on hover */
 }
-
+.search-emp{
+    outline: none;
+    padding: 5px 10px;
+}
+.btnAnchor{
+    color: white !important;
+}
 /* Hover effect for the button */
 .submit-btn:hover {
     background-color: #357ab8;
@@ -2821,17 +2827,24 @@ td {
 .employee-checkbox-container {
     display: flex;
     flex-direction: column;
+    align-items: start;
     width: 25%;
     max-height: 200px;
     overflow-y: auto;
     background-color: white;
     padding: 10px;
 }
+.fieldsWidth{
+    width: 15%;
+}
 
 .form-check {
     display: flex;
     align-items: center;
-    justify-content: center;
+    gap: 7px;
+}
+.form-check-input{
+    cursor: pointer;
 }
 .managerFilter{
     font-size: 14px;
@@ -2948,6 +2961,9 @@ td {
     color: var(--label-color);
     font-size: var(--normal-font-size);
 }
+.pendingLeaveTable  .trHover:hover{
+   background-color: pink !important;
+}
 .pendingLeaveTable tbody tr:nth-of-type(odd) {
     background-color: #f6f6f6 !important; /* Light gray */
 }
@@ -2956,10 +2972,6 @@ td {
     background-color: #ffffff !important; /* White */
 }
 
-/* Row hover effect */
-.pendingLeaveTable .table-hover tbody tr:hover {
-    background-color: var(--main-table-heading-bg-color) !important;
-}
 
 .yearEnd-accordion{
     width: 80%;

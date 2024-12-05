@@ -7,6 +7,7 @@ use App\Models\Company;
 use App\Models\EmployeeDetails;
 use App\Models\LeavePolicySetting;
 use Illuminate\Support\Facades\Log;
+use Livewire\Attributes\Validate;
 use Livewire\Component;
 
 class LeaveSettingPolicy extends Component
@@ -25,11 +26,17 @@ class LeaveSettingPolicy extends Component
     protected $rules = [
         'leave_name' => 'required|string|max:50',
         'grant_days' => 'required|integer',
-        'leave_frequency' => 'nullable|in:Annual,Monthly',
+        'leave_frequency' => 'required|in:Annual,Monthly',
         'leave_code' => 'required|string|unique:leave_policy_settings,leave_code',
         'company_id' => 'required|exists:companies,company_id',
     ];
 
+    protected $messages = [
+        'leave_name.required' => 'Leave name required',
+        'grant_days.required' => 'Grant days required',
+        'leave_frequency.required' => 'Leave frequency required',
+        'leave_code.required' => 'Leave code required',
+    ];
     public function mount()
     {
         $this->leavePolicies = LeavePolicySetting::all()->keyBy('id')->toArray();
@@ -86,19 +93,25 @@ class LeaveSettingPolicy extends Component
             $policy->delete();
 
             // Optionally, send a success message
-            FlashMessageHelper::flashSuccess( 'Policy deleted successfully!');
+            FlashMessageHelper::flashSuccess('Policy deleted successfully!');
 
             // Optionally, you can refresh the list or update the array after deletion
             $this->leavePolicies = LeavePolicySetting::all()->keyBy('id')->toArray(); // Refresh policies list
         } else {
-            FlashMessageHelper::flashError( 'Policy not found!');
+            FlashMessageHelper::flashError('Policy not found!');
         }
         $this->getLeaveTypes();
+    }
+    public function valdiateField($field)
+    {
+        $this->validateOnly($field);
     }
 
     public function addNewType()
     {
+        $this->validate();
         try {
+            // Create the new leave policy after validation
             $check = LeavePolicySetting::create([
                 'leave_name' => $this->leave_name,
                 'grant_days' => $this->grant_days,
@@ -107,18 +120,22 @@ class LeaveSettingPolicy extends Component
                 'leave_code' => $this->leave_code,
                 'company_id' => json_encode($this->company_id),
             ]);
+
             if ($check) {
                 $this->getLeaveTypes();
             }
+
             // Reset fields after submission
             $this->reset(['leave_name', 'grant_days', 'leave_frequency', 'leave_code', 'company_id']);
+
             // Optionally, add a success message
             FlashMessageHelper::flashSuccess('Leave policy added successfully!');
         } catch (\Exception $e) {
-            // flash an error message
+            // Flash an error message if an exception occurs
             FlashMessageHelper::flashError('An error occurred while adding the leave policy.');
         }
     }
+
 
     public function render()
     {

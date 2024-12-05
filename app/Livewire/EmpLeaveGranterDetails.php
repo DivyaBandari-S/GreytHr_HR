@@ -31,10 +31,11 @@ class EmpLeaveGranterDetails extends Component
     public $selectedEmployeeIds = [];
     public $employeeIds = [];  // To store the list of employee IDs for the dropdown
     public $startYear;
-    public $selectAll = false;
+    public $selectAll = null;
     public $endYear;
     public $yearRange;
     public $showEmployeeList = false;
+    public $employeeLeaveBalance;
     protected $rules = [
         'leavePolicyIds' => 'required|array',
         'leavePolicyIds.*' => 'exists:leave_policy,id', // Ensure each ID exists in the leave_policy table
@@ -60,7 +61,6 @@ class EmpLeaveGranterDetails extends Component
 
             // Fetch leave policies
             $this->leavePolicies = LeavePolicySetting::all();
-
             // Load employee list based on selected company or criteria
             $this->loadEmployeeList();
 
@@ -337,7 +337,7 @@ class EmpLeaveGranterDetails extends Component
     public function toggleSelectAll()
     {
         if ($this->selectAll) {
-            // Select all employees including the 'all' option for all employees
+            // Select all employees
             $this->selectedEmployeeIds = array_merge(array_keys($this->employeeIds), ['all']);
         } else {
             // Deselect all employees
@@ -359,7 +359,10 @@ class EmpLeaveGranterDetails extends Component
         }
 
         try {
-            // Prepare the leave policies data to be stored in JSON format
+            // Step 1: Determine the new batch ID once
+            $newBatchId = EmployeeLeaveBalances::max('batch_id') + 1;
+
+            // Step 2: Prepare the leave policies data to be stored in JSON format
             $leavePoliciesData = [];
 
             foreach ($this->selectedPolicyIds as $policyId) {
@@ -374,25 +377,40 @@ class EmpLeaveGranterDetails extends Component
                 }
             }
 
-            // Loop through employees to create leave balances
-            foreach ($this->selectedEmployeeIds as $empId) {
-                $period = $this->getPeriodBasedOnPeriodicity();
+            // Step 3: Combine selected employees and 'all' option and ensure no duplicates
+            $employeeIdsToProcess = [];
 
-                // If 'all' is selected, create leave balance for all active employees
-                if ($empId == 'all') {
-                    $employees = EmployeeDetails::whereIn('emp_id', array_keys($this->employeeIds))
-                        ->whereIn('employee_status', ['active', 'on-probation'])
-                        ->get();
+            if (in_array('all', $this->selectedEmployeeIds)) {
+                // Add all active employees to the array (only once)
+                $employees = EmployeeDetails::whereIn('emp_id', array_keys($this->employeeIds))
+                    ->whereIn('employee_status', ['active', 'on-probation'])
+                    ->get();
 
-                    foreach ($employees as $employee) {
-                        $this->createLeaveBalance($employee->emp_id, $leavePoliciesData, $period);
-                    }
-                } else {
-                    $this->createLeaveBalance($empId, $leavePoliciesData, $period);
+                foreach ($employees as $employee) {
+                    $employeeIdsToProcess[] = $employee->emp_id;
                 }
             }
 
-            // Clear selected data
+            // Merge and deduplicate individual selected employee IDs
+            $employeeIdsToProcess = array_merge($employeeIdsToProcess, array_diff($this->selectedEmployeeIds, ['all']));
+
+            // Remove duplicates from the array to avoid processing the same employee twice
+            $employeeIdsToProcess = array_unique($employeeIdsToProcess);
+
+            // Log the employees to be processed for debugging purposes
+            Log::info('Employees to be processed: ' . implode(', ', $employeeIdsToProcess));
+
+            // Step 4: Loop through employees to create leave balances
+            foreach ($employeeIdsToProcess as $empId) {
+                $period = $this->getPeriodBasedOnPeriodicity();
+                $this->createLeaveBalance($empId, $leavePoliciesData, $period, $newBatchId);
+            }
+
+            // Step 5: Flash success message
+            FlashMessageHelper::flashSuccess('Leave balances granted successfully with batch ID: ' . $newBatchId);
+            $this->selectAll = null;
+            $this->resetLeaveGrant();
+            // Step 6: Clear selected data
             $this->selectedPolicyIds = [];
             $this->selectedEmployeeIds = [];
         } catch (\Illuminate\Database\QueryException $e) {
@@ -404,44 +422,43 @@ class EmpLeaveGranterDetails extends Component
         }
     }
 
+
+
     // Helper function to create leave balance for an employee
-    private function createLeaveBalance($empId, $leavePoliciesData, $period)
+    private function createLeaveBalance($empIds, $leavePoliciesData, $period, $batchId)
     {
         try {
-            // Check if a leave balance already exists for the given employee and period
-            $existingBalance = EmployeeLeaveBalances::where('emp_id', $empId)
-                ->where('period', $period)
-                ->first();
-
-            // If a leave balance already exists, flash an error message
-            if ($existingBalance) {
-                FlashMessageHelper::flashError('Leave balance already exists for employee: ' . $empId . ' for the period: ' . $period);
-                return;
+            // Ensure $empIds is an array
+            if (is_string($empIds)) {
+                $empIds = explode(',', $empIds); // Convert comma-separated string to array
             }
 
-            // If no existing balance is found, create a new leave balance record with the JSON data
-            EmployeeLeaveBalances::create([
-                'emp_id' => $empId,
-                'leave_policy_id' => json_encode($leavePoliciesData), // Store leave policies as JSON
-                'status' => 'Granted',
-                'period' => $period,
-                'periodicity' => $this->periodicity,
-            ]);
-
-            // Flash success message
-            FlashMessageHelper::flashSuccess('Leave balance granted successfully for employee: ' . $empId . ' for the period: ' . $period);
+            foreach ($empIds as $empId) {
+                // Create a new leave balance record with the provided batch ID
+                EmployeeLeaveBalances::create([
+                    'emp_id' => $empId,
+                    'leave_policy_id' => json_encode($leavePoliciesData), // Store leave policies as JSON
+                    'status' => 'Granted',
+                    'period' => $period,
+                    'periodicity' => $this->periodicity,
+                    'batch_id' => $batchId, // Assign the same batch ID
+                ]);
+            }
         } catch (\Illuminate\Database\QueryException $e) {
             Log::error("Database Query Exception while creating leave balance: " . $e->getMessage());
-            FlashMessageHelper::flashError('A database error occurred while creating leave balance for employee: ' . $empId);
+            FlashMessageHelper::flashError('A database error occurred while creating leave balances.');
         } catch (\Exception $e) {
             Log::error("General Exception while creating leave balance: " . $e->getMessage());
-            FlashMessageHelper::flashError('An unexpected error occurred while processing leave balance for employee: ' . $empId);
+            FlashMessageHelper::flashError('An unexpected error occurred while processing leave balances.');
         }
     }
 
-
-
-
+    //reset the fields
+    public function resetLeaveGrant()
+    {
+        $this->periodicity = null;
+        $this->period = null;
+    }
     private function getPeriodBasedOnPeriodicity()
     {
         if ($this->periodicity == 'Monthly') {
@@ -596,6 +613,11 @@ class EmpLeaveGranterDetails extends Component
 
     public function render()
     {
-        return view('livewire.emp-leave-granter-details');
+        // Get the leave balances and group by batch_id
+        $this->employeeLeaveBalance = EmployeeLeaveBalances::orderBy('created_at', 'desc')
+            ->get();
+        return view('livewire.emp-leave-granter-details', [
+            'employeeLeaveBalance' => $this->employeeLeaveBalance
+        ]);
     }
 }

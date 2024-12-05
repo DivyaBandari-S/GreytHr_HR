@@ -81,6 +81,7 @@
                         <table class="leave-table">
                             <thead>
                                 <tr>
+                                    <th></th>
                                     <th>#</th>
                                     <th>Employee No</th>
                                     <th>Employee Name</th>
@@ -91,22 +92,49 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                @if($employeeLeaveBalance)
+                                @foreach($employeeLeaveBalance as $batchId => $leaveBalances)
                                 <tr>
-                                    <td>
-                                        <span class="batch-info">Batch ID: 578</span>
-                                        <span>Granted On: 22 Aug 2024 06:06:03</span>
-                                    </td>
-                                    <td>XSS-0571</td>
-                                    <td>KALIGOTLA SAI NAGA SOWMYA</td>
-                                    <td>Probation</td>
-                                    <td>01 Aug 2024</td>
-                                    <td>3.34</td>
-                                    <td>
-                                        <button class="delete-btn">&#128465;</button>
+                                    <td colspan="8">
+                                        <div class="accordion accordion-flush" id="accordionFlushExample">
+                                            <div class="accordion-item">
+                                                <div class="accordion-header">
+                                                    <button class="accordion-button collapsed" type="button">
+                                                        <i class="fas fa-plus"></i>
+                                                            <div class="d-flex flex-column">
+                                                                <span>Batch ID: <strong>oo</strong></span>
+                                                                <span>granted on: <strong>01 dec 34:u789</strong></span>
+                                                            </div>
+                                                            <div>
+                                                                peroid
+                                                            </div>
+                                                            <div>
+                                                                leavetype
+                                                            </div>
+                                                            <div>
+                                                                headcount
+                                                            </div>
+                                                    </button>
+
+                                                </div>
+
+                                                <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+                                                    <div class="accordion-body">
+                                                        Placeholder content for this accordion, which is intended to demonstrate the <code>.accordion-flush</code> class. This is the first item's accordion body.
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </td>
                                 </tr>
-                                <!-- Repeat similar rows -->
+                                @endforeach
+                                @else
+                                <tr>
+                                    <td>no data found</td>
+                                </tr>
+                                @endif
                             </tbody>
+
                         </table>
                     </div>
                 </div>
@@ -119,7 +147,7 @@
                         <div class="col-md-6 d-flex justify-content-end gap-2">
                             <div class="date-picker p-0">
                                 <!-- Start Year Dropdown -->
-                                <select wire:model="selectedYear" wire:change="updateDateRange" class="form-control">
+                                <select wire:model="selectedYear" wire:change="updateDateRange" class="form-control" style="font-size: 14px;">
                                     <option value="" disabled>Select Year</option>
                                     @foreach($yearRange as $year)
                                     <option value="{{ $year }}">{{ $year }}</option>
@@ -127,65 +155,31 @@
                                 </select>
                                 </select>
                             </div>
-                            <button class="submit-btn" type="button">
-                                <a href="/hr/user/leavePolicySettings">Leave Settings</a>
+                            <button class="submit-btn">
+                                <a class="btnAnchor" href="/hr/user/leavePolicySettings">Leave Settings</a>
                             </button>
                         </div>
                     </div>
-
-                    <div class="radio-buttons">
-                        <label class="radioLabel">
-                            <input type="radio" name="grantEmployees" value="all" checked>
-                            Grant for All Employees
-                        </label>
-                        <label class="radioLabel">
-                            <input type="radio" name="grantEmployees" value="newlyJoined">
-                            Grant for Newly Joined Employees
-                        </label>
-                    </div>
                     <div>
                         <!-- Employee Selection -->
-                        <div wire:click="toggleEmployeeList">
-                            <label for="employees">Select Employees</label>
-
-                            @if($showEmployeeList)
-                            <div class="employee-checkbox-container">
-                                <!-- Select All Checkbox -->
-                                <div class="form-check">
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <div>
                                     <input
-                                        type="checkbox"
                                         class="form-check-input"
-                                        id="select_all"
+                                        type="checkbox"
+                                        id="selectAllEmployees"
                                         wire:model="selectAll"
                                         wire:click="toggleSelectAll">
-                                    <label class="form-check-label" for="select_all">
-                                        Select All
+                                    <label class="form-check-label mt-2" for="selectAllEmployees">
+                                        Select All Employees
                                     </label>
                                 </div>
-
-                                <!-- Employee List -->
-                                @foreach($employeeIds as $empId => $empName)
-                                <div class="form-check">
-                                    <input
-                                        type="checkbox"
-                                        class="form-check-input"
-                                        wire:model="selectedEmployeeIds"
-                                        value="{{ $empId }}"
-                                        id="employee_{{ $empId }}">
-                                    <label class="form-check-label" for="employee_{{ $empId }}">
-                                        {{ $empName }}
-                                    </label>
-                                </div>
-                                @endforeach
                             </div>
-                            @endif
                         </div>
 
-
-
-
                         <!-- Periodicity and Period -->
-                        <div>
+                        <div class="fieldsWidth">
                             <label for="periodicity">Periodicity</label>
                             <select wire:model="periodicity" wire:change="updatePeriodOptions" class="form-control mb-3">
                                 <option value="Monthly">Monthly</option>
@@ -221,30 +215,44 @@
                         <!-- Leave Policies Table -->
                         <div>
                             <label for="leavePolicyIds">Select Leave Policies</label>
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th>Select</th>
-                                        <th>Leave Name</th>
-                                        <th>Grant Days</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach($leavePolicies as $policy)
-                                    <tr>
-                                        <td>
-                                            <input type="checkbox" wire:model="selectedPolicyIds" value="{{ $policy->id }}">
-                                        </td>
-                                        <td>{{ $policy->leave_name }}</td>
-                                        <td>{{ $policy->grant_days }}</td>
-                                    </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
+                            <div class="table-responsive">
+                                <table class="table pendingLeaveTable table-bordered ">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Select</th>
+                                            <th>Leave Name</th>
+                                            <th>Grant Days</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if($leavePolicies->isNotEmpty())
+                                        @foreach($leavePolicies as $policy)
+                                        <tr class="trHover">
+                                            <td>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" wire:model="selectedPolicyIds" value="{{ $policy->id }}">
+                                                </div>
+                                            </td>
+                                            <td>{{ $policy->leave_name }}</td>
+                                            <td>{{ $policy->grant_days }}</td>
+                                        </tr>
+                                        @endforeach
+                                        @else
+                                        <tr>
+                                            <td colspan="7" class="text-center"> No leave policies found at the moment. <br>
+                                                Don't worry! You can easily add a new leave policy by clicking the "Leave Settings" button.</td>
+                                        </tr>
+                                        @endif
+                                    </tbody>
+                                </table>
+                            </div>
+
                         </div>
 
                         <!-- Grant Leave Button -->
-                        <button wire:click="storeLeaveBalance" class="btn btn-primary">Grant Leave</button>
+                        <div class="d-flex justify-content-center">
+                            <button wire:click="storeLeaveBalance" class="submit-btn">Grant Leave</button>
+                        </div>
                     </div>
                 </div>
 
@@ -266,3 +274,25 @@
     </div>
 
 </div>
+<script>
+    // JavaScript to toggle icon on accordion open/close
+    const accordionButtons = document.querySelectorAll('.accordion-button');
+
+    accordionButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const icon = this.querySelector('i');
+            const collapseTarget = this.closest('.accordion-item').querySelector('.accordion-collapse');
+
+            // Toggle the collapse using Bootstrap collapse methods
+            if (collapseTarget.classList.contains('show')) {
+                collapseTarget.classList.remove('show');
+                icon.classList.remove('fa-minus');
+                icon.classList.add('fa-plus');
+            } else {
+                collapseTarget.classList.add('show');
+                icon.classList.remove('fa-plus');
+                icon.classList.add('fa-minus');
+            }
+        });
+    });
+</script>
