@@ -259,26 +259,38 @@
                     </select>
     
                 </div>
-                <table style="width: 97%; border-collapse: collapse; margin: 20px 20px 10px 19px; border: 1px solid grey;">
-                    <thead style="border-bottom: 1px solid grey;">
-                        <tr style="background: #c5c2c2;">
-                            <th style="padding: 10px; border-right: 1px solid grey;">
-                                <input type="checkbox" wire:click="toggleSelectAll">
+                <div class="table-responsive" style="margin: 15px 15px 5px 15px;">
+                    <table class="table pendingLeaveTable table-bordered table-hover ">
+                        <thead class="table-light">
+           
+                        <tr >
+                            <th >
+                               
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox"
+                                        wire:model="selectAll"
+                                        wire:click="toggleSelectAll"
+                                        />
+                                </div>
                             </th>
-                            <th style="padding: 10px; border-right: 1px solid grey;">#</th>
-                            <th style="padding: 10px; border-right: 1px solid grey;">Occasion</th>
-                            <th style="padding: 10px; border-right: 1px solid grey;">Date</th>
-                            <th style="padding: 10px; border-right: 1px solid grey;">Day</th>
+                            <th >#</th>
+                            <th >Occasion</th>
+                            <th >Date</th>
+                            <th >Day</th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse ($holidays as $index => $holiday)
                         <tr>
                             <td>
-                                <input type="checkbox" wire:model="selectedHolidays" value="{{ $holiday->id }}">
+                                <div class="form-check">
+                                    <input class="form-check-input"
+                                        type="checkbox"
+                                        wire:model="selectedHolidays" value="{{ $holiday->id }}" />
+                                </div>
                             </td>
                             <td>{{ $index + 1 }}</td>
-                            <td>{{ $holiday->occasion }}</td>
+                            <td>{{ $holiday->festivals }}</td>
                             <td>{{ $holiday->date }}</td>
                             <td>{{ $holiday->day }}</td>
                         </tr>
@@ -306,12 +318,32 @@
                     </tbody>
                   
                 </table>
+            </div>
                
                 @if(count($holidays) > 0)
-                    <div style="text-align: center; margin-top: 20px;">
-                        <button wire:click="saveHolidays" class="submit-btn">Save</button>
-                        <button wire:click="deleteSelectedHolidays" class="delete-btn">Delete</button>
+                <div class="d-flex justify-content-center mt-1 mb-3">
+                    <button wire:click="saveHolidays" class="cancel-btn me-2">Save</button>
+                    <button class="cancel-btn me-2" wire:click="deleteModal">Delete</button>
+                </div>
+                @endif
+                @if($showDeleteModal)
+                <div class="modal" id="logoutModal" tabindex="-1" style="display: block;">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header text-white">
+                                <h6 class="modal-title " id="logoutModalLabel" style="align-items: center;">Delete</h6>
+                            </div>
+                            <div class="modal-body text-center" style="font-size: 14px;color:var( --main-heading-color);">
+                                Do you want to delete selected record(s)?
+                            </div>
+                            <div class="d-flex gap-3 justify-content-center p-3">
+                                <button type="button" class="submit-btn " wire:click="deleteSelectedHolidays">Confirm</button>
+                                <button type="button" class="cancel-btn" wire:click="deleteModal">Cancel</button>
+                            </div>
+                        </div>
                     </div>
+                </div>
+                <div class="modal-backdrop fade show"></div>
                 @endif
               
                
@@ -342,24 +374,36 @@
                     </div>
 
                     <div class="modal-body">
-                        <table style="width: 97%; border-collapse: collapse; margin: 20px 20px 10px 19px; border: 1px solid grey;">
-                            <thead style="border-bottom: 1px solid grey;">
-                                <tr style="background: #c5c2c2;">
-                                    <th style="padding: 10px; border-right: 1px solid grey;">
-                                        <input type="checkbox" wire:click="toggleSelectAll1">
+                        <div class="table-responsive">
+                            <table class="table pendingLeaveTable table-bordered table-hover ">
+                                <thead class="table-light">
+                                <tr>
+                                    <th >
+                                        {{-- <input type="checkbox" wire:click="toggleSelectAll1"> --}}
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox"
+                                                wire:model="selectAll1"
+                                                wire:click="toggleSelectAll1"/>
+                                        </div>
                                     </th>
-                                    <th style="padding: 10px; border-right: 1px solid grey;">#</th>
-                                    <th style="padding: 10px; border-right: 1px solid grey;">Occasion</th>
-                                    <th style="padding: 10px; border-right: 1px solid grey;">Date</th>
-                                    <th style="padding: 10px; border-right: 1px solid grey;">Day</th>
-                                    <th style="padding: 10px; border-right: 1px solid grey;">Restricted Holiday</th>
+                                    <th >#</th>
+                                    <th >Occasion</th>
+                                    <th >Date</th>
+                                    <th >Day</th>
+                                    <th >Restricted Holiday</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach($holidaysList as $index => $holiday)
                                     <tr>
                                         <td>
-                                            <input type="checkbox" wire:model="selectedHolidays1" value="{{ $holiday->id }}">
+                                            <div class="form-check">
+                                                <input class="form-check-input"
+                                                    type="checkbox"
+                                                    wire:model="selectedHolidays1"
+                                                    value="{{ $holiday->id }}" />
+                                            </div>
+                                            {{-- <input type="checkbox" wire:model="selectedHolidays1" value="{{ $holiday->id }}"> --}}
                                         </td>
                                         <td>{{ $index + 1 }}</td>
                                         <td>{{ $holiday->occasion }}</td>
@@ -371,6 +415,7 @@
                                 @endforeach
                             </tbody>
                         </table>
+                    </div>
                     </div>
                     <div class="modal-footer">
                         <button wire:click="addSelectedHolidays" class="btn btn-primary">Add</button>

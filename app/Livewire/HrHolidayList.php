@@ -3,10 +3,11 @@
 namespace App\Livewire;
 
 use Livewire\Component;
-use App\Models\Holiday;
+use App\Models\HolidayCalendar;
 use Illuminate\Support\Facades\Log;
 use App\Models\HolidayMasterList; 
 use App\Helpers\FlashMessageHelper;
+use Carbon\Carbon;
 
 class HrHolidayList extends Component
 {
@@ -22,6 +23,8 @@ class HrHolidayList extends Component
     public $addButton= true;
     public $showButtons = false;
     public $isModalOpen = false;
+    public $selectAll = false;
+    public $selectAll1 = false;
     public function openModal()
     {
         $this->isModalOpen = true;
@@ -56,15 +59,21 @@ class HrHolidayList extends Component
                 $holiday = HolidayMasterList::find($holidayId);
     
                 if ($holiday) {
+                    $date = Carbon::parse($holiday->date); 
+// Using Carbon to handle the date
+                $day = $date->format('l'); // Day of the week (e.g., Monday, Tuesday)
+                $month = $date->format('F'); // Full month name (e.g., January)
+                $year = $date->format('Y'); // Year (e.g., 2024)
+                $dateFormatted = $date->toDateString();
                     // Check if the holiday is already in the 'holidays' table
-                    $existingHoliday = Holiday::where('occasion', $holiday->occasion)
-                        ->where('date', $holiday->date)
+                    $existingHoliday = HolidayCalendar::where('festivals', $holiday->occasion)
+                        ->where('date', $dateFormatted)
                         ->first();
     
                     if ($existingHoliday) {
                         // Log that the holiday already exists
                         Log::info('Holiday already exists in the holidays table:', [
-                            'occasion' => $holiday->occasion,
+                            'festivals' => $holiday->occasion,
                             'date' => $holiday->date,
                         ]);
                         // Increment the existing holiday counter
@@ -76,16 +85,20 @@ class HrHolidayList extends Component
     
                     // Log the details of the holiday being added
                     Log::info('Adding holiday to the holidays table:', [
-                        'occasion' => $holiday->occasion,
-                        'date' => $holiday->date,
-                        'day' => $holiday->day,
+                        'festivals' => $holiday->occasion,
+                        'date' => $dateFormatted,
+                        'day' => $day,
+                        'month' => $month,
+                        'year' => $year,
                     ]);
     
                     // Add the holiday to the holidays table
-                    Holiday::create([
-                        'occasion' => $holiday->occasion,
-                        'date' => $holiday->date,
-                        'day' => $holiday->day,
+                    HolidayCalendar::create([
+                        'festivals' => $holiday->occasion,
+                        'date' => $dateFormatted,
+                    'day' => $day,
+                    'month' => $month,
+                    'year' => $year,
                         'status' => 5, 
                     ]);
     
@@ -116,7 +129,9 @@ class HrHolidayList extends Component
             if ($addedHolidayCount == 0 && $existingHolidayCount == 0) {
                 FlashMessageHelper::flashError('No holidays were processed.');
             }
-            $this->holidays = Holiday::all();
+            $this->holidays = HolidayCalendar::all();
+            $this->selectAll1=false;
+          
     
         } else {
             // Log error message when no holidays are selected
@@ -124,6 +139,18 @@ class HrHolidayList extends Component
             FlashMessageHelper::flashError('No holidays selected!');
         }
     }
+    public $showDeleteModal = false;
+    public function deleteModal()
+{
+    if (count($this->selectedHolidays) > 0) {
+        // If holidays are selected, toggle the delete confirmation modal
+        $this->showDeleteModal = !$this->showDeleteModal;
+    } else {
+        // If no holidays are selected, show an error message
+        FlashMessageHelper::flashError('You have to select at least one record to delete!');
+    }
+}
+
     
     
     public function saveHolidays()
@@ -136,7 +163,7 @@ class HrHolidayList extends Component
         // Check if there are selected holidays
         if (!empty($this->selectedHolidays)) {
             foreach ($this->selectedHolidays as $holidayId) {
-                $holiday = Holiday::find($holidayId);
+                $holiday = HolidayCalendar::find($holidayId);
                 
                 if ($holiday) {
                     // Check if the holiday status is already set to 2 (selected)
@@ -167,6 +194,8 @@ class HrHolidayList extends Component
                 Log::info('Selected Holidays:', $this->selectedHolidays);
                 FlashMessageHelper::flashSuccess('Selected holidays saved successfully!');
             }
+            $this->selectedHolidays = [];
+            $this->selectAll = false;
         
         } else {
             FlashMessageHelper::flashError('No holidays selected!');
@@ -180,10 +209,12 @@ class HrHolidayList extends Component
     public function deleteSelectedHolidays()
     {
         if (count($this->selectedHolidays) > 0) {
-            Holiday::whereIn('id', $this->selectedHolidays)->delete(); // Delete selected holidays
-            $this->holidays = Holiday::all(); // Refresh the list of holidays
+            HolidayCalendar::whereIn('id', $this->selectedHolidays)->delete(); // Delete selected holidays
+            $this->holidays = HolidayCalendar::all(); // Refresh the list of holidays
             FlashMessageHelper::flashSuccess('Selected holidays deleted successfully!');
             $this->selectedHolidays = [];
+            $this->selectAll = false;
+            $this->showDeleteModal =false;
         } else {
             FlashMessageHelper::flashError('No holidays selected to delete!');
         }
@@ -192,7 +223,7 @@ class HrHolidayList extends Component
 
     public function mount()
     {
-        $this->holidays = Holiday::all();
+        $this->holidays = HolidayCalendar::all();
         // $this->showButtons = $this->holidays->isNotEmpty(); 
         $this->selectedHolidays = [];
 
