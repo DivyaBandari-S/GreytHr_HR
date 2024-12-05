@@ -259,56 +259,99 @@
                     </select>
     
                 </div>
-                <table style="width: 97%; border-collapse: collapse; margin: 20px 20px 10px 19px; border: 1px solid grey;">
-                    <thead style="border-bottom: 1px solid grey;">
-                        <tr style="background: #c5c2c2;">
-                            <th style="padding: 10px; border-right: 1px solid grey;"><input type="checkbox"></th>
-                            <th style="padding: 10px; border-right: 1px solid grey;">#</th>
-                            <th style="padding: 10px; border-right: 1px solid grey;">
-                                Occasion
-                                {{-- <button style="background: none;
-    border: none; padding-left: 10px;" wire:click="filterHolidays('occasion')">=</button> --}}
+                <div class="table-responsive" style="margin: 15px 15px 5px 15px;">
+                    <table class="table pendingLeaveTable table-bordered table-hover ">
+                        <thead class="table-light">
+           
+                        <tr >
+                            <th >
+                               
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox"
+                                        wire:model="selectAll"
+                                        wire:click="toggleSelectAll"
+                                        />
+                                </div>
                             </th>
-                            <th style="padding: 10px; border-right: 1px solid grey;">Date</th>
-                            <th style="padding: 10px; border-right: 1px solid grey;">Day</th>
-                            <th style="padding: 10px; border-right: 1px solid grey;">Restricted Holiday</th>
+                            <th >#</th>
+                            <th >Occasion</th>
+                            <th >Date</th>
+                            <th >Day</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @if (count($filteredHolidays) > 0)
-                            @foreach ($filteredHolidays as $holiday)
-                                <tr>
-                                    <td><input type="checkbox"></td>
-                                    <td>{{ $loop->index + 1 }}</td>
-                                    <td>{{ $holiday['occasion'] }}</td>
-                                    <td>{{ $holiday['date'] }}</td>
-                                    <td>{{ $holiday['day'] }}</td>
-                                    <td>{{ $holiday['restricted'] ? 'Yes' : 'No' }}</td>
-                                </tr>
-                            @endforeach
-                        @else
+                        @forelse ($holidays as $index => $holiday)
+                        <tr>
+                            <td>
+                                <div class="form-check">
+                                    <input class="form-check-input"
+                                        type="checkbox"
+                                        wire:model="selectedHolidays" value="{{ $holiday->id }}" />
+                                </div>
+                            </td>
+                            <td>{{ $index + 1 }}</td>
+                            <td>{{ $holiday->festivals }}</td>
+                            <td>{{ $holiday->date }}</td>
+                            <td>{{ $holiday->day }}</td>
+                        </tr>
+                        @empty
                             <tr>
-                                <td colspan="6" style="text-align: center;     padding-top: 80px; font-size: var(--normal-font-size);">
-                                    There are no holidays defined for this year. Add Them now
+                                <td colspan="6" style="text-align: center; font-size: var(--normal-font-size);">
+                                    There are no holidays defined for this year. Add them now.
+                                </td>
+                            </tr>
+                        @endforelse
+                
+                        @if($addButton)
+                            <tr>
+                                <td colspan="6" style="text-align: center;">
+                                    <button wire:click="addHolidays" class="submit-btn">Add Holidays</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="6" style="text-align: center;">
+                                    <a href="#"  wire:click="openModal" style="font-size: 14px; color: rgb(65, 164, 246); text-decoration: underline;">Add From Master List</a>
                                 </td>
                             </tr>
                         @endif
-                        <tr>
-                            <td colspan="6" style="text-align: center;">
-                                <button style="margin-top: 40px;" class="submit-btn">Add Holidays</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="6" style="text-align: center;" class="p-0">
-                              
-                                    <a href="#" style=" font-size: 14px; color: rgb(65, 164, 246); text-decoration: underline;">Add From Master List</a>
-                            </td>
-                        </tr>
+                      
                     </tbody>
+                  
                 </table>
+            </div>
+               
+                @if(count($holidays) > 0)
+                <div class="d-flex justify-content-center mt-1 mb-3">
+                    <button wire:click="saveHolidays" class="cancel-btn me-2">Save</button>
+                    <button class="cancel-btn me-2" wire:click="deleteModal">Delete</button>
+                </div>
+                @endif
+                @if($showDeleteModal)
+                <div class="modal" id="logoutModal" tabindex="-1" style="display: block;">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header text-white">
+                                <h6 class="modal-title " id="logoutModalLabel" style="align-items: center;">Delete</h6>
+                            </div>
+                            <div class="modal-body text-center" style="font-size: 14px;color:var( --main-heading-color);">
+                                Do you want to delete selected record(s)?
+                            </div>
+                            <div class="d-flex gap-3 justify-content-center p-3">
+                                <button type="button" class="submit-btn " wire:click="deleteSelectedHolidays">Confirm</button>
+                                <button type="button" class="cancel-btn" wire:click="deleteModal">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-backdrop fade show"></div>
+                @endif
+              
+               
 
              
             </div>
+           
+           
 
             <div class="tab-pane" id="dashboard-tab-pane" role="tabpanel" aria-labelledby="dashboard-tab" tabindex="0">
 
@@ -319,6 +362,70 @@
             </div>
 
         </div>
+        @if ($isModalOpen)
+        <div class="modal fade show d-block bd-example-modal-lg" tabindex="-1" role="dialog"
+            aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h6 class="modal-title" id="exampleModalLongTitle">Select Holidays to Add</h6>
+                        <button type="button" class="btn-close btn-primary"  
+                            wire:click="close">
+                    </div>
+
+                    <div class="modal-body">
+                        <div class="table-responsive">
+                            <table class="table pendingLeaveTable table-bordered table-hover ">
+                                <thead class="table-light">
+                                <tr>
+                                    <th >
+                                        {{-- <input type="checkbox" wire:click="toggleSelectAll1"> --}}
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox"
+                                                wire:model="selectAll1"
+                                                wire:click="toggleSelectAll1"/>
+                                        </div>
+                                    </th>
+                                    <th >#</th>
+                                    <th >Occasion</th>
+                                    <th >Date</th>
+                                    <th >Day</th>
+                                    <th >Restricted Holiday</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($holidaysList as $index => $holiday)
+                                    <tr>
+                                        <td>
+                                            <div class="form-check">
+                                                <input class="form-check-input"
+                                                    type="checkbox"
+                                                    wire:model="selectedHolidays1"
+                                                    value="{{ $holiday->id }}" />
+                                            </div>
+                                            {{-- <input type="checkbox" wire:model="selectedHolidays1" value="{{ $holiday->id }}"> --}}
+                                        </td>
+                                        <td>{{ $index + 1 }}</td>
+                                        <td>{{ $holiday->occasion }}</td>
+                                        <td>{{ $holiday->date }}</td>
+                                        <td>{{ $holiday->day }}</td>
+                                        <td>{{ $holiday->state }}</td>
+                                       
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button wire:click="addSelectedHolidays" class="btn btn-primary">Add</button>
+                        <button wire:click="close" class="btn btn-secondary">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-backdrop fade show"></div>
+    @endif
 
     </div>
 
