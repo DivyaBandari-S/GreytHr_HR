@@ -4,11 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class EmployeeLeaveBalances extends Model
 {
     use HasFactory;
-
+    use SoftDeletes;
+    protected $table = 'employee_leave_balances'; 
     // Fields that can be mass-assigned
     protected $fillable = [
         'emp_id',
@@ -19,7 +21,8 @@ class EmployeeLeaveBalances extends Model
         'leave_policy_id',
         'is_lapsed',
         'lapsed_date',
-        'batch_id'
+        'batch_id',
+        'deleted_at'
     ];
 
     protected static function boot()
@@ -29,7 +32,7 @@ class EmployeeLeaveBalances extends Model
     /**
      * Get the employee associated with the leave balance.
      */
-    
+
     public function employee()
     {
         return $this->belongsTo(EmployeeDetails::class, 'emp_id', 'emp_id');

@@ -77,7 +77,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="table-responsive">
+                    <div class="table-responsive rounded border leave-table-wrapper">
                         <table class="leave-table">
                             <thead>
                                 <tr>
@@ -92,35 +92,90 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @if($employeeLeaveBalance)
-                                @foreach($employeeLeaveBalance as $batchId => $leaveBalances)
+                                @if($groupedData && $groupedData->count())
+                                @foreach($groupedData as $batchId => $leaveBalances)
                                 <tr>
-                                    <td colspan="8">
+                                    <td colspan="8" class="p-0 m-0">
                                         <div class="accordion accordion-flush" id="accordionFlushExample">
                                             <div class="accordion-item">
                                                 <div class="accordion-header">
-                                                    <button class="accordion-button collapsed" type="button">
-                                                        <i class="fas fa-plus"></i>
-                                                            <div class="d-flex flex-column">
-                                                                <span>Batch ID: <strong>oo</strong></span>
-                                                                <span>granted on: <strong>01 dec 34:u789</strong></span>
+                                                    <div>
+                                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse-{{ $batchId }}" aria-expanded="false" aria-controls="flush-collapse-{{ $batchId }}">
+                                                            <i class="fas fa-plus"></i>
+                                                            <div class="accordionTitle d-flex flex-column">
+                                                                <span class="spanText">Batch ID: <strong>{{ $batchId }}</strong></span>
+                                                                <span class="spanText">Granted on: <strong>{{ \Carbon\Carbon::parse($leaveBalances->first()->created_at)->format('d M, Y') }}</strong></span>
                                                             </div>
-                                                            <div>
-                                                                peroid
+                                                            <div class="accordionTitle d-flex flex-column">
+                                                                <span class="spanText">Period: <strong>{{ $leaveBalances->first()->period }}</strong></span>
+                                                                <span class="spanText">Periodicity: <strong>{{ $leaveBalances->first()->periodicity }}</strong></span>
                                                             </div>
-                                                            <div>
-                                                                leavetype
+                                                            <div class="accordionTitle d-flex flex-column">
+                                                                <span class="spanText">Leave Type:
+                                                                    <strong>
+                                                                        @php
+                                                                        $leaveTypes = json_decode($leaveBalances->first()->leave_policy_id);
+                                                                        @endphp
+                                                                        @if(is_array($leaveTypes))
+                                                                        @foreach($leaveTypes as $leaveType)
+                                                                        {{ $leaveType->leave_name }}
+                                                                        @if (!$loop->last) | @endif
+                                                                        @endforeach
+                                                                        @else
+                                                                        N/A
+                                                                        @endif
+                                                                    </strong>
+                                                                </span>
+                                                                <span class="spanText">Leave Scheme: <strong>{{ $leaveBalances->first()->leave_scheme }}</strong></span>
                                                             </div>
-                                                            <div>
-                                                                headcount
+                                                            <div class="accordionTitle">
+                                                                <span class="spanText">Headcount: <strong>{{ $leaveBalances->count() }}</strong></span>
                                                             </div>
-                                                    </button>
-
+                                                            <div class="accordionTitle">
+                                                                <span class="spanText" style="cursor:pointer;" wire:click="deleteLeaveBalanceBatch({{ $batchId }})">
+                                                                    <i class="fas fa-trash"></i>
+                                                                </span>
+                                                            </div>
+                                                        </button>
+                                                    </div>
                                                 </div>
 
-                                                <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-                                                    <div class="accordion-body">
-                                                        Placeholder content for this accordion, which is intended to demonstrate the <code>.accordion-flush</code> class. This is the first item's accordion body.
+                                                <div id="flush-collapse-{{ $batchId }}" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+                                                    <div class="accordion-body p-0">
+                                                        <!-- Inner Table Without Repeating Headers -->
+                                                        <table class="table">
+                                                            <tbody>
+                                                                @foreach($leaveBalances as $balance)
+                                                                <tr>
+                                                                    <td></td>
+                                                                    <td>{{ $loop->iteration }}</td>
+                                                                    <td>{{ $balance->emp_id }}</td>
+                                                                    <td> <span class="nameField">{{ ucwords(strtolower($balance->first_name)) }} {{ ucwords(strtolower($balance->first_name)) }}</span> </td>
+                                                                    <td>{{ $balance->status }}</td>
+                                                                    <td>{{ \Carbon\Carbon::parse($balance->hire_date)->format('d M, Y') }}</td>
+                                                                    <td>
+                                                                        @php
+                                                                        // Decode the JSON string in the leave_policy_id field
+                                                                        $leaveTypes = json_decode($balance->leave_policy_id);
+                                                                        @endphp
+                                                                        <span class="d-flex flex-column">
+                                                                            @if(is_array($leaveTypes))
+                                                                            @foreach($leaveTypes as $leaveType)
+                                                                            {{ $leaveType->leave_policy_id }} | {{ $leaveType->grant_days }}
+                                                                            @if (!$loop->last) <!-- Add a pipe separator between the items -->
+                                                                            <br>
+                                                                            @endif
+                                                                            @endforeach
+                                                                            @else
+                                                                            N/A
+                                                                            @endif
+                                                                        </span>
+                                                                    </td>
+                                                                    <td><i class="fas fa-trash" wire:click="deleteAnEmpBal({{ $balance->id }})"></i></td>
+                                                                </tr>
+                                                                @endforeach
+                                                            </tbody>
+                                                        </table>
                                                     </div>
                                                 </div>
                                             </div>
@@ -130,16 +185,38 @@
                                 @endforeach
                                 @else
                                 <tr>
-                                    <td>no data found</td>
+                                    <td colspan="8" class="text-center">No data found</td>
                                 </tr>
                                 @endif
                             </tbody>
-
                         </table>
                     </div>
                 </div>
                 @endif
 
+                <!-- //modal for confirm deletion -->
+                @if($showConfirmDeletionBox)
+                <div class="modal" id="logoutModal" tabindex="-1" style="display: block;">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header text-white">
+                                <h6 class="modal-title" id="logoutModalLabel" style="align-items: center;">Confirm Deletion</h6>
+                            </div>
+                            <div class="modal-body text-center" style="font-size: 14px;color:var(--main-heading-color);">
+                                Are you sure you want to delete this batch of leave balances?
+                            </div>
+                            <div class="d-flex gap-3 justify-content-center p-3">
+                                <!-- Confirm Deletion Button -->
+                                <button type="button" class="submit-btn mr-3" wire:click="confirmDeletion">Confirm</button>
+                                <!-- Cancel Button -->
+                                <button type="button" class="cancel-btn" wire:click="cancelDeletion">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-backdrop fade show"></div>
+                @endif
+                <!-- end of modal -->
                 @if($showActiveGrantLeave)
                 <div class="grantLeaveTab px-3 py-2">
                     <div class="row g-2 m-0 p-0">
@@ -272,27 +349,28 @@
         </div>
 
     </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const accordionButtons = document.querySelectorAll('.accordion-button');
 
-</div>
-<script>
-    // JavaScript to toggle icon on accordion open/close
-    const accordionButtons = document.querySelectorAll('.accordion-button');
+            accordionButtons.forEach(button => {
+                // Listen for Bootstrap's collapse event
+                button.addEventListener('click', function() {
+                    const icon = this.querySelector('i');
+                    const collapseTarget = this.closest('.accordion-item').querySelector('.accordion-collapse');
 
-    accordionButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const icon = this.querySelector('i');
-            const collapseTarget = this.closest('.accordion-item').querySelector('.accordion-collapse');
+                    // Use Bootstrap's event to listen for when the collapse is completed
+                    collapseTarget.addEventListener('shown.bs.collapse', function() {
+                        icon.classList.remove('fa-plus');
+                        icon.classList.add('fa-minus');
+                    });
 
-            // Toggle the collapse using Bootstrap collapse methods
-            if (collapseTarget.classList.contains('show')) {
-                collapseTarget.classList.remove('show');
-                icon.classList.remove('fa-minus');
-                icon.classList.add('fa-plus');
-            } else {
-                collapseTarget.classList.add('show');
-                icon.classList.remove('fa-plus');
-                icon.classList.add('fa-minus');
-            }
+                    collapseTarget.addEventListener('hidden.bs.collapse', function() {
+                        icon.classList.remove('fa-minus');
+                        icon.classList.add('fa-plus');
+                    });
+                });
+            });
         });
-    });
-</script>
+    </script>
+</div>

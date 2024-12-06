@@ -17,12 +17,13 @@ return new class extends Migration
             $table->integer('batch_id')->nullable();
             $table->json('leave_policy_id')->nullable();
             $table->foreign('emp_id')->references('emp_id')->on('employee_details')->onDelete('cascade')->onUpdate('cascade');
-            $table->string('leave_scheme','10')->default('General');
+            $table->string('leave_scheme',length: '10')->default('General');
             $table->string('status')->default('Granted');
             $table->string('period','25')->nullable();
             $table->string('periodicity','25')->nullable();
             $table->boolean('is_lapsed')->default(false);
             $table->timestamp('lapsed_date')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

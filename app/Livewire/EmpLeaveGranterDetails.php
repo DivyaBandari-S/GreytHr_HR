@@ -8,11 +8,14 @@ use App\Models\LeavePolicySetting;
 use App\Models\EmployeeDetails;
 use Livewire\Component;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class EmpLeaveGranterDetails extends Component
 {
     public $showActiveGrantLeave = false;
+    public $showConfirmDeletionBox = false;
+    public $batchIdToDelete = null;
     public $selectedPolicyIds = [];
     public $startDate;
     public $endDate;
@@ -36,6 +39,11 @@ class EmpLeaveGranterDetails extends Component
     public $yearRange;
     public $showEmployeeList = false;
     public $employeeLeaveBalance;
+    public $empId;
+    public $batchId;
+    public $leaveTypes = []; // Array of leave types (leave names and policies)
+    public $selectedLeaveTypes = []; // Array of selected leave types for deletion
+    public $showModal = false; // Flag to show/hide the modal
     protected $rules = [
         'leavePolicyIds' => 'required|array',
         'leavePolicyIds.*' => 'exists:leave_policy,id', // Ensure each ID exists in the leave_policy table
@@ -542,9 +550,6 @@ class EmpLeaveGranterDetails extends Component
         }
     }
 
-
-
-
     // Helper function to handle half-year period formatting
     private function getHalfYearPeriod($period)
     {
@@ -602,22 +607,90 @@ class EmpLeaveGranterDetails extends Component
         }
     }
 
-
-
-
     public function showGrantLeaveTab()
     {
         $this->showActiveGrantLeave = true;
         $this->showLeaveBalanceSummary = false;
     }
 
+    // Triggered when clicking the delete icon
+    public function deleteLeaveBalanceBatch($batchId)
+    {
+        // Set the batchId to delete and show the confirmation modal
+        $this->batchIdToDelete = $batchId;
+        $this->showConfirmDeletionBox = true;
+    }
+    public function deleteAnEmpBal($id){
+        try{
+            $empBalance = EmployeeLeaveBalances::where('id', $id)->get();
+            if ($empBalance->isEmpty()) {
+                FlashMessageHelper::flashError('No entries found for batch_id 1!');
+            } else {
+                // Loop through each batch and check if deleted_at is not null before deleting
+                foreach ($empBalance as $batch) {
+                    if ($batch) {
+                        // Soft delete the batch
+                        $batch->delete();
+                    } else {
+                        FlashMessageHelper::flashError('An error occurred while deleting.');
+                    }
+                }
+            }
+            FlashMessageHelper::flashSuccess('Employee Leave balance has been deleted successfully!');
+
+        }catch (\Exception $e) {
+            FlashMessageHelper::flashError('An error occurred while deleting the balance: ' . $e->getMessage());
+        }
+    }
+    public function confirmDeletion()
+    {
+        try {
+            // Attempt to find all entries with batch_id 1
+            $batches = EmployeeLeaveBalances::where('batch_id', $this->batchIdToDelete)->get();
+            // Check if any batches were found
+            if ($batches->isEmpty()) {
+                FlashMessageHelper::flashError('No entries found for batch_id 1!');
+            } else {
+                // Loop through each batch and check if deleted_at is not null before deleting
+                foreach ($batches as $batch) {
+                    if ($batch) {
+                        // Soft delete the batch
+                        $batch->delete();
+                    } else {
+                        FlashMessageHelper::flashError('Batch with id ' . $batch->id . ' has not been marked for deletion.');
+                    }
+                }
+            }
+            FlashMessageHelper::flashSuccess('Leave balance batches for batch_id 1 deleted successfully!');
+        } catch (\Exception $e) {
+            FlashMessageHelper::flashError('An error occurred while deleting the batches: ' . $e->getMessage());
+        }
+
+        // Hide the confirmation modal after the deletion or failure
+        $this->showConfirmDeletionBox = false;
+    }
+
+    // When the user cancels the deletion
+    public function cancelDeletion()
+    {
+        // Hide the confirmation modal without doing anything
+        $this->showConfirmDeletionBox = false;
+    }
+
+    public $groupedData;
     public function render()
     {
         // Get the leave balances and group by batch_id
-        $this->employeeLeaveBalance = EmployeeLeaveBalances::orderBy('created_at', 'desc')
+        $this->employeeLeaveBalance = DB::table('employee_leave_balances')
+            ->join('employee_details', 'employee_leave_balances.emp_id', '=', 'employee_details.emp_id')
+            ->whereNull('employee_leave_balances.deleted_at')
+            ->select('employee_leave_balances.*', 'employee_details.*', 'employee_leave_balances.*')
             ->get();
+        // Group the records by 'batch_id' in the application logic
+        $this->groupedData = $this->employeeLeaveBalance->groupBy('batch_id');
         return view('livewire.emp-leave-granter-details', [
-            'employeeLeaveBalance' => $this->employeeLeaveBalance
+            'employeeLeaveBalance' => $this->employeeLeaveBalance,
+            'groupedData' => $this->groupedData
         ]);
     }
 }

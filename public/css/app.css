@@ -2688,6 +2688,23 @@ td {
 .btnAnchor{
     color: white !important;
 }
+.accordion-button .accordionTitle .spanText {
+    font-size: var(--sub-headings-font-size) !important;
+    color: var(--label-color) !important;
+    font-weight: normal !important;
+}
+.table td:nth-child(4){
+    width: 150px; /* Adjust the width to fit your design */
+    max-width: 200px;
+    white-space: nowrap; /* Prevent name from breaking into multiple lines */
+    overflow: hidden; /* Prevent text from overflowing */
+    text-overflow: ellipsis;
+}
+.accordionTitle strong {
+    color: var(--main-heading-color) !important;
+    font-weight: 600 !important;
+}
+
 /* Hover effect for the button */
 .submit-btn:hover {
     background-color: #357ab8;
@@ -2710,6 +2727,10 @@ td {
     color: var(--main-heading-color);
     background-color: #fff;
 }
+.leave-table-wrapper {
+    max-height: 100vh;
+    overflow-y: auto;
+}
 
 .leave-table {
     width: 100%;
@@ -2719,11 +2740,17 @@ td {
 .leave-table th,
 .leave-table td {
     padding: 10px;
+    color: var(--label-color);
+    font-size: var(--normal-font-size);
     text-align: left;
     border: 1px solid #a7a6a65e;
 }
 
 .leave-table th {
+    position: sticky;
+    top: 0;
+    background-color: #fff; /* To make sure the header stays visible */
+    z-index: 10;
     background-color: var(--main-table-heading-bg-color);
     font-weight: 600;
     font-size: var(--sub-headings-font-size);
@@ -2755,6 +2782,46 @@ td {
 .leave-table td button.delete-btn:hover {
     color: #b52b
 }
+.leave-table-wrapper .leave-table,
+.accordion-body .table {
+    width: 100%;
+    table-layout: fixed; /* Ensures consistent column width */
+}
+
+.leave-table-wrapper .leave-table th,
+.accordion-body .table th {
+    width: 12.5%;
+}
+
+/* Adjust width for the first two columns to be smaller */
+.leave-table-wrapper .leave-table th:nth-child(1),
+.leave-table-wrapper .leave-table th:nth-child(2),
+.accordion-body .table th:nth-child(1),
+.accordion-body .table th:nth-child(2) {
+    width: 6%; /* Set a smaller width for the first two columns */
+}
+
+/* Apply same width reduction to the table data (td) cells */
+.leave-table-wrapper .leave-table td:nth-child(1),
+.leave-table-wrapper .leave-table td:nth-child(2),
+.accordion-body .table td:nth-child(1),
+.accordion-body .table td:nth-child(2) {
+    width: 6%;
+}
+
+.accordion-body .table td {
+    width: 12.5%;
+    padding: 10px;
+}
+/* Hover effect only for the button inside the accordion header */
+.leave-table-wrapper .accordion-flush .accordion-header .accordion-button:hover {
+    background-color: #e6eaed !important;
+}
+/* Hover effect on rows inside the accordion body */
+.accordion-body .table tbody tr:hover {
+    background-color: #e6eaed !important;
+}
+
 .modal-title {
     color: #fff;
     font-weight: 600;
@@ -2863,6 +2930,11 @@ td {
     outline: 0;
     box-shadow: none;
 }
+.accordion-button:not(.collapsed) {
+    background-color: #e6eaed !important;
+    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
+}
+
 
 .leaveGranter-container {
     width: 100%;
