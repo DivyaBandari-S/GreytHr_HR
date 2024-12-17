@@ -729,6 +729,7 @@ input {
 }
 .form-check-label {
     font-size: 12px;
+    margin-top: 5px;
 }
 .custom-select {
     color: #2c3e50;
@@ -741,7 +742,7 @@ input {
     border: 1px solid var(--main-button-color);
     font-weight: 500;
     border-radius: 5px;
-    padding: 7px 12px;
+    padding: 6px 12px;
     font-size: var(--normal-font-size);
     border: none;
     transition: all 0.3s ease;
@@ -2624,63 +2625,36 @@ td {
 /* Style for custom dropdown */
 .custom-dropdown {
     position: relative;
-    width: 150px;
+    display: inline-block;
+    width: 200px;
 }
 
 .dropdown-selected {
-    padding: 8px 12px;
-    border: 1px solid #d9dde2;
-    border-radius: 4px;
-    background-color: #fff;
-    font-size: var(--normal-font-size);
-    font-weight: 500;
-    color: var(--main-heading-color);
+    padding: 10px;
+    background-color: #f1f1f1;
     cursor: pointer;
-    transition: border-color 0.3s ease;
-    position: relative; /* For arrow positioning */
-}
-
-.dropdown-selected:hover {
-    border-color: #4a90e2; /* Border color on hover */
-}
-
-/* Arrow styles */
-.dropdown-selected::after {
-    content: "";
-    position: absolute;
-    right: 12px; /* Adjust for padding */
-    top: 50%;
-    transform: translateY(-50%);
-    border: solid transparent;
-    border-width: 5px 5px 0;
-    border-top-color: #4a4a4a; /* Arrow color */
 }
 
 .dropdown-options {
-    display: none; /* Hide options by default */
+    display: none;
     position: absolute;
     top: 100%;
     left: 0;
-    right: 0;
-    font-size: var(--normal-font-size);
-    color: var(--main-heading-color);
     background-color: #fff;
-    border: 1px solid #d9dde2;
-    border-radius: 4px;
-    z-index: 10;
+    width: 100%;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    z-index: 1;
 }
 
 .dropdown-option {
-    padding: 8px 12px;
-    font-size: var(--normal-font-size);
-    color: var(--main-heading-color);
+    padding: 10px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
 }
 
 .dropdown-option:hover {
-    background-color: #dbedf4; /* Light blue on hover */
+    background-color: #ddd;
 }
+
 .search-emp{
     outline: none;
     padding: 5px 10px;
@@ -2825,7 +2799,7 @@ td {
 .modal-title {
     color: #fff;
     font-weight: 600;
-    font-size: var(--home-headings-font-size);
+    font-size: 14px;
 }
 .modal-header {
     background-color: var(--main-button-color);
@@ -2902,7 +2876,17 @@ td {
     padding: 10px;
 }
 .fieldsWidth{
-    width: 15%;
+    width: 50%;
+}
+.selectEmp{
+    width: 250px;
+    height: 200px;
+    margin-top: 3px;
+    overflow-y: auto;
+    border: 1px solid #ccc;
+    padding: 5px 10px;
+    border-radius: 5px;
+    box-shadow: 1px 0px 2px 2px(rgb(135, 129, 129));
 }
 
 .form-check {
@@ -3060,6 +3044,9 @@ td {
     color: var(--main-heading-color);
     font-size: var(--normal-font-size);
     cursor: pointer;
+}
+.fa-times-circle:before{
+    color: #ccc !important;
 }
 .leaveType{
     color: var(--main-heading-color);

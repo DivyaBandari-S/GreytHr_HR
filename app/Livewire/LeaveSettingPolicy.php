@@ -7,7 +7,6 @@ use App\Models\Company;
 use App\Models\EmployeeDetails;
 use App\Models\LeavePolicySetting;
 use Illuminate\Support\Facades\Log;
-use Livewire\Attributes\Validate;
 use Livewire\Component;
 
 class LeaveSettingPolicy extends Component
@@ -37,74 +36,161 @@ class LeaveSettingPolicy extends Component
         'leave_frequency.required' => 'Leave frequency required',
         'leave_code.required' => 'Leave code required',
     ];
+
     public function mount()
     {
-        $this->leavePolicies = LeavePolicySetting::all()->keyBy('id')->toArray();
-        $loggedInEmpID = auth()->guard('hr')->user()->emp_id;
+        try {
+            $this->leavePolicies = LeavePolicySetting::all()->keyBy('id')->toArray();
+            $loggedInEmpID = auth()->guard('hr')->user()->emp_id;
 
-        // Step 2: Find the employee's details
-        $employeeDetails = EmployeeDetails::where('emp_id', $loggedInEmpID)->first();
+            // Step 2: Find the employee's details
+            $employeeDetails = EmployeeDetails::where('emp_id', $loggedInEmpID)->first();
 
-        // Step 3: Decode the company_id if it's in JSON format
-        $companyIds = $employeeDetails->company_id;
-        if (is_array($companyIds)) {
-            // Fetch the first company that matches the criteria
-            $company = Company::whereIn('company_id', $companyIds)
-                ->where('is_parent', 'yes')
-                ->first();
+            // Step 3: Decode the company_id if it's in JSON format
+            $companyIds = $employeeDetails->company_id;
+            if (is_array($companyIds)) {
+                // Fetch the first company that matches the criteria
+                $company = Company::whereIn('company_id', $companyIds)
+                    ->where('is_parent', 'yes')
+                    ->first();
 
-            if ($company) {
-                $this->company_id = $company->company_id; // Set the fetched company_id
+                if ($company) {
+                    $this->company_id = $company->company_id; // Set the fetched company_id
+                }
             }
+            $this->getLeaveTypes();
+        } catch (\Exception $e) {
+            Log::error('Error in mounting LeaveSettingPolicy: ' . $e->getMessage());
+            FlashMessageHelper::flashError('An error occurred while loading leave policies.');
         }
-        $this->getLeaveTypes();
     }
+
     public function getLeaveTypes()
     {
-        $this->allowedLeavesAsPerPolicy = LeavePolicySetting::where('company_id', $this->company_id)->get();
+        try {
+            $this->allowedLeavesAsPerPolicy = LeavePolicySetting::where('company_id', $this->company_id)->get();
+        } catch (\Exception $e) {
+            Log::error('Error in getLeaveTypes method: ' . $e->getMessage());
+            FlashMessageHelper::flashError('An error occurred while fetching leave types.');
+        }
     }
+
     public function toggleAddForm()
     {
-        $this->showAddForm = !$this->showAddForm; // Toggle the form visibility
+        try {
+            $this->showAddForm = !$this->showAddForm; // Toggle the form visibility
+        } catch (\Exception $e) {
+            Log::error('Error in toggleAddForm method: ' . $e->getMessage());
+            FlashMessageHelper::flashError('An error occurred while toggling the add form.');
+        }
     }
+
+    public function validateField($field)
+    {
+        try {
+            $this->validateOnly($field);
+        } catch (\Exception $e) {
+            Log::error('Error in validateField method: ' . $e->getMessage());
+            FlashMessageHelper::flashError('An error occurred during field validation.');
+        }
+    }
+
+    public function updateLeaveCode()
+    {
+        try {
+            // Mapping of leave types to leave codes
+            $leaveCodes = [
+                'Sick Leave' => 'SL',
+                'Casual Leave' => 'CL',
+                'Casual Probation Leave' => 'CPL',
+                'Work From Home' => 'WFH',
+                'Marriage Leave' => 'ML',
+                'Paternity Leave' => 'PL',
+                'Maternity Leave' => 'MML',
+                'Earned Leave' => 'EL',
+                'Compensatory Off' => 'COMPOFF', // Compensatory Off
+                'Privilege Leave' => 'PLV', // Privilege Leave
+            ];
+
+            // Set the leave code based on the selected leave name
+            $this->leave_code = $leaveCodes[$this->leave_name] ?? ''; // Set to empty if no match
+        } catch (\Exception $e) {
+            Log::error('Error in updateLeaveCode method: ' . $e->getMessage());
+            FlashMessageHelper::flashError('An error occurred while updating the leave code.');
+        }
+    }
+
+    public function handleLeaveNameChange()
+    {
+        try {
+            // Validate the leave name field
+            $this->validate([
+                'leave_name' => 'required',
+            ]);
+
+            // After validation, update the leave code
+            $this->updateLeaveCode();
+        } catch (\Exception $e) {
+            Log::error('Error in handleLeaveNameChange method: ' . $e->getMessage());
+            FlashMessageHelper::flashError('An error occurred while handling leave name change.');
+        }
+    }
+
     public function editPolicy($policyId)
     {
-        $policyData = $this->leavePolicies[$policyId];
+        try {
+            $policyData = $this->leavePolicies[$policyId];
 
-        // Update the policy in the database
-        $policy = LeavePolicySetting::find($policyId);
-        $policy->update([
-            'leave_name' => $policyData['leave_name'],
-            'leave_code' => $policyData['leave_code'],
-            'leave_frequency' => $policyData['leave_frequency'],
-            'grant_days' => $policyData['grant_days'],
-        ]);
+            // Update the policy in the database
+            $policy = LeavePolicySetting::find($policyId);
+            $policy->update([
+                'leave_name' => $policyData['leave_name'],
+                'leave_code' => $policyData['leave_code'],
+                'leave_frequency' => $policyData['leave_frequency'],
+                'grant_days' => $policyData['grant_days'],
+            ]);
 
-        FlashMessageHelper::flashSuccess('Leave policy updated successfully!.');
+            FlashMessageHelper::flashSuccess('Leave policy updated successfully!');
+        } catch (\Exception $e) {
+            Log::error('Error in editPolicy method: ' . $e->getMessage());
+            FlashMessageHelper::flashError('An error occurred while updating the leave policy.');
+        }
     }
+
     public function deletePolicy($policyId)
     {
-        // Find the policy by ID
-        $policy = LeavePolicySetting::find($policyId);
+        try {
+            // Find the policy by ID
+            $policy = LeavePolicySetting::find($policyId);
 
-        // Check if policy exists
-        if ($policy) {
-            // Delete the policy
-            $policy->delete();
+            // Check if policy exists
+            if ($policy) {
+                // Delete the policy
+                $policy->delete();
 
-            // Optionally, send a success message
-            FlashMessageHelper::flashSuccess('Policy deleted successfully!');
+                FlashMessageHelper::flashSuccess('Policy deleted successfully!');
 
-            // Optionally, you can refresh the list or update the array after deletion
-            $this->leavePolicies = LeavePolicySetting::all()->keyBy('id')->toArray(); // Refresh policies list
-        } else {
-            FlashMessageHelper::flashError('Policy not found!');
+                // Refresh the policies list
+                $this->leavePolicies = LeavePolicySetting::all()->keyBy('id')->toArray();
+            } else {
+                FlashMessageHelper::flashError('Policy not found!');
+            }
+
+            $this->getLeaveTypes();
+        } catch (\Exception $e) {
+            Log::error('Error in deletePolicy method: ' . $e->getMessage());
+            FlashMessageHelper::flashError('An error occurred while deleting the policy.');
         }
-        $this->getLeaveTypes();
     }
+
     public function valdiateField($field)
     {
-        $this->validateOnly($field);
+        try {
+            $this->validateOnly($field);
+        } catch (\Exception $e) {
+            Log::error('Error in valdiateField method: ' . $e->getMessage());
+            FlashMessageHelper::flashError('An error occurred during field validation.');
+        }
     }
 
     public function addNewType()
@@ -125,17 +211,20 @@ class LeaveSettingPolicy extends Component
                 $this->getLeaveTypes();
             }
 
-            // Reset fields after submission
-            $this->reset(['leave_name', 'grant_days', 'leave_frequency', 'leave_code', 'company_id']);
-
-            // Optionally, add a success message
             FlashMessageHelper::flashSuccess('Leave policy added successfully!');
+
+            // Reset fields after submission
+            $this->resetFileds();
         } catch (\Exception $e) {
-            // Flash an error message if an exception occurs
+            Log::error('Error in addNewType method: ' . $e->getMessage());
             FlashMessageHelper::flashError('An error occurred while adding the leave policy.');
         }
     }
 
+    public function resetFileds()
+    {
+        $this->reset(['leave_name', 'grant_days', 'leave_frequency', 'leave_code']);
+    }
 
     public function render()
     {
