@@ -10,7 +10,7 @@ class EmployeeLeaveBalances extends Model
 {
     use HasFactory;
     use SoftDeletes;
-    protected $table = 'employee_leave_balances'; 
+    protected $table = 'employee_leave_balances';
     // Fields that can be mass-assigned
     protected $fillable = [
         'emp_id',
@@ -19,6 +19,7 @@ class EmployeeLeaveBalances extends Model
         'status',
         'periodicity',
         'leave_policy_id',
+        'granted_for_year',
         'is_lapsed',
         'lapsed_date',
         'batch_id',
