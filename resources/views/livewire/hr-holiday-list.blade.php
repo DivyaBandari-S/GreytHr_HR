@@ -259,7 +259,7 @@
                     </select>
     
                 </div>
-                <div class="table-responsive" style="margin: 15px 15px 5px 15px;">
+                <div class="table-responsive" style="margin: 15px 15px 5px 15px; height: 300px; overflow-y: scroll;">
                     <table class="table pendingLeaveTable table-bordered table-hover ">
                         <thead class="table-light">
            
@@ -374,7 +374,7 @@
                     </div>
 
                     <div class="modal-body">
-                        <div class="table-responsive">
+                        <div class="table-responsive" style= "height: 300px; overflow-y: scroll;">
                             <table class="table pendingLeaveTable table-bordered table-hover ">
                                 <thead class="table-light">
                                 <tr>
