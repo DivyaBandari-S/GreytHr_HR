@@ -11,14 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('holiday_calendars', function (Blueprint $table) {
-            $table->smallInteger('id')->autoIncrement();
-            $table->string('day',10);
+        Schema::create('holiday_master_lists', function (Blueprint $table) {
+            $table->id();
+            $table->string('occasion');
             $table->date('date');
-            $table->string('month',10);
-            $table->string('year',10);
-            $table->string('festivals',50)->nullable();
-            $table->smallInteger('status')->default(5);
+            $table->string('day');
+            $table->string('state');
             $table->timestamps();
         });
     }
@@ -28,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('holiday_calendars');
+        Schema::dropIfExists('holiday_master_lists');
     }
 };

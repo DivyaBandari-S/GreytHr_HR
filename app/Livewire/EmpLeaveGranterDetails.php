@@ -8,16 +8,19 @@ use App\Models\LeavePolicySetting;
 use App\Models\EmployeeDetails;
 use Livewire\Component;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class EmpLeaveGranterDetails extends Component
 {
     public $showActiveGrantLeave = false;
+    public $showConfirmDeletionBox = false;
+    public $batchIdToDelete = null;
     public $selectedPolicyIds = [];
     public $startDate;
     public $endDate;
     public $selectedYear;
-
+    public $selectedYearRange;
     public $showLeaveBalanceSummary = true;
     public $periodicity = 'Monthly';
     public $period = '';
@@ -31,20 +34,39 @@ class EmpLeaveGranterDetails extends Component
     public $selectedEmployeeIds = [];
     public $employeeIds = [];  // To store the list of employee IDs for the dropdown
     public $startYear;
-    public $selectAll = false;
+    public $selectAll = null;
+    public $selectedEmployees = [];
     public $endYear;
     public $yearRange;
     public $showEmployeeList = false;
+    public $employeeLeaveBalance;
+    public $empId;
+    public $batchId;
+    public $leaveTypes = []; // Array of leave types (leave names and policies)
+    public $selectedLeaveTypes = []; // Array of selected leave types for deletion
+    public $showModal = false; // Flag to show/hide the modal
+    public $deletionType = null;
+    public $idToDelete = null;
+    public $showEditModal = false;
+    public $empIdToDelete;
+    public $empIdToUpdate;
+    public $leavePolicyData = [];
+    public $groupedData;
+    public $searchTerm = '';
+    public $showEmployeeSearch = false;
     protected $rules = [
         'leavePolicyIds' => 'required|array',
         'leavePolicyIds.*' => 'exists:leave_policy,id', // Ensure each ID exists in the leave_policy table
     ];
-
     public function mount()
     {
         try {
             // Set the selected year to the current year
             $this->selectedYear = now()->year;
+            $this->leavePolicies = LeavePolicySetting::all();
+            // Get current year using Carbon and set the selected year range
+            $currentYear = Carbon::now()->year;
+            $this->selectedYearRange = 'Jan ' . $currentYear . ' - Dec ' . $currentYear;
 
             // Update the date range based on the selected year
             $this->updateDateRange();
@@ -58,26 +80,94 @@ class EmpLeaveGranterDetails extends Component
             // Set default periodicity and period
             $this->setDefaultPeriodicityAndPeriod();
 
-            // Fetch leave policies
-            $this->leavePolicies = LeavePolicySetting::all();
 
             // Load employee list based on selected company or criteria
             $this->loadEmployeeList();
 
+            // Filter leave balances
+            $this->filterLeaveBalances();
+
             // Set the year range for the dropdown (2000 to current year + 5)
             $this->yearRange = range(2000, now()->year + 5);
+        } catch (\Carbon\Exceptions\InvalidFormatException $e) {
+            // Handle errors related to Carbon date manipulation
+            Log::error("Invalid date format in mount method: " . $e->getMessage());
+            FlashMessageHelper::flashError('There was an issue with the date format. Please check your data and try again.');
         } catch (\InvalidArgumentException $e) {
-            // Handle invalid argument exceptions (e.g., invalid year format)
+            // Handle invalid argument exceptions
             Log::error("Invalid argument in mount method: " . $e->getMessage());
             FlashMessageHelper::flashError('Invalid input. Please check your data and try again.');
         } catch (\Illuminate\Database\QueryException $e) {
-            // Handle database query exceptions (e.g., issues fetching data)
+            // Handle database query exceptions
             Log::error("Database query error in mount method: " . $e->getMessage());
             FlashMessageHelper::flashError('An error occurred while fetching data from the database. Please try again later.');
         } catch (\Exception $e) {
             // Handle any other unexpected exceptions
             Log::error("Unexpected error in mount method: " . $e->getMessage());
             FlashMessageHelper::flashError('An unexpected error occurred. Please try again later.');
+        }
+    }
+
+
+    public function filterLeaveBalances()
+    {
+        try {
+            // Reset the grouped data to start fresh
+            $this->groupedData = collect();
+
+            // Initialize startDate and endDate for filtering based on selected periodicity
+            $startDate = null;
+            $endDate = null;
+
+            // Determine the filtering range based on the selected periodicity (Monthly, Quarterly, Half-Yearly, Yearly)
+            if ($this->periodicity === 'Monthly') {
+                // Get the selected month for the chosen year (e.g., "January 2024")
+                $month = Carbon::parse($this->period)->month;
+                $startDate = Carbon::create($this->selectedYear, $month, 1);  // First day of the selected month
+                $endDate = $startDate->copy()->endOfMonth();  // Last day of the selected month
+
+            } elseif ($this->periodicity === 'Quarterly') {
+                // Determine the quarter range based on the selected quarter
+                $quarterStartMonth = ($this->quarter - 1) * 3 + 1; // Start month for the selected quarter
+                $quarterEndMonth = $quarterStartMonth + 2; // End month for the selected quarter
+
+                // Set start and end dates for the selected quarter
+                $startDate = Carbon::create($this->selectedYear, $quarterStartMonth, 1); // Start of quarter
+                $endDate = Carbon::create($this->selectedYear, $quarterEndMonth, 1)->endOfMonth(); // End of quarter
+
+            } elseif ($this->periodicity === 'Half yearly') {
+                // Determine if it's the first or second half of the year
+                if ($this->halfYear === 'Jan - Jun') {
+                    $startDate = Carbon::create($this->selectedYear, 1, 1); // Start of first half
+                    $endDate = Carbon::create($this->selectedYear, 6, 30)->endOfDay(); // End of first half
+                } else {
+                    $startDate = Carbon::create($this->selectedYear, 7, 1); // Start of second half
+                    $endDate = Carbon::create($this->selectedYear, 12, 31)->endOfDay(); // End of second half
+                }
+            } elseif ($this->periodicity === 'Yearly') {
+                // For yearly, the start and end date will span the entire year
+                $startDate = Carbon::create($this->selectedYear, 1, 1); // Start of the year
+                $endDate = Carbon::create($this->selectedYear, 12, 31)->endOfDay(); // End of the year
+            }
+
+            // Now filter the leave balances based on the calculated start and end dates
+            $this->employeeLeaveBalance = DB::table('employee_leave_balances')
+                ->join('employee_details', 'employee_leave_balances.emp_id', '=', 'employee_details.emp_id')
+                ->whereNull('employee_leave_balances.deleted_at')
+                ->whereBetween('employee_leave_balances.created_at', [$startDate, $endDate]) // Filter by date range
+                ->select('employee_leave_balances.*', 'employee_details.*')
+                ->get();
+
+            // Group the records by batch_id, or other suitable field based on the context
+            $this->groupedData = $this->employeeLeaveBalance->groupBy('batch_id');
+        } catch (\Illuminate\Database\QueryException $e) {
+            // Handle any database-related exceptions
+            Log::error("Database query error in filterLeaveBalances: " . $e->getMessage());
+            FlashMessageHelper::flashError('There was a database error while filtering leave balances.');
+        } catch (\Exception $e) {
+            // Handle general unexpected errors
+            Log::error("Unexpected error in filterLeaveBalances: " . $e->getMessage());
+            FlashMessageHelper::flashError('An unexpected error occurred while filtering leave balances.');
         }
     }
 
@@ -96,6 +186,7 @@ class EmpLeaveGranterDetails extends Component
 
                 // Update period options when the year range is updated
                 $this->updatePeriodOptions();
+                $this->filterLeaveBalances();
             }
         } catch (\InvalidArgumentException $e) {
             // Handle invalid argument exceptions (e.g., invalid year format)
@@ -312,17 +403,22 @@ class EmpLeaveGranterDetails extends Component
             $companyIdsArray = is_array($companyID) ? $companyID : json_decode($companyID, true);
 
             // Query employees based on company IDs and status
-            $this->employeeIds = EmployeeDetails::where(function ($query) use ($companyIdsArray) {
+            $query = EmployeeDetails::where(function ($query) use ($companyIdsArray) {
                 foreach ($companyIdsArray as $companyId) {
                     $query->orWhere('company_id', 'like', "%\"$companyId\"%");
                 }
             })
-                ->whereIn('employee_status', ['active', 'on-probation'])
-                ->pluck('first_name', 'emp_id')
-                ->toArray();
+                ->whereIn('employee_status', ['active', 'on-probation']);
 
-            // Add an option to select all employees
-            $this->employeeIds = ['all' => 'Select All Employees'] + $this->employeeIds;
+            // Add the searchTerm filter if it's provided
+            if (!empty($this->searchTerm)) {
+                $query->where(DB::raw("CONCAT(first_name, ' ', last_name)"), 'like', '%' . $this->searchTerm . '%');
+            }
+
+            // Order by the full name in alphabetical order (ascending)
+            $this->employeeIds = $query->orderBy(DB::raw("CONCAT(first_name, ' ', last_name)"))
+                ->pluck(DB::raw("CONCAT(first_name, ' ', last_name) as full_name"), 'emp_id')
+                ->toArray();
         } catch (\Illuminate\Database\QueryException $e) {
             // Catch database-related exceptions
             Log::error("Database query error in loadEmployeeList: " . $e->getMessage());
@@ -333,35 +429,62 @@ class EmpLeaveGranterDetails extends Component
             FlashMessageHelper::flashError('An unexpected error occurred while loading the employee list.');
         }
     }
+    public $showEmployeeSelectionList = false;
+    public $showToSelect = true;
+
+    public function openEmployeeList()
+    {
+        $this->showEmployeeSelectionList = true;
+        $this->showToSelect = false;
+    }
+
+    public function toggleSearchEmployee()
+    {
+        // Toggle the visibility of the employee search container
+        $this->showEmployeeSearch = true;
+        $this->loadEmployeeList();
+    }
+    public function closeContainer()
+    {
+        $this->showEmployeeSearch = false;
+        $this->searchTerm = '';
+    }
     // Handle "Select All" functionality
     public function toggleSelectAll()
     {
         if ($this->selectAll) {
-            // Select all employees including the 'all' option for all employees
-            $this->selectedEmployeeIds = array_merge(array_keys($this->employeeIds), ['all']);
+            // Select all employees
+            $this->selectedEmployees = array_keys($this->employeeIds); // Assuming $this->employeeIds holds employee data
         } else {
             // Deselect all employees
-            $this->selectedEmployeeIds = [];
+            $this->selectedEmployees = [];
         }
     }
+
+    public function updatedSelectedEmployees($value)
+    {
+        // Check if all employees are selected to update the "select all" checkbox state
+        $this->selectAll = count($this->selectedEmployees) === count($this->employeeIds);
+    }
+
 
     // Method to store the leave balance for selected leave policies
     public function storeLeaveBalance()
     {
         // Trim whitespace from selected data
         $this->selectedPolicyIds = array_map('trim', $this->selectedPolicyIds);
-        $this->selectedEmployeeIds = array_map('trim', $this->selectedEmployeeIds);
-
+        $this->selectedEmployeeIds = array_map('trim', $this->selectedEmployees);
+    
         // Validate if selected policies and employees exist
         if (empty($this->selectedPolicyIds) || empty($this->selectedEmployeeIds)) {
             FlashMessageHelper::flashError('Please select at least one leave policy and employee.');
             return;
         }
-
+    
         try {
-            // Prepare the leave policies data to be stored in JSON format
+            // Step 2: Prepare the leave policies data to be stored in JSON format
             $leavePoliciesData = [];
-
+    
             foreach ($this->selectedPolicyIds as $policyId) {
                 $policy = LeavePolicySetting::find($policyId);
                 if ($policy) {
@@ -373,26 +496,50 @@ class EmpLeaveGranterDetails extends Component
                     ];
                 }
             }
-
-            // Loop through employees to create leave balances
-            foreach ($this->selectedEmployeeIds as $empId) {
-                $period = $this->getPeriodBasedOnPeriodicity();
-
-                // If 'all' is selected, create leave balance for all active employees
-                if ($empId == 'all') {
-                    $employees = EmployeeDetails::whereIn('emp_id', array_keys($this->employeeIds))
-                        ->whereIn('employee_status', ['active', 'on-probation'])
-                        ->get();
-
-                    foreach ($employees as $employee) {
-                        $this->createLeaveBalance($employee->emp_id, $leavePoliciesData, $period);
-                    }
-                } else {
-                    $this->createLeaveBalance($empId, $leavePoliciesData, $period);
+    
+            // Step 3: Combine selected employees and 'all' option and ensure no duplicates
+            $employeeIdsToProcess = [];
+    
+            if (in_array('all', $this->selectedEmployeeIds)) {
+                // Add all active employees to the array (only once)
+                $employees = EmployeeDetails::whereIn('emp_id', array_keys($this->employeeIds))
+                    ->whereIn('employee_status', ['active', 'on-probation'])
+                    ->get();
+    
+                foreach ($employees as $employee) {
+                    $employeeIdsToProcess[] = $employee->emp_id;
                 }
             }
-
-            // Clear selected data
+    
+            // Merge and deduplicate individual selected employee IDs
+            $employeeIdsToProcess = array_merge($employeeIdsToProcess, array_diff($this->selectedEmployeeIds, ['all']));
+    
+            // Remove duplicates from the array to avoid processing the same employee twice
+            $employeeIdsToProcess = array_unique($employeeIdsToProcess);
+    
+            // Log the employees to be processed for debugging purposes
+            Log::info('Employees to be processed: ' . implode(', ', $employeeIdsToProcess));
+    
+            // Step 4: Loop through each selected policy and create leave balance with a unique batch ID for each policy
+            foreach ($leavePoliciesData as $policyData) {
+                // Generate a unique batch ID for the policy
+                $newBatchIdForPolicy = EmployeeLeaveBalances::max('batch_id') + 1;
+    
+                // Step 5: Loop through employees and create leave balance for each employee and policy
+                foreach ($employeeIdsToProcess as $empId) {
+                    $period = $this->getPeriodBasedOnPeriodicity();
+    
+                    // Create leave balance for the employee and policy with the same batch ID for this policy
+                    $this->createLeaveBalance($empId, [$policyData], $period, $newBatchIdForPolicy);
+                }
+            }
+    
+            // Step 6: Flash success message
+            FlashMessageHelper::flashSuccess('Leave balances granted successfully.');
+            $this->selectAll = null;
+            $this->resetLeaveGrant();
+    
+            // Step 7: Clear selected data
             $this->selectedPolicyIds = [];
             $this->selectedEmployeeIds = [];
         } catch (\Illuminate\Database\QueryException $e) {
@@ -405,43 +552,79 @@ class EmpLeaveGranterDetails extends Component
     }
 
     // Helper function to create leave balance for an employee
-    private function createLeaveBalance($empId, $leavePoliciesData, $period)
+    private function createLeaveBalance($empIds, $leavePoliciesData, $period, $batchId)
     {
         try {
-            // Check if a leave balance already exists for the given employee and period
-            $existingBalance = EmployeeLeaveBalances::where('emp_id', $empId)
-                ->where('period', $period)
-                ->first();
-
-            // If a leave balance already exists, flash an error message
-            if ($existingBalance) {
-                FlashMessageHelper::flashError('Leave balance already exists for employee: ' . $empId . ' for the period: ' . $period);
-                return;
+            // Ensure $empIds is an array
+            if (is_string($empIds)) {
+                $empIds = explode(',', $empIds); // Convert comma-separated string to array
             }
 
-            // If no existing balance is found, create a new leave balance record with the JSON data
-            EmployeeLeaveBalances::create([
-                'emp_id' => $empId,
-                'leave_policy_id' => json_encode($leavePoliciesData), // Store leave policies as JSON
-                'status' => 'Granted',
-                'period' => $period,
-                'periodicity' => $this->periodicity,
-            ]);
+            foreach ($empIds as $empId) {
+                // Retrieve all leave balance records for the employee, period, and periodicity
+                $existingRecords = EmployeeLeaveBalances::where('emp_id', $empId)
+                    ->where('period', $period)
+                    ->where('periodicity', $this->periodicity)
+                    ->get();
 
-            // Flash success message
-            FlashMessageHelper::flashSuccess('Leave balance granted successfully for employee: ' . $empId . ' for the period: ' . $period);
+                // Iterate through each leave policy for the employee
+                foreach ($leavePoliciesData as $policyData) {
+                    $leavePolicyId = $policyData['leave_policy_id'];
+                    $leaveName = $policyData['leave_name'];
+
+                    // Case: Check for duplicates in existing records
+                    $isDuplicate = false;
+                    foreach ($existingRecords as $existingRecord) {
+                        $existingLeavePolicies = json_decode($existingRecord->leave_policy_id, true);
+
+                        foreach ($existingLeavePolicies as $existingPolicy) {
+                            // Compare if leave policy already exists for the employee in the same period and periodicity
+                            if (isset($existingPolicy['leave_name']) && $existingPolicy['leave_name'] === $leaveName) {
+                                // If found, it's a duplicate
+                                $isDuplicate = true;
+                                break 2; // Exit both loops if duplicate is found
+                            }
+                        }
+                    }
+
+                    if ($isDuplicate) {
+                        Log::info("Leave balance for employee {$empId} with leave name {$leaveName} already exists.");
+                        FlashMessageHelper::flashError("Leave balance for employee {$empId} with leave name {$leaveName} already exists.");
+                        continue;
+                    }
+
+                    // If no duplicate, create or update the leave balance for this policy
+                    EmployeeLeaveBalances::updateOrCreate(
+                        [
+                            'emp_id' => $empId,
+                            'batch_id' => $batchId,
+                            'period' => $period,
+                            'periodicity' => $this->periodicity,
+                            'leave_policy_id' => $leavePolicyId, // Policy should be unique per employee
+                        ],
+                        [
+                            'leave_policy_id' => json_encode([$policyData]), // Store leave policy data
+                            'status' => 'Granted', // Status is granted when leave is allocated
+                            'granted_for_year' => Carbon::now()->year, // Store the current year for granted leave
+                        ]
+                    );
+                }
+            }
         } catch (\Illuminate\Database\QueryException $e) {
-            Log::error("Database Query Exception while creating leave balance: " . $e->getMessage());
-            FlashMessageHelper::flashError('A database error occurred while creating leave balance for employee: ' . $empId);
+            Log::error("Database Query Exception while creating or updating leave balance: " . $e->getMessage());
+            FlashMessageHelper::flashError('A database error occurred while creating or updating leave balances.');
         } catch (\Exception $e) {
-            Log::error("General Exception while creating leave balance: " . $e->getMessage());
-            FlashMessageHelper::flashError('An unexpected error occurred while processing leave balance for employee: ' . $empId);
+            Log::error("General Exception while creating or updating leave balance: " . $e->getMessage());
+            FlashMessageHelper::flashError('An unexpected error occurred while processing leave balances.');
         }
     }
 
-
-
-
+    //reset the fields
+    public function resetLeaveGrant()
+    {
+        $this->periodicity = null;
+        $this->period = null;
+    }
     private function getPeriodBasedOnPeriodicity()
     {
         if ($this->periodicity == 'Monthly') {
@@ -525,9 +708,6 @@ class EmpLeaveGranterDetails extends Component
         }
     }
 
-
-
-
     // Helper function to handle half-year period formatting
     private function getHalfYearPeriod($period)
     {
@@ -585,17 +765,120 @@ class EmpLeaveGranterDetails extends Component
         }
     }
 
-
-
-
     public function showGrantLeaveTab()
     {
         $this->showActiveGrantLeave = true;
         $this->showLeaveBalanceSummary = false;
     }
 
+    // Triggered when clicking the delete icon
+    public function deleteLeaveBalanceBatch($batchId)
+    {
+        // Set the batchId to delete and show the confirmation modal
+        $this->deletionType = 'batch';
+        $this->batchIdToDelete = $batchId;
+        $this->showConfirmDeletionBox = true;
+    }
+
+
+
+    public function deleteLeaveBalanceEmp($id)
+    {
+        // Set the batchId to delete and show the confirmation modal
+        $this->deletionType = 'employee_balance';
+        $this->empIdToDelete = $id;
+        $this->showConfirmDeletionBox = true;
+    }
+    public function getLeaveBalanceEmp($id)
+    {
+        $this->showEditModal = true;
+        $this->empIdToUpdate = $id;
+        $balData = EmployeeLeaveBalances::where('id', $this->empIdToUpdate)->first();
+
+        // Decode the JSON field to array
+        $this->leavePolicyData = json_decode($balData->leave_policy_id, true);
+    }
+
+    public function editLeaveBal()
+    {
+        // Fetch the record to update
+        $balData = EmployeeLeaveBalances::where('id', $this->empIdToUpdate)->first();
+
+        // Here, we update the leave_policy_id field with the updated array (encoded as JSON)
+        $balData->leave_policy_id = json_encode($this->leavePolicyData);
+        // Save the updated record
+        $balData->save();
+        FlashMessageHelper::flashSuccess('Leave balance updated!');
+    }
+
+    public function deleteAnEmpBal()
+    {
+        try {
+            $empBalance = EmployeeLeaveBalances::where('id', $this->empIdToDelete)->get();
+            if ($empBalance->isEmpty()) {
+                FlashMessageHelper::flashError('No entries found for batch_id 1!');
+            } else {
+                // Loop through each batch and check if deleted_at is not null before deleting
+                foreach ($empBalance as $batch) {
+                    if ($batch) {
+                        // Soft delete the batch
+                        $batch->delete();
+                    } else {
+                        FlashMessageHelper::flashError('An error occurred while deleting.');
+                    }
+                }
+            }
+            FlashMessageHelper::flashSuccess('Employee Leave balance has been deleted successfully!');
+            $this->showConfirmDeletionBox = false;
+        } catch (\Exception $e) {
+            FlashMessageHelper::flashError('An error occurred while deleting the balance: ' . $e->getMessage());
+        }
+    }
+    public function confirmDeletion()
+    {
+        try {
+            // Attempt to find all entries with batch_id 1
+            $batches = EmployeeLeaveBalances::where('batch_id', $this->batchIdToDelete)->get();
+            // Check if any batches were found
+            if ($batches->isEmpty()) {
+                FlashMessageHelper::flashError('No entries found for batch_id 1!');
+            } else {
+                // Loop through each batch and check if deleted_at is not null before deleting
+                foreach ($batches as $batch) {
+                    if ($batch) {
+                        // Soft delete the batch
+                        $batch->delete();
+                    } else {
+                        FlashMessageHelper::flashError('Batch with id ' . $batch->id . ' has not been marked for deletion.');
+                    }
+                }
+            }
+            FlashMessageHelper::flashSuccess('Leave balance batches for batch_id 1 deleted successfully!');
+            $this->showConfirmDeletionBox = false;
+        } catch (\Exception $e) {
+            FlashMessageHelper::flashError('An error occurred while deleting the batches: ' . $e->getMessage());
+        }
+
+        // Hide the confirmation modal after the deletion or failure
+        $this->showConfirmDeletionBox = false;
+    }
+
+    // When the user cancels the deletion
+    public function cancelDeletion()
+    {
+        // Hide the confirmation modal without doing anything
+        $this->showConfirmDeletionBox = false;
+        $this->showEditModal = false;
+    }
+
     public function render()
     {
-        return view('livewire.emp-leave-granter-details');
+
+        return view('livewire.emp-leave-granter-details', [
+            'employeeLeaveBalance' => $this->employeeLeaveBalance,
+            'groupedData' => $this->groupedData,
+            'leavePolicyData' => $this->leavePolicyData,
+            'employeeIds' => $this->employeeIds
+        ]);
     }
 }

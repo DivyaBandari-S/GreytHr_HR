@@ -1665,7 +1665,7 @@ label {
     border: none;
 }
 .form-check-label-options {
-    font-size: 13px;
+    font-size: 12px;
     margin-left: 5px;
 }
 .onboarding-check-boxes {
@@ -1676,7 +1676,8 @@ input {
     margin-bottom: 0px;
 }
 .form-check-label {
-    font-size: 10px;
+    font-size: 12px;
+    margin-top: 5px;
 }
 .custom-select {
     color: #2c3e50;
@@ -1689,7 +1690,7 @@ input {
     border: 1px solid var(--main-button-color);
     font-weight: 500;
     border-radius: 5px;
-    padding: 7px 12px;
+    padding: 6px 12px;
     font-size: var(--normal-font-size);
     border: none;
     transition: all 0.3s ease;
@@ -3617,62 +3618,58 @@ td {
 /* Style for custom dropdown */
 .custom-dropdown {
     position: relative;
-    width: 150px;
+    display: inline-block;
+    width: 200px;
 }
 
 .dropdown-selected {
-    padding: 8px 12px;
-    border: 1px solid #d9dde2;
-    border-radius: 4px;
-    background-color: #fff;
-    font-size: var(--normal-font-size);
-    font-weight: 500;
-    color: var(--main-heading-color);
+    padding: 10px;
+    background-color: #f1f1f1;
     cursor: pointer;
-    transition: border-color 0.3s ease;
-    position: relative; /* For arrow positioning */
-}
-
-.dropdown-selected:hover {
-    border-color: #4a90e2; /* Border color on hover */
-}
-
-/* Arrow styles */
-.dropdown-selected::after {
-    content: "";
-    position: absolute;
-    right: 12px; /* Adjust for padding */
-    top: 50%;
-    transform: translateY(-50%);
-    border: solid transparent;
-    border-width: 5px 5px 0;
-    border-top-color: #4a4a4a; /* Arrow color */
 }
 
 .dropdown-options {
-    display: none; /* Hide options by default */
+    display: none;
     position: absolute;
     top: 100%;
     left: 0;
-    right: 0;
-    font-size: var(--normal-font-size);
-    color: var(--main-heading-color);
     background-color: #fff;
-    border: 1px solid #d9dde2;
-    border-radius: 4px;
-    z-index: 10;
+    width: 100%;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    z-index: 1;
 }
 
 .dropdown-option {
-    padding: 8px 12px;
-    font-size: var(--normal-font-size);
-    color: var(--main-heading-color);
+    padding: 10px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
 }
 
 .dropdown-option:hover {
-    background-color: #dbedf4; /* Light blue on hover */
+    background-color: #ddd;
+}
+
+.search-emp{
+    outline: none;
+    padding: 5px 10px;
+}
+.btnAnchor{
+    color: white !important;
+}
+.accordion-button .accordionTitle .spanText {
+    font-size: var(--sub-headings-font-size) !important;
+    color: var(--label-color) !important;
+    font-weight: normal !important;
+}
+.table td:nth-child(4){
+    width: 150px; /* Adjust the width to fit your design */
+    max-width: 200px;
+    white-space: nowrap; /* Prevent name from breaking into multiple lines */
+    overflow: hidden; /* Prevent text from overflowing */
+    text-overflow: ellipsis;
+}
+.accordionTitle strong {
+    color: var(--main-heading-color) !important;
+    font-weight: 600 !important;
 }
 
 /* Hover effect for the button */
@@ -3697,6 +3694,10 @@ td {
     color: var(--main-heading-color);
     background-color: #fff;
 }
+.leave-table-wrapper {
+    max-height: 100vh;
+    overflow-y: auto;
+}
 
 .leave-table {
     width: 100%;
@@ -3706,11 +3707,17 @@ td {
 .leave-table th,
 .leave-table td {
     padding: 10px;
+    color: var(--label-color);
+    font-size: var(--normal-font-size);
     text-align: left;
     border: 1px solid #a7a6a65e;
 }
 
 .leave-table th {
+    position: sticky;
+    top: 0;
+    background-color: #fff; /* To make sure the header stays visible */
+    z-index: 10;
     background-color: var(--main-table-heading-bg-color);
     font-weight: 600;
     font-size: var(--sub-headings-font-size);
@@ -3742,10 +3749,50 @@ td {
 .leave-table td button.delete-btn:hover {
     color: #b52b
 }
+.leave-table-wrapper .leave-table,
+.accordion-body .table {
+    width: 100%;
+    table-layout: fixed; /* Ensures consistent column width */
+}
+
+.leave-table-wrapper .leave-table th,
+.accordion-body .table th {
+    width: 12.5%;
+}
+
+/* Adjust width for the first two columns to be smaller */
+.leave-table-wrapper .leave-table th:nth-child(1),
+.leave-table-wrapper .leave-table th:nth-child(2),
+.accordion-body .table th:nth-child(1),
+.accordion-body .table th:nth-child(2) {
+    width: 6%; /* Set a smaller width for the first two columns */
+}
+
+/* Apply same width reduction to the table data (td) cells */
+.leave-table-wrapper .leave-table td:nth-child(1),
+.leave-table-wrapper .leave-table td:nth-child(2),
+.accordion-body .table td:nth-child(1),
+.accordion-body .table td:nth-child(2) {
+    width: 6%;
+}
+
+.accordion-body .table td {
+    width: 12.5%;
+    padding: 10px;
+}
+/* Hover effect only for the button inside the accordion header */
+.leave-table-wrapper .accordion-flush .accordion-header .accordion-button:hover {
+    background-color: #e6eaed !important;
+}
+/* Hover effect on rows inside the accordion body */
+.accordion-body .table tbody tr:hover {
+    background-color: #e6eaed !important;
+}
+
 .modal-title {
     color: #fff;
     font-weight: 600;
-    font-size: var(--home-headings-font-size);
+    font-size: 14px;
 }
 .modal-header {
     background-color: var(--main-button-color);
@@ -3814,17 +3861,42 @@ td {
 .employee-checkbox-container {
     display: flex;
     flex-direction: column;
+    align-items: start;
     width: 25%;
     max-height: 200px;
     overflow-y: auto;
     background-color: white;
     padding: 10px;
 }
+.fieldsWidth{
+    width: 50%;
+}
+.selectEmp{
+    width: 250px;
+    height: 200px;
+    margin-top: 3px;
+    overflow-y: auto;
+    border: 1px solid #ccc;
+    padding: 5px 10px;
+    border-radius: 5px;
+    box-shadow: 1px 0px 2px 2px(rgb(135, 129, 129));
+}
 
 .form-check {
     display: flex;
     align-items: center;
-    justify-content: center;
+    gap: 7px;
+}
+.form-check-input{
+    cursor: pointer;
+}
+.managerFilter{
+    font-size: 14px;
+    color: var(--main-heading-color);
+}
+.form-select{
+    font-size: var(--normal-font-size);
+    color: var(--label-color);
 }
 
 .leaveSettings{
@@ -3835,6 +3907,11 @@ td {
     outline: 0;
     box-shadow: none;
 }
+.accordion-button:not(.collapsed) {
+    background-color: #e6eaed !important;
+    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
+}
+
 
 .leaveGranter-container {
     width: 100%;
@@ -3933,6 +4010,9 @@ td {
     color: var(--label-color);
     font-size: var(--normal-font-size);
 }
+.pendingLeaveTable  .trHover:hover{
+   background-color: pink !important;
+}
 .pendingLeaveTable tbody tr:nth-of-type(odd) {
     background-color: #f6f6f6 !important; /* Light gray */
 }
@@ -3941,7 +4021,28 @@ td {
     background-color: #ffffff !important; /* White */
 }
 
-/* Row hover effect */
-.pendingLeaveTable .table-hover tbody tr:hover {
-    background-color: var(--main-table-heading-bg-color) !important;
+
+
+
+.yearEnd-accordion{
+    width: 80%;
+    padding: 10px 20px;
+}
+.accordion-button{
+    color: var(--main-heading-color);
+    font-size: var(--main-headings-font-size);
+    font-weight: 600;
+}
+.editIcon{
+    color: var(--main-heading-color);
+    font-size: var(--normal-font-size);
+    cursor: pointer;
+}
+.fa-times-circle:before{
+    color: #ccc !important;
+}
+.leaveType{
+    color: var(--main-heading-color);
+    font-size: var(--sub-headings-font-size);
+    font-weight: 500;
 }
