@@ -281,6 +281,8 @@ ul {
     justify-content: end;
     text-decoration: none;
     color: black;
+    align-items: end;
+    margin-left: 40px;
 }
 
 .arrows {
@@ -291,6 +293,7 @@ ul {
     font-size: 14px;
     color: var(--sub-heading-color);
     cursor: pointer;
+    align-items: end;
 }
 .arrow-icon-active {
     font-size: 14px;
@@ -445,6 +448,951 @@ ul {
     background: rgb(2, 17, 79);
 }
 /* end of admin dashboard */
+.post-card {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 10px 18px rgba(0, 0, 0, 0.08);
+    margin-bottom: 30px;
+    padding: 20px;
+    border: 1px solid silver;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.post-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 18px 30px rgba(0, 0, 0, 0.1);
+}
+
+/* Header Styling */
+.post-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.category {
+    font-size: 13px;
+    color: #7a7a7a;
+    text-transform: uppercase;
+    font-weight: 400;
+}
+
+.updated-time {
+    font-size: 12px;
+    color: #b0b0b0;
+}
+
+/* Profile Section */
+.profile-info {
+    display: flex;
+    flex-direction: column;
+    /* Center the profile image and name */
+    margin-top: 15px;
+}
+
+.profile-image-wrapper {
+    margin-bottom: 10px; /* Add spacing between image and name */
+}
+
+.post-profile-img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+.profile-name-wrapper {
+   
+}
+
+.post-profile-name {
+    font-size: 12px;
+    font-weight: 500;
+    color: #3b4452;
+    text-transform: capitalize;
+}
+
+/* Post Content */
+.post-content {
+    margin-top: 10px;
+}
+
+.description {
+    font-size: 12px;
+    color: #676767;
+ margin-top:10px;
+ margin-left: 10px;
+}
+
+.post-image {
+    max-width: 50%;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+}
+
+.company-logo {
+    max-width: 130px;
+    height: auto;
+}
+
+.emoji-drawer {
+    display: grid;
+
+    grid-template-columns: repeat(3, 1fr);
+
+    width: 100px;
+
+    margin-bottom: 32px;
+    transition: opacity 0.2s;
+}
+
+.emoji-list {
+    display: none;
+    background: white;
+    border-radius: 5px;
+    border: 1px solid silver;
+    max-height: 170px;
+    width: 220px;
+    overflow-y: auto;
+}
+
+.emoji-option {
+    font-size: 16px;
+    cursor: pointer;
+}
+
+/* .hidden {
+    opacity: 0;
+} */
+
+.emoji {
+    text-align: center;
+    font-size: 24px;
+    padding: 8px;
+}
+
+.custom-height-30 {
+    height: 30px;
+}
+
+.custom-radio-label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    padding: 5px;
+    height: 100%;
+}
+
+.feeds-custom-menu {
+    border-radius: 5px;
+    border: 1px solid silver;
+    height: fit-content;
+}
+
+.custom-dropdown {
+    margin-top: 20px;
+    display: block;
+
+}
+
+.eventsSection {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+}
+.kudoseventsSection {
+    display: flex;
+    flex-direction: column;
+    height: 358px;
+    overflow-y: scroll;
+}
+
+.feeds-main-content {
+    height: 75vh;
+    max-height: 75vh;
+    overflow-y: auto;
+    scroll-behavior: smooth;
+}
+
+.cards {
+    padding: 15px;
+    background-color: white;
+    border-radius: 5px;
+    border: 1px solid #cfcaca;
+    color: #3b4452;
+    margin-top: 5px;
+    position: relative;
+    width:500px
+}
+
+.feeds-left-menu {
+    font-weight: 500;
+    color: #47515b;
+    cursor: pointer;
+    font-size: 0.8rem;
+}
+
+.emoji:hover {
+    cursor: pointer;
+}
+
+.comment-box {
+    position: relative;
+    padding-top: 10px;
+    /* Adjust based on button height */
+    padding-left: 10px;
+    overflow: hidden;
+    height: 60px;
+    margin-left: 30px;
+}
+
+.form-select {
+
+    font-size: 0.75rem;
+}
+.transparent-backdrop {
+    background-color: rgba(0, 0, 0, 0.3); /* Adjust the opacity to your liking */
+}
+
+.catagory-select:hover {
+    background-color: #edf3ff;
+
+}
+
+.modal-body {
+    font-size: 0.75rem;
+}
+
+.addcomment {
+    position: absolute;
+    bottom: 15px;
+    /* Move up by increasing this value */
+    right: 5px;
+    /* Adjust based on padding and design */
+    font-size: var(--normal-font-size);
+    color: rgb(2, 17, 79);
+    border: none;
+    border-radius: 4px;
+    margin-top: -5px;
+    /* Adjust as needed */
+    cursor: pointer;
+    padding: 5px 10px;
+    background-color: transparent;
+    background-color: rgb(2, 17, 79);
+    color: #fff;
+    border: 1px solid rgb(2, 17, 79);
+    font-weight: 500;
+    border-radius: 5px;
+ 
+    padding: 4px 10px;
+    width: 60px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 0.5rem;
+    border: none;
+    /* If you want the background to be transparent */
+}
+
+.replyDiv {
+    margin-top: 10px;
+}
+
+.arrow-icon svg {
+    transition: transform 0.3s ease;
+}
+
+.search-bar {
+    display: flex;
+    align-items: center;
+    background-color: #fff;
+    border-radius: 25px;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.search-input {
+    border: none;
+    padding: 10px;
+    font-size: 16px;
+    outline: none;
+}
+
+.placeholder-small {
+    color: var(--label-color);
+    /* Placeholder text color */
+    font-size: var(--normal-font-size);
+    font-family: "Montserrat", sans-serif;
+    font-weight: normal;
+}
+.placeholder-big {
+    color: var(--main-heading-color);
+    /* Placeholder text color */
+    font-size: var(--normal-font-size);
+    font-family: "Montserrat", sans-serif;
+    font-weight: normal;
+}
+
+#category::placeholder {
+    color: var(--label-color);
+    /* Placeholder text color */
+    font-size: var(--normal-font-size);
+    /* Placeholder font size */
+    font-family: "Montserrat", sans-serif;
+    font-weight: normal;
+}
+
+#subject::placeholder {
+    color: var(--label-color);
+    /* Placeholder text color */
+    font-size: var(--normal-font-size);
+    /* Placeholder font size */
+    font-family: "Montserrat", sans-serif;
+    font-weight: normal;
+}
+
+#description::placeholder {
+    font-weight: normal;
+    color: var(--label-color);
+    /* Placeholder text color */
+    font-size: var(--normal-font-size);
+    /* Placeholder font size */
+    font-family: "Montserrat", sans-serif;
+}
+
+.search-button {
+    background-color: rgb(2, 17, 79);
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    border-top-right-radius: 25px;
+    border-bottom-right-radius: 25px;
+}
+
+#hidden-content {
+    display: none;
+    /* Initially hide the content */
+}
+
+.comments {
+    margin-top: 10px;
+}
+
+.items-center {
+    /* Center items vertically */
+    align-items: center;
+}
+
+.h-28 {
+    /* Height */
+    height: 7rem;
+    /* Adjust as needed */
+}
+
+.border-1 {
+    /* Border */
+    border-width: 1px;
+}
+
+.text-base {
+    /* Font size */
+    font-size: 12px;
+    color: #778899;
+    font-weight: 600;
+}
+
+.text-feed {
+    font-size: var(--nav-headings-font-size);
+    color: var(--main-heading-color);
+    font-weight: 600;
+}
+
+.custom-feed {
+    margin-left: -80px;
+}
+
+.custom-feed .sort-text {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.custom-feed .custom-feed-btn {
+    background: none;
+    border: none;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    color: #3b4452;
+}
+
+.custom-feed .custom-feed-menu {
+    position: absolute;
+    background-color: white;
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+    min-width: 190px;
+    right: -60px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+}
+
+.custom-feed .custom-feed-item {
+    padding: 8px 16px;
+    font-size: 14px;
+    text-decoration: none;
+    color: #3b4452;
+}
+
+.Feeds-Dropdown {
+    display: none;
+    overflow-y: auto;
+    max-height: 120px;
+    overflow-x: hidden;
+}
+
+.custom-list {
+    font-size: 13px;
+    line-height: 1;
+    text-decoration: none;
+    color: black;
+    text-align: left;
+    padding-left: 0;
+    overflow-y: auto;
+    max-height: 200px;
+    overflow-x: hidden;
+}
+
+.cus-button {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0.5rem;
+    overflow-y: auto;
+    max-height: fit-content;
+    cursor: pointer;
+    overflow-x: hidden;
+}
+
+.font-semibold {
+    font-weight: 600;
+    /* Adjust as needed */
+}
+
+.leading-5 {
+    line-height: 1.25rem;
+    /* Adjust as needed */
+}
+
+.text-xs {
+    /* Font size */
+    font-size: 12px;
+    color: #47515b;
+}
+
+.font-normal {
+    /* Font weight */
+    font-weight: 400;
+    /* Adjust as needed */
+}
+
+.leading-4 {
+    /* Line height */
+    line-height: 1rem;
+    /* Adjust as needed */
+}
+
+.flex {
+    display: flex;
+}
+
+.items-start {
+    align-items: flex-start;
+}
+
+/* Define styles for the avatar container */
+.avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    /* Set width and height for the circular avatar */
+    height: 50px;
+    border-radius: 50%;
+    /* margin-left: 20px; */
+    /* Make the avatar circular */
+    background-color: #ccc;
+    /* Background color for the avatar */
+}
+
+/* Apply styles to the search bar */
+.search-bar {
+    display: flex;
+    align-items: center;
+    max-width: 250px;
+    border-radius: 20px;
+    border: 1px solid #ccc;
+    overflow: hidden;
+    /* Hide overflowing content */
+}
+
+/* Sample CSS */
+.w-full {
+    width: 100%;
+    /* Add more styles as needed */
+}
+
+.mt-1x {
+    margin-top: 1rem;
+    /* Adjust as per design */
+}
+
+.custom-button {
+    /* Styles for the button */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    border-radius: 5px;
+    height: 30px;
+    border: 1px solid grey;
+    padding: 0.5rem;
+    /* Adjust padding */
+    /* Add more styles as needed */
+}
+
+/* Style the search input */
+.search-bar input[type="text"] {
+    flex: 1;
+    padding: 8px;
+    border: none;
+    outline: none;
+    font-size: 16px;
+}
+
+/* Style the search button */
+.search-bar button {
+    padding: 7px 7px;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+/* Change button background color on hover */
+
+.dropdown-content {
+    display: none;
+    /* Add more styles as needed */
+}
+
+/* Show dropdown content when the arrow is open */
+.arrow-open+.dropdown-content {
+    display: block;
+}
+
+/* Style for the icon */
+.avatar i {
+    color: #fff;
+    margin-left: 10px;
+    /* Icon color */
+    font-size: 24px;
+    /* Adjust the icon size */
+}
+
+/* Hide all sections initially */
+.section {
+    display: none;
+}
+
+/* Show the section based on the selected radio button */
+#all:checked~#all-groups,
+#appreciations:checked~#appreciations,
+#buy-sell-rent:checked~#buy-sell-rent,
+#company-news:checked~#company-news,
+#events:checked~#events {
+    display: block;
+}
+
+.emoji {
+    color: transparent;
+    display: inline-block;
+    font-size: 18px;
+    font-style: normal;
+    height: 25px;
+    width: 25px;
+}
+
+.emoji::selection {
+    background-color: highlight;
+    color: transparent;
+}
+
+.emoji-image {
+    font-size: 14px;
+    line-height: 28px;
+}
+
+.emoji-button {
+    cursor: pointer;
+    margin: 5px;
+}
+
+.emoji-editor {
+    -moz-appearance: textfield-multiline;
+    -webkit-appearance: textarea;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
+    cursor: text;
+    font: medium -moz-fixed;
+    font: -webkit-small-control;
+    -webkit-font-smoothing: antialiased;
+    height: 100px;
+    overflow: auto;
+    padding: 5px;
+    resize: both;
+    width: 100%;
+}
+
+.emoji-picker {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    position: absolute;
+    width: 210px;
+}
+
+.emoji-picker a {
+    cursor: pointer;
+    display: inline-block;
+    font-size: 20px;
+    padding: 3px;
+}
+
+.emoji-selector {
+    border-bottom: 1px solid #ccc;
+    display: flex;
+}
+
+.emoji-selector li {
+    margin: 5px;
+}
+
+/* Define CSS for the menu items */
+.menu-item {
+    transition: background-color 0.3s ease;
+    text-decoration: none;
+    margin-top: 5px;
+    display: block;
+    padding: 5px 10px;
+    font-size: 11px;
+    transition: background-color 0.3s ease;
+    color: #3b4452;
+}
+
+/* Define CSS for the menu items on hover */
+.menu-item:hover {
+    background-color: #edf3ff;
+    border-radius: 5px;
+    height: auto;
+    width: 100%;
+    text-decoration: none;
+}
+
+/* CSS for when radio button is checked */
+.input[type="radio"]:checked+.radio-label {
+    background-color: #e1e7f0;
+    /* Change background color when checked */
+}
+
+/* Ensure radio button and text remain on the same line */
+input[type="radio"] {
+    vertical-align: middle;
+}
+
+.feed-icon-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 2px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background-color: #d8d8d8;
+    /* You can change this to any desired background color */
+}
+
+/* Define the blue background color for the checked state */
+.input[type="radio"]:checked+.custom-radio-button {
+    background-color: blue;
+}
+
+.feather {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.text-salmon-400 {
+    fill: salmon;
+    /* Change the color as needed */
+}
+
+.stroke-1 {
+    stroke-width: 1px;
+    /* Adjust the stroke width as needed */
+}
+
+.sort {
+    border: none;
+    background: none;
+    font-size: 1rem;
+    margin-left: 2px;
+    padding: 2px;
+    align-items: end;
+}
+
+.sort:focus {
+    outline: none;
+}
+
+.feather {
+    width: 1rem;
+    height: 1rem;
+    color: #6b46c1;
+    /* You can change this to any desired icon color */
+}
+
+.activities,
+.posts,
+.post-requests {
+    height: 30px;
+    /* Fixed height */
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    padding: 5px;
+    font-size: 12px;
+    width: 100%;
+    border-radius: 5px;
+}
+
+.post-button {
+    background-color: rgb(2, 17, 79);
+    color: white;
+    height: 30px;
+    margin-left: 20px;
+    border-radius: 5px;
+    width: 70px;
+    font-size: 12px;
+    border: 1px solid silver;
+}
+
+.activities:hover,
+.posts:hover,
+.post-requests:hover {
+    background-color: #edf3ff;
+    cursor: pointer;
+}
+
+.custom-radio-content {
+    color: #778899;
+    font-size: 12px;
+    font-weight: 500;
+    margin-left: 10px;
+}
+
+.medium-header {
+    border-left-width: 0.125rem;
+    font-weight: 600;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    color: var(--e-color-emoji-text);
+    margin-top: 5px;
+    color: #3b4452;
+
+    margin-left: 20px;
+}
+
+.group-events {
+    color: #677a8e;
+    font-size: 13px;
+    font-weight: 100px;
+    text-align: center;
+}
+
+/* CSS for radio-wrapper */
+.alert-success {
+    max-width: 500px;
+    margin: auto;
+}
+
+.drive-in {
+    color: #3b4452;
+    display: flex;
+    margin-left: 5px;
+    flex-direction: column;
+    justify-content: center;
+    /* Centers items vertically */
+}
+
+.navProfileImgFeeds {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    cursor: pointer;
+    margin-right: 0px !important;
+}
+
+.radio-wrapper {
+    display: inline-block;
+    margin-right: 10px;
+    /* Adjust margin as needed */
+    cursor: pointer;
+}
+
+.btn-post {
+    background-color: #f1ecfc;
+    border: 1px solid purple;
+    border-radius: 5px;
+    width: 130px;
+}
+
+/* CSS for labels */
+.radio-label {
+    display: inline-block;
+    padding: 8px 12px;
+    /* Adjust padding as needed */
+    border-radius: 4px;
+    /* Rounded corners */
+    transition: background-color 0.3s ease;
+    /* Smooth transition */
+}
+
+/* CSS for label hover effect */
+.radio-label:hover {
+    background-color: #e1e7f0;
+    /* Change background color on hover */
+}
+
+/* CSS for when radio button is checked */
+.input[type="radio"]:checked+.radio-label {
+    background-color: #e1e7f0;
+    /* Change background color when checked */
+}
+
+/* Ensure radio button and text remain on the same line */
+input[type="radio"] {
+    vertical-align: middle;
+}
+
+.mytextarea {
+    width: 100px;
+    /* Set your desired initial width */
+    height: 30px;
+    /* Set your desired minimum height */
+    resize: none;
+    /* Disable textarea resizing by the user */
+}
+
+.myEmojiDiv {
+    position: absolute;
+    width: fit-content;
+    z-index: 1;
+}
+
+/* start of leave-page styles  (Divya)*/
+/* General button styles */
+.nav-buttons {
+    text-decoration: none;
+    cursor: pointer;
+    font-size: 14px;
+    transition: color 0.3s;
+}
+
+/* Custom tab styles */
+.custom-nav-tabs {
+    margin-top: 10px;
+    background-color: #fff;
+    border-radius: 5px;
+    display: flex;
+    font-weight: 500;
+    text-align: center;
+    color: var(--label-color);
+    padding: 0;
+    margin: 0;
+    font-size: var(--normal-font-size);
+}
+
+/* Individual tab item */
+.custom-nav-tabs .custom-item {
+    flex-grow: 1;
+    overflow: hidden;
+}
+
+/* Link styles for tabs */
+.custom-nav-link {
+    color: var(--label-color);
+    padding: 8px 30px;
+    text-decoration: none;
+    display: block;
+    transition: color 0.3s ease, background-color 0.3s ease;
+    border: 1px solid transparent;
+    box-sizing: border-box;
+}
+
+/* Hover state for tabs */
+.custom-nav-link:hover {
+    color: rgb(2, 17, 79) !important;
+    background-color: #fff;
+    border-color: rgb(2, 17, 79);
+}
+
+/* Active tab styling */
+.custom-nav-link.active {
+    color: white !important;
+    background-color: rgb(2, 17, 79) !important;
+    border-color: rgb(2, 17, 79);
+    border-bottom-color: transparent;
+}
+
+/* Ensure links inside items don't inherit text-decoration */
+.custom-item a {
+    text-decoration: none !important;
+}
+.helpdesk-search-btn {
+    background-color: rgb(2, 17, 79);
+    border-radius: 0 5px 5px 0;
+    color: #fff !important;
+    width: 45px;
+    height: 32px;
+    border: none;
+    align-items: center;
+    display: flex;
+}
+
+
+.card-option{
+text-align: left;
+padding: 7px;
+font-style: 8px;
+align-items: center;
+justify-content: center;
+cursor: pointer;
+}
+/*feeds ended*/
 
 /* Onboarding Form styles  */
 
@@ -1797,53 +2745,98 @@ td {
     font-size: 12px;
 }
 /* General styling for nav links */
+.nav-buttons {
+    text-decoration: none;
+    cursor: pointer;
+    font-size: 14px;
+    transition: color 0.3s;
+}
+
+
+/* Custom tab styles */
+.custom-nav-tabs {
+    margin-top: 10px;
+    background-color: #fff;
+    border-radius: 5px;
+    display: flex;
+    font-weight: 500;
+    text-align: center;
+    color: var(--label-color);
+    padding: 0;
+    margin: 0;
+    font-size: var(--normal-font-size);
+}
+
+/* Individual tab item */
+.custom-nav-tabs .custom-item {
+    flex-grow: 1;
+    overflow: hidden;
+}
+
+/* Link styles for tabs */
 .custom-nav-link {
-    color: var(--label-color, #333);
-    padding: 10px 20px;
+    color: var(--label-color);
+  
     text-decoration: none;
     display: block;
-    transition: all 0.3s ease;
+    transition: color 0.3s ease, background-color 0.3s ease;
     border: 1px solid transparent;
-    border-radius: 50px; /* Rounded pill shape */
     box-sizing: border-box;
-    text-align: center;
-    font-size: 16px;
-    font-weight: 500;
 }
 
 /* Hover state for tabs */
 .custom-nav-link:hover {
-    color: var(--main-button-color, #007bff) !important;
+    color: var(--main-button-color);
     background-color: #fff;
-    border-color: var(--main-button-color, #007bff);
-    transform: translateY(-2px); /* Subtle lift effect */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Shadow on hover */
+    border-color: var(--main-button-color)
 }
 
 /* Active tab styling */
 .custom-nav-link.active {
     color: white !important;
-    background-color: var(--main-button-color, #007bff) !important;
-    border-color: var(--main-button-color, #007bff);
+    background-color:var(--main-button-color) !important;
+    border-color: var(--main-button-color);
     border-bottom-color: transparent;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Slight shadow for active tab */
-    transform: translateY(0); /* No lift for active */
+}
+.custom-nav-link {
+    padding: 8px 20px !important;
 }
 
-/* Smooth animations for hover and active state */
-.custom-nav-link.active,
-.custom-nav-link:hover {
-    transition: all 0.4s ease-in-out;
+.custom-nav-tabs {
+    margin-top: 20px !important;
 }
-
 /* Responsive design for smaller screens */
-@media (max-width: 768px) {
-    .custom-nav-link {
-        padding: 8px 15px;
-        font-size: 14px;
+@media (max-width: 346px) {
+    .custom-nav-link.active {
+        border-radius: 0 !important;
+    }
+    .mbl-dev-active{
+        border-top-left-radius: 5px;
+        border-bottom-left-radius: 5px;
+    }
+    .custom-nav-link.active {
+        border-radius: 0 !important;
+    }
+    .custom-nav-tabs {
+        /* flex-direction: column; */
+        width: 100%;
+    }
+
+}
+
+@media (max-width: 992px) {
+    .mbl-dev-closed{
+        border-top-right-radius: 5px;
+        border-bottom-right-radius: 5px;
+    }
+    .mbl-dev-active{
+        border-top-left-radius: 5px;
+        border-bottom-left-radius: 5px;
+    }
+    .custom-nav-link.active {
+        border-radius: 0 !important;
     }
 }
-
 
 /* Request Ended */
 /* Employee Information started*/
