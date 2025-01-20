@@ -62,9 +62,14 @@ class EmployeeDetails extends Authenticatable
         'emp_domain'=>'array',
 
     ];
+
     public function empBankDetails()
     {
         return $this->hasOne(EmpBankDetail::class, 'emp_id', 'emp_id');
+    }
+    public function personalInfo()
+    {
+        return $this->hasOne(EmpPersonalInfo::class, 'emp_id', 'emp_id');
     }
 
     public function empParentDetails()
@@ -117,9 +122,10 @@ public function getImageUrlAttribute()
     {
         return $this->hasMany(SwipeRecord::class, 'emp_id', 'emp_id');
     }
+
     public function comments()
     {
-        return $this->hasMany(Comment::class, 'emp_id', 'emp_id');
+        return $this->hasMany(Comment::class, 'company_id', 'company_id');
     }
 
     // Inside the EmployeeDetails model
