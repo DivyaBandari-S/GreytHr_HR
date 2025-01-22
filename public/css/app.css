@@ -2530,6 +2530,7 @@ input[type="date"]::before {
 .request-search-container {
     margin-top: 30px;
     margin-bottom: 15px;
+    align-items: start;
 }
 
 
@@ -3075,26 +3076,37 @@ td {
     display: flex;
     align-items: center;
     width: 100%;
+    border-radius: 40px;
 }
 
 .input-group4 input {
     font-size: 10px;
     cursor: pointer;
+
     border-radius: 5px 0 0 5px;
     width: 250px;
-    height: 30px;
+    height: 50px;
     padding: 5px;
+    border-radius: 40px;
 }
 
 .input-group-append {
+    background-color: #f8f9fa; /* Optional: Light background for the icon section */
     display: flex;
     align-items: center;
+    justify-content: center;
+    padding: 0 10px; /* Adjust padding for the icon section */
+    cursor: pointer;
 }
 
-.input-group-append button {
-    height: 30px;
-    border-radius: 0 5px 5px 0;
-    padding: 0 10px;
+.input-group-append .search-icon {
+    font-size: 16px; /* Adjust icon size */
+    color: black; /* Icon color */
+}
+
+.form-control:focus {
+    outline: none; /* Removes focus outline */
+    box-shadow: none; /* Removes focus shadow */
 }
 
 
@@ -3140,17 +3152,26 @@ td {
      height:auto;
 }
 .search-container {
+    max-height: 250px; /* Set maximum height */
+    overflow-y: auto; /* Enable vertical scrolling */
+    
+    padding: 10px; /* Optional: Add some padding */
+    cursor:pointer;
+    margin-top: 5px;
 
-    max-width: none;
-    margin-bottom: 10px;
-    cursor: pointer;
-     background-color:darkgrey;
-     padding: 5px;
-      width: 300px;
-      border-radius: 5px;
-      margin-top:5px
+    border:5px;
+    border: 1px solid #c8c8c8;
+    border-radius:5px;
+    width:300px;
+    align-items: center;
+    background-color:white; /* Optional: Set a background color */
 }
 
+.search-container:hover {
+    background-color: #e7f3ff; /* Light blue background on hover */
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow for hover effect */
+    border-color: #afd4f7; /* Light blue border on hover */
+}
 .profile-image{
     border-radius:50%;
     width: 50px;

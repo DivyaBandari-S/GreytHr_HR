@@ -16,7 +16,7 @@
                 </ul>
             </li>
             <li>
-                <a href="#"><i class="ph ph-rss-simple"></i></a>
+                <a href="/hr/hrFeeds"><i class="ph ph-rss-simple"></i></a>
                 <ul class="sidebar__submenu">
                     <li class="title">Components</li>
                     <li><a href="#">Modals</a></li>

@@ -143,8 +143,7 @@
 
                       
                     </div>
-                 
-                    <div class="profile" >
+                  <div class="profile" >
     <div class="col m-0">
      
     <div class="row d-flex align-items-center">

@@ -1052,12 +1052,13 @@ $lastEmoji = $lastTwoEmojis->last(); // Get the last reacted emoji
                                             class="modal-backdrop fade show blurred-backdrop">
                                         </div>
                                     @endif
+                                    @else
                                     <span
                                         style="cursor: pointer; color: blue; font-size: 10px;margin-left:5px"
                                         wire:click="openEmojiDialog('{{ $data['employee']->emp_id }}')">
                                          reacted</span>
 
-                                    @else
+                                 
 
                                 @endif
 
