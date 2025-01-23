@@ -16,16 +16,18 @@
                 </ul>
             </li>
             <li>
-                <a href="#"><i class="ph ph-rss-simple"></i></a>
-                <ul class="sidebar__submenu">
-                    <li class="title">Components</li>
-                    <li><a href="#">Modals</a></li>
-                    <li><a href="#">Alerts</a></li>
-                    <li><a href="#">Badges</a></li>
-                    <li><a href="#">Tabs</a></li>
-                    <li><a href="#">Cards</a></li>
-                </ul>
-            </li>
+    <a href="/hr/hrFeeds" ><i class="ph ph-rss-simple"></i></a>
+    <ul class="sidebar__submenu">
+        <li class="title">Components</li>
+        <li><a href="#">Modals</a></li>
+        <li><a href="#">Alerts</a></li>
+        <li><a href="#">Badges</a></li>
+        <li><a href="#">Tabs</a></li>
+        <li><a href="#">Cards</a></li>
+    </ul>
+</li>
+
+
             <li>
                 <a href="#"><i class="ph-clipboard-fill"></i></a>
                 <ul class="sidebar__submenu">
