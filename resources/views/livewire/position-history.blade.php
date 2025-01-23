@@ -1,6 +1,6 @@
 <div>
-<div class="main__body" >
-<ul class="nav nav-tabs custom-nav-tabs" role="tablist" style="margin-top:67px">
+<div class="row" style="margin-top:-20px;margin-left:3px">
+<ul class="nav custom-nav-tabs" role="tablist" >
     <li class="nav-item" role="presentation">
         <a class="nav-link active custom-nav-link" id="simple-tab-0" data-bs-toggle="tab" href="#simple-tabpanel-0" role="tab" aria-controls="simple-tabpanel-0" aria-selected="true">Main</a>
     </li>
@@ -8,6 +8,7 @@
         <a class="nav-link custom-nav-link" id="simple-tab-1" data-bs-toggle="tab" href="#simple-tabpanel-1" role="tab" aria-controls="simple-tabpanel-1" aria-selected="false">Activity</a>
     </li>
 </ul>
+</div>
 
 <div class="tab-content pt-5" id="tab-content">
   <div class="tab-pane active" id="simple-tabpanel-0" role="tabpanel" aria-labelledby="simple-tab-0" style="overflow-x: hidden;">
@@ -76,187 +77,103 @@
                       
                     </div>
                  
-                    <div class="profile" >
+                  
+                    <div class="profile">
     <div class="col m-0">
-     
-    <div class="row d-flex align-items-center">
-    <p class="main-text "  style="cursor:pointer" wire:click="NamesSearch">
-        Search Employee:
-    </p>
-    @foreach($selectedPeopleData as $personData)
-    <span class="selected-person d-flex align-items-center">
-        <img class="profile-image-selected" src="data:image/jpeg;base64,{{ $personData['image'] ?? '-' }}">
-
-        <p class="selected-name mb-0">
-            @php
-                // Split the name into parts
-                $nameParts = explode(' ', $personData['name']);
-
-                // Capitalize the first letter of the first name
-                $firstName = isset($nameParts[0]) ? ucfirst(strtolower($nameParts[0])) : '';
-
-                // Get the last name parts (excluding emp_id)
-                $lastNameParts = array_slice($nameParts, 1); // Get all parts after the first name
-
-                // Capitalize each part of the last name
-                $formattedLastName = implode(' ', array_map('ucfirst', array_map('strtolower', $lastNameParts)));
-
-                // Combine first and last names
-                $fullName = trim($firstName . ' ' . $formattedLastName);
-            @endphp
-            {{ $fullName }} <!-- Display only the full name -->
-        </p>
-
-        <p class="emp-id mb-0" style="font-size: 12px; color: white;">
-            (#{{ strtoupper(e((string) $personData['emp_id'])) }}) <!-- Display emp_id separately -->
-        </p>
-
-        <svg class="close-icon-person"  
-             wire:click="removePerson('{{ e((string) $personData['emp_id']) }}')" 
-             xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20">
-            <path d="M6 18L18 6M6 6l12 12" stroke="#3b4452" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-    </span>
-@endforeach
-
-
-
-
-
-
-
-
-
-
-
-</div>
-
-
-
-
+        <div class="row d-flex align-items-center">
+            <!-- Search Input -->
+            <div class="input-group4 d-flex align-items-center">
+                <!-- Input Field with Profile Image -->
+                <div class="position-relative">
+                    @if($selectedEmployeeId && $selectedEmployeeFirstName)
+                    <img 
+        src="{{ $selectedEmployeeImage ? 'data:image/jpeg;base64,' . $selectedEmployeeImage : asset('images/user.jpg') }}" 
+        alt="Profile Image" 
+        class="profile-image-input"
+        style="position: absolute; top: 50%; left: 10px; transform: translateY(-50%); width: 30px; height: 30px; border-radius: 50%;" 
+    />
+                    @else
+                        <img 
+                         src="{{ asset('images/user.jpg') }}" alt="Default Image"
+                            
+                            class="profile-image-input"
+                            style="position: absolute; top: 50%; left: 10px; transform: translateY(-50%); width: 30px; height: 30px; border-radius: 50%;"
+                        />
+                    @endif
 
                
-       
-    
-        <div class="col-md-6 col-12"> 
-
-@if($isNames)
-<div class="col-md-6 search-bar" >
-<div class="input-group4" >
-
-<input 
-wire:model.debounce.500ms="searchTerm" placeholder="Search employees..."
-
-type="text" 
-class="form-control search-term" 
-placeholder="Search for Emp.Name or ID" 
-aria-label="Search" 
-aria-describedby="basic-addon1"
+                  <!-- Search Input Field -->
+<input
+    wire:model.debounce.500ms="searchTerm"
+    aria-label="{{ $selectedEmployeeFirstName ? ucfirst(strtolower($selectedEmployeeFirstName)) . ' ' . ucfirst(strtolower($selectedEmployeeLastName)) : 'Search for an employee...' }}"
+    placeholder="{{ $selectedEmployeeFirstName ? ucfirst(strtolower($selectedEmployeeFirstName)) . ' ' . ucfirst(strtolower($selectedEmployeeLastName)) : 'Search for an employee...' }}"
+    type="text"
+    class="form-control search-term"
+    style="padding-left: 50px; padding-right: 35px;" 
 />
 
-<div class="input-group-append" style="display: flex; align-items: center;">
-
-<button 
-  
- wire:click="searchforEmployee"  wire:model.debounce.500ms="searchTerm"  style="<?php echo ($searchEmployee) ? 'display: block;' : ''; ?>" 
-    class="search-btn" 
-    type="button" >
-    <i class='bx bx-search' style="color: white;"></i>
-</button>
-
-<button 
-    wire:click="closePeoples"   
-    type="button" 
-    class="close-btn rounded px-1 py-0" 
-    aria-label="Close" 
-   
->
-    <span aria-hidden="true" style="color: white; font-size: 24px; line-height: 0;">×</span>
-</button>
-
-</div>
-</div>
-<div>
-
-
-<!-- Display the Search Results -->
-@if ($peopleData && $peopleData->isEmpty())
-                                    <div class="search-container">
-                                        No People Found
-                                    </div>
-                                    @else
-                                    @if(count($employees) > 0)
-                                    @if (session()->has('warning'))
-    <div class="alert alert-warning alert-dismissible fade show" role="alert" style="font-size: 12px; padding: 5px 10px; width: 100%; max-width: 500px; margin: 10px auto;">
-        {{ session('warning') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" style="margin-left: 2px; font-size: 8px;">
-            &times;
-        </button>
-    </div>
+<!-- Display Close Icon if Employee is Selected -->
+@if($selectedEmployeeId)
+    <svg class="close-icon-person"  
+         wire:click="removePerson('{{ $selectedEmployeeId }}')" 
+         xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20"
+         style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer;">
+        <path d="M6 18L18 6M6 6l12 12" stroke="#3b4452" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+@else
+    <!-- Display Search Icon if No Employee is Selected -->
+    <i 
+        class="bx bx-search search-icon position-absolute" width="20" height="20"
+        wire:click="searchforEmployee"
+        style="right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer;">
+    </i>
 @endif
 
-
-
-                                    @foreach($employees as $employee)
-
-    @if(stripos($employee->first_name . ' ' . $employee->last_name, $searchTerm) !== false)
-        <label wire:click="selectPerson('{{ $employee->emp_id }}')" class="search-container">
-            <div class="row align-items-center">
-                <div class="col-auto"> 
-                    <input type="checkbox" id="employee-{{ $employee->emp_id }}" 
-                           wire:click="updateselectedEmployee('{{ $employee->emp_id }}')"  
-                           wire:model="selectedPeople" 
-                           value="{{ $employee->emp_id }}" class="form-check-input custom-checkbox-information"
-                           {{ in_array($employee->emp_id, $selectedPeople) || $employee->isChecked ? 'checked' : '' }}>
-                </div>
-                <div class="col-auto">
-                    @if($employee->image && $employee->image !== 'null')
-                    
-                        <img class="profile-image"  src="data:image/jpeg;base64,{{($people->image ??'-') }}" >
-                    @else
-                        @if($employee->gender == "Male")
-                            <img class="profile-image" src="{{ asset('images/male-default.png') }}" alt="Default Male Image">
-                        @elseif($employee->gender == "Female")
-                            <img class="profile-image" src="{{ asset('images/female-default.jpg') }}" alt="Default Female Image">
-                        @else
-                            <img class="profile-image" src="{{ asset('images/user.jpg') }}" alt="Default Image">
-                        @endif
-                    @endif
-                </div>
-
-                <div class="col">
-                    <h6 class="name" class="mb-0" style="font-size: 12px; color: white;">
-                        @php
-                            // Capitalize the first letter of the first name
-                            $formattedFirstName = ucfirst(strtolower($employee->first_name));
-
-                            // Capitalize each part of the last name
-                            $lastNameParts = explode(' ', strtolower($employee->last_name));
-                            $formattedLastName = implode(' ', array_map('ucfirst', $lastNameParts));
-                        @endphp
-                        {{ $formattedFirstName }} {{ $formattedLastName }}
-                    </h6>
-                    <p class="mb-0" style="font-size: 12px; color: white;">(#{{ $employee->emp_id }})</p>
                 </div>
             </div>
-        </label>
-    @endif
-@endforeach
-@endif
 
-@endif
-
-
-</div>
-
-
-
-
-
-</div>
-@endif
-</div> 
- 
+            <!-- Conditional Display of Search Results -->
+            @if($searchTerm)
+                @if($employees->isEmpty())
+                    <div class="search-container">
+                        <p>No People Found</p>
+                    </div>
+                @else
+                    <div class="search-container" style="max-height: 250px; overflow-y: auto;">
+                        @foreach($employees as $employee)
+                            @if(stripos($employee->first_name . ' ' . $employee->last_name, $searchTerm) !== false)
+                                <label wire:click="selectEmployee('{{ $employee->emp_id }}')" style="cursor: pointer;">
+                                    <div class="row align-items-center">
+                                        <div class="col-auto">
+                                            <input 
+                                                type="checkbox" 
+                                                id="employee-{{ $employee->emp_id }}"
+                                                wire:click="updateselectedEmployee('{{ $employee->emp_id }}')"
+                                                value="{{ $employee->emp_id }}"
+                                                class="form-check-input custom-checkbox-information"
+                                                {{ in_array($employee->emp_id, $selectedPeople) || $employee->isChecked ? 'checked' : '' }}>
+                                        </div>
+                                        <div class="col-auto">
+                                            @if($employee->image && $employee->image !== 'null')
+                                                <img class="profile-image" src="data:image/jpeg;base64,{{ $employee->image }}">
+                                            @else
+                                                <img class="profile-image" src="{{ asset('images/user.jpg') }}" alt="Default Image">
+                                            @endif
+                                        </div>
+                                        <div class="col">
+                                            <h6 class="name" style="font-size: 12px; color: black;">
+                                                {{ ucfirst(strtolower($employee->first_name)) }} {{ ucfirst(strtolower($employee->last_name)) }}
+                                            </h6>
+                                            <p style="font-size: 12px; color: grey;">(#{{ $employee->emp_id }})</p>
+                                        </div>
+                                    </div>
+                                </label>
+                            @endif
+                        @endforeach
+                    </div>
+                @endif
+            @endif
+        </div>
     </div>
 </div>
 
