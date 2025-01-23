@@ -171,27 +171,6 @@
             /* Space between circle and text */
         }
 
-        .thisCircle {
-            display: flex;
-            margin-left: 10px;
-            justify-content: center;
-            align-items: center;
-            width: 40px;
-            height: 35px;
-            cursor: pointer;
-            border-radius: 50%;
-            color: var(--label-color);
-            font-weight: 500;
-            background-color: #fff;
-            font-size: var(--normal-font-size);
-        }
-
-        .selected-employee-box .employee-info {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            margin-right: 115px;
-        }
 
         .selected-employee-box .close-btn {
             position: absolute;
@@ -1797,7 +1776,9 @@ color: #fff;
                     </span>
                 </div>
                 <div class="employee-info">
-                    <span>{{ ucwords(strtolower($selectedEmployeeFirstName)) }}&nbsp;{{ ucwords(strtolower($selectedEmployeeLastName)) }}</span>
+                    <span class="employee-info-name"data-toggle="tooltip"
+                                                data-placement="top"
+                                                title="{{ ucwords(strtolower($selectedEmployeeFirstName)) }} {{ ucwords(strtolower($selectedEmployeeLastName)) }}">{{ ucwords(strtolower($selectedEmployeeFirstName)) }}&nbsp;{{ ucwords(strtolower($selectedEmployeeLastName)) }}</span>
                     {{ $selectedEmployeeId }}
                 </div>
             </div>

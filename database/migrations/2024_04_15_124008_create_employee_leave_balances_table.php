@@ -24,6 +24,8 @@ return new class extends Migration
             $table->string('granted_for_year', 10)->nullable();
             $table->boolean('is_lapsed')->default(false);
             $table->timestamp('lapsed_date')->nullable();
+            $table->string('from_date')->nullable();
+            $table->string('to_date')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

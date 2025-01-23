@@ -116,27 +116,74 @@ class ShiftRosterHr extends Component
         $this->count_of_holiday=count($this->holiday);
         if($this->selectedOption=='Current')
             {
-                $this->employees = EmployeeDetails::whereIn('emp_id', $this->empIds)->where('employee_status','active')->get();                
+                $this->employees = EmployeeDetails::whereIn('emp_id', $this->empIds)
+                ->where('employee_status', 'active') // Filter employees with active status
+                ->join('company_shifts', function ($join) {
+                    $join->on('employee_details.shift_type', '=', 'company_shifts.shift_name') // Join on shift_type and shift_name
+                         ->whereRaw('JSON_CONTAINS(employee_details.company_id, JSON_QUOTE(company_shifts.company_id))'); // Match company_id
+                })
+                ->select(
+                    'employee_details.*', // All fields from employee_details
+                    'company_shifts.shift_start_time', // Shift start time
+                    'company_shifts.shift_end_time', // Shift end time
+                    'company_shifts.shift_name'
+                )
+                ->get();
+                           
             }
             elseif($this->selectedOption=='Past')
             {
                 $this->employees = EmployeeDetails::whereIn('emp_id', $this->empIds)
-                                        ->where(function ($query) {
-                                            $query->where('employee_status', 'resigned')
-                                                ->orWhere('employee_status', 'terminated');
-                                        })
-                                        ->get();
+                                    ->where(function ($query) {
+                                        $query->where('employee_status', 'resigned')
+                                            ->orWhere('employee_status', 'terminated');
+                                    })
+                                    ->join('company_shifts', function ($join) {
+                                        $join->on('employee_details.shift_type', '=', 'company_shifts.shift_name')
+                                            ->whereRaw('JSON_CONTAINS(employee_details.company_id, JSON_QUOTE(company_shifts.company_id))');
+                                    })
+                                    ->select(
+                                        'employee_details.*', // All columns from employee_details
+                                        'company_shifts.shift_start_time', // Shift start time
+                                        'company_shifts.shift_end_time', // Shift end time
+                                        'company_shifts.shift_name'
+                                    )
+                                    ->get();
 
                 
             }
             elseif($this->selectedOption=='Intern')
             {
-                $this->employees = EmployeeDetails::whereIn('emp_id', $this->empIds)->where('job_role','intern')->get(); 
-               
+                $this->employees = EmployeeDetails::whereIn('emp_id', $this->empIds)
+                                    ->where('job_role', 'intern') // Filter employees with job_role = 'intern'
+                                    ->join('company_shifts', function ($join) {
+                                        $join->on('employee_details.shift_type', '=', 'company_shifts.shift_name')
+                                            ->whereRaw('JSON_CONTAINS(employee_details.company_id, JSON_QUOTE(company_shifts.company_id))');
+                                    })
+                                    ->select(
+                                        'employee_details.*', // All columns from employee_details
+                                        'company_shifts.shift_start_time', // Shift start time from company_shifts
+                                        'company_shifts.shift_end_time', // Shift end time from company_shifts
+                                        'company_shifts.shift_name'
+                                    )
+                                    ->get();
             }
             else
             {
-                $this->employees = EmployeeDetails::whereIn('emp_id', $this->empIds)->get(); 
+                $this->employees = EmployeeDetails::whereIn('emp_id', $this->empIds)
+                                    ->join('company_shifts', function ($join) {
+                                        $join->on('employee_details.shift_type', '=', 'company_shifts.shift_name')
+                                            ->whereRaw('JSON_CONTAINS(employee_details.company_id, JSON_QUOTE(company_shifts.company_id))');
+                                    })
+                                    ->select(
+                                        'employee_details.*', // Select all columns from employee_details
+                                        'company_shifts.shift_start_time', // Include shift start time
+                                        'company_shifts.shift_end_time', // Include shift end time
+                                        'company_shifts.shift_name',
+
+                                    )
+                                    ->get();
+
             }
         return view('livewire.shift-roster-hr');
     }

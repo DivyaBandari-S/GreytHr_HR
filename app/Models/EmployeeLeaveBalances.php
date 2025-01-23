@@ -23,7 +23,9 @@ class EmployeeLeaveBalances extends Model
         'is_lapsed',
         'lapsed_date',
         'batch_id',
-        'deleted_at'
+        'deleted_at',
+        'from_date',
+        'to_date'
     ];
 
     protected static function boot()

@@ -20,7 +20,7 @@
                 <div class="col-11 d-flex flex-column">
                     <p class="main-overview-text">The page guides you through an overview of your organization's
                         day-to-day
-                        HR activities including lifecycle events like additions, seperations, etc</p>
+                        HR activitwies including lifecycle events like additions, seperations, etc</p>
 
                 </div>
                 <div class="hide-main-overview-help col-1">

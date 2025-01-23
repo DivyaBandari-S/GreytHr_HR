@@ -5,7 +5,7 @@
             <!-- <i class="ph-flame-fill"></i> -->
             <img src="{{ asset('images/user-group.png') }}" alt="" style="width: 1.3em;">
         </a>
- 
+
         <ul class="sidebar__menu">
             <li>
                 <a href="#" class="active"><i class="ph-house-fill"></i></a>
@@ -16,16 +16,12 @@
                 </ul>
             </li>
             <li>
-    <a href="/hr/hrFeeds" ><i class="ph ph-rss-simple"></i></a>
-    <ul class="sidebar__submenu">
-        <li class="title">Components</li>
-        <li><a href="#">Modals</a></li>
-        <li><a href="#">Alerts</a></li>
-        <li><a href="#">Badges</a></li>
-        <li><a href="#">Tabs</a></li>
-        <li><a href="#">Cards</a></li>
-    </ul>
-</li>
+                <a href="#"><i class="ph ph-rss-simple"></i></a>
+                <ul class="sidebar__submenu">
+                    <li class="title">Engage</li>
+                    <li><a href="/hr/hrFeeds">Feeds</a></li>
+                </ul>
+            </li>
 
 
             <li>
@@ -60,11 +56,11 @@
                             <li><a href="/hr/bank-account">Bank/PF/ESI</a></li>
                             <li><a href="/hr/parent-details">Family Details</a></li>
                             <li><a href="/hr/emp-document">Employee Documents</a></li>
- 
+
                             <li><a href="/user">Previous Employement</a></li>
                             <li><a href="/user">Separration</a></li>
                             <li><a href="/user">Acess card details</a></li>
- 
+
                             <li><a href="/user">Employee Contracts</a></li>
                             <li><a href="/user">Employee Salary</a></li>
                         </ul>
@@ -120,7 +116,7 @@
                             <li><a href="/hr/user/attendance-info">Attendance Info</a></li>
                         </ul>
                     </li>
- 
+
                     <li>
                         <a href="#">Admin <i class="ph-caret-right-fill"></i></a>
                         <ul class="sidebar__dropdown-menu">
@@ -130,7 +126,6 @@
                             <li><a href="/user">Process Attendance</a></li>
                             <li><a href="/home">Attendance Period Finalisation</a></li>
                             <li><a href="/user">Attendance Exception</a></li>
-                            <li><a href="/user">Assign Attendnace Scheme</a></li>
                             <li><a href="/user">Lock Configuartion</a></li>
                             <li><a href="/user">Manual Override</a></li>
                             <li><a href="/user">Shift Override</a></li>
@@ -166,12 +161,12 @@
             <div class="pointer m-auto">@livewire('log-out')</div>
         </ul>
     </section>
- 
+
     <!-- start: SIDEBAR OVERLAY -->
     <div class="sidebar-overlay"></div>
     <!-- end: SIDEBAR OVERLAY -->
     <!-- end: SIDEBAR -->
- 
+
     <!-- start: SIDEBAR MOBILE -->
     <section id="sidebar-mobile">
         <i class="ph-squares-four-fill toggle-sidebar"></i>
@@ -355,12 +350,10 @@
             </ul>
         </div>
         <!-- end: MAIN TOP -->
- 
- 
- 
+
+
+
         <!-- Logout Modal -->
- 
+
     </section>
 </div>
- 
- 

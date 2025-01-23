@@ -59,7 +59,7 @@ class EmployeeDetails extends Authenticatable
     ];
     protected $casts = [
         'company_id' => 'array',
-        'emp_domain'=>'array',
+        'emp_domain' => 'array',
 
     ];
 
@@ -100,7 +100,7 @@ class EmployeeDetails extends Authenticatable
     }
     public function empSubDepartment()
     {
-        return $this->hasOne(EmpSubDepartments::class, 'sub_dept_id', 'sub_dept_id'); 
+        return $this->hasOne(EmpSubDepartments::class, 'sub_dept_id', 'sub_dept_id');
     }
 
 
@@ -108,11 +108,11 @@ class EmployeeDetails extends Authenticatable
     {
         return $this->hasMany(LeaveRequest::class, 'emp_id');
     }
-// In App\Models\EmployeeDetails
-public function getImageUrlAttribute()
-{
-    return 'data:image/jpeg;base64,' . base64_encode($this->attributes['image']);
-}
+    // In App\Models\EmployeeDetails
+    public function getImageUrlAttribute()
+    {
+        return 'data:image/jpeg;base64,' . base64_encode($this->attributes['image']);
+    }
 
     public function leaveApplies()
     {
@@ -137,8 +137,6 @@ public function getImageUrlAttribute()
     public function conversations()
     {
 
-        return $this->hasMany(Chating::class,'sender_id')->orWhere('receiver_id',$this->emp_id)->whereNotDeleted();
-
+        return $this->hasMany(Chating::class, 'sender_id')->orWhere('receiver_id', $this->emp_id)->whereNotDeleted();
     }
-
 }
