@@ -127,3 +127,93 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
 
     });
 });
+
+#########################################This are routes for checking hash and encrypt values################################################################################################################################################################
+
+use App\Models\EmpSalary;
+use Illuminate\Support\Facades\Artisan;
+use Vinkla\Hashids\Facades\Hashids;
+
+Route::get('/encode/{value}', function ($value) {
+    // Determine the number of decimal places
+    $decimalPlaces = strpos($value, '.') !== false ? strlen(substr(strrchr($value, "."), 1)) : 0;
+
+    // Convert the float to an integer with precision
+    $factor = pow(10, $decimalPlaces);
+    $integerValue = intval($value * $factor);
+
+    // Encode the integer value along with the decimal places
+    $hash = Hashids::encode($integerValue, $decimalPlaces);
+
+    return response()->json([
+        'value' => $value,
+        'hash' => $hash,
+        // 'decimalPlaces' => $decimalPlaces
+    ]);
+});
+
+
+
+Route::get('/decode/{hash}', function ($hash) {
+    // Decode the hash
+    $decoded = Hashids::decode($hash);
+
+    // Check if decoding was successful
+    if (count($decoded) === 0) {
+        return response()->json(['error' => 'Invalid hash'], 400);
+    }
+
+    // Retrieve the integer value and decimal places
+    $integerValue = $decoded[0];
+    $decimalPlaces = $decoded[1] ?? 0; // Fallback to 0 if not present
+
+    // Convert back to float
+    $originalValue = $integerValue / pow(10, $decimalPlaces);
+
+    return response()->json([
+        'hash' => $hash,
+        'value' => $originalValue
+    ]);
+});
+
+
+
+Route::get('/salary/{emp_id}', function ($emp_id) {
+    $empSalary = EmpSalary::findOrFail($emp_id);
+    // Return the salary attribute
+    return response()->json([
+        'emp_id' => $empSalary->emp_id,
+        'salary' => $empSalary->salary, // This will automatically call the getSalaryAttribute method
+        'effective_date' => $empSalary->effective_date,
+        'remarks' => $empSalary->remarks,
+    ]);
+});
+
+use Illuminate\Support\Facades\Crypt;
+
+Route::get('/encode-decode/{value}', function ($value) {
+    try {
+        // Attempt to decrypt the value
+        $decrypted = Crypt::decryptString($value);
+        return response()->json(['action' => 'decrypted', 'value' => $decrypted]);
+    } catch (\Exception $e) {
+        // If decryption fails, encrypt the value
+        $encrypted = Crypt::encryptString($value);
+        return response()->json(['action' => 'encrypted', 'value' => $encrypted]);
+    }
+});
+use Illuminate\Support\Facades\Hash;
+
+Route::get('/hash-verify/{value}', function ($value) {
+    // Attempt to verify the value against the hashed version
+    // Here, we'll assume that a certain value (e.g., 'originalValue') needs to be verified
+    $originalValue = 'originalValue'; // Replace this with the actual value you want to verify against
+
+    if (Hash::check($originalValue, $value)) {
+        return response()->json(['action' => 'verified', 'value' => $originalValue]);
+    } else {
+        // If not verified, hash the original value
+        $hashed = Hash::make($originalValue);
+        return response()->json(['action' => 'hashed', 'value' => $hashed]);
+    }
+});

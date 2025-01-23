@@ -394,8 +394,7 @@ class EmpDocument extends Component
        } else {
            return;
        }
-       $this->documents = EmployeeDocument::whereIn('employee_id', (array)$this->selectedEmployeeId)->orderBy('created_at', 'desc')
-       ->get();
+  
   
        if (!empty($this->selectedEmployeeId)) {
       
