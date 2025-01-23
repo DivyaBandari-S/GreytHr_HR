@@ -12,6 +12,8 @@ class BankAccount extends Component
 
     public $searchTerm = '';
     public $peopleData =[];
+    public $selectedEmployeeImage;
+    public $selectedOption = 'all';
   
     public $selectedEmployeeId='';
     
@@ -119,7 +121,64 @@ class BankAccount extends Component
 
   
     }
+    public function updateSelected($option)
+    {
+        $this->selectedOption = $option; 
+        
+        // Check if the user is logged in with the 'hr' guard
+        if (!auth()->guard('hr')->check()) {
+            return;
+        }
+    
+        // Get the logged-in employee ID
+        $loggedInEmpID = auth()->guard('hr')->user()->emp_id;
+    
+        // Fetch the first company_id associated with the logged-in employee
+        $companyId = EmployeeDetails::where('emp_id', $loggedInEmpID)
+            ->pluck('company_id') 
+            ->first();
+    
+        // Handle cases where the company ID is an array or not
+        if (is_array($companyId)) {
+            $firstCompanyID = $companyId[0]; 
+        } else {
+            $firstCompanyID = $companyId; 
+        }
+    
+        // Initialize the query for employees based on company_id
+        $query = EmployeeDetails::whereJsonContains('company_id', $firstCompanyID);
+    
+        // Apply the filters based on the selected option
+        switch ($this->selectedOption) {
+            case 'current':
+                $query->where('employee_status', 'active'); // Filter for current employees
+                break;
+    
+            case 'past':
+                $query->whereIn('employee_status', ['rejected', 'terminated']); // Filter for past employees
+                break;
+    
+            case 'intern':
+                $query->where('job_role', 'intern'); // Filter for interns
+                break;
+    
+           
+            default:
+                // No additional filtering, fetch all employees
+                case 'all':
+                    $query=EmployeeDetails::whereJsonContains('company_id', $firstCompanyID);
+                break;
+        }
+    
+        // Fetch the employee IDs after filtering
+        $this->employeeIds = $query->pluck('emp_id')->toArray(); // Fetch the filtered employee IDs
+        $this->employees = $query->get(); // Fetch the employee data for rendering in the view
+  
+    
+    
 
+    
+   }
     public function removePerson($empId)
     {
         // Remove the person from the selectedPeople array
@@ -356,8 +415,7 @@ class BankAccount extends Component
         $this->selectedPeopleNames = [];
     }
     
-    public function searchforEmployee()
-    {
+    public function searchforEmployee() {
         if (!empty($this->searchTerm)) {
             // Fetch employees matching the search term
             $this->employees = EmployeeDetails::where(function ($query) {
@@ -382,28 +440,55 @@ class BankAccount extends Component
             // Set isChecked for employees in the current search results
             foreach ($this->employees as $employee) {
                 $employee->isChecked = in_array($employee->emp_id, $this->selectedPeople);
-   
             }
         } else {
             $this->employees = collect(); // Reset employees if no search term
         }
     }
-    
 
-    
-    
-    
-
-    
-    
-    
     public function updateselectedEmployee($empId)
     {
+        // If more than one employee is selected, only allow the first employee to be selected
+        if (count($this->selectedPeople) > 1) {
+            $this->selectedPeople = array_slice($this->selectedPeople, 0, 1); // Keep only the first selected employee
+        } else {
+            // If employee is not already selected, proceed with selecting
+            if (!in_array($empId, $this->selectedPeople)) {
+                $this->selectedPeople[] = $empId; // Add employee to the selected list
+            } else {
+                // If employee is already selected, remove from the list
+                $this->selectedPeople = array_filter($this->selectedPeople, fn($id) => $id != $empId);
+            }
+        }
+    
+        // Update the selected employee details
         $this->selectedEmployeeId = $empId;
         $this->selectedEmployeeFirstName = EmployeeDetails::where('emp_id', $empId)->value('first_name');
         $this->selectedEmployeeLastName = EmployeeDetails::where('emp_id', $empId)->value('last_name');
+        $this->selectedEmployeeImage = EmployeeDetails::where('emp_id', $empId)->value('image');
+        $this->searchTerm='';
+        
     }
-    
+
+    public function selectEmployee($empId)
+    {
+        
+        $this->selectedEmployeeId = $empId;
+        $this->selectedEmployeeFirstName = EmployeeDetails::where('emp_id', $empId)->value('first_name');
+        $this->selectedEmployeeLastName = EmployeeDetails::where('emp_id', $empId)->value('last_name');
+        $this->selectedEmployeeImage = EmployeeDetails::where('emp_id', $empId)->value('image');
+        $this->searchTerm='';
+    }
+
+
+
+public function removeSelectedEmployee()
+{
+    $this->selectedEmployeeId = null;
+    $this->selectedEmployeeFirstName = null;
+    $this->selectedEmployeeLastName = null;
+    $this->selectedEmployeeImage =null;
+}
    
     public function closeEmployeeBox()
     {

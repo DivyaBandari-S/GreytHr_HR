@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Helpers\FlashMessageHelper;
 use App\Models\EmployeeDetails;
 use App\Models\EmpPersonalInfo;
 use App\Models\HelpDesks;
@@ -91,6 +92,7 @@ class EmployeeProfile extends Component
     public $employeeBox=1;
 
     public $selectedEmployeeFirstName;
+    public $selectedEmployeeImage;
 
     public $year;
 
@@ -112,7 +114,7 @@ class EmployeeProfile extends Component
     public function updatesearchTerm()
     {
         $this->searchTerm= $this->searchTerm;
-       
+        $this->searchforEmployee();
        
     }
 
@@ -146,13 +148,7 @@ class EmployeeProfile extends Component
 
     public function selectPerson($emp_id)
     {
-        if (!empty($this->selectedPeople) && !in_array($emp_id, $this->selectedPeople)) {
-            // Flash an error message to the session
-            session()->flash('warning', 'You can only select one employee ');
-            return; // Stop further execution
-        }
-    
-
+     
         try {
          
             // Ensure $this->selectedPeople is initialized as an array
@@ -163,6 +159,11 @@ class EmployeeProfile extends Component
          
             // Find the selected person from the list of employees
             $selectedPerson = $this->employees->where('emp_id', $emp_id)->first();
+            if (!empty($this->selectedPeople) && !in_array($emp_id, $this->selectedPeople)) {
+                // Flash an error message to the session
+                FlashMessageHelper::flashWarning('You can only select one employee ');
+                return; // Stop further execution
+            }
     
             if ($selectedPerson) {
                 // Check if person is already selected
@@ -400,7 +401,7 @@ class EmployeeProfile extends Component
         if (($key = array_search($empId, $this->selectedPeople)) !== false) {
             unset($this->selectedPeople[$key]);
         }
-        
+    
         // Reindex the array to avoid gaps in the index
         $this->selectedPeople = array_values($this->selectedPeople);
     
@@ -409,10 +410,18 @@ class EmployeeProfile extends Component
             return $person['emp_id'] !== $empId;
         })->values()->toArray(); // Reindexing the selectedPeopleData
     
-        // Optionally, update the employees list or other data if necessary
-  
-     
+        // Clear the selected employee details
+        $this->selectedEmployeeId = null;
+        $this->selectedEmployeeFirstName = null;
+        $this->selectedEmployeeLastName = null;
+        $this->selectedEmployeeImage = null;
+    
+        // Optionally clear the search term
+        $this->searchTerm = '';
+    
+        // This will ensure the correct UI updates (removes selected employee and displays search input)
     }
+    
     
     
     
@@ -620,8 +629,8 @@ if (is_array($companyId)) {
     }
 
     
-    public function searchforEmployee()
-    {
+   
+    public function searchforEmployee() {
         if (!empty($this->searchTerm)) {
             // Fetch employees matching the search term
             $this->employees = EmployeeDetails::where(function ($query) {
@@ -646,38 +655,54 @@ if (is_array($companyId)) {
             // Set isChecked for employees in the current search results
             foreach ($this->employees as $employee) {
                 $employee->isChecked = in_array($employee->emp_id, $this->selectedPeople);
-   
             }
         } else {
             $this->employees = collect(); // Reset employees if no search term
         }
     }
-    
 
-    
-    
-    
-
-    
-    
     public function updateselectedEmployee($empId)
-{
-  
-    if (count($this->selectedPeople) > 1) {
-           $this->selectedPeople = array_slice($this->selectedPeople, 0, 1);
-     
-        return;
-        
-    } else {
-        // Proceed with selecting a single employee
+    {
+        // If more than one employee is selected, only allow the first employee to be selected
+        if (count($this->selectedPeople) > 1) {
+            $this->selectedPeople = array_slice($this->selectedPeople, 0, 1); // Keep only the first selected employee
+        } else {
+            // If employee is not already selected, proceed with selecting
+            if (!in_array($empId, $this->selectedPeople)) {
+                $this->selectedPeople[] = $empId; // Add employee to the selected list
+            } else {
+                // If employee is already selected, remove from the list
+                $this->selectedPeople = array_filter($this->selectedPeople, fn($id) => $id != $empId);
+            }
+        }
+    
+        // Update the selected employee details
         $this->selectedEmployeeId = $empId;
         $this->selectedEmployeeFirstName = EmployeeDetails::where('emp_id', $empId)->value('first_name');
         $this->selectedEmployeeLastName = EmployeeDetails::where('emp_id', $empId)->value('last_name');
+        $this->selectedEmployeeImage = EmployeeDetails::where('emp_id', $empId)->value('image');
+        $this->searchTerm='';
+        
     }
-}
 
-    
-   
+    public function selectEmployee($empId)
+    {
+        
+        $this->selectedEmployeeId = $empId;
+        $this->selectedEmployeeFirstName = EmployeeDetails::where('emp_id', $empId)->value('first_name');
+        $this->selectedEmployeeLastName = EmployeeDetails::where('emp_id', $empId)->value('last_name');
+        $this->selectedEmployeeImage = EmployeeDetails::where('emp_id', $empId)->value('image');
+        $this->searchTerm='';
+    }
+
+public $selectedEmployee = null;
+
+public function removeSelectedEmployee()
+{
+    $this->selectedEmployeeId = null;
+    $this->selectedEmployeeFirstName = null;
+    $this->selectedEmployeeLastName = null;
+}
     public function closeEmployeeBox()
     {
         $this->searchEmployee;

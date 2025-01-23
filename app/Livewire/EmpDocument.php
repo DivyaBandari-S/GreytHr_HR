@@ -121,12 +121,13 @@ class EmpDocument extends Component
     }
 
     public $selectedPeopleData=[];
-    public $activeTab1 = 'tab1';
+    public $activeTab1 = 'tab1'; // Default tab
 
     public function switchTab($tab)
     {
         $this->activeTab1 = $tab;
     }
+    
     
     public function NamesSearch()
     {
@@ -168,7 +169,7 @@ class EmpDocument extends Component
         if (($key = array_search($empId, $this->selectedPeople)) !== false) {
             unset($this->selectedPeople[$key]);
         }
-        
+    
         // Reindex the array to avoid gaps in the index
         $this->selectedPeople = array_values($this->selectedPeople);
     
@@ -177,9 +178,16 @@ class EmpDocument extends Component
             return $person['emp_id'] !== $empId;
         })->values()->toArray(); // Reindexing the selectedPeopleData
     
-        // Optionally, update the employees list or other data if necessary
-  
-     
+        // Clear the selected employee details
+        $this->selectedEmployeeId = null;
+        $this->selectedEmployeeFirstName = null;
+        $this->selectedEmployeeLastName = null;
+        $this->selectedEmployeeImage = null;
+    
+        // Optionally clear the search term
+        $this->searchTerm = '';
+    
+        // This will ensure the correct UI updates (removes selected employee and displays search input)
     }
     public $combinedRequests=[];
  
@@ -386,9 +394,21 @@ class EmpDocument extends Component
        } else {
            return;
        }
-       $this->documents = EmployeeDocument::where('employee_id', $this->currentEmpId)->orderBy('created_at', 'desc')
+       $this->documents = EmployeeDocument::whereIn('employee_id', (array)$this->selectedEmployeeId)->orderBy('created_at', 'desc')
        ->get();
- 
+  
+       if (!empty($this->selectedEmployeeId)) {
+      
+        // Fetch all letter requests for the selected employee
+        $this->requests = LetterRequest::whereIn('emp_id', (array)$this->selectedEmployeeId)->get();
+        
+        // Debugging output
+        Log::info('Fetched Letter Requests: ' . $this->requests->toJson());
+   
+    } else {
+        $this->requests = collect(); // No selected employee, empty collection
+        Log::info('No Employee Selected, Returning Empty Requests');
+    }
        // Adjust this line based on your actual database column for category
     
        $loggedInEmpID = auth()->guard('hr')->user()->emp_id;
@@ -489,8 +509,7 @@ $this->empId = auth()->user()->emp_id;
    {
          // Debug to see the value of filter_option
        
-       $query = EmployeeDocument::where('employee_id', $this->currentEmpId)
-           ->orderBy('created_at', 'desc');
+       $query = EmployeeDocument::whereIn('employee_id', (array)$this->selectedEmployeeId)->orderBy('created_at', 'desc');
    
        if ($this->filter_option && $this->filter_option !== 'All') {
            $query->where('category', $this->filter_option);
@@ -532,6 +551,16 @@ $this->empId = auth()->user()->emp_id;
        $this->empId = $empId; // Set empId when showing the modal
        $this->showDocDialog = true; // Show the modal
    }
+   public $selectedEmployeeImage;
+   public function selectEmployee($empId)
+   {
+       
+       $this->selectedEmployeeId = $empId;
+       $this->selectedEmployeeFirstName = EmployeeDetails::where('emp_id', $empId)->value('first_name');
+       $this->selectedEmployeeLastName = EmployeeDetails::where('emp_id', $empId)->value('last_name');
+       $this->selectedEmployeeImage = EmployeeDetails::where('emp_id', $empId)->value('image');
+       $this->searchTerm='';
+   }
     public function searchforEmployee()
     {
         if (!empty($this->searchTerm)) {
@@ -563,6 +592,10 @@ $this->empId = auth()->user()->emp_id;
         } else {
             $this->employees = collect(); // Reset employees if no search term
         }
+        $this->selectedEmployeeId = null;
+        $this->selectedEmployeeFirstName = null;
+        $this->selectedEmployeeLastName = null;
+        $this->selectedEmployeeImage=null;
     }
     
 
@@ -580,7 +613,17 @@ $this->empId = auth()->user()->emp_id;
       
         $this->selectedEmployeeFirstName = EmployeeDetails::where('emp_id', $empId)->value('first_name');
         $this->selectedEmployeeLastName = EmployeeDetails::where('emp_id', $empId)->value('last_name');
-        $this->requests = LetterRequest::whereIn('emp_id', $this->selectedPeople)->get();
+        if (!empty($this->selectedEmployeeId)) {
+            // Fetch all letter requests for the selected employee
+            $this->requests = LetterRequest::whereIn('emp_id', (array)$this->selectedEmployeeId)->get();
+            
+            // Debugging output
+            Log::info('Fetched Letter Requests: ' . $this->requests->toJson());
+           
+        } else {
+            $this->requests = collect(); // No selected employee, empty collection
+            Log::info('No Employee Selected, Returning Empty Requests');
+        }
     }
     
    
@@ -628,11 +671,11 @@ $this->empId = auth()->user()->emp_id;
             $mime_type = $this->file_path->getMimeType();
             $file_name = $this->file_path->getClientOriginalName();
         }
-        $empId = $this->currentEmpId; // This should set the selected employee ID correctly
-
+         // This should set the selected employee ID correctly
+        foreach ((array)$this->selectedEmployeeId as $emp_id) {
         // Create document record in database
         EmployeeDocument::create([
-            'employee_id' => $empId,
+            'employee_id' => $emp_id,
             'document_name' => $this->documentName,
             'category' => $this->category,
             'description' => $this->description,
@@ -641,7 +684,7 @@ $this->empId = auth()->user()->emp_id;
             'mime_type' => $mime_type,
             'publish_to_portal' => $this->publishToPortal,
         ]);
-
+    }
         // Reset the form
         $this->reset(['file_path', 'documentName', 'description', 'category', 'publishToPortal']);
         $this->showDocDialog = false;
@@ -653,7 +696,13 @@ $this->empId = auth()->user()->emp_id;
     }
 
 
-
+    public function removeSelectedEmployee()
+    {
+        $this->selectedEmployeeId = null;
+        $this->selectedEmployeeFirstName = null;
+        $this->selectedEmployeeLastName = null;
+        $this->selectedEmployeeImage=null;
+    }
 
     public function render()
     {
@@ -691,22 +740,14 @@ $this->empId = auth()->user()->emp_id;
         // Determine if there are people found
         $peopleFound = $this->employees->count() > 0;
             $this->requests = collect();
-            
+          
 
         // Initialize the requests collection to prevent undefined errors
         $this->requests = LetterRequest::all(); 
-        Log::info('Selected People: ' . json_encode($this->selectedPeople));
-        // Fetch all letter requests if selectedPeople is not empty
-        if (!empty($this->selectedPeople)) {
-            $requests = LetterRequest::whereIn('emp_id', (array) $this->selectedPeople)->get();
-            Log::info('Letter Requests: ' . $requests->toJson()); // Log the result of the query
-        } else {
-            $requests = collect(); // Return empty collection
-        }
+      
+       
         
-        
-        $query = EmployeeDocument::where('employee_id', $this->currentEmpId)
-           ->orderBy('created_at', 'desc');
+        $query = EmployeeDocument::whereIn('employee_id', (array)$this->selectedEmployeeId)->orderBy('created_at', 'desc');
    
        if ($this->filter_option && $this->filter_option !== 'All') {
            $query->where('category', $this->filter_option);
