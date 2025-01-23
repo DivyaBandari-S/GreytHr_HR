@@ -30,7 +30,7 @@ class HrAttendanceOverviewNew extends Component
     public $employeeEmailForApproval;
 
     public $openRejectPopupModal=false;
-    public $openAccordionForActive=null;
+    public $openAccordionForActive=[];
     public $absentemployeescount;
 
     public $selectedYear;
@@ -339,13 +339,18 @@ class HrAttendanceOverviewNew extends Component
     
         return response()->download($filePath, 'employeesattendanceType.xlsx');
     }
+    public function closeAllAbsentEmployees()
+    {
+      $this->openshiftselectorforcheck=false;   
+    }
     public function toggleActiveAccordion($id)
     {
-        
-        if ($this->openAccordionForActive === $id) {
-            $this->openAccordionForActive = null; // Close if already open
+        if (in_array($id, $this->openAccordionForActive)) {
+            // Remove from open accordions if already open
+            $this->openAccordionForActive = array_diff($this->openAccordionForActive, [$id]);
         } else {
-            $this->openAccordionForActive = $id; // Set to open
+            // Add to open accordions if not open
+            $this->openAccordionForActive[] = $id;
         }
     }
   
@@ -584,23 +589,9 @@ public function openSelector()
     ->whereIn('emp_id', $empIds) // Filter by emp_id
     ->selectRaw('*, JSON_LENGTH(regularisation_entries) AS regularisation_entries_count')
     ->whereRaw('JSON_LENGTH(regularisation_entries) > 0')
-    ->whereDate('updated_at', '>', Carbon::today()->subDays(3)) // Initial filter for calendar days
     ->with('employee')
-    ->get()
-    ->filter(function ($record) {
-        $createdDate = Carbon::parse($record->created_at);
-        $today = Carbon::now();
-        $weekdaysDiff = $this->calculateWeekdaysDiff($createdDate, $today);
-
-        // Log the details for debugging
-        Log::info('Record ID: ' . $record->id);
-        Log::info('Created Date: ' . $createdDate->toDateString());
-        Log::info('Today\'s Date: ' . $today->toDateString());
-        Log::info('Weekdays Difference: ' . $weekdaysDiff);
-
-        // Keep records where weekdays difference is greater than 3
-        return $weekdaysDiff > 3;
-    });
+    ->get();
+    
    
         
         

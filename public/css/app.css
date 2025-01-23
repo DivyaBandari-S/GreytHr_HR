@@ -94,8 +94,8 @@ body {
     backface-visibility: hidden;
 }
 .approveBtn {
-    background: rgb(2, 17, 79);
-    border: 1px solid rgb(2, 17, 79);
+    background: var(--main-button-color);
+    border: 1px solid var(--main-button-color);
     padding: 3px 5px;
     color: #fff;
     font-size: var(--normal-font-size);
@@ -104,9 +104,9 @@ body {
 }
 .rejectBtn {
     background: #fff;
-    border: 1px solid rgb(2, 17, 79);
+    border: 1px solid var(--main-button-color);
     padding: 3px 5px;
-    color: rgb(2, 17, 79);
+    color: var(--main-button-color);
     font-size: var(--normal-font-size);
     font-weight: 500;
     border-radius: 5px;
@@ -619,6 +619,93 @@ label {
 {
     margin-top:5px;
 }
+.thisCircle {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    border-radius: 50%;
+    margin-right: 40px;
+    margin-top: -2px; /* Added margin-bottom to create space below the circle */
+    border: 2px solid var(--border-color);
+    color: var(--label-color);
+    font-weight: 500;
+    background-color: #fff;
+    font-size: var(--normal-font-size);
+    overflow: hidden;
+}
+.attendance-info-table-head {
+    font-weight: normal;
+    font-size: 12px;
+}
+.container2-table-head {
+    font-weight: normal;
+    font-size: 12px;
+    padding-top: 16px;
+}
+.container2-status-details-heading {
+    padding-left: 10px;
+    margin-top: 10px;
+    color: #7f8fa4;
+    font-size: 14px;
+}
+.container3-head {
+    padding-left: 10px;
+    margin-top: 20px;
+    color: #7f8fa4;
+    font-size: 14px;
+}
+.container3-table-head {
+    font-weight: normal;
+    font-size: 12px;
+    padding-top: 16px;
+}
+
+.container3-table-row {
+    border-bottom: 1px solid #ddd;
+}
+.container3-table-data {
+    font-weight: normal;
+    font-size: 12px;
+}
+.attendance-info-table-data {
+    font-size: 12px;
+}
+
+.container6-head {
+    margin-left: 20px;
+    color: #7f8fa4;
+    font-size: 14px;
+    margin-top: 15px;
+    align-items: center;
+}
+.selected-employee-box .employee-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+   
+}
+.employee-info
+{
+    margin-right: 80px;
+}
+.employee-info-name
+
+{
+
+    white-space: nowrap;
+
+    max-width: 110px; /* Adjust the max width as needed */
+
+    white-space: nowrap; /* Prevent text from wrapping */
+
+    overflow: hidden; /* Hide overflow text */
+
+    text-overflow: ellipsis; /* Add "..." for overflow text */
+
+}
 .ilynn-btn:hover {
     cursor: pointer;
 }
@@ -1015,6 +1102,45 @@ td {
         margin-right: 70px;
     }
 }
+.container6-button {
+    float: right;
+    margin-top: -30px;
+    margin-right: 20px;
+    cursor: pointer;
+}
+
+.container6-button-active {
+    color: #3a9efd;
+    border: 1px solid #3a9efd;
+}
+
+.container6-button-inactive {
+    color: #778899;
+    border: 1px solid #778899;
+}
+.container-body {
+    background-color: #FFFFFF;
+    border-radius: 10px;
+    display: none;
+    margin-top: 2px;
+    height: auto;
+    border-top: 1px solid #ccc;
+
+}
+
+.container-body-active {
+    display: block;
+}
+
+.container-body-inactive {
+    display: none;
+}
+
+.container-body-scrollable {
+    max-width: 100%;
+    text-align: center;
+}
+
 .arrow-btn {
     color: var(--label-color);
     height: 22px;
@@ -1187,7 +1313,36 @@ input:checked + .slider:before {
     border: 1px solid #52afe9;
     flex: 1;
 }
-
+.attendance-overview-help {
+    position: relative;
+    width: 85%; /* Set your desired width */
+    height: auto; /* Set your desired height */
+    border-radius: 5px; /* Set your desired border-radius */
+    border: 1px solid #ccc; /* Add border if needed */
+    padding: 10px; /* Add padding if needed */
+    margin: 20px 10px; /* Add margin if needed */
+    background-color: #f3faff; /* Set background color if needed */
+    font-size: 12px;
+}
+.hide-attendance-help-for-employee-week-day
+{
+    margin-top:40px;
+    position: absolute;
+    bottom: 110px;
+    right: 10px;
+    color: #0000FF;
+    font-weight:500;
+    cursor: pointer;
+}
+.hide-attendance-help {
+    margin-top:40px;
+    position: absolute;
+    bottom: 80px;
+    right: 10px;
+    color: #0000FF;
+    font-weight:500;
+    cursor: pointer;
+}
 .field-for-employee-who-is-in {
     text-align: center;
     width: 100%;

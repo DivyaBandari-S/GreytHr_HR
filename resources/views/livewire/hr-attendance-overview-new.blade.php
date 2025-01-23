@@ -198,14 +198,14 @@
  
  
  
-                <div class="arrow-btn"wire:click="toggleActiveAccordion({{ $r->id }})"style="color:{{ $openAccordionForActive === $r->id ? '#3a9efd' : '#778899' }};border:1px solid {{ $openAccordionForActive === $r->id ? '#3a9efd' : '#778899' }}">
-                <i class="fa fa-angle-{{ $openAccordionForActive === $r->id ? 'up' : 'down' }}"style="color:{{ $openAccordionForActive === $r->id ? '#3a9efd' : '#778899' }}"></i>
+                <div class="arrow-btn"wire:click="toggleActiveAccordion({{ $r->id }})"style="color:{{ in_array($r->id, $openAccordionForActive) ? '#3a9efd' : '#778899' }};border:1px solid {{ in_array($r->id, $openAccordionForActive) ? '#3a9efd' : '#778899' }};">
+                <i class="fa fa-angle-{{ in_array($r->id, $openAccordionForActive) ? 'up' : 'down' }}"style="color:{{ in_array($r->id, $openAccordionForActive) ? '#3a9efd' : '#778899' }}"></i>
                 </div>
  
             </div>
  
         </div>
-        <div class="accordion-body m-0 p-0"style="display:{{ $openAccordionForActive === $r->id ? 'block' : 'none' }} ">
+        <div class="accordion-body m-0 p-0"style="display:{{ in_array($r->id, $openAccordionForActive) ? 'block' : 'none' }} ">
  
             <div style="width:100%; height:1px; border-bottom:1px solid #ccc;"></div>
  
@@ -412,8 +412,9 @@
                                                
                            </div>   
                            
-                           
-                    <canvas id="employeeStatusChart" width="150" height="150"></canvas>                               
+                    <div style="width:300px;height:300px;">       
+                      <canvas id="employeeStatusChart" width="150" height="150"></canvas>
+                    </div>                                                     
                 </div>
               
                 <div class="col-sm-6 mb-3" style="border: 1px solid #dddddd; padding: 5px; border-radius: 5px;margin-right:-40px;">
@@ -451,8 +452,9 @@
                                                
                            </div>   
                            {{$absentemployeescount}}
-                           <canvas id="employeeAttendanceTypeChart" width="150" height="150"></canvas>    
-         
+                           <div style="width:300px;height:300px;"> 
+                             <canvas id="employeeAttendanceTypeChart" width="150" height="150"></canvas>    
+                           </div>
                            <p style="color: blue; cursor: pointer;"wire:click="openSelector">+2 More</p>
                           
                 </div>
@@ -463,28 +465,20 @@
     <!-- Modal -->
     
     @if ($openshiftselectorforcheck==true)
-            <div class="modal d-block" tabindex="-1" role="dialog">
-                <div class="modal-dialog modal-dialog-centered" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title">
-                                <b>ERFGHJBKN</b>
-                            </h5>
-                            <button type="button" class="btn-close btn-primary" data-dismiss="modal"
-                                aria-label="Close" wire:click="closeAllAbsentEmployees">
-                            </button>
-                        </div>
-                        <div class="modal-body" style="max-height:300px;overflow-y:auto">
-                            <div class="team-leave d-flex flex-row gap-3">
-                                HII PRANITA AND KUMAR
-                                <canvas id="employeeAttendanceTypeChartmodal" width="30" height="30"></canvas>    
+                    <div class="modal d-block" tabindex="-1" role="dialog">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title"><b>Pie Chart Example</b></h5>
+                                <button type="button" class="btn-close btn-primary" data-dismiss="modal" aria-label="Close"></button>
                             </div>
-
+                            <div class="modal-body">
+                                <canvas id="myPieChart" width="400" height="400"></canvas>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="modal-backdrop fade show blurred-backdrop"></div>
+                <div class="modal-backdrop fade show blurred-backdrop"></div>
         @endif
  
     </div> 
@@ -613,6 +607,46 @@ var employeeAttendanceTypeChartmodal = new Chart(ctx, {
         }
     }
 });
+document.addEventListener("DOMContentLoaded", function () {
+    const canvas = document.getElementById('myPieChart');
+    if (canvas) {
+        const ctx = canvas.getContext('2d');
+        new Chart(ctx, {
+            type: 'pie',
+            data: {
+                datasets: [{
+                    data: [42, 90, 0],
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(75, 192, 192, 0.2)',
+                        'rgba(255, 159, 64, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(255, 159, 64, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            usePointStyle: true,
+                            pointStyle: 'circle'
+                        }
+                    }
+                }
+            }
+        });
+    } else {
+        console.error("Canvas with ID 'myPieChart' not found.");
+    }
+});
+
   </script>
   
     </div>

@@ -11,14 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('holiday_calendars', function (Blueprint $table) {
+        Schema::create('attendance_exceptions', function (Blueprint $table) {
             $table->id();
-            $table->string('emp_id')->nullable();
-            $table->string('day')->nullable();
-            $table->date('date')->nullable();
-            $table->string('month')->nullable();
-            $table->string('year')->nullable();
-            $table->text('festivals')->nullable();
+            $table->string('emp_id',10);
+            $table->date('from_date');
+            $table->date('to_date');
+            $table->string('status');
+            $table->string('reason');
             $table->timestamps();
         });
     }
@@ -28,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('holiday_calendars');
+        Schema::dropIfExists('attendance_exceptions');
     }
 };

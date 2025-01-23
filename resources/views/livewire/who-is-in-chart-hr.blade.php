@@ -173,7 +173,7 @@
         <i class="fas fa-download" wire:click="downloadExcelForAbsent" style="cursor:pointer;"></i>
 
       </div >
-        <div class="table-responsive">
+        <div class="table-responsive" style="overflow-y: auto;max-height:300px;">
         <table class="who-is-in-table-for-late-employee" style="width: 100%;">
           <thead>
             <tr>
