@@ -1,20 +1,25 @@
 <div >
 <style>
-        .filter-container {
-            display: flex;
-        justify-content: flex-start; /* Align items to the start */
-        align-items: center;
-        gap: 2px; /* Reduce the gap between dropdowns */
-        flex-wrap: wrap;
-        margin: 10px auto;
-        padding: 10px;
-      
 
-        border-radius: 8px;
-        }
+        .filter-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px; /* Controls the spacing between dropdowns */
+}
+
+.filter-container .asset-dropdown {
+    margin: 0; /* Removes extra margins around each dropdown */
+    display: inline-block;
+    vertical-align: top;
+}
+
+.asset-dropdown-menu {
+    padding: 5px; /* Reduce padding in the dropdown menu */
+}
+
         .asset-dropdown {
             position: relative;
-            margin: 5px;
+          
         }
         .asset-dropdown-toggle {
             display: inline-block;
@@ -67,8 +72,8 @@
             border-radius: 4px;
         }
     </style>
-<div class="main__body" >
-<ul class="nav nav-tabs custom-nav-tabs" role="tablist" style="margin-top:67px">
+<div class="row" style="margin-top:-20px;margin-left:2px">
+<ul class="nav custom-nav-tabs" role="tablist" >
     <li class="nav-item" role="presentation">
         <a class="nav-link active custom-nav-link" id="simple-tab-0" data-bs-toggle="tab" href="#simple-tabpanel-0" role="tab" aria-controls="simple-tabpanel-0" aria-selected="true">Main</a>
     </li>
@@ -76,6 +81,7 @@
         <a class="nav-link custom-nav-link" id="simple-tab-1" data-bs-toggle="tab" href="#simple-tabpanel-1" role="tab" aria-controls="simple-tabpanel-1" aria-selected="false">Activity</a>
     </li>
 </ul>
+</div>
 
 <div class="tab-content pt-5" id="tab-content">
   <div class="tab-pane active" id="simple-tabpanel-0" role="tabpanel" aria-labelledby="simple-tab-0" style="overflow-x: hidden;">
@@ -264,7 +270,7 @@
     </div>
         
  
-    @if(!empty($selectedPeople))
+    @if(!empty($selectedEmployeeId))
     <div class="row mt-3 p-0 justify-content-center">
     <div class="filter-container">
         <!-- Status Dropdown -->
@@ -341,7 +347,7 @@
 
     </div>
     
-    @if($employee)
+    @if($selectedEmployeeId)
 
    
 <form wire:submit.prevent="create" style="margin-top: 10px; font-size: 12px;align-items:center">
