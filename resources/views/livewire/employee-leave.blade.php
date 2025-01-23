@@ -406,7 +406,7 @@
 
                         @if ($showContainer)
                             <div
-                                style="background: white; padding: 10px; border: 1px solid black; border-radius: 5px; width: 310px; position: absolute; z-index: 1000;">
+                                style="background: white; padding: 10px; border: 1px solid black; border-radius: 5px; width: 310px; position: absolute; z-index: 100; max-height:250px;overflow-y:auto;">
                                 @if ($employees->isNotEmpty())
                                     @foreach ($employees as $employee)
                                         <div class="row custom-border"
