@@ -59,7 +59,6 @@
                                     </div>
                                 </div>
 
-
                                 <div class="custom-dropdown">
                                     <div class="dropdown-selected">Leave Type: All</div>
                                     <div class="dropdown-options">
@@ -432,41 +431,50 @@
                             </div>
                         </div>
 
+                        @if($showFromTodates)
+                        <div>
+                            <label for="from_date">From Date</label>
+                            <input type="date" id="from_date" wire:model="from_date" wire:change="calculateToDate">
 
+                            <label for="to_date">To Date</label>
+                            <input type="date" id="to_date" wire:model="to_date" >
+                        </div>
+
+                        @endif
                         <!-- Leave Policies Table -->
                         <div>
                             <span class="subTextValue">Select Leave Policies</spa>
-                            <div class="table-responsive">
-                                <table class="table pendingLeaveTable table-bordered ">
-                                    <thead class="table-light">
-                                        <tr>
-                                            <th>Select</th>
-                                            <th>Leave Name</th>
-                                            <th>Grant Days</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @if($leavePolicies && $leavePolicies->isNotEmpty())
-                                        @foreach($leavePolicies as $policy)
-                                        <tr class="trHover">
-                                            <td>
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" wire:model="selectedPolicyIds" value="{{ $policy->id }}" >
-                                                </div>
-                                            </td>
-                                            <td>{{ $policy->leave_name }}</td>
-                                            <td>{{ $policy->grant_days }}</td>
-                                        </tr>
-                                        @endforeach
-                                        @else
-                                        <tr>
-                                            <td colspan="7" class="text-center"> No leave policies found at the moment. <br>
-                                                Don't worry! You can easily add a new leave policy by clicking the "Leave Settings" button.</td>
-                                        </tr>
-                                        @endif
-                                    </tbody>
-                                </table>
-                            </div>
+                                <div class="table-responsive">
+                                    <table class="table pendingLeaveTable table-bordered ">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Select</th>
+                                                <th>Leave Name</th>
+                                                <th>Grant Days</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if($leavePolicies && $leavePolicies->isNotEmpty())
+                                            @foreach($leavePolicies as $policy)
+                                            <tr class="trHover">
+                                                <td>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" wire:model="selectedPolicyIds" value="{{ $policy->id }}" wire:change="checkLeaveNames">
+                                                    </div>
+                                                </td>
+                                                <td>{{ $policy->leave_name }}</td>
+                                                <td>{{ $policy->grant_days }}</td>
+                                            </tr>
+                                            @endforeach
+                                            @else
+                                            <tr>
+                                                <td colspan="7" class="text-center"> No leave policies found at the moment. <br>
+                                                    Don't worry! You can easily add a new leave policy by clicking the "Leave Settings" button.</td>
+                                            </tr>
+                                            @endif
+                                        </tbody>
+                                    </table>
+                                </div>
 
                         </div>
 

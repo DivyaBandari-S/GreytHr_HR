@@ -28,7 +28,8 @@ class EmpLeaveGranterDetails extends Component
     public $quarters;
     public $halfYear;
     public $years;
-
+    public $from_date;
+    public $to_date;
     public $leavePolicyIds = [];
     public $leavePolicies;
     public $selectedEmployeeIds = [];
@@ -61,7 +62,7 @@ class EmpLeaveGranterDetails extends Component
     public function mount()
     {
         try {
-            // Set the selected year to the current year
+            // Set the selected year to the currentD year
             $this->selectedYear = now()->year;
             $this->leavePolicies = LeavePolicySetting::all();
             // Get current year using Carbon and set the selected year range
@@ -150,13 +151,31 @@ class EmpLeaveGranterDetails extends Component
                 $endDate = Carbon::create($this->selectedYear, 12, 31)->endOfDay(); // End of the year
             }
 
-            // Now filter the leave balances based on the calculated start and end dates
-            $this->employeeLeaveBalance = DB::table('employee_leave_balances')
-                ->join('employee_details', 'employee_leave_balances.emp_id', '=', 'employee_details.emp_id')
-                ->whereNull('employee_leave_balances.deleted_at')
-                ->whereBetween('employee_leave_balances.created_at', [$startDate, $endDate]) // Filter by date range
-                ->select('employee_leave_balances.*', 'employee_details.*')
-                ->get();
+            // Assuming $selectedYear holds the value of the selected year from the frontend
+            $selectedYear = $this->selectedYear;
+
+            // Check if selected year is not empty and is a valid year
+            if ($selectedYear) {
+                // Calculate the start and end date for the selected year
+                $startDate = Carbon::createFromFormat('Y', $selectedYear)->startOfYear(); // January 1st of the selected year
+                $endDate = Carbon::createFromFormat('Y', $selectedYear)->endOfYear(); // December 31st of the selected year
+                // Fetch the data for the selected year
+                $this->employeeLeaveBalance = DB::table('employee_leave_balances')
+                    ->join('employee_details', 'employee_leave_balances.emp_id', '=', 'employee_details.emp_id')
+                    ->whereNull('employee_leave_balances.deleted_at')
+                    ->whereBetween('employee_leave_balances.created_at', [$startDate, $endDate])
+                    ->select('employee_leave_balances.*', 'employee_details.*')
+                    ->get();
+
+            } else {
+                // If no year is selected, fetch data for the current year
+                $this->employeeLeaveBalance = DB::table('employee_leave_balances')
+                    ->join('employee_details', 'employee_leave_balances.emp_id', '=', 'employee_details.emp_id')
+                    ->whereNull('employee_leave_balances.deleted_at')
+                    ->whereYear('employee_leave_balances.created_at', Carbon::now()->year) // Use current year if no year is selected
+                    ->select('employee_leave_balances.*', 'employee_details.*')
+                    ->get();
+            }
 
             // Group the records by batch_id, or other suitable field based on the context
             $this->groupedData = $this->employeeLeaveBalance->groupBy('batch_id');
@@ -474,17 +493,16 @@ class EmpLeaveGranterDetails extends Component
         // Trim whitespace from selected data
         $this->selectedPolicyIds = array_map('trim', $this->selectedPolicyIds);
         $this->selectedEmployeeIds = array_map('trim', $this->selectedEmployees);
-    
         // Validate if selected policies and employees exist
         if (empty($this->selectedPolicyIds) || empty($this->selectedEmployeeIds)) {
             FlashMessageHelper::flashError('Please select at least one leave policy and employee.');
             return;
         }
-    
+
         try {
             // Step 2: Prepare the leave policies data to be stored in JSON format
             $leavePoliciesData = [];
-    
+
             foreach ($this->selectedPolicyIds as $policyId) {
                 $policy = LeavePolicySetting::find($policyId);
                 if ($policy) {
@@ -496,49 +514,56 @@ class EmpLeaveGranterDetails extends Component
                     ];
                 }
             }
-    
+
             // Step 3: Combine selected employees and 'all' option and ensure no duplicates
             $employeeIdsToProcess = [];
-    
+
             if (in_array('all', $this->selectedEmployeeIds)) {
                 // Add all active employees to the array (only once)
                 $employees = EmployeeDetails::whereIn('emp_id', array_keys($this->employeeIds))
                     ->whereIn('employee_status', ['active', 'on-probation'])
                     ->get();
-    
+
                 foreach ($employees as $employee) {
                     $employeeIdsToProcess[] = $employee->emp_id;
                 }
             }
-    
+
             // Merge and deduplicate individual selected employee IDs
             $employeeIdsToProcess = array_merge($employeeIdsToProcess, array_diff($this->selectedEmployeeIds, ['all']));
-    
+
             // Remove duplicates from the array to avoid processing the same employee twice
             $employeeIdsToProcess = array_unique($employeeIdsToProcess);
-    
+
             // Log the employees to be processed for debugging purposes
             Log::info('Employees to be processed: ' . implode(', ', $employeeIdsToProcess));
-    
+
             // Step 4: Loop through each selected policy and create leave balance with a unique batch ID for each policy
             foreach ($leavePoliciesData as $policyData) {
                 // Generate a unique batch ID for the policy
                 $newBatchIdForPolicy = EmployeeLeaveBalances::max('batch_id') + 1;
-    
+
                 // Step 5: Loop through employees and create leave balance for each employee and policy
                 foreach ($employeeIdsToProcess as $empId) {
                     $period = $this->getPeriodBasedOnPeriodicity();
-    
+                    // Fetch from_date from Livewire property (assuming this is set)
+                    $fromDate = $this->from_date;
+
+                    // Call checkLeaveNames to update grant_days_allow and showFromTodates flag
+                    $this->checkLeaveNames();
+
+                    // Automatically calculate to_date when from_date is set
+                    $this->calculateToDate();
                     // Create leave balance for the employee and policy with the same batch ID for this policy
-                    $this->createLeaveBalance($empId, [$policyData], $period, $newBatchIdForPolicy);
+                    $this->createLeaveBalance($empId, [$policyData], $period, $newBatchIdForPolicy, $fromDate);
                 }
             }
-    
+
             // Step 6: Flash success message
             FlashMessageHelper::flashSuccess('Leave balances granted successfully.');
             $this->selectAll = null;
             $this->resetLeaveGrant();
-    
+
             // Step 7: Clear selected data
             $this->selectedPolicyIds = [];
             $this->selectedEmployeeIds = [];
@@ -552,7 +577,7 @@ class EmpLeaveGranterDetails extends Component
     }
 
     // Helper function to create leave balance for an employee
-    private function createLeaveBalance($empIds, $leavePoliciesData, $period, $batchId)
+    private function createLeaveBalance($empIds, $leavePoliciesData, $period, $batchId, $fromDate)
     {
         try {
             // Ensure $empIds is an array
@@ -592,6 +617,8 @@ class EmpLeaveGranterDetails extends Component
                         FlashMessageHelper::flashError("Leave balance for employee {$empId} with leave name {$leaveName} already exists.");
                         continue;
                     }
+                    Log::info('From Date: ' . $this->from_date);
+                    Log::info('To Date: ' . $this->to_date);
 
                     // If no duplicate, create or update the leave balance for this policy
                     EmployeeLeaveBalances::updateOrCreate(
@@ -599,6 +626,8 @@ class EmpLeaveGranterDetails extends Component
                             'emp_id' => $empId,
                             'batch_id' => $batchId,
                             'period' => $period,
+                            'from_date' => $this->from_date, // Ensure this is coming from Livewire property
+                            'to_date' => $this->to_date,
                             'periodicity' => $this->periodicity,
                             'leave_policy_id' => $leavePolicyId, // Policy should be unique per employee
                         ],
@@ -780,8 +809,6 @@ class EmpLeaveGranterDetails extends Component
         $this->showConfirmDeletionBox = true;
     }
 
-
-
     public function deleteLeaveBalanceEmp($id)
     {
         // Set the batchId to delete and show the confirmation modal
@@ -870,6 +897,43 @@ class EmpLeaveGranterDetails extends Component
         $this->showConfirmDeletionBox = false;
         $this->showEditModal = false;
     }
+    public $showFromTodates = false;
+    public $grant_days_allow = 0;
+    // Method that runs when checkbox changes
+    public function checkLeaveNames()
+    {
+        // Reset the showFromTodates to false before checking
+        $this->showFromTodates = false;
+        // Iterate over selected policy IDs
+        foreach ($this->selectedPolicyIds as $policyId) {
+            // Find the policy by ID in LeavePolicySetting
+            $policy = LeavePolicySetting::find($policyId);
+
+            if ($policy) {
+                // Check if the leave name is "Marriage Leave", "Paternity Leave", or "Maternity Leave"
+                if (in_array($policy->leave_name, ['Marriage Leave', 'Paternity Leave', 'Maternity Leave'])) {
+                    // Set the flag to true if it's one of the specified leave types
+                    $this->showFromTodates = true;
+
+                    // Store the grant days for the leave
+                    $this->grant_days_allow = $policy->grant_days;
+
+                    break;
+                }
+            }
+        }
+    }
+
+    public function calculateToDate()
+    {
+        // Automatically set the to_date when from_date is selected
+        if ($this->showFromTodates && $this->grant_days_allow > 0 && $this->from_date) {
+            $fromDate = \Carbon\Carbon::parse($this->from_date);
+            // Add (grant_days_allow - 1) to the from_date to calculate the to_date
+            $this->to_date = $fromDate->addDays($this->grant_days_allow - 1)->toDateString();
+        }
+    }
+
 
     public function render()
     {

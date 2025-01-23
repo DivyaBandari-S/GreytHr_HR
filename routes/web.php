@@ -110,7 +110,6 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
         Route::get('/user/attendance-info', HrAttendanceInfo::class)->name('attendance-info');
         Route::get('/user/attendance-muster-hr', AttendanceMusterHr::class)->name(name: 'attendance-muster-hr');
         Route::get('/user/shift-roster-hr', ShiftRosterHr::class)->name(name: 'shift-roster-hr');
-        Route::get('/user/employee-leave', EmployeeLeave::class)->name(name: 'employee-leave');
 
 
         //HR Leave-Admin Submodule Routes
