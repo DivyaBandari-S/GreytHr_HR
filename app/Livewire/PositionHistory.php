@@ -16,6 +16,7 @@ class PositionHistory extends Component
 {
     use WithFileUploads;
     public $peopleData;
+    public $selectedEmployeeImage;
     public $selectedOption = 'all'; 
     public $selectedEmployeeId='';
     public $present_address;
@@ -632,21 +633,7 @@ class PositionHistory extends Component
     {
         $this->cc_to = implode(', ', array_unique($this->selectedPeopleNames));
     }
-    public function updateselectedEmployee($empId)
-    {
-      
-        if (count($this->selectedPeople) > 1) {
-               $this->selectedPeople = array_slice($this->selectedPeople, 0, 1);
-         
-            return;
-            
-        } else {
-            // Proceed with selecting a single employee
-            $this->selectedEmployeeId = $empId;
-            $this->selectedEmployeeFirstName = EmployeeDetails::where('emp_id', $empId)->value('first_name');
-            $this->selectedEmployeeLastName = EmployeeDetails::where('emp_id', $empId)->value('last_name');
-        }
-    }
+
     public function updateSelected($option)
     {
         $this->selectedOption = $option; 
@@ -705,38 +692,79 @@ class PositionHistory extends Component
 
     
    }
-    public function searchforEmployee()
-    {
-        if (!empty($this->searchTerm)) {
-            // Fetch employees matching the search term
-            $this->employees = EmployeeDetails::where(function ($query) {
-                $query->where('first_name', 'like', '%' . $this->searchTerm . '%')
-                      ->orWhere('last_name', 'like', '%' . $this->searchTerm . '%')
-                      ->orWhere('emp_id', 'like', '%' . $this->searchTerm . '%');
-            })->get();
-    
-            // Include previously selected employees not currently displayed in the search
-            foreach ($this->selectedPeople as $selectedEmpId) {
-                // Check if selected employee is in the current employees
-                if (!$this->employees->contains('emp_id', $selectedEmpId)) {
-                    $selectedEmployee = EmployeeDetails::where('emp_id', $selectedEmpId)->first();
-                    if ($selectedEmployee) {
-                        // Ensure it's marked as checked
-                        $selectedEmployee->isChecked = true;
-                        $this->employees->push($selectedEmployee);
-                    }
+   public function searchforEmployee() {
+    if (!empty($this->searchTerm)) {
+        // Fetch employees matching the search term
+        $this->employees = EmployeeDetails::where(function ($query) {
+            $query->where('first_name', 'like', '%' . $this->searchTerm . '%')
+                  ->orWhere('last_name', 'like', '%' . $this->searchTerm . '%')
+                  ->orWhere('emp_id', 'like', '%' . $this->searchTerm . '%');
+        })->get();
+
+        // Include previously selected employees not currently displayed in the search
+        foreach ($this->selectedPeople as $selectedEmpId) {
+            // Check if selected employee is in the current employees
+            if (!$this->employees->contains('emp_id', $selectedEmpId)) {
+                $selectedEmployee = EmployeeDetails::where('emp_id', $selectedEmpId)->first();
+                if ($selectedEmployee) {
+                    // Ensure it's marked as checked
+                    $selectedEmployee->isChecked = true;
+                    $this->employees->push($selectedEmployee);
                 }
             }
-    
-            // Set isChecked for employees in the current search results
-            foreach ($this->employees as $employee) {
-                $employee->isChecked = in_array($employee->emp_id, $this->selectedPeople);
-   
-            }
+        }
+
+        // Set isChecked for employees in the current search results
+        foreach ($this->employees as $employee) {
+            $employee->isChecked = in_array($employee->emp_id, $this->selectedPeople);
+        }
+    } else {
+        $this->employees = collect(); // Reset employees if no search term
+    }
+}
+
+public function updateselectedEmployee($empId)
+{
+    // If more than one employee is selected, only allow the first employee to be selected
+    if (count($this->selectedPeople) > 1) {
+        $this->selectedPeople = array_slice($this->selectedPeople, 0, 1); // Keep only the first selected employee
+    } else {
+        // If employee is not already selected, proceed with selecting
+        if (!in_array($empId, $this->selectedPeople)) {
+            $this->selectedPeople[] = $empId; // Add employee to the selected list
         } else {
-            $this->employees = collect(); // Reset employees if no search term
+            // If employee is already selected, remove from the list
+            $this->selectedPeople = array_filter($this->selectedPeople, fn($id) => $id != $empId);
         }
     }
+
+    // Update the selected employee details
+    $this->selectedEmployeeId = $empId;
+    $this->selectedEmployeeFirstName = EmployeeDetails::where('emp_id', $empId)->value('first_name');
+    $this->selectedEmployeeLastName = EmployeeDetails::where('emp_id', $empId)->value('last_name');
+    $this->selectedEmployeeImage = EmployeeDetails::where('emp_id', $empId)->value('image');
+    $this->searchTerm='';
+    
+}
+
+public function selectEmployee($empId)
+{
+    
+    $this->selectedEmployeeId = $empId;
+    $this->selectedEmployeeFirstName = EmployeeDetails::where('emp_id', $empId)->value('first_name');
+    $this->selectedEmployeeLastName = EmployeeDetails::where('emp_id', $empId)->value('last_name');
+    $this->selectedEmployeeImage = EmployeeDetails::where('emp_id', $empId)->value('image');
+    $this->searchTerm='';
+}
+
+public $selectedEmployee = null;
+
+public function removeSelectedEmployee()
+{
+$this->selectedEmployeeId = null;
+$this->selectedEmployeeFirstName = null;
+$this->selectedEmployeeLastName = null;
+}
     
 
     public $selectedPeopleData=[];

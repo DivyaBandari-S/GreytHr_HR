@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Models\EmployeeDetails;
 use App\Models\EmployeeLeaveBalances;
+use App\Models\LeavePolicySetting;
 use Illuminate\Database\QueryException;
 use Livewire\Component;
 
@@ -17,6 +18,8 @@ class GrantLeaveBalance extends Component
     public $leave_balance;
     public $from_date;
     public $to_date;
+    public $selectedLeavePolicies = [];
+    public $leavePolicies= [];
     public $showEmployees = 'false';
     public $selectAllEmployees = false;
 
@@ -41,6 +44,8 @@ class GrantLeaveBalance extends Component
         ->whereIn('employee_status',['active','on-probation'])
             ->pluck('emp_id')
             ->toArray();
+
+            $this->leavePolicies = LeavePolicySetting::all();
     }
 
     public function openEmployeeIds()
@@ -66,58 +71,71 @@ class GrantLeaveBalance extends Component
 
     public function grantLeavesForEmp()
     {
-        $this->validate([
-            'selectedEmpIds' => 'required|array|min:1',
-            'selectedEmpIds.*' => 'exists:employee_details,emp_id',
-            'leave_type' => 'required|string',
-            'leave_balance' => 'required|integer|min:0',
-            'from_date' => 'required|date',
-            'to_date' => 'required|date|after_or_equal:from_date',
-        ]);
-
         foreach ($this->selectedEmpIds as $emp_id) {
             try {
                 $leaveBalance = EmployeeLeaveBalances::where('emp_id', $emp_id)->first();
-
+    
                 if ($leaveBalance) {
-                    // Decode JSON data to ensure it's an array
+                    // Decode the leave types and balances if they are JSON
                     $leaveTypes = $leaveBalance->leave_type ?? [];
                     $leaveBalances = $leaveBalance->leave_balance ?? [];
-                    $fromDates = $leaveBalance->from_date;
-                    $toDates = $leaveBalance->to_date;
+    
+                    // Add the new leave types and balances for selected leave policies
+                    foreach ($this->selectedLeavePolicies as $leavePolicyId) {
+                        $leavePolicy = LeavePolicySetting::find($leavePolicyId);
 
-                    // Ensure leaveTypes is an array
-                    if (!is_array($leaveTypes)) {
-                        $leaveTypes = [];
+                        if ($leavePolicy && !in_array($leavePolicy->leave_name, $leaveTypes)) {
+                            $leaveTypes[] = $leavePolicy->leave_name;  // Store the leave name
+                            $leaveBalances[$leavePolicy->leave_name] = $leavePolicy->grant_days;  // Store the grant days
+                        }
                     }
-
-                    // Update leave types and balances
-                    if (!in_array($this->leave_type, $leaveTypes)) {
-                        $leaveTypes[] = $this->leave_type;
-                    }
-                    $leaveBalances[$this->leave_type] = $this->leave_balance;
-                    $fromDates = $this->from_date;
-                    $toDates = $this->to_date;
-
+    
+                    // Update the existing leave balance record
                     $leaveBalance->update([
-                        'leave_type' => $leaveTypes, // No need to encode manually
-                        'leave_balance' => $leaveBalances, // No need to encode manually
-                        'from_date' => $fromDates, // No need to encode manually
-                        'to_date' => $toDates, // No need to encode manually
+                        'leave_type' => json_encode($leaveTypes),  // Store leave names as JSON
+                        'leave_balance' => json_encode($leaveBalances),  // Store leave balances as JSON
+                        'from_date' => $this->from_date,
+                        'to_date' => $this->to_date,
                     ]);
                 } else {
-                    // Create new record
-                    EmployeeLeaveBalances::create([
+                    // Create a new leave balance record if none exists
+                    $newLeaveTypes = [];
+                    $newLeaveBalances = [];
+                    $leavePolicyIds = [];
+    
+                    foreach ($this->selectedLeavePolicies as $leavePolicyId) {
+                        $leavePolicy = LeavePolicySetting::find($leavePolicyId);
+    
+                        if ($leavePolicy) {
+                            // Add leave name to leave_type
+                            $newLeaveTypes[] = $leavePolicy->leave_name;
+    
+                            // Add the corresponding grant days to leave_balance
+                            $newLeaveBalances[$leavePolicy->leave_name] = $leavePolicy->grant_days;
+    
+                            // Store the leave_policy_id for foreign key
+                            $leavePolicyIds[] = $leavePolicy->id;
+                        }
+                    }
+    
+                    // Assuming you want to store a single leave policy ID, you can use the first one or modify as needed
+                    $leavePolicyId = !empty($leavePolicyIds) ? $leavePolicyIds[0] : null;
+    
+                    // Create the new leave balance record
+                    $data = EmployeeLeaveBalances::create([
                         'emp_id' => $emp_id,
-                        'leave_type' => [$this->leave_type], // Laravel will encode this as JSON
-                        'leave_balance' => [$this->leave_type => $this->leave_balance], // Laravel will encode this as JSON
-                        'from_date' => $this->from_date, // Laravel will encode this as JSON
-                        'to_date' => $this->to_date, // Laravel will encode this as JSON
+                        'leave_type' => json_encode($newLeaveTypes),  // Store leave names as JSON
+                        'leave_balance' => json_encode($newLeaveBalances),  // Store leave balances as JSON
+                        'from_date' => $this->from_date,
+                        'to_date' => $this->to_date,
+                        'leave_policy_id' => $leavePolicyId,  // Store the leave policy ID as a foreign key
                     ]);
+    
+                    dd($data);
                 }
-
-                // Flash success message
+    
                 session()->flash('success', 'Leave balances added successfully.');
+    
             } catch (QueryException $e) {
                 if ($e->errorInfo[1] == 1062) {
                     session()->flash('error', 'Leaves have already been added for the selected employee(s).');
@@ -127,10 +145,12 @@ class GrantLeaveBalance extends Component
                 return; // Exit on error
             }
         }
-
+    
         return redirect()->to('/hr/user/grant-summary');
     }
- 
+
+
+
     public function render()
     {
         return view('livewire.grant-leave-balance');

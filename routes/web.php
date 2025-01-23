@@ -42,6 +42,7 @@ use App\Livewire\ShiftRosterHr;
 use App\Livewire\ShiftRotationCalendar;
 use App\Livewire\SwipeManagementForHr;
 use App\Livewire\WhoIsInChartHr;
+use App\Livewire\YearEndProcess;
 use App\Models\EmpResignations;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Response;
@@ -76,6 +77,7 @@ Route::get('/file/{id}', function ($id) {
 Route::middleware(['auth:hr', 'handleSession'])->group(function () {
 
     Route::get('/', HomeDashboard::class)->name('home');
+    Route::get('/request', Requests::class)->name('request');
     // Group routes under the 'hr' prefix
     Route::prefix('hr')->group(function () {
 
@@ -136,6 +138,7 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
         Route::get('/user/grantLeave', GrantLeaveBalance::class)->name('grantLeave');
         Route::get('/user/grant-summary', EmpLeaveGranterDetails::class)->name( 'grant-summary');
         Route::get('/user/leavePolicySettings', LeaveSettingPolicy::class)->name( 'leavePolicySettings');
+        Route::get('/user/leaveYearEndProcess', YearEndProcess::class)->name( 'year-end-process');
 
 
         //HR Leave-SetUp Submodule Routes

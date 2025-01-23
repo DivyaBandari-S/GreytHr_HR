@@ -17,7 +17,7 @@ return new class extends Migration
             $table->integer('grant_days');
             $table->enum('leave_frequency', ['Annual', 'Monthly'])->nullable();
             $table->integer('is_active')->default(1);
-            $table->string('leave_code', 10)->unique();
+            $table->string('leave_code', '10')->unique();
             $table->json('company_id');
             $table->timestamps();
         });

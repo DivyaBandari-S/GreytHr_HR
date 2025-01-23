@@ -9,7 +9,7 @@ class HolidayCalendar extends Model
 {
     use HasFactory;
     protected $fillable=[
-       'day' ,'date', 'month', 'year', 'festivals'
+       'day' ,'date', 'month', 'year', 'festivals', 'status'
      ];
 
 }

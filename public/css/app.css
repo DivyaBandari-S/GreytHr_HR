@@ -20,8 +20,8 @@ body {
     --normal-font-size: 0.75rem;
     --sub-headings-font-size: 0.8rem;
     --main-headings-font-size: 1rem;
-    --main-table-heading-bg-color: #cfdbe4c2;
-    --main-table-heading-text-color: #545658;
+    --main-table-heading-bg-color: #d4e6f4;
+    --main-table-heading-text-color:#4c4e4f ;
 }
 /* //global styles for scrollbars  */
 ::-webkit-scrollbar {
@@ -281,6 +281,8 @@ ul {
     justify-content: end;
     text-decoration: none;
     color: black;
+    align-items: end;
+    margin-left: 40px;
 }
 
 .arrows {
@@ -291,6 +293,7 @@ ul {
     font-size: 14px;
     color: var(--sub-heading-color);
     cursor: pointer;
+    align-items: end;
 }
 .arrow-icon-active {
     font-size: 14px;
@@ -445,6 +448,951 @@ ul {
     background: rgb(2, 17, 79);
 }
 /* end of admin dashboard */
+.post-card {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 10px 18px rgba(0, 0, 0, 0.08);
+    margin-bottom: 30px;
+    padding: 20px;
+    border: 1px solid silver;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.post-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 18px 30px rgba(0, 0, 0, 0.1);
+}
+
+/* Header Styling */
+.post-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.category {
+    font-size: 13px;
+    color: #7a7a7a;
+    text-transform: uppercase;
+    font-weight: 400;
+}
+
+.updated-time {
+    font-size: 12px;
+    color: #b0b0b0;
+}
+
+/* Profile Section */
+.profile-info {
+    display: flex;
+    flex-direction: column;
+    /* Center the profile image and name */
+    margin-top: 15px;
+}
+
+.profile-image-wrapper {
+    margin-bottom: 10px; /* Add spacing between image and name */
+}
+
+.post-profile-img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+.profile-name-wrapper {
+   
+}
+
+.post-profile-name {
+    font-size: 12px;
+    font-weight: 500;
+    color: #3b4452;
+    text-transform: capitalize;
+}
+
+/* Post Content */
+.post-content {
+    margin-top: 10px;
+}
+
+.description {
+    font-size: 12px;
+    color: #676767;
+ margin-top:10px;
+ margin-left: 10px;
+}
+
+.post-image {
+    max-width: 50%;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+}
+
+.company-logo {
+    max-width: 130px;
+    height: auto;
+}
+
+.emoji-drawer {
+    display: grid;
+
+    grid-template-columns: repeat(3, 1fr);
+
+    width: 100px;
+
+    margin-bottom: 32px;
+    transition: opacity 0.2s;
+}
+
+.emoji-list {
+    display: none;
+    background: white;
+    border-radius: 5px;
+    border: 1px solid silver;
+    max-height: 170px;
+    width: 220px;
+    overflow-y: auto;
+}
+
+.emoji-option {
+    font-size: 16px;
+    cursor: pointer;
+}
+
+/* .hidden {
+    opacity: 0;
+} */
+
+.emoji {
+    text-align: center;
+    font-size: 24px;
+    padding: 8px;
+}
+
+.custom-height-30 {
+    height: 30px;
+}
+
+.custom-radio-label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    padding: 5px;
+    height: 100%;
+}
+
+.feeds-custom-menu {
+    border-radius: 5px;
+    border: 1px solid silver;
+    height: fit-content;
+}
+
+.custom-dropdown {
+    margin-top: 20px;
+    display: block;
+
+}
+
+.eventsSection {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+}
+.kudoseventsSection {
+    display: flex;
+    flex-direction: column;
+    height: 358px;
+    overflow-y: scroll;
+}
+
+.feeds-main-content {
+    height: 75vh;
+    max-height: 75vh;
+    overflow-y: auto;
+    scroll-behavior: smooth;
+}
+
+.cards {
+    padding: 15px;
+    background-color: white;
+    border-radius: 5px;
+    border: 1px solid #cfcaca;
+    color: #3b4452;
+    margin-top: 5px;
+    position: relative;
+    width:500px
+}
+
+.feeds-left-menu {
+    font-weight: 500;
+    color: #47515b;
+    cursor: pointer;
+    font-size: 0.8rem;
+}
+
+.emoji:hover {
+    cursor: pointer;
+}
+
+.comment-box {
+    position: relative;
+    padding-top: 10px;
+    /* Adjust based on button height */
+    padding-left: 10px;
+    overflow: hidden;
+    height: 60px;
+    margin-left: 30px;
+}
+
+.form-select {
+
+    font-size: 0.75rem;
+}
+.transparent-backdrop {
+    background-color: rgba(0, 0, 0, 0.3); /* Adjust the opacity to your liking */
+}
+
+.catagory-select:hover {
+    background-color: #edf3ff;
+
+}
+
+.modal-body {
+    font-size: 0.75rem;
+}
+
+.addcomment {
+    position: absolute;
+    bottom: 15px;
+    /* Move up by increasing this value */
+    right: 5px;
+    /* Adjust based on padding and design */
+    font-size: var(--normal-font-size);
+    color: rgb(2, 17, 79);
+    border: none;
+    border-radius: 4px;
+    margin-top: -5px;
+    /* Adjust as needed */
+    cursor: pointer;
+    padding: 5px 10px;
+    background-color: transparent;
+    background-color: rgb(2, 17, 79);
+    color: #fff;
+    border: 1px solid rgb(2, 17, 79);
+    font-weight: 500;
+    border-radius: 5px;
+ 
+    padding: 4px 10px;
+    width: 60px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 0.5rem;
+    border: none;
+    /* If you want the background to be transparent */
+}
+
+.replyDiv {
+    margin-top: 10px;
+}
+
+.arrow-icon svg {
+    transition: transform 0.3s ease;
+}
+
+.search-bar {
+    display: flex;
+    align-items: center;
+    background-color: #fff;
+    border-radius: 25px;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.search-input {
+    border: none;
+    padding: 10px;
+    font-size: 16px;
+    outline: none;
+}
+
+.placeholder-small {
+    color: var(--label-color);
+    /* Placeholder text color */
+    font-size: var(--normal-font-size);
+    font-family: "Montserrat", sans-serif;
+    font-weight: normal;
+}
+.placeholder-big {
+    color: var(--main-heading-color);
+    /* Placeholder text color */
+    font-size: var(--normal-font-size);
+    font-family: "Montserrat", sans-serif;
+    font-weight: normal;
+}
+
+#category::placeholder {
+    color: var(--label-color);
+    /* Placeholder text color */
+    font-size: var(--normal-font-size);
+    /* Placeholder font size */
+    font-family: "Montserrat", sans-serif;
+    font-weight: normal;
+}
+
+#subject::placeholder {
+    color: var(--label-color);
+    /* Placeholder text color */
+    font-size: var(--normal-font-size);
+    /* Placeholder font size */
+    font-family: "Montserrat", sans-serif;
+    font-weight: normal;
+}
+
+#description::placeholder {
+    font-weight: normal;
+    color: var(--label-color);
+    /* Placeholder text color */
+    font-size: var(--normal-font-size);
+    /* Placeholder font size */
+    font-family: "Montserrat", sans-serif;
+}
+
+.search-button {
+    background-color: rgb(2, 17, 79);
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    border-top-right-radius: 25px;
+    border-bottom-right-radius: 25px;
+}
+
+#hidden-content {
+    display: none;
+    /* Initially hide the content */
+}
+
+.comments {
+    margin-top: 10px;
+}
+
+.items-center {
+    /* Center items vertically */
+    align-items: center;
+}
+
+.h-28 {
+    /* Height */
+    height: 7rem;
+    /* Adjust as needed */
+}
+
+.border-1 {
+    /* Border */
+    border-width: 1px;
+}
+
+.text-base {
+    /* Font size */
+    font-size: 12px;
+    color: #778899;
+    font-weight: 600;
+}
+
+.text-feed {
+    font-size: var(--nav-headings-font-size);
+    color: var(--main-heading-color);
+    font-weight: 600;
+}
+
+.custom-feed {
+    margin-left: -80px;
+}
+
+.custom-feed .sort-text {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.custom-feed .custom-feed-btn {
+    background: none;
+    border: none;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    color: #3b4452;
+}
+
+.custom-feed .custom-feed-menu {
+    position: absolute;
+    background-color: white;
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+    min-width: 190px;
+    right: -60px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+}
+
+.custom-feed .custom-feed-item {
+    padding: 8px 16px;
+    font-size: 14px;
+    text-decoration: none;
+    color: #3b4452;
+}
+
+.Feeds-Dropdown {
+    display: none;
+    overflow-y: auto;
+    max-height: 120px;
+    overflow-x: hidden;
+}
+
+.custom-list {
+    font-size: 13px;
+    line-height: 1;
+    text-decoration: none;
+    color: black;
+    text-align: left;
+    padding-left: 0;
+    overflow-y: auto;
+    max-height: 200px;
+    overflow-x: hidden;
+}
+
+.cus-button {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0.5rem;
+    overflow-y: auto;
+    max-height: fit-content;
+    cursor: pointer;
+    overflow-x: hidden;
+}
+
+.font-semibold {
+    font-weight: 600;
+    /* Adjust as needed */
+}
+
+.leading-5 {
+    line-height: 1.25rem;
+    /* Adjust as needed */
+}
+
+.text-xs {
+    /* Font size */
+    font-size: 12px;
+    color: #47515b;
+}
+
+.font-normal {
+    /* Font weight */
+    font-weight: 400;
+    /* Adjust as needed */
+}
+
+.leading-4 {
+    /* Line height */
+    line-height: 1rem;
+    /* Adjust as needed */
+}
+
+.flex {
+    display: flex;
+}
+
+.items-start {
+    align-items: flex-start;
+}
+
+/* Define styles for the avatar container */
+.avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    /* Set width and height for the circular avatar */
+    height: 50px;
+    border-radius: 50%;
+    /* margin-left: 20px; */
+    /* Make the avatar circular */
+    background-color: #ccc;
+    /* Background color for the avatar */
+}
+
+/* Apply styles to the search bar */
+.search-bar {
+    display: flex;
+    align-items: center;
+    max-width: 250px;
+    border-radius: 20px;
+    border: 1px solid #ccc;
+    overflow: hidden;
+    /* Hide overflowing content */
+}
+
+/* Sample CSS */
+.w-full {
+    width: 100%;
+    /* Add more styles as needed */
+}
+
+.mt-1x {
+    margin-top: 1rem;
+    /* Adjust as per design */
+}
+
+.custom-button {
+    /* Styles for the button */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    border-radius: 5px;
+    height: 30px;
+    border: 1px solid grey;
+    padding: 0.5rem;
+    /* Adjust padding */
+    /* Add more styles as needed */
+}
+
+/* Style the search input */
+.search-bar input[type="text"] {
+    flex: 1;
+    padding: 8px;
+    border: none;
+    outline: none;
+    font-size: 16px;
+}
+
+/* Style the search button */
+.search-bar button {
+    padding: 7px 7px;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+/* Change button background color on hover */
+
+.dropdown-content {
+    display: none;
+    /* Add more styles as needed */
+}
+
+/* Show dropdown content when the arrow is open */
+.arrow-open+.dropdown-content {
+    display: block;
+}
+
+/* Style for the icon */
+.avatar i {
+    color: #fff;
+    margin-left: 10px;
+    /* Icon color */
+    font-size: 24px;
+    /* Adjust the icon size */
+}
+
+/* Hide all sections initially */
+.section {
+    display: none;
+}
+
+/* Show the section based on the selected radio button */
+#all:checked~#all-groups,
+#appreciations:checked~#appreciations,
+#buy-sell-rent:checked~#buy-sell-rent,
+#company-news:checked~#company-news,
+#events:checked~#events {
+    display: block;
+}
+
+.emoji {
+    color: transparent;
+    display: inline-block;
+    font-size: 18px;
+    font-style: normal;
+    height: 25px;
+    width: 25px;
+}
+
+.emoji::selection {
+    background-color: highlight;
+    color: transparent;
+}
+
+.emoji-image {
+    font-size: 14px;
+    line-height: 28px;
+}
+
+.emoji-button {
+    cursor: pointer;
+    margin: 5px;
+}
+
+.emoji-editor {
+    -moz-appearance: textfield-multiline;
+    -webkit-appearance: textarea;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
+    cursor: text;
+    font: medium -moz-fixed;
+    font: -webkit-small-control;
+    -webkit-font-smoothing: antialiased;
+    height: 100px;
+    overflow: auto;
+    padding: 5px;
+    resize: both;
+    width: 100%;
+}
+
+.emoji-picker {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    position: absolute;
+    width: 210px;
+}
+
+.emoji-picker a {
+    cursor: pointer;
+    display: inline-block;
+    font-size: 20px;
+    padding: 3px;
+}
+
+.emoji-selector {
+    border-bottom: 1px solid #ccc;
+    display: flex;
+}
+
+.emoji-selector li {
+    margin: 5px;
+}
+
+/* Define CSS for the menu items */
+.menu-item {
+    transition: background-color 0.3s ease;
+    text-decoration: none;
+    margin-top: 5px;
+    display: block;
+    padding: 5px 10px;
+    font-size: 11px;
+    transition: background-color 0.3s ease;
+    color: #3b4452;
+}
+
+/* Define CSS for the menu items on hover */
+.menu-item:hover {
+    background-color: #edf3ff;
+    border-radius: 5px;
+    height: auto;
+    width: 100%;
+    text-decoration: none;
+}
+
+/* CSS for when radio button is checked */
+.input[type="radio"]:checked+.radio-label {
+    background-color: #e1e7f0;
+    /* Change background color when checked */
+}
+
+/* Ensure radio button and text remain on the same line */
+input[type="radio"] {
+    vertical-align: middle;
+}
+
+.feed-icon-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 2px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background-color: #d8d8d8;
+    /* You can change this to any desired background color */
+}
+
+/* Define the blue background color for the checked state */
+.input[type="radio"]:checked+.custom-radio-button {
+    background-color: blue;
+}
+
+.feather {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.text-salmon-400 {
+    fill: salmon;
+    /* Change the color as needed */
+}
+
+.stroke-1 {
+    stroke-width: 1px;
+    /* Adjust the stroke width as needed */
+}
+
+.sort {
+    border: none;
+    background: none;
+    font-size: 1rem;
+    margin-left: 2px;
+    padding: 2px;
+    align-items: end;
+}
+
+.sort:focus {
+    outline: none;
+}
+
+.feather {
+    width: 1rem;
+    height: 1rem;
+    color: #6b46c1;
+    /* You can change this to any desired icon color */
+}
+
+.activities,
+.posts,
+.post-requests {
+    height: 30px;
+    /* Fixed height */
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    padding: 5px;
+    font-size: 12px;
+    width: 100%;
+    border-radius: 5px;
+}
+
+.post-button {
+    background-color: rgb(2, 17, 79);
+    color: white;
+    height: 30px;
+    margin-left: 20px;
+    border-radius: 5px;
+    width: 70px;
+    font-size: 12px;
+    border: 1px solid silver;
+}
+
+.activities:hover,
+.posts:hover,
+.post-requests:hover {
+    background-color: #edf3ff;
+    cursor: pointer;
+}
+
+.custom-radio-content {
+    color: #778899;
+    font-size: 12px;
+    font-weight: 500;
+    margin-left: 10px;
+}
+
+.medium-header {
+    border-left-width: 0.125rem;
+    font-weight: 600;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    color: var(--e-color-emoji-text);
+    margin-top: 5px;
+    color: #3b4452;
+
+    margin-left: 20px;
+}
+
+.group-events {
+    color: #677a8e;
+    font-size: 13px;
+    font-weight: 100px;
+    text-align: center;
+}
+
+/* CSS for radio-wrapper */
+.alert-success {
+    max-width: 500px;
+    margin: auto;
+}
+
+.drive-in {
+    color: #3b4452;
+    display: flex;
+    margin-left: 5px;
+    flex-direction: column;
+    justify-content: center;
+    /* Centers items vertically */
+}
+
+.navProfileImgFeeds {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    cursor: pointer;
+    margin-right: 0px !important;
+}
+
+.radio-wrapper {
+    display: inline-block;
+    margin-right: 10px;
+    /* Adjust margin as needed */
+    cursor: pointer;
+}
+
+.btn-post {
+    background-color: #f1ecfc;
+    border: 1px solid purple;
+    border-radius: 5px;
+    width: 130px;
+}
+
+/* CSS for labels */
+.radio-label {
+    display: inline-block;
+    padding: 8px 12px;
+    /* Adjust padding as needed */
+    border-radius: 4px;
+    /* Rounded corners */
+    transition: background-color 0.3s ease;
+    /* Smooth transition */
+}
+
+/* CSS for label hover effect */
+.radio-label:hover {
+    background-color: #e1e7f0;
+    /* Change background color on hover */
+}
+
+/* CSS for when radio button is checked */
+.input[type="radio"]:checked+.radio-label {
+    background-color: #e1e7f0;
+    /* Change background color when checked */
+}
+
+/* Ensure radio button and text remain on the same line */
+input[type="radio"] {
+    vertical-align: middle;
+}
+
+.mytextarea {
+    width: 100px;
+    /* Set your desired initial width */
+    height: 30px;
+    /* Set your desired minimum height */
+    resize: none;
+    /* Disable textarea resizing by the user */
+}
+
+.myEmojiDiv {
+    position: absolute;
+    width: fit-content;
+    z-index: 1;
+}
+
+/* start of leave-page styles  (Divya)*/
+/* General button styles */
+.nav-buttons {
+    text-decoration: none;
+    cursor: pointer;
+    font-size: 14px;
+    transition: color 0.3s;
+}
+
+/* Custom tab styles */
+.custom-nav-tabs {
+    margin-top: 10px;
+    background-color: #fff;
+    border-radius: 5px;
+    display: flex;
+    font-weight: 500;
+    text-align: center;
+    color: var(--label-color);
+    padding: 0;
+    margin: 0;
+    font-size: var(--normal-font-size);
+}
+
+/* Individual tab item */
+.custom-nav-tabs .custom-item {
+    flex-grow: 1;
+    overflow: hidden;
+}
+
+/* Link styles for tabs */
+.custom-nav-link {
+    color: var(--label-color);
+    padding: 8px 30px;
+    text-decoration: none;
+    display: block;
+    transition: color 0.3s ease, background-color 0.3s ease;
+    border: 1px solid transparent;
+    box-sizing: border-box;
+}
+
+/* Hover state for tabs */
+.custom-nav-link:hover {
+    color: rgb(2, 17, 79) !important;
+    background-color: #fff;
+    border-color: rgb(2, 17, 79);
+}
+
+/* Active tab styling */
+.custom-nav-link.active {
+    color: white !important;
+    background-color: rgb(2, 17, 79) !important;
+    border-color: rgb(2, 17, 79);
+    border-bottom-color: transparent;
+}
+
+/* Ensure links inside items don't inherit text-decoration */
+.custom-item a {
+    text-decoration: none !important;
+}
+.helpdesk-search-btn {
+    background-color: rgb(2, 17, 79);
+    border-radius: 0 5px 5px 0;
+    color: #fff !important;
+    width: 45px;
+    height: 32px;
+    border: none;
+    align-items: center;
+    display: flex;
+}
+
+
+.card-option{
+text-align: left;
+padding: 7px;
+font-style: 8px;
+align-items: center;
+justify-content: center;
+cursor: pointer;
+}
+/*feeds ended*/
 
 /* Onboarding Form styles  */
 
@@ -804,7 +1752,7 @@ label {
     border: none;
 }
 .form-check-label-options {
-    font-size: 13px;
+    font-size: 12px;
     margin-left: 5px;
 }
 .onboarding-check-boxes {
@@ -815,7 +1763,8 @@ input {
     margin-bottom: 0px;
 }
 .form-check-label {
-    font-size: 10px;
+    font-size: 12px;
+    margin-top: 5px;
 }
 .custom-select {
     color: #2c3e50;
@@ -828,7 +1777,7 @@ input {
     border: 1px solid var(--main-button-color);
     font-weight: 500;
     border-radius: 5px;
-    padding: 7px 12px;
+    padding: 6px 12px;
     font-size: var(--normal-font-size);
     border: none;
     transition: all 0.3s ease;
@@ -1702,7 +2651,351 @@ input[type="date"]::before {
 }
 /*Ending of Who Is In Submodule*/
 /* analytics hub view all styles ended */
+/*Request Started  */
 
+.card-body {
+    background-color: white;
+    padding: 20px;
+    width: 80%;
+    margin-top: 30px;
+    border-radius: 5px;
+}
+.newReq{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: end;
+    gap: 10px;
+}
+.people-search-btn {
+    color: #fff;
+}
+
+.text-danger {
+    font-size: var(--normal-font-size);
+}
+
+.rotate {
+    transition: transform 0.5s;
+}
+
+.rotate.rotate-180 {
+    transform: rotate(180deg);
+}
+.request-search-container {
+    margin-top: 30px;
+    margin-bottom: 15px;
+    align-items: start;
+}
+
+
+.request-input-group-container {
+    width: 230px;
+}
+
+.request-search-input {
+    font-size: var(--normal-font-size);
+    border-radius: 5px 0 0 5px;
+    height: 32px;
+}
+
+.request-search-btn {
+    height: 32px;
+    width: 40px;
+    position: relative;
+    border-radius: 0 5px 5px 0;
+    background-color: var(--main-button-color);
+    color: #fff;
+    border: none;
+    margin-right: 10px;
+}
+
+.request-search-icon {
+    position: absolute;
+    top: 9px;
+    left: 11px;
+    color: #fff;
+}
+
+
+.helpdesk-btn {
+    font-size: 12px;
+    background-color: var(--main-button-color);
+    color: white;
+    border-radius: 5px;
+    padding: 4px 10px;
+}
+
+.helpdesk-modal {
+    background-color:var(--main-button-color);
+    height: 50px
+}
+
+.helpdesk-title {
+    padding: 5px;
+    color: white;
+    font-size: 15px;
+}
+
+.helpdesk-label {
+    color: #778899;
+    font-weight: 500;
+    font-size: 12px;
+}
+
+.helpdesk-toggler {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.select-ccto {
+    font-size: 12px;
+    color: #778899;
+    margin-bottom: 10px;
+    font-weight: 500;
+}
+
+.add-button {
+    border-radius: 50%;
+    color: #778899;
+    border: 1px solid #778899;
+}
+
+.helpdesk-rotate {
+    border-radius: 5px;
+    background-color: grey;
+    padding: 8px;
+    width: 330px;
+    margin-top: 10px;
+    height: 200px;
+    overflow-y: auto;
+}
+
+.helpdesk-container {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.helpdesk-search-term {
+    font-size: 10px;
+    cursor: pointer;
+    border-radius: 5px 0 0 5px;
+    width: 250px;
+    height: 30px;
+    padding: 5px;
+}
+
+.hepldesk-close-people {
+    background-color:var(--main-button-color);
+    height: 30px;
+    width: 30px;
+    margin-left: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.help-desk-table {
+    width: 100%;
+    background-color: white;
+    margin-top: 10px;
+    overflow-x: auto;
+}
+
+.help-desk-table-main {
+    width: 100%;
+    background-color: white;
+
+    border-collapse: collapse;
+    overflow-x: auto;
+}
+
+.help-desk-table-row {
+    background-color:var(--main-button-color);
+
+    color: white;
+}
+
+.help-desk-table-column {
+    padding: 10px;
+    font-size: 12px;
+    text-align: center;
+}
+
+.custom-button {
+    border-radius: 5px;
+    padding: 5px 10px;
+    color: white;
+    cursor: pointer;
+}
+
+.helpdesk-request {
+    padding: 10px;
+    font-size: 12px;
+    text-align: center;
+    text-transform: capitalize;
+}
+
+.help-desk-table-main th,
+td {
+    border-bottom: none;
+}
+
+.submit-button {
+    background-color: green;
+}
+
+.cancel-button {
+    background-color: red;
+}
+
+.custom-checkbox-helpdesk:checked {
+    background-color: var(--main-button-color);
+    border-color: var(--main-button-color);
+}
+
+.custom-checkbox-helpdesk {
+    appearance: none;
+    /* Remove default checkbox styling */
+    /* Set the height of the checkbox */
+
+    outline: none;
+    /* Remove outline on focus */
+    cursor: pointer;
+    /* Pointer cursor for hover effect */
+    /* Smooth transition */
+}
+
+.dropdown-options {
+    display: none;
+    /* Hidden by default */
+    position: absolute;
+    background-color: var(--main-color);
+    border-radius: 5px;
+    z-index: 1;
+    width: 100%;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.form-select-category option {
+    background-color: var(--main-color);
+    /* Background for options */
+    /* Text color for options */
+    padding: 5px;
+    cursor: pointer;
+}
+
+/* Default option styling */
+.option-default {
+    color: var(--main-color);
+}
+.modal-dialog{
+    font-size: 12px;
+}
+.form-control {
+    color: #778899;
+    font-weight: 500;
+    font-size: 12px;
+}
+/* General styling for nav links */
+.nav-buttons {
+    text-decoration: none;
+    cursor: pointer;
+    font-size: 14px;
+    transition: color 0.3s;
+}
+
+
+/* Custom tab styles */
+.custom-nav-tabs {
+    margin-top: 10px;
+    background-color: #fff;
+    border-radius: 5px;
+    display: flex;
+    font-weight: 500;
+    text-align: center;
+    color: var(--label-color);
+    padding: 0;
+    margin: 0;
+    font-size: var(--normal-font-size);
+}
+
+/* Individual tab item */
+.custom-nav-tabs .custom-item {
+    flex-grow: 1;
+    overflow: hidden;
+}
+
+/* Link styles for tabs */
+.custom-nav-link {
+    color: var(--label-color);
+  
+    text-decoration: none;
+    display: block;
+    transition: color 0.3s ease, background-color 0.3s ease;
+    border: 1px solid transparent;
+    box-sizing: border-box;
+}
+
+/* Hover state for tabs */
+.custom-nav-link:hover {
+    color: var(--main-button-color);
+    background-color: #fff;
+    border-color: var(--main-button-color)
+}
+
+/* Active tab styling */
+.custom-nav-link.active {
+    color: white !important;
+    background-color:var(--main-button-color) !important;
+    border-color: var(--main-button-color);
+    border-bottom-color: transparent;
+}
+.custom-nav-link {
+    padding: 8px 20px !important;
+}
+
+.custom-nav-tabs {
+    margin-top: 20px !important;
+}
+/* Responsive design for smaller screens */
+@media (max-width: 346px) {
+    .custom-nav-link.active {
+        border-radius: 0 !important;
+    }
+    .mbl-dev-active{
+        border-top-left-radius: 5px;
+        border-bottom-left-radius: 5px;
+    }
+    .custom-nav-link.active {
+        border-radius: 0 !important;
+    }
+    .custom-nav-tabs {
+        /* flex-direction: column; */
+        width: 100%;
+    }
+
+}
+
+@media (max-width: 992px) {
+    .mbl-dev-closed{
+        border-top-right-radius: 5px;
+        border-bottom-right-radius: 5px;
+    }
+    .mbl-dev-active{
+        border-top-left-radius: 5px;
+        border-bottom-left-radius: 5px;
+    }
+    .custom-nav-link.active {
+        border-radius: 0 !important;
+    }
+}
+
+/* Request Ended */
 /* Employee Information started*/
 /* Basic styles for the tabs */
 .tab-container {
@@ -1938,26 +3231,37 @@ input[type="date"]::before {
     display: flex;
     align-items: center;
     width: 100%;
+    border-radius: 40px;
 }
 
 .input-group4 input {
     font-size: 10px;
     cursor: pointer;
+
     border-radius: 5px 0 0 5px;
     width: 250px;
-    height: 30px;
+    height: 50px;
     padding: 5px;
+    border-radius: 40px;
 }
 
 .input-group-append {
+    background-color: #f8f9fa; /* Optional: Light background for the icon section */
     display: flex;
     align-items: center;
+    justify-content: center;
+    padding: 0 10px; /* Adjust padding for the icon section */
+    cursor: pointer;
 }
 
-.input-group-append button {
-    height: 30px;
-    border-radius: 0 5px 5px 0;
-    padding: 0 10px;
+.input-group-append .search-icon {
+    font-size: 16px; /* Adjust icon size */
+    color: black; /* Icon color */
+}
+
+.form-control:focus {
+    outline: none; /* Removes focus outline */
+    box-shadow: none; /* Removes focus shadow */
 }
 
 
@@ -2003,17 +3307,26 @@ input[type="date"]::before {
      height:auto;
 }
 .search-container {
+    max-height: 250px; /* Set maximum height */
+    overflow-y: auto; /* Enable vertical scrolling */
+    
+    padding: 10px; /* Optional: Add some padding */
+    cursor:pointer;
+    margin-top: 5px;
 
-    max-width: none;
-    margin-bottom: 10px;
-    cursor: pointer;
-     background-color:darkgrey;
-     padding: 5px;
-      width: 300px;
-      border-radius: 5px;
-      margin-top:5px
+    border:5px;
+    border: 1px solid #c8c8c8;
+    border-radius:5px;
+    width:300px;
+    align-items: center;
+    background-color:white; /* Optional: Set a background color */
 }
 
+.search-container:hover {
+    background-color: #e7f3ff; /* Light blue background on hover */
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow for hover effect */
+    border-color: #afd4f7; /* Light blue border on hover */
+}
 .profile-image{
     border-radius:50%;
     width: 50px;
@@ -2481,62 +3794,58 @@ input[type="date"]::before {
 /* Style for custom dropdown */
 .custom-dropdown {
     position: relative;
-    width: 150px;
+    display: inline-block;
+    width: 200px;
 }
 
 .dropdown-selected {
-    padding: 8px 12px;
-    border: 1px solid #d9dde2;
-    border-radius: 4px;
-    background-color: #fff;
-    font-size: var(--normal-font-size);
-    font-weight: 500;
-    color: var(--main-heading-color);
+    padding: 10px;
+    background-color: #f1f1f1;
     cursor: pointer;
-    transition: border-color 0.3s ease;
-    position: relative; /* For arrow positioning */
-}
-
-.dropdown-selected:hover {
-    border-color: #4a90e2; /* Border color on hover */
-}
-
-/* Arrow styles */
-.dropdown-selected::after {
-    content: "";
-    position: absolute;
-    right: 12px; /* Adjust for padding */
-    top: 50%;
-    transform: translateY(-50%);
-    border: solid transparent;
-    border-width: 5px 5px 0;
-    border-top-color: #4a4a4a; /* Arrow color */
 }
 
 .dropdown-options {
-    display: none; /* Hide options by default */
+    display: none;
     position: absolute;
     top: 100%;
     left: 0;
-    right: 0;
-    font-size: var(--normal-font-size);
-    color: var(--main-heading-color);
     background-color: #fff;
-    border: 1px solid #d9dde2;
-    border-radius: 4px;
-    z-index: 10;
+    width: 100%;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    z-index: 1;
 }
 
 .dropdown-option {
-    padding: 8px 12px;
-    font-size: var(--normal-font-size);
-    color: var(--main-heading-color);
+    padding: 10px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
 }
 
 .dropdown-option:hover {
-    background-color: #dbedf4; /* Light blue on hover */
+    background-color: #ddd;
+}
+
+.search-emp{
+    outline: none;
+    padding: 5px 10px;
+}
+.btnAnchor{
+    color: white !important;
+}
+.accordion-button .accordionTitle .spanText {
+    font-size: var(--sub-headings-font-size) !important;
+    color: var(--label-color) !important;
+    font-weight: normal !important;
+}
+.table td:nth-child(4){
+    width: 150px; /* Adjust the width to fit your design */
+    max-width: 200px;
+    white-space: nowrap; /* Prevent name from breaking into multiple lines */
+    overflow: hidden; /* Prevent text from overflowing */
+    text-overflow: ellipsis;
+}
+.accordionTitle strong {
+    color: var(--main-heading-color) !important;
+    font-weight: 600 !important;
 }
 
 /* Hover effect for the button */
@@ -2561,6 +3870,10 @@ input[type="date"]::before {
     color: var(--main-heading-color);
     background-color: #fff;
 }
+.leave-table-wrapper {
+    max-height: 100vh;
+    overflow-y: auto;
+}
 
 .leave-table {
     width: 100%;
@@ -2570,11 +3883,17 @@ input[type="date"]::before {
 .leave-table th,
 .leave-table td {
     padding: 10px;
+    color: var(--label-color);
+    font-size: var(--normal-font-size);
     text-align: left;
     border: 1px solid #a7a6a65e;
 }
 
 .leave-table th {
+    position: sticky;
+    top: 0;
+    background-color: #fff; /* To make sure the header stays visible */
+    z-index: 10;
     background-color: var(--main-table-heading-bg-color);
     font-weight: 600;
     font-size: var(--sub-headings-font-size);
@@ -2606,10 +3925,50 @@ input[type="date"]::before {
 .leave-table td button.delete-btn:hover {
     color: #b52b
 }
+.leave-table-wrapper .leave-table,
+.accordion-body .table {
+    width: 100%;
+    table-layout: fixed; /* Ensures consistent column width */
+}
+
+.leave-table-wrapper .leave-table th,
+.accordion-body .table th {
+    width: 12.5%;
+}
+
+/* Adjust width for the first two columns to be smaller */
+.leave-table-wrapper .leave-table th:nth-child(1),
+.leave-table-wrapper .leave-table th:nth-child(2),
+.accordion-body .table th:nth-child(1),
+.accordion-body .table th:nth-child(2) {
+    width: 6%; /* Set a smaller width for the first two columns */
+}
+
+/* Apply same width reduction to the table data (td) cells */
+.leave-table-wrapper .leave-table td:nth-child(1),
+.leave-table-wrapper .leave-table td:nth-child(2),
+.accordion-body .table td:nth-child(1),
+.accordion-body .table td:nth-child(2) {
+    width: 6%;
+}
+
+.accordion-body .table td {
+    width: 12.5%;
+    padding: 10px;
+}
+/* Hover effect only for the button inside the accordion header */
+.leave-table-wrapper .accordion-flush .accordion-header .accordion-button:hover {
+    background-color: #e6eaed !important;
+}
+/* Hover effect on rows inside the accordion body */
+.accordion-body .table tbody tr:hover {
+    background-color: #e6eaed !important;
+}
+
 .modal-title {
     color: #fff;
     font-weight: 600;
-    font-size: var(--home-headings-font-size);
+    font-size: 14px;
 }
 .modal-header {
     background-color: var(--main-button-color);
@@ -2675,6 +4034,47 @@ input[type="date"]::before {
 
 
 /* ///leave setting policy// */
+.employee-checkbox-container {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    width: 25%;
+    max-height: 200px;
+    overflow-y: auto;
+    background-color: white;
+    padding: 10px;
+}
+.fieldsWidth{
+    width: 50%;
+}
+.selectEmp{
+    width: 250px;
+    height: 200px;
+    margin-top: 3px;
+    overflow-y: auto;
+    border: 1px solid #ccc;
+    padding: 5px 10px;
+    border-radius: 5px;
+    box-shadow: 1px 0px 2px 2px(rgb(135, 129, 129));
+}
+
+.form-check {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+.form-check-input{
+    cursor: pointer;
+}
+.managerFilter{
+    font-size: 14px;
+    color: var(--main-heading-color);
+}
+.form-select{
+    font-size: var(--normal-font-size);
+    color: var(--label-color);
+}
+
 .leaveSettings{
     padding: 20px;
 }
@@ -2683,6 +4083,11 @@ input[type="date"]::before {
     outline: 0;
     box-shadow: none;
 }
+.accordion-button:not(.collapsed) {
+    background-color: #e6eaed !important;
+    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
+}
+
 
 .leaveGranter-container {
     width: 100%;
@@ -2717,7 +4122,6 @@ input[type="date"]::before {
     color: var(--label-color);
     margin-bottom: 0;
 }
-
 
 .accordion-button {
     font-size: 14px;
@@ -2767,4 +4171,54 @@ input[type="date"]::before {
 }
 .required{
     color: red;
+}
+
+/* end of leave policy settings */
+
+
+/* start of year end process */
+.pendingLeaveTable .table-light th{
+    background: var(--main-table-heading-bg-color);
+    color: var(--main-table-heading-text-color);
+    font-size: var(--sub-headings-font-size);
+}
+.pendingLeaveTable  td{
+    color: var(--label-color);
+    font-size: var(--normal-font-size);
+}
+.pendingLeaveTable  .trHover:hover{
+   background-color: pink !important;
+}
+.pendingLeaveTable tbody tr:nth-of-type(odd) {
+    background-color: #f6f6f6 !important; /* Light gray */
+}
+
+.pendingLeaveTable tbody tr:nth-of-type(even) {
+    background-color: #ffffff !important; /* White */
+}
+
+
+
+
+.yearEnd-accordion{
+    width: 80%;
+    padding: 10px 20px;
+}
+.accordion-button{
+    color: var(--main-heading-color);
+    font-size: var(--main-headings-font-size);
+    font-weight: 600;
+}
+.editIcon{
+    color: var(--main-heading-color);
+    font-size: var(--normal-font-size);
+    cursor: pointer;
+}
+.fa-times-circle:before{
+    color: #ccc !important;
+}
+.leaveType{
+    color: var(--main-heading-color);
+    font-size: var(--sub-headings-font-size);
+    font-weight: 500;
 }
