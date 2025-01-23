@@ -63,6 +63,7 @@
             </thead>
            
             </table>
+            @endif
             <p style="font-size: 12px; color: gray; margin-top: 20px;">
                 <strong>Note:</strong> This is an auto-generated mail. Please do not reply.
             </p>

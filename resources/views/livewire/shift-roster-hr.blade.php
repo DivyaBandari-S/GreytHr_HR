@@ -99,8 +99,8 @@
     border: 1px solid #ccc;
     background: #ebf5ff;
     padding: 0;
-    height: 210px;
-    margin: 10px;
+    height: 212px;
+    margin: 8px;
 }
  
         .summary .table tbody tr td:last-child {
@@ -187,174 +187,160 @@
         </div>
         <div class="m-0 mt-3 row">
            <div class="summary col-md-6">
-           <table class="table">
-            <thead>
-                <tr>
-                    <th style="padding:12px 10px;background:#ebf5ff;color:#778899;font-weight:500;font-size:0.825rem;white-space:nowrap;">
-                        Employee No</th>
-                    <th style="padding:12px 10px;background:#ebf5ff;color:#778899;font-weight:500;font-size:0.8255rem;white-space:nowrap;">
-                    Employee Name</th>
-                    <th style="padding:12px 10px;background:#ebf5ff;color:#778899;font-weight:500;font-size:0.8255rem;">
-                    Working Days</th>
-                    <th style="padding:12px 10px;background:#ebf5ff;color:#778899;font-weight:500;font-size:0.8255rem;">
-                    OFF</th>
+               <table class="table">
+                   <thead>
+                     <tr>
+                            <th style="padding:12px 10px;background:#ebf5ff;color:#778899;font-weight:500;font-size:0.825rem;white-space:nowrap;">
+                                Employee No</th>
+                            <th style="padding:12px 10px;background:#ebf5ff;color:#778899;font-weight:500;font-size:0.8255rem;white-space:nowrap;">
+                            Employee Name</th>
+                            <th style="padding:12px 10px;background:#ebf5ff;color:#778899;font-weight:500;font-size:0.8255rem;">
+                            Working Days</th>
+                            <th style="padding:12px 10px;background:#ebf5ff;color:#778899;font-weight:500;font-size:0.8255rem;">
+                            OFF</th>
                     <!-- Add more headers as needed -->
-                </tr>
-            </thead>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @foreach ($employees as $emp)
+                            <tr>
+                                <td style="padding:5px 5px;font-size:12px;text-align:center;padding-right:25px;">{{$emp->emp_id}}</td>
+                                <td style="padding:5px 5px;max-width: 10px;font-weight:400; overflow: hidden;text-align:center;padding-right:25px; text-overflow: ellipsis; white-space: nowrap;font-size:12px;"data-toggle="tooltip"
+                                data-placement="top" title="{{ ucwords(strtolower($emp->first_name)) }} {{ ucwords(strtolower($emp->last_name)) }}">
+                                {{ucwords(strtolower($emp->first_name))}}&nbsp;{{ucwords(strtolower($emp->last_name))}}<br /><span class="text-muted" style="font-size:11px;"data-toggle="tooltip"
+                                data-placement="top" title="{{$emp->job_role}},{{$emp->job_location}}">{{$emp->job_role,}},{{$emp->job_location}}
 
-            <tbody>
-                <!-- Add table rows and data for Summary -->
-
-
-                
-
-
-
-               @foreach ($employees as $emp)
-                <tr>
-                    <td style="padding:5px 5px;font-size:12px;text-align:center;padding-right:25px;">{{$emp->emp_id}}</td>
-                    <td style="padding:5px 5px;max-width: 10px;font-weight:400; overflow: hidden;text-align:center;padding-right:25px; text-overflow: ellipsis; white-space: nowrap;font-size:12px;"data-toggle="tooltip"
-                    data-placement="top" title="{{ ucwords(strtolower($emp->first_name)) }} {{ ucwords(strtolower($emp->last_name)) }}">
-                    {{ucwords(strtolower($emp->first_name))}}&nbsp;{{ucwords(strtolower($emp->last_name))}}<br /><span class="text-muted" style="font-size:11px;"data-toggle="tooltip"
-                    data-placement="top" title="{{$emp->job_role}},{{$emp->job_location}}">{{$emp->job_role,}},{{$emp->job_location}}
-
-                        </span>
-                    </td>
+                                    </span>
+                                </td>
 
 
 
 
-                    @php
-                      
-                       $dateCount=0;
-                    @endphp
-                    @for ($i = 1; $i <= $daysInMonth; $i++) 
-                          @php 
-                             $timestamp=mktime(0, 0, 0, $selectedMonth, $i, $currentYear); 
-                             $dayName=date('D', $timestamp); // Get the abbreviated day name (e.g., Sun, Mon) 
-                             $fullDate=date('Y-m-d', $timestamp); // Full date in 'YYYY-MM-DD' format 
-                          @endphp 
-                          @if($dayName==='Sat' || $dayName==='Sun' ) 
+                                @php
+                                
+                                $dateCount=0;
+                                @endphp
+                                @for ($i = 1; $i <= $daysInMonth; $i++) 
+                                    @php 
+                                        $timestamp=mktime(0, 0, 0, $selectedMonth, $i, $currentYear); 
+                                        $dayName=date('D', $timestamp); // Get the abbreviated day name (e.g., Sun, Mon) 
+                                        $fullDate=date('Y-m-d', $timestamp); // Full date in 'YYYY-MM-DD' format 
+                                    @endphp 
+                                    @if($dayName==='Sat' || $dayName==='Sun' ) 
+                                            @php 
+                                            $dateCount+=1; 
+                                            @endphp 
+                                    @endif 
+                                @endfor 
+                                    
                                 @php 
-                                   $dateCount+=1; 
-                                @endphp 
-                          @endif 
-                    @endfor 
-                          
-                    @php 
-                        $noofregulardays=$daysInMonth-$dateCount-$count_of_holiday 
-                    @endphp
-                    <td style="padding:5px 5px;font-size:12px;text-align:center;padding-right:15px;">{{$noofregulardays}}</td>
-                    
-                    <td style="padding:5px 5px;font-size:12px;text-align:center;">{{$dateCount}}</td>
-                </tr>
-                @endforeach
+                                    $noofregulardays=$daysInMonth-$dateCount-$count_of_holiday 
+                                @endphp
+                                <td style="padding:5px 5px;font-size:12px;text-align:center;padding-right:15px;">{{$noofregulardays}}</td>
+                                
+                                <td style="padding:5px 5px;font-size:12px;text-align:center;">{{$dateCount}}</td>
+                            </tr>
+                    @endforeach
+                  </tbody>
 
-                
-
-                <!-- Add more rows as needed -->
-            </tbody>
-
-        </table>
+             </table>
            </div>
            <div class="Attendance col-md-9">
-
-
-<table class="table">
+              <table class="table">
    
 
-    <thead>
-        <tr>
+                <thead>
+                    <tr>
 
-            @for ($i = 1; $i <= $daysInMonth; $i++) 
-                  @php 
-                     $timestamp=mktime(0, 0, 0, $selectedMonth, $i, $currentYear); 
-                     $dayName=date('D', $timestamp); // Get the abbreviated day name (e.g., Sun, Mon) 
-                     $fullDate=date('Y-m-d', $timestamp); // Full date in 'YYYY-MM-DD' format 
-                  @endphp 
-                <th style="padding: 8px 10px;background:#ebf5ff; color:#778899; font-weight:500; text-align:center;">
-                <div style="font-size:0.825rem;line-height:0.8;font-weight:500;">
-                    {{ str_pad($i, 2, '0', STR_PAD_LEFT) }}
-                </div>
-                <div style="margin-top:-5px; font-size:0.625rem;margin-top:1px;">{{ $dayName }}</div>
-                </th>
+                        @for ($i = 1; $i <= $daysInMonth; $i++) 
+                                @php 
+                                    $timestamp=mktime(0, 0, 0, $selectedMonth, $i, $currentYear); 
+                                    $dayName=date('D', $timestamp); // Get the abbreviated day name (e.g., Sun, Mon) 
+                                    $fullDate=date('Y-m-d', $timestamp); // Full date in 'YYYY-MM-DD' format 
+                                @endphp 
+                            <th style="padding: 8px 10px;background:#ebf5ff; color:#778899; font-weight:500; text-align:center;">
+                            <div style="font-size:0.825rem;line-height:0.8;font-weight:500;">
+                                {{ str_pad($i, 2, '0', STR_PAD_LEFT) }}
+                            </div>
+                            <div style="margin-top:-5px; font-size:0.625rem;margin-top:1px;">{{ $dayName }}</div>
+                            </th>
 
-            @endfor
-        </tr>
-    </thead>
+                        @endfor
+                    </tr>
+                </thead>
 
-    <tbody>
-        <!-- Add table rows and data for Attendance -->
+                <tbody>
+                    <!-- Add table rows and data for Attendance -->
 
-        
+                    
 
 
-       @foreach($employees as $emp)
-        <tr style="background-color:#fff;">
-            @if($emp->employee_status=='active')
-                @for ($i = 1; $i <= $daysInMonth; $i++)
+                    @foreach($employees as $emp)
+                    <tr style="background-color:#fff;height:49px;">
+                        @if($emp->employee_status=='active')
+                            @for ($i = 1; $i <= $daysInMonth; $i++)
+                            
+                                    @php
+                                        $timestamp=mktime(0, 0, 0, $selectedMonth, $i, $currentYear);
+                                        $dayName=date('D', $timestamp); // Get the abbreviated day name (e.g., Sun, Mon)
+                                        $fullDate=date('Y-m-d', $timestamp); // Full date in 'YYYY-MM-DD' format
+                                    @endphp
+                                
+                                    <td style="padding:2px 5px;background-color: {{ in_array($dayName, ['Sat', 'Sun']) ? '#f2f2f2' : '#fff' }};">
+                                        @foreach($holiday as $h)
+
+                                                    @if($h->date==$fullDate)
+
+                                                        @php
+                                                            $isHoliday=1;
+                                                            break;
+                                                        @endphp
+                                                    @endif
+
+                                            @endforeach
+
+
+
+
+
+                            @if ($dayName === 'Sat' || $dayName === 'Sun')
+                            <p style="font-weight:500;padding:3px;font-size:12px;"data-toggle="tooltip"
+                            data-placement="top" title="Off Day">O</p>
                 
-                        @php
-                            $timestamp=mktime(0, 0, 0, $selectedMonth, $i, $currentYear);
-                            $dayName=date('D', $timestamp); // Get the abbreviated day name (e.g., Sun, Mon)
-                            $fullDate=date('Y-m-d', $timestamp); // Full date in 'YYYY-MM-DD' format
-                        @endphp
-                  
-                        <td style="padding:2px 5px;background-color: {{ in_array($dayName, ['Sat', 'Sun']) ? '#f2f2f2' : '#fff' }};">
-                            @foreach($holiday as $h)
+                            @elseif($isHoliday==1)
+                                    <p style="font-weight:500;padding:3px;font-size:12px;text-align:start;"data-toggle="tooltip"
+                                    data-placement="top" title="Holiday">H</p>
 
-                                        @if($h->date==$fullDate)
+                            
+                            @else
 
-                                            @php
-                                                $isHoliday=1;
-                                                break;
-                                            @endphp
-                                        @endif
+                                <p style="font-weight:500;padding:4px;font-size:12px;"data-toggle="tooltip"
+                                data-placement="top" title="General Shift">{{$emp->shift_name}}</p>
+                            @endif
 
-                                @endforeach
+                            </td>
 
 
+                            
+                            
 
+                                    @php
+                                        $isHoliday=0;
 
+                                    @endphp
+                            @endfor
+                            @else
+                                <td colspan="35"style="padding:11px;text-align:center;color:#f66;background-color:#fcf0f0;">Shift Details Not Available</td>
 
-                @if ($dayName === 'Sat' || $dayName === 'Sun')
-                <p style="font-weight:500;padding:3px;font-size:12px;"data-toggle="tooltip"
-                data-placement="top" title="Off Day">O</p>
-  
-                @elseif($isHoliday==1)
-                        <p style="font-weight:500;padding:3px;font-size:12px;text-align:start;"data-toggle="tooltip"
-                        data-placement="top" title="Holiday">H</p>
+                            @endif
+                        
+                    </tr>
+                    @endforeach
 
-                
-                @else
+                    
 
-                    <p style="font-weight:500;padding:4px;font-size:12px;"data-toggle="tooltip"
-                    data-placement="top" title="General Shift">GS</p>
-                @endif
-
-                </td>
-
-
-                
-                
-
-                       @php
-                          $isHoliday=0;
-
-                        @endphp
-                @endfor
-                @else
-                   <td colspan="35"style="padding:11px;text-align:center;color:#f66;background-color:#fcf0f0;">Shift Details Not Available</td>
-
-                @endif
-           
-        </tr>
-        @endforeach
-
-        
-
-    </tbody>
-</table>
-</div>
+                </tbody>
+            </table>
         </div>
+    </div>
 </div>

@@ -2,26 +2,7 @@
 
 
     <style>
-         .attendance-overview-help {
-                position: relative;
-                width: 95%; /* Set your desired width */
-                height: auto; /* Set your desired height */
-                border-radius: 5px; /* Set your desired border-radius */
-                border: 1px solid #ccc; /* Add border if needed */
-                padding: 10px; /* Add padding if needed */
-                margin: 20px 10px; /* Add margin if needed */
-                background-color: #f3faff; /* Set background color if needed */
-                font-size: 12px;
-            }
-            .hide-attendance-help {
-                margin-top:40px;
-                position: absolute;
-                bottom: 95px;
-                right: 10px;
-                color: #0000FF;
-                font-weight:500;
-                cursor: pointer;
-            }
+         
             .dropdown-right
             {
                 float: right;
@@ -331,6 +312,15 @@ select {
     display: inline-block;
     width: fit-content;
 }
+.summary
+{
+    margin-top: 12px;
+}
+.Attendance
+{
+    margin-top: 12px;
+    flex:1;
+}
 
     </style>
     @php
@@ -423,7 +413,7 @@ select {
                 
               
                 
-                <tr style="border-right: 1px solid #ddd;">
+                <tr style="border-right: 1px solid #ddd;height:30px;margin-top:20px;">
 
                     <td  style="max-width: 200px;font-weight:400; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
                         {{ucwords(strtolower($emp->first_name))}}&nbsp;{{ucwords(strtolower($emp->last_name))}}<span class="text-muted">(#{{$emp->emp_id}})</span><br /><span class="text-muted" style="font-size:11px;">{{$emp->job_role}},{{$emp->job_location}}</span>
@@ -502,7 +492,7 @@ select {
                 $currentYear = $selectedYear;
                 @endphp
                 @foreach($employees as $emp)
-                <tr style="height:55px;;background-color:#fff;">
+                <tr style="height:57px;;background-color:#fff;">
                     @php
                     // Get the current day of the month
                     $currentYear =$selectedYear;
