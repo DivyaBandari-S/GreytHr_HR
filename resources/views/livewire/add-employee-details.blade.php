@@ -334,17 +334,18 @@
 
                                 <div class="form-group col-md-6">
                                     <label class="mt-1" for="manager_id">Reporting To <span class="text-danger ">*</span></label>
-                                    <select wire:change="fetchReportTo" class="form-control onboardinputs custom-select placeholder-small m-0" wire:model="manager_id" style="margin-bottom: 10px;">
-                                        <option value="">Select manager</option>
-                                        <!-- Add a default option -->
-                                        @if ($managerIds != null)
-                                        @foreach ($managerIds as $id)
-                                        <option value="{{ $id->emp_id }}">{{ucwords(strtolower( $id->first_name)) }} {{ ucwords(strtolower($id->last_name)) }}</option>
-                                        @endforeach
-                                        @else
-                                        <option value="">select from list</option>
-                                        @endif
-                                    </select>
+                                    <div class="d-flex" style="gap:5px">
+                                        <select wire:change="fetchReportTo" class="form-control onboardinputs custom-select placeholder-small m-0" wire:model="manager_id" style="margin-bottom: 10px; width:60%">
+                                            <option value="">Select manager</option>
+                                            <!-- Add a default option -->
+                                            @if ($managerIds)
+                                            @foreach ($managerIds as $id)
+                                            <option value="{{ $id->emp_id }}">{{ucwords(strtolower( $id->first_name)) }} {{ ucwords(strtolower($id->last_name)) }}</option>
+                                            @endforeach
+                                            @endif
+                                        </select>
+                                        <button type="button" wire:click='openEMployeeListModel' style="background-color: #306cc6; font-weight:400;padding:0px 6px;font-size: 13px !important;border-radius: 5px;color:#f2f2f2;border:none">Add Manager</button>
+                                    </div>
                                     @error('manager_id')
                                     <span class="text-danger onboard-Valid">{{ $message }}</span>
                                     @enderror
@@ -1448,6 +1449,47 @@
                 </div>
                 <div class="modal-footer justify-content-center">
                     <a href="/hr/update-employee-details"> <button type="button" class="ilynn-btn" data-bs-dismiss="modal" wire:click="closeModal">Close</button></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-backdrop fade show"></div>
+    @endif
+    @if($employeeListModal)
+    <div class="modal show d-block " tabindex="-1" role="dialog" style="display: block; ">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="">
+                <div class="modal-header alert alert-success m-0">
+                    <!-- <h5 class="modal-title ">Success</h5> -->
+                    <h5 class="modal-title ">Select Reporting Manager</h5>
+                    <a style="margin-left: auto;"><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" wire:click="closeEmployeeList"></button></a>
+                </div>
+                <div class="modal-body d-flex" style=" flex-direction:column;align-items:center ;max-height:350px;overflow-y: auto;">
+                    <div>
+                        <h6 for="manager_id">Employee List :</h6>
+                        <!-- <input type="text" wire:model="searchedEmployee" wire:input="searchEmployees" placeholder="Search"> -->
+                        <input wire:input="searchEmployees" wire:model="searchedEmployee" type="text" placeholder="Search by Name / Emp ID" class="search-input form-control" style="border-radius: 5px;padding: 3px 5px;border: 1px solid #ccc;outline:none;height:30px;">
+                        @foreach ($employeeList as $employee)
+                        <div class="form-check mt-2">
+                            <input
+                                class="form-check-input"
+                                type="radio"
+                                name="manager_id"
+                                id="emp_{{ $employee->emp_id }}"
+                                value="{{ $employee->emp_id }}"
+                                wire:model="selectedManager">
+
+                            <label class="form-check-label" for="emp_{{ $employee->emp_id }}">
+                                {{ ucwords(strtolower($employee->first_name)) }} {{ ucwords(strtolower($employee->last_name)) }}
+                            </label>
+                        </div>
+                        @endforeach
+                    </div>
+
+
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <a> <button type="button" class="ilynn-btn" data-bs-dismiss="modal" wire:click="SelectReportingTo">Continue</button></a>
                 </div>
             </div>
         </div>
