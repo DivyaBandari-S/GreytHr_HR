@@ -130,7 +130,6 @@
                             <li><a href="/user">Process Attendance</a></li>
                             <li><a href="/home">Attendance Period Finalisation</a></li>
                             <li><a href="/user">Attendance Exception</a></li>
-                            <li><a href="/user">Assign Attendnace Scheme</a></li>
                             <li><a href="/user">Lock Configuartion</a></li>
                             <li><a href="/user">Manual Override</a></li>
                             <li><a href="/user">Shift Override</a></li>
