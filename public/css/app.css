@@ -18,7 +18,7 @@ body {
     --sub-heading-color: #778899
         /* use sub heading along with font-weight-500 */;
     --normal-font-size: 0.75rem;
-    --sub-headings-font-size: 0.8rem;
+    --sub-headings-font-size: 0.875rem;
     --main-headings-font-size: 1rem;
     --main-table-heading-bg-color: #d4e6f4;
     --main-table-heading-text-color:#4c4e4f ;
@@ -3836,13 +3836,7 @@ td {
     color: var(--label-color) !important;
     font-weight: normal !important;
 }
-.table td:nth-child(4){
-    width: 150px; /* Adjust the width to fit your design */
-    max-width: 200px;
-    white-space: nowrap; /* Prevent name from breaking into multiple lines */
-    overflow: hidden; /* Prevent text from overflowing */
-    text-overflow: ellipsis;
-}
+
 .accordionTitle strong {
     color: var(--main-heading-color) !important;
     font-weight: 600 !important;
@@ -4222,3 +4216,493 @@ td {
     font-size: var(--sub-headings-font-size);
     font-weight: 500;
 }
+
+
+
+/* leave calendar */
+.container-leave {
+    padding: 0;
+    margin: 0;
+}
+
+.filterDropdown {
+    font-size: var(--normal-font-size);
+    color: var(--main-heading-color);
+    padding: 5px;
+    cursor: pointer;
+    outline: none;
+}
+
+.filterDropdown .option {
+    cursor: pointer;
+}
+
+.nav-btn {
+    background: none;
+    border: none;
+    color: var(--label-color);
+    font-size: 0.795rem;
+    margin-top: -6px;
+    cursor: pointer;
+}
+
+.nav-btn:hover {
+    color: blue;
+}
+
+.current-date {
+    background-color: #ff0000;
+    color: #fff;
+    font-weight: bold;
+}
+
+.calendar-heading-container {
+    background: #fff;
+    padding: 10px 10px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.calendar-heading-container h5 {
+    font-size: 0.975rem;
+    color: black;
+    font-weight: 500;
+}
+
+.table {
+    overflow-x: hidden;
+}
+
+.tol-calendar-legend {
+    display: flex;
+    font-size: 0.875rem;
+    width: 100%;
+    justify-content: space-between;
+    font-weight: 500;
+    color: var(--label-color);
+}
+
+/* CSS for legend circles */
+.legend-circle {
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 15px;
+    margin-right: 2px;
+    font-weight: bold;
+    color: white;
+}
+
+.circle-pale-yellow {
+    background-color: #ffeb3b;
+    vertical-align: middle;
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+
+.isToday {
+    background-color: var(--main-button-color);
+    color: white;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    text-align: center;
+    line-height: 24px;
+}
+
+.circle-pale-pink {
+    background-color: #d29be1;
+    vertical-align: middle;
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+
+.active .leave-container {
+    border-color: #3a9efd;
+}
+
+.filter-button {
+    padding: 3px;
+    margin-bottom: 15px;
+    background-color: #fff;
+    color: var(--label-color);
+    font-size: 0.825rem;
+    width: 150px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.filter-button:hover {
+    border: 1px solid #007bff;
+}
+.normalText {
+    color: var(--main-heading-color);
+    font-weight: 500;
+    font-size: var(--normal-font-size);
+
+}
+.normalTextSubheading {
+    color: var(--main-heading-color);
+    font-weight: 500;
+    font-size: var(--sub-headings-font-size);
+}
+.button-container {
+    display: flex;
+    padding: 10px 15px;
+    justify-content: space-between;
+}
+
+/* .custom-button-leave {
+    padding: 2px;
+    margin-bottom: 15px;
+    background-color: #3eb0f7;
+    color: #fff;
+    width: 100px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+} */
+
+.search-input-leave input[type="text"] {
+    padding: 3px;
+    outline: none;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    color: var(--label-color);
+    width: 220px;
+}
+
+.search-icon {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    color: var(--label-color);
+    transform: translateY(-50%);
+    cursor: pointer;
+}
+
+.search-icon::before {
+    font-size: 16px;
+}
+
+.filter-container1 {
+    display: flex;
+    background: #fff;
+    align-items: center;
+    height: 31px;
+    width: 30px;
+    border-radius: 5px;
+    padding: 5px;
+    border: 1px solid #ccc;
+}
+
+.filter-group {
+    display: flex;
+    align-items: center;
+}
+
+.calendar-date {
+    color: black;
+    cursor: pointer;
+    justify-content: center;
+}
+
+.event-details {
+    display: flex;
+    width: 100%;
+    background: pink;
+    justify-content: end;
+    flex-direction: row;
+    padding: 0px;
+}
+
+.date-day {
+    width: 40%;
+    display: flex;
+    text-align: center;
+    color: var(--label-color);
+    padding: 10px 15px;
+    justify-content: center;
+    border: 1px solid #ccc;
+    background: #fff;
+}
+
+.holiday-con {
+    display: flex;
+    text-align: start;
+    justify-content: start;
+    align-items: center;
+    width: 100%;
+    list-style: none;
+    padding: 10px 15px;
+    border: 1px solid #ccc;
+    background: #fff;
+}
+
+.circle-holiday {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    /* Make the element circular */
+    position: absolute;
+    /* Position the circle absolutely */
+    top: 12px;
+    /* Adjust top and right values for positioning */
+    right: 10px;
+    text-align: center;
+    line-height: 20px;
+}
+
+.IRIS {
+    background-color: #d29be1;
+}
+
+.circle-greys {
+    width: 70px;
+    height: 30px;
+    color: #3d3c3c;
+    position: absolute;
+    background-color: var(--main-button-color);
+    top: 75%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    
+    /* Flexbox centering of the content inside */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 15px; /* Adjust this if you want a rounded effect */
+}
+
+.circle-greys span {
+    color: white;
+    font-size: 14px; /* Adjust the font size as needed */
+}
+
+.active-date {
+    background-color: #ecf7fe;
+    cursor: pointer;
+    border-color: 1px solid blue;
+}
+
+.sidebar-cal {
+    height: 100%;
+    width: 0;
+    position: fixed;
+    border-radius: 5px;
+    z-index: 1;
+    top: 0;
+    right: 0;
+    background-color: #fff;
+    overflow-x: hidden;
+    transition: width 0.5s;
+}
+
+.sidebar-cal a {
+    padding: 8px 8px 8px 32px;
+    text-decoration: none;
+    font-size: 25px;
+    color: #818181;
+    display: block;
+    transition: 0.3s;
+}
+
+.sidebar-cal a:hover {
+    color: #f1f1f1;
+}
+
+.sidebar-cal .closebtn {
+    position: absolute;
+    left: 25px;
+    /* Adjust the close button position */
+    font-size: 36px;
+    margin-left: 150px;
+}
+
+.openbtn {
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    background-color: #fff;
+    border: none;
+    width: 20px;
+    z-index: 2;
+    right: 10px;
+    top: 10px;
+}
+
+.filter-container1:hover {
+    background-color: #f6faff;
+}
+
+.openbtn:hover {
+    background-color: #f6faff;
+}
+.loc-dropdown {
+    width: 100%;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    text-align: center;
+    background: #fff;
+    padding: 5px;
+    border-radius: 5px;
+}
+
+.loc-dropdown p {
+    font-size: 0.825rem;
+    font-weight: 500;
+    color: var(--label-color);
+    margin-bottom: 0;
+}
+
+.btn-2 {
+    background: rgb(2, 17, 79);
+    color: #fff;
+    font-size: 0.825rem;
+    padding: 3px 10px;
+    border-radius: 5px;
+    border: none;
+}
+
+.btn-3 {
+    color: var(--label-color);
+    padding: 3px 10px;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.btn-3:hover {
+    background: #ebf5ff;
+}
+
+.breadcrumb-item a:hover {
+    color: rgb(2, 17, 79);
+    text-decoration: none;
+}
+
+.breadcrumb {
+    text-decoration: none;
+    font-size: var(--sub-headings-font-size);
+    color: var(--main-heading-color) !important;
+}
+
+.scroll-table {
+    overflow-y: auto;
+    max-height: 320px;
+    min-height: 320px;
+    background-color: #fff;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    padding: 0;
+}
+
+.leave-table {
+    width: 100%;
+    border-collapse: collapse;
+    overflow: auto;
+}
+
+.leave-table thead {
+    background-color: #ecf7fc;
+    text-align: start;
+    width: 100%;
+}
+
+.leave-table th {
+    padding: 7px 5px;
+    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+    color: #778899;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.leave-table th.employee-id {
+    width: 30%;
+}
+
+.leave-table th.num-days {
+    width: 30%;
+}
+
+.leave-table th.from-to {
+    width: 40%;
+}
+
+.leave-table td {
+    padding: 10px 5px;
+    border-top: 1px solid #ccc;
+    font-size: 12px;
+    text-align: start;
+}
+
+.leave-table td.employee-info {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 150px;
+    width: 30%;
+}
+
+.leave-table td.num-days {
+    font-weight: 500;
+    width: 30%;
+    text-align: center;
+}
+
+.leave-table td.date-range {
+    width: 40%;
+}
+
+.leave-table td.date-range span {
+    color: black;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.leave-table td.date-range .session-info {
+    font-size: 10px;
+    color: #778899;
+}
+
+.no-data {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.no-data img {
+    margin: 0 auto;
+}
+
+.no-data span {
+    font-size: 14px;
+    color: #778899;
+}
+
+.btn-1 {
+    color: rgb(2, 17, 79);
+    padding: 3px 10px;
+    background: #fff;
+    font-size: 0.825rem;
+    border: 1px solid rgb(2, 17, 79);
+    border-radius: 5px;
+}
+
+::placeholder {
+    font-size: var(--normal-font-size);
+    /* Adjust the font size as needed */
+    color: var(--label-color);
+}
+
+/* end of leave calendar */

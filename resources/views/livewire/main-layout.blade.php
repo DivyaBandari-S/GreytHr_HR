@@ -102,7 +102,7 @@
                         <ul class="sidebar__dropdown-menu">
                             <li><a href="/hr/user/leave-overview">Leave Overview</a></li>
                             <li><a href="/hr/user/hr-attendance-overview">Attendance Overview</a></li>
-                            <li><a href="/hr/user/hremployeedirectory">Leave Calendar</a></li>
+                            <li><a href="/hr/user/leave-calendar">Leave Calendar</a></li>
                             <li><a href="/hr/user/who-is-in-chart-hr">Who is in?</a></li>
                         </ul>
                     </li>
