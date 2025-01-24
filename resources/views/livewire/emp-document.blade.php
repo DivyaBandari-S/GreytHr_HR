@@ -170,7 +170,7 @@
 
 
 </style>
-<div class="row" style="margin-top:-20px;margin-left:2px">
+<div class="row" style="margin-top:-20px;">
 <ul class="nav custom-nav-tabs" role="tablist" >
     <li class="nav-item" role="presentation">
         <a class="nav-link active custom-nav-link" id="simple-tab-0" data-bs-toggle="tab" href="#simple-tabpanel-0" role="tab" aria-controls="simple-tabpanel-0" aria-selected="true">Main</a>
@@ -429,7 +429,7 @@
                                         </div>
 
                                         <!-- Second Dropdown -->
-                                        <div class="col-12 col-md-2 mb-2">
+                                        <div class="col-12 col-md-2 mb-2" >
                                             <select class="custom-select-doc" name="view" wire:model="filter_publishtype" wire:change="publishType">
                                                 <option value="All" selected>All</option>
                                                 <option value="Published">Published</option>
@@ -538,58 +538,64 @@
 
                             <!-- Document Cards -->
                             @if ($documents && $documents->isNotEmpty())
-                                @foreach ($documents as $document)
-                                    <div class="document-card col-12 col-md-6 col-lg-4 mb-3">
-                                        <div class="card-header">
-                                            <img src="{{ asset('images/emp-document.png') }}" style="height:40px;width:40px;">
-                                            <div class="col">
-                                                <div class="row">
-                                                    <p style="margin-bottom: 5px;">{{ $document->document_name }}</p>
-                                                    <p class="main-text" style="margin-top: -5px;">{{ $document->description }}</p>
-                                                    <p class="main-text" style="margin-top: -15px;">{{ $document->category }}</p>
-                                                    <p class="main-text" style="margin-top: -15px;">{{ $document->created_at ? $document->created_at->format('d-m-y h:i A') : 'N/A' }}</p>
-                                                </div>
-                                            </div>
-                                            <button class="{{ $document->publish_to_portal === null ? 'status-unpublished' : 'status-published' }}">
-                                                {{ $document->publish_to_portal === null ? 'Unpublished' : 'Published' }}
-                                            </button>
-                                        </div>
+    @foreach ($documents as $document)
+        <div class="document-card col-12 col-md-6 col-lg-4 mb-3" 
+        
+        >
+            <div class="card-header" style="border-bottom:none">
+                <img src="{{ asset('images/emp-document.png') }}" style="height:40px;width:40px;">
+                <div class="col">
+                    <div class="row">
+                        <p style="margin-bottom: 5px;">{{ $document->document_name }}</p>
+                        <p class="main-text" style="margin-top: -5px;">{{ $document->description }}</p>
+                        <p class="main-text" style="margin-top: -15px;">{{ $document->category }}</p>
+                        <p class="main-text" style="margin-top: -15px;">{{ $document->created_at ? $document->created_at->format('d-m-y h:i A') : 'N/A' }}</p>
+                    </div>
+                </div>
+                <button class="{{ $document->publish_to_portal === null ? 'status-unpublished' : 'status-published' }}">
+                    {{ $document->publish_to_portal === null ? 'Unpublished' : 'Published' }}
+                </button>
+            </div>
 
-                                        <div class="card-footer">
-                                            <div class="footer-left">
-                                                @if ($document->file_path)
-                                                    @if(strpos($document->mime_type, 'image') !== false)
-                                                        <span class="date-time">{{ $document->file_name ?? 'No file name available' }}
-                                                            <i class="bx bx-download" style="font-size: 1.2em; color: blue;margin-left:5px;margin-top:10px;cursor:pointer" wire:click.prevent="showImage('{{ $document->getImageUrlAttribute() }}')"></i>
-                                                        </span>
-                                                    @endif
-                                                @endif
-                                            </div>
-                                            <div class="footer-right">
-                                                @if ($showImageDialog)
-                                                    <div class="modal fade show d-block" tabindex="-1" role="dialog">
-                                                        <div class="modal-dialog modal-dialog-centered" role="document">
-                                                            <div class="modal-content">
-                                                                <div class="modal-header">
-                                                                    <h5 class="modal-title">View File</h5>
-                                                                </div>
-                                                                <div class="modal-body text-center">
-                                                                    <img src="{{ $imageUrl }}" class="img-fluid" alt="Image preview" style="width:50%;height:50%">
-                                                                </div>
-                                                                <div class="modal-footer">
-                                                                    <button type="button" class="submit-btn" wire:click.prevent="downloadImage">Download</button>
-                                                                    <button type="button" class="cancel-btn" wire:click="closeImageDialog">Close</button>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="modal-backdrop fade show"></div>
-                                                @endif
-                                            </div>
-                                        </div>
+          
+                    @if ($document->file_path)
+                        @if(strpos($document->mime_type, 'image') !== false)
+                        <div class="card-footer" style="border-top:1px solid #ccc;margin-top:-10px">
+                        <div class="footer-left">
+                            <span class="date-time">{{ $document->file_name ?? 'No file name available' }}
+                                <i class="bx bx-download" style="font-size: 1.2em; color: blue;margin-left:5px;margin-top:5px;cursor:pointer" wire:click.prevent="showImage('{{ $document->getImageUrlAttribute() }}')"></i>
+                            </span>
+                            </div>
+                            <div class="footer-right">
+                    @if ($showImageDialog)
+                        <div class="modal fade show d-block" tabindex="-1" role="dialog">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">View File</h5>
                                     </div>
-                                @endforeach
-                            @else
+                                    <div class="modal-body text-center">
+                                        <img src="{{ $imageUrl }}" class="img-fluid" alt="Image preview" style="width:50%;height:50%">
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="submit-btn" wire:click.prevent="downloadImage">Download</button>
+                                        <button type="button" class="cancel-btn" wire:click="closeImageDialog">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-backdrop fade show"></div>
+                    @endif
+                </div>
+                </div>
+                        @endif
+                    @endif
+         
+             
+          
+        </div>
+    @endforeach
+@else
                                 <div class="alert alert-info d-flex align-items-center mt-5" role="alert" style="width:60%">
                                     <p class="main-text mb-0">There are no documents available!</p>
                                 </div>
@@ -610,7 +616,7 @@
             @if($employeeRequests->isNotEmpty())
                 @foreach($employeeRequests as $request)
                 <div class="document-card col-12 col-md-6 col-lg-4 ">
-                                        <div class="card-header">
+                                        <div class="card-header" style="border-bottom:none">
                                             <img src="{{ asset('images/emp-document.png') }}" style="height:40px;width:40px;">
                                            
                                             <div class="col">
