@@ -43,9 +43,11 @@ use App\Livewire\ShiftOverrideHr;
 use App\Livewire\ShiftRosterHr;
 use App\Livewire\ShiftRotationCalendar;
 use App\Livewire\SwipeManagementForHr;
+use App\Livewire\Tasks;
 use App\Livewire\WhoIsInChartHr;
 use App\Livewire\YearEndProcess;
 use App\Models\EmpResignations;
+use App\Models\Task;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Response;
 
@@ -90,7 +92,16 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
         Route::get('/resig-requests', Resignationrequests::class)->name('resig-requests');
 
 
-
+        Route::get('/user/tasks', Tasks::class)->name('tasks');
+        Route::get('/taskfile/{id}', function ($id) {
+            $file = Task::findOrFail($id);
+        
+            return Response::make($file->file_path, 200, [
+                'Content-Type' => $file->mime_type,
+                'Content-Disposition' => (strpos($file->mime_type, 'image') === false ? 'attachment' : 'inline') . '; filename="' . $file->file_name . '"',
+            ]);
+        })->name('files.showTask');
+        
         //HR Employee-Main Submodule Routes
         Route::get('/user/main-overview', HrMainOverview::class)->name('main-overview');
         Route::get('/user/analytics-hub', AnalyticsHub::class)->name('analytics-hub');
