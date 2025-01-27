@@ -202,7 +202,7 @@
 }
 
     </style>
-<div class="row" style="margin-top:-20px;margin-left:2px">
+<div class="row" style="margin-top:-20px;">
 <ul class="nav custom-nav-tabs" role="tablist" >
     <li class="nav-item" role="presentation">
         <a class="nav-link active custom-nav-link" id="simple-tab-0" data-bs-toggle="tab" href="#simple-tabpanel-0" role="tab" aria-controls="simple-tabpanel-0" aria-selected="true">Main</a>
@@ -215,7 +215,7 @@
 
 <div class="tab-content pt-5" id="tab-content">
   <div class="tab-pane active" id="simple-tabpanel-0" role="tabpanel" aria-labelledby="simple-tab-0" style="overflow-x: hidden;">
-    <div class="row justify-content-center"  >
+    <div class="row justify-content-center align-items-center"  >
                         <div class="col-md-9 custom-container d-flex flex-column">
                         <div class="d-flex align-items-center mb-2">
     <p class="main-text mb-0" style="width:88%">
@@ -241,7 +241,7 @@
                     </div>
                  
 
-                <div class="row justify-content-center mt-2 "  >
+                <div class="row justify-content-center align-items-center mt-2 "  >
                 <div class="col-md-9 custom-container d-flex flex-column bg-white" >
     <div class="row justify-content-center mt-3 flex-column m-0 employee-details-main" >
         <div class="col-md-9">
@@ -399,97 +399,21 @@
         </div>
     </div>
         
- 
-    @if(!empty($selectedEmployeeId))
-    <div class="row mt-3 p-0 justify-content-center" style="margin-left:110px">
-    <div class="filter-container">
-    <!-- Status Dropdown -->
-    <div class="asset-dropdown">
-        <a class="asset-dropdown-toggle" data-bs-toggle="dropdown" href="#" aria-expanded="false">
-            <i class="fa fa-filter"></i> Status: All <span class="caret"></span>
-        </a>
-        <div class="asset-dropdown-menu">
-            <input class="search asset-search" type="text" placeholder="Search Status">
-            <ul>
-                <li>All</li>
-                <li>Available</li>
-                <li>Damaged</li>
-                <li>Decommissioned</li>
-                <li>Issued</li>
-                <li>Lost</li>
-                <li>Returned</li>
-                <li>Under Repair</li>
-            </ul>
-        </div>
-    </div>
-
-    <!-- Asset Group Dropdown -->
-    <div class="asset-dropdown">
-        <a class="asset-dropdown-toggle" data-bs-toggle="dropdown" href="#" aria-expanded="false">
-            <i class="fa fa-cogs"></i> Asset Group: All <span class="caret"></span>
-        </a>
-        <div class="asset-dropdown-menu">
-            <input class="search" type="text" placeholder="Search Asset Group">
-            <ul>
-                <li>All</li>
-                <li>Admin Asset</li>
-                <li>IT Asset</li>
-            </ul>
-        </div>
-    </div>
-
-    <!-- Asset Type Dropdown -->
-    <div class="asset-dropdown">
-        <a class="asset-dropdown-toggle" data-bs-toggle="dropdown" href="#" aria-expanded="false">
-            <i class="fa fa-laptop"></i> Asset Type: All <span class="caret"></span>
-        </a>
-        <div class="asset-dropdown-menu">
-            <input class="search" type="text" placeholder="Search Asset Type">
-            <ul>
-                <li>All</li>
-                <li>Data Card</li>
-                <li>Laptop</li>
-                <li>Pen Drive</li>
-            </ul>
-        </div>
-    </div>
-
-    <!-- Active Status Dropdown -->
-    <div class="asset-dropdown">
-        <a class="asset-dropdown-toggle" data-bs-toggle="dropdown" href="#" aria-expanded="false">
-            <i class="fa fa-check-circle"></i> Active: Active <span class="caret"></span>
-        </a>
-        <div class="asset-dropdown-menu">
-            <input class="search" type="text" placeholder="Search Active Status">
-            <ul>
-                <li>All</li>
-                <li>Active</li>
-                <li>Inactive</li>
-            </ul>
-        </div>
-    </div>
-
-    <!-- Employee Dropdown -->
-    <div class="asset-dropdown">
-        <a class="asset-dropdown-toggle" data-bs-toggle="dropdown" href="#" aria-expanded="false">
-            <i class="fa fa-user"></i> Employee: All <span class="caret"></span>
-        </a>
-        <div class="asset-dropdown-menu">
-            <input class="search" type="text" placeholder="Type employee name or number">
-            <ul>
-                <li>All</li>
-                <li>Employee 1</li>
-                <li>Employee 2</li>
-            </ul>
-        </div>
-    </div>
-
-    <!-- Add Asset Button -->
+ <div class="row">
+ @if(!empty($selectedEmployeeId))
+ <div class="row mt-2">
+    
+    <div class="col-md-10 " >
+        <div class="newReq mt-2" style="align-items:end">
+        <!-- Add Asset Button -->
     <button class="cancel-btn" style="margin-left:20px" wire:click="addAsset">Add Asset</button>
-    <button wire:click="exportToExcel" class="cancel-btn" style="margin-left:20px" >Export to Excel</button>
+    <button wire:click="exportToExcel" class="cancel-btn" style="margin-left:20px">Export to Excel</button>
+        </div>
+    </div>
+    </div>
 
-</div>
 
+    
 @if($showAssetDialog)
 <div class="modal fade show" tabindex="-1" role="dialog" style="display: block; overflow-y: auto;">
     <div class="modal-dialog modal-dialog-centered modal-lg align-items-center justify-content-center" role="document">
@@ -597,7 +521,7 @@
                     <label class="form-check-label" for="warrantyYes">Yes</label>
                
                 
-                    <input type="radio" wire:model="warranty" class="form-check-input ml-3" id="warrantyNo" value="No">
+                    <input type="radio" wire:model="warranty" class="form-check-input " id="warrantyNo" value="No" style="margin-left:5px">
                     <label class="form-check-label" for="warrantyNo">No</label>
                
             </div>
@@ -676,9 +600,8 @@
 
 
 @endif
-    </div>
-    
-    
+   
+  
     @if($requests->isNotEmpty() && !empty($selectedEmployeeId))
     @foreach((array)$selectedEmployeeId as $employeeId)
         {{-- Filter requests for the current employee --}}
@@ -688,9 +611,9 @@
 
         {{-- Check if there are requests for the current employee --}}
         @if($employeeRequests->isNotEmpty())
-            <div class="employee-requests-container" style="margin:20px">
-              
-                <table class="employee-requests-table table table-bordered table-striped">
+        <div class="row justify-content-center align-items-center mt-2" >
+            <div class="employee-requests-container d-flex justify-content-center align-items-center w-100">
+                <table class="employee-requests-table table table-bordered table-striped align-items-center justify-content-center">
                     <thead class="table-header">
                         <tr class="header-row">
                             <th class="header-column">Employee ID</th>
@@ -704,38 +627,40 @@
                     </thead>
                     <tbody class="table-body">
                     @foreach($employeeRequests as $request)
-    
-    <tr class="body-row">
-        <td class="body-column">{{ $request->emp_id }}</td>
-        <td class="body-column">{{ $request->asset_type }}</td>
-        <td class="body-column">{{ $request->asset_id }}</td>
-        <td class="body-column">{{ $request->asset_status }}</td>
-        <td class="body-column">{{ $request->asset_details }}</td>
-        <td class="body-column">{{ $request->remarks }}</td>
-        <td class="body-column">
-            <i style="color:black; font-size:13px; cursor: pointer"
-               class='fa fa-edit'
-               title="Edit this record"
-               wire:click="editAsset({{ $request->id }})">
-            </i>
-        </td>
-    </tr>
-@endforeach
-
+                        <tr class="body-row">
+                            <td class="body-column">{{ $request->emp_id }}</td>
+                            <td class="body-column">{{ $request->asset_type }}</td>
+                            <td class="body-column">{{ $request->asset_id }}</td>
+                            <td class="body-column">{{ $request->asset_status }}</td>
+                            <td class="body-column">{{ $request->asset_details }}</td>
+                            <td class="body-column">{{ $request->remarks }}</td>
+                            <td class="body-column">
+                                <i style="color:black; font-size:13px; cursor: pointer"
+                                   class='fa fa-edit'
+                                   title="Edit this record"
+                                   wire:click="editAsset({{ $request->id }})">
+                                </i>
+                            </td>
+                        </tr>
+                    @endforeach
                     </tbody>
                 </table>
             </div>
+        </div>
         @else
             {{-- No requests found for the current employee --}}
-            <div class="no-requeasts">
-                <h3 class="no-requests-title">No requests found for Employee ID: </h3>
+            <div class="no-requeasts d-flex justify-content-center align-items-center">
+                <h3 class="no-requests-title">No requests found for Employee ID: {{ $employeeId }}</h3>
             </div>
         @endif
     @endforeach
 @else
     {{-- No requests available --}}
-    <p class="no-requests-message">No requests available for this employee.</p>
+    <p class="no-requests-message d-flex justify-content-center align-items-center">No requests available for this employee.</p>
 @endif
+
+  
+
 
    
 
@@ -744,6 +669,8 @@
 
 
 @endif
+ </div>
+
 
 
 

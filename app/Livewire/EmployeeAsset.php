@@ -8,7 +8,7 @@ use App\Models\Asset;
 use Livewire\Component;
 use App\Models\EmployeeDetails;
 use App\Models\HelpDesks;
-
+use App\Models\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -21,6 +21,7 @@ class EmployeeAsset extends Component
 
     public $searchTerm = '';
     public $employee;
+    public $filterData;
     public $selectedEmployeeId;
     public $showDocDialog=false;
     public $searchEmployee;
@@ -131,6 +132,47 @@ class EmployeeAsset extends Component
     public function closePeoples()
     {
         $this->isNames = false;
+    }
+    public function searchHelpDesk($status_code, $searchTerm)
+    {
+        dd('hii');
+        $employeeId = auth()->user()->emp_id;
+    
+        // Start the base query based on status and employee ID or cc_to
+        $query = Request::where(function ($query) use ($employeeId) {
+            $query->where('emp_id', $employeeId)->orWhere('cc_to', 'like', "%$employeeId%");
+        });
+        if (is_array($status_code)) {
+            $query->whereIn('status_code', $status_code);  // Multiple statuses (array)
+        } else {
+            $query->where('status_code', $status_code);    // Single status (string)
+        }// Apply status filter dynamically
+    
+
+        // If there's a search term, apply search filtering
+        if ($searchTerm) {
+            $query->where(function ($query) use ($searchTerm) {
+                $query->where('emp_id', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('category', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('subject', 'like', '%' . $searchTerm . '%')
+                    ->orWhereHas('emp', function ($query) use ($searchTerm) {
+                        $query->where('first_name', 'like', '%' . $searchTerm . '%')
+                            ->orWhere('last_name', 'like', '%' . $searchTerm . '%');
+                    });
+            });
+        }
+    
+        // Get results
+        $results = $query->orderBy('created_at', 'desc')->get();
+     
+        $this->filterData = $results;
+        $this->peopleFound = count($this->filterData) > 0;
+    }
+    
+    
+    public function searchActiveHelpDesk()
+    {
+        $this->searchHelpDesk([8,10], $this->activeSearch);
     }
     public function filter()
     {

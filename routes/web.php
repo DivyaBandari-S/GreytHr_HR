@@ -104,7 +104,7 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
         Route::get('/employee-profile', EmployeeProfile::class)->name('employee-profile');
         Route::get('/employee-asset', EmployeeAsset::class)->name('employee-asset');
         Route::get('/position-history', PositionHistory::class)->name('position-history');
-        Route::get('/parent', ParentDetails::class)->name('parent-details');
+        Route::get('parent-details', ParentDetails::class)->name('parent-details');
         Route::get('/emp-document', EmpDocument::class)->name('emp-document');
         Route::get('/bank-account', BankAccount::class)->name('bank-account');
         Route::get('/user/attendance-process', AttendanceProcess::class)->name('attendance-process');

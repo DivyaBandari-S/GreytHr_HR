@@ -1355,9 +1355,9 @@ input[type="radio"] {
 
 /* Hover state for tabs */
 .custom-nav-link:hover {
-    color: rgb(2, 17, 79) !important;
+    color: var(--main-button-color)!important;
     background-color: #fff;
-    border-color: rgb(2, 17, 79);
+    border-color: var(--main-button-color);
 }
 
 /* Active tab styling */
@@ -1373,7 +1373,7 @@ input[type="radio"] {
     text-decoration: none !important;
 }
 .helpdesk-search-btn {
-    background-color: rgb(2, 17, 79);
+    background-color: var(--main-button-color);
     border-radius: 0 5px 5px 0;
     color: #fff !important;
     width: 45px;
@@ -3107,6 +3107,7 @@ td {
     background-color: #f1f9fb;
     border: 1px solid silver;
     padding: 15px;
+    justify-content: center;
 }
 .card-profile {
     margin-top: 20px;
@@ -3382,7 +3383,7 @@ td {
 }
 
 .input-width {
-    width: 100%;
+    width: 80%;
     font-size: 12px;
 }
 .alert-success {
