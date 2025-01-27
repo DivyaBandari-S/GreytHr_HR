@@ -593,12 +593,6 @@ ul {
     height: fit-content;
 }
 
-.custom-dropdown {
-    margin-top: 20px;
-    display: block;
-
-}
-
 .eventsSection {
     display: flex;
     flex-direction: column;
@@ -1340,6 +1334,24 @@ input[type="radio"] {
 .custom-nav-tabs .custom-item {
     flex-grow: 1;
     overflow: hidden;
+}
+button.nav-link{
+    color: #778899;
+    font-size: 14px;
+    background-color: transparent;
+}
+button.nav-link:hover{
+    border-bottom: 3px solid var(--main-button-color) !important;
+    background-color: white;
+}
+button.nav-link.active{
+    border-bottom: 3px solid var(--main-button-color) !important;
+    color: white !important;
+    font-weight: 500;
+    background: var(--main-button-color) !important;
+}
+.nav.nav-tabs{
+    margin-top: 10px;
 }
 
 /* Link styles for tabs */
@@ -4191,10 +4203,14 @@ td {
 .pendingLeaveTable tbody tr:nth-of-type(even) {
     background-color: #ffffff !important; /* White */
 }
-
-
-
-
+.yearEndtable{
+    padding: 20px 40px;
+}
+.table-container {
+    max-height: 300px; /* Set the max height for the table */
+    overflow-y: auto;  /* Add vertical scrolling when content exceeds the height */
+    display: block;    /* Make the container block-level to enable overflow */
+}
 .yearEnd-accordion{
     width: 80%;
     padding: 10px 20px;

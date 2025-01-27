@@ -265,6 +265,7 @@
                                     <table class="leave-table">
                                         <thead>
                                             <tr>
+                                                <th><input type="checkbox"></th>
                                                 <th>Leave Name</th>
                                                 <th>Grant Days</th>
                                             </tr>
