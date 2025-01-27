@@ -52,13 +52,12 @@ class EmployeeLeaveBalances extends Model
     public static function getLeaveBalancePerYear($employeeId, $leaveName, $year)
     {
 
-        // Retrieve the record for the specific employee and year
-        $balance = self::where('emp_id', $employeeId)
-            ->where('is_lapsed', false)
+        // Retrieve all records for the specific employee and year
+        $balances = self::where('emp_id', $employeeId)
             ->where('period', 'like', "%$year%")
-            ->first();
-
-        if ($balance) {
+            ->get();
+        // Loop through each balance record
+        foreach ($balances as $balance) {
             // Decode the JSON leave_policy_id column
             $leavePolicies = is_string($balance->leave_policy_id) ? json_decode($balance->leave_policy_id, true) : $balance->leave_policy_id;
 
@@ -72,8 +71,7 @@ class EmployeeLeaveBalances extends Model
                 }
             }
         }
-
-        // Return 0 if the leave type is not found or if no record exists
+        // Return 0 if the leave type is not found in any of the records
         return 0;
     }
 }

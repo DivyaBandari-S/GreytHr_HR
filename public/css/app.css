@@ -18,7 +18,7 @@ body {
     --sub-heading-color: #778899
         /* use sub heading along with font-weight-500 */;
     --normal-font-size: 0.75rem;
-    --sub-headings-font-size: 0.875rem;
+    --sub-headings-font-size: 0.825rem;
     --main-headings-font-size: 1rem;
     --main-table-heading-bg-color: #d4e6f4;
     --main-table-heading-text-color:#4c4e4f ;
@@ -47,7 +47,6 @@ body {
 ::-webkit-scrollbar-thumb:horizontal:hover {
     background: #9f9e9e;
 }
-
 /* end of scrollbars */
 .loginform {
     display: flex;
@@ -591,12 +590,6 @@ ul {
     border-radius: 5px;
     border: 1px solid silver;
     height: fit-content;
-}
-
-.custom-dropdown {
-    margin-top: 20px;
-    display: block;
-
 }
 
 .eventsSection {
@@ -1321,7 +1314,20 @@ input[type="radio"] {
     font-size: 14px;
     transition: color 0.3s;
 }
-
+a.custom-nav-link{
+    color: #778899 !important;
+}
+.reviewActiveButtons {
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+}
+.reviewClosedButtons {
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+.reviewActiveButtons.custom-nav-link {
+    color: #778899 !important;
+}
 /* Custom tab styles */
 .custom-nav-tabs {
     margin-top: 10px;
@@ -1340,6 +1346,24 @@ input[type="radio"] {
 .custom-nav-tabs .custom-item {
     flex-grow: 1;
     overflow: hidden;
+}
+button.nav-link{
+    color: #778899;
+    font-size: 14px;
+    background-color: transparent;
+}
+button.nav-link:hover{
+    border-bottom: 3px solid var(--main-button-color) !important;
+    background-color: white;
+}
+button.nav-link.active{
+    border-bottom: 3px solid var(--main-button-color) !important;
+    color: white !important;
+    font-weight: 500;
+    background: var(--main-button-color) !important;
+}
+.nav.nav-tabs{
+    margin-top: 10px;
 }
 
 /* Link styles for tabs */
@@ -4191,10 +4215,14 @@ td {
 .pendingLeaveTable tbody tr:nth-of-type(even) {
     background-color: #ffffff !important; /* White */
 }
-
-
-
-
+.yearEndtable{
+    padding: 20px 40px;
+}
+.table-container {
+    max-height: 300px; /* Set the max height for the table */
+    overflow-y: auto;  /* Add vertical scrolling when content exceeds the height */
+    display: block;    /* Make the container block-level to enable overflow */
+}
 .yearEnd-accordion{
     width: 80%;
     padding: 10px 20px;
@@ -4707,6 +4735,56 @@ td {
 }
 
 /* end of leave calendar */
+
+
+/* start of reports */
+.allreports {
+    border: 1px solid #ccc;
+    border-radius: 2px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    background-color: #fff;
+    overflow: hidden;
+}
+
+.allreports-header {
+    background-color:#408EC6; /* Blue header */
+    color: white;
+    font-weight: bold;
+    padding: 5px 10px;
+    display: flex;
+    align-items: center;
+    font-size: var(--normal-font-size);
+}
+
+.allreports-body {
+    padding: 15px;
+    font-size: var(--normal-font-size);
+}
+
+.allreports-body ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.allreports-body ul li {
+    display: flex;
+    align-items: center;
+    padding: 7px 12px;
+}
+.allreports-body ul li:hover{
+    background-color: #e6e6e6;
+    color: var(--main-button-color);
+    padding: 7px 12px;
+    border-radius: 5px;
+}
+.star-icon {
+    color: gold;
+    margin-left: 10px;
+}
+
+/* end of reports */
 
 /* task module styles started */
 .task-search-container {
