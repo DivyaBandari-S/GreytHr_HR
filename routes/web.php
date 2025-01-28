@@ -17,6 +17,7 @@ use App\Livewire\Resignationrequests;
 use App\Livewire\EmployeeDirectory;
 use App\Livewire\EmployeeLeave;
 use App\Livewire\EmployeeProfile;
+use App\Livewire\EmployeeSalary;
 use App\Livewire\Feeds;
 use App\Livewire\HrAttendanceInfo;
 use App\Livewire\HrAttendanceOverviewNew;
@@ -31,6 +32,7 @@ use App\Livewire\WhoIsInChartHr;
 use App\Models\EmpResignations;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Response;
+use Vinkla\Hashids\Facades\Hashids;
 
 /*
 |--------------------------------------------------------------------------
@@ -87,6 +89,7 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
         Route::get('/parent', ParentDetails::class)->name('parent-details');
         Route::get('/emp-document', EmpDocument::class)->name('emp-document');
         Route::get('/bank-account', EmpDocument::class)->name('bank-account');
+        Route::get('/employee-salary', EmployeeSalary::class)->name('employee-salary');
         //HR Leave-Main Submodule Routes
         Route::get('/user/hr-attendance-overview', HrAttendanceOverviewNew::class)->name('attendance-overview');
         Route::get('/user/who-is-in-chart-hr', WhoIsInChartHr::class)->name('who-is-in-chart-hr');
@@ -119,4 +122,47 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
 
 
     });
+});
+
+
+Route::get('/encode/{value}', function ($value) {
+    // Determine the number of decimal places
+    $decimalPlaces = strpos($value, '.') !== false ? strlen(substr(strrchr($value, "."), 1)) : 0;
+
+    // Convert the float to an integer with precision
+    $factor = pow(10, $decimalPlaces);
+    $integerValue = intval($value * $factor);
+
+    // Encode the integer value along with the decimal places
+    $hash = Hashids::encode($integerValue, $decimalPlaces);
+
+    return response()->json([
+        'value' => $value,
+        'hash' => $hash,
+        // 'decimalPlaces' => $decimalPlaces
+    ]);
+});
+
+
+
+Route::get('/decode/{hash}', function ($hash) {
+    // Decode the hash
+    $decoded = Hashids::decode($hash);
+
+    // Check if decoding was successful
+    if (count($decoded) === 0) {
+        return response()->json(['error' => 'Invalid hash'], 400);
+    }
+
+    // Retrieve the integer value and decimal places
+    $integerValue = $decoded[0];
+    $decimalPlaces = $decoded[1] ?? 0; // Fallback to 0 if not present
+
+    // Convert back to float
+    $originalValue = $integerValue / pow(10, $decimalPlaces);
+
+    return response()->json([
+        'hash' => $hash,
+        'value' => $originalValue
+    ]);
 });
