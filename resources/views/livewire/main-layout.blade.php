@@ -94,6 +94,14 @@
                 </ul>
             </li>
             <li>
+            <li>
+                <a href="#"><i class="ph-chart-pie-slice-light"></i></a>
+                <ul class="sidebar__submenu">
+                    <li class="title">Reports</li>
+                    <li><a href="/hr/user/reports">Reports Gallery</a></li>
+                </ul>
+            </li>
+            <li>
                 <a href="#"><i class="ph-fill ph-calendar-blank"></i></a>
                 <ul class="sidebar__submenu">
                     <li class="title">Leave</li>

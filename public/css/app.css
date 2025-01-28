@@ -18,7 +18,7 @@ body {
     --sub-heading-color: #778899
         /* use sub heading along with font-weight-500 */;
     --normal-font-size: 0.75rem;
-    --sub-headings-font-size: 0.875rem;
+    --sub-headings-font-size: 0.825rem;
     --main-headings-font-size: 1rem;
     --main-table-heading-bg-color: #d4e6f4;
     --main-table-heading-text-color:#4c4e4f ;
@@ -47,7 +47,6 @@ body {
 ::-webkit-scrollbar-thumb:horizontal:hover {
     background: #9f9e9e;
 }
-
 /* end of scrollbars */
 .loginform {
     display: flex;
@@ -1315,7 +1314,20 @@ input[type="radio"] {
     font-size: 14px;
     transition: color 0.3s;
 }
-
+a.custom-nav-link{
+    color: #778899 !important;
+}
+.reviewActiveButtons {
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+}
+.reviewClosedButtons {
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+.reviewActiveButtons.custom-nav-link {
+    color: #778899 !important;
+}
 /* Custom tab styles */
 .custom-nav-tabs {
     margin-top: 10px;
@@ -4867,3 +4879,53 @@ input[type="date"]::before {
 }
 
 /* end of leave calendar */
+
+
+/* start of reports */
+.allreports {
+    border: 1px solid #ccc;
+    border-radius: 2px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    background-color: #fff;
+    overflow: hidden;
+}
+
+.allreports-header {
+    background-color:#408EC6; /* Blue header */
+    color: white;
+    font-weight: bold;
+    padding: 5px 10px;
+    display: flex;
+    align-items: center;
+    font-size: var(--normal-font-size);
+}
+
+.allreports-body {
+    padding: 15px;
+    font-size: var(--normal-font-size);
+}
+
+.allreports-body ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.allreports-body ul li {
+    display: flex;
+    align-items: center;
+    padding: 7px 12px;
+}
+.allreports-body ul li:hover{
+    background-color: #e6e6e6;
+    color: var(--main-button-color);
+    padding: 7px 12px;
+    border-radius: 5px;
+}
+.star-icon {
+    color: gold;
+    margin-left: 10px;
+}
+
+/* end of reports */

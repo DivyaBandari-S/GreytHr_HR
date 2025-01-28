@@ -39,6 +39,7 @@ use App\Livewire\HrOrganisationChart;
 use App\Livewire\LeaveSettingPolicy;
 use App\Livewire\ParentDetails;
 use App\Livewire\PositionHistory;
+use App\Livewire\ReportsManagement;
 use App\Livewire\Requests;
 use App\Livewire\ShiftOverrideHr;
 use App\Livewire\ShiftRosterHr;
@@ -145,6 +146,10 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
 
         //HR Leave-SetUp Submodule Routes
         Route::get('/user/holidayList', HrHolidayList::class)->name('holidayList');
+
+        //Reports
+        Route::get('/user/reports/', ReportsManagement::class)->name('reports');
+
     });
 });
 
