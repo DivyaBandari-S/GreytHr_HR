@@ -59,12 +59,17 @@ class EmployeeDetails extends Authenticatable
     ];
     protected $casts = [
         'company_id' => 'array',
-        'emp_domain'=>'array',
+        'emp_domain' => 'array',
 
     ];
+
     public function empBankDetails()
     {
         return $this->hasOne(EmpBankDetail::class, 'emp_id', 'emp_id');
+    }
+    public function personalInfo()
+    {
+        return $this->hasOne(EmpPersonalInfo::class, 'emp_id', 'emp_id');
     }
 
     public function empParentDetails()
@@ -95,7 +100,7 @@ class EmployeeDetails extends Authenticatable
     }
     public function empSubDepartment()
     {
-        return $this->hasOne(EmpSubDepartments::class, 'sub_dept_id', 'sub_dept_id'); 
+        return $this->hasOne(EmpSubDepartments::class, 'sub_dept_id', 'sub_dept_id');
     }
 
 
@@ -103,11 +108,11 @@ class EmployeeDetails extends Authenticatable
     {
         return $this->hasMany(LeaveRequest::class, 'emp_id');
     }
-// In App\Models\EmployeeDetails
-public function getImageUrlAttribute()
-{
-    return 'data:image/jpeg;base64,' . base64_encode($this->attributes['image']);
-}
+    // In App\Models\EmployeeDetails
+    public function getImageUrlAttribute()
+    {
+        return 'data:image/jpeg;base64,' . base64_encode($this->attributes['image']);
+    }
 
     public function leaveApplies()
     {
@@ -117,9 +122,10 @@ public function getImageUrlAttribute()
     {
         return $this->hasMany(SwipeRecord::class, 'emp_id', 'emp_id');
     }
+
     public function comments()
     {
-        return $this->hasMany(Comment::class, 'emp_id', 'emp_id');
+        return $this->hasMany(Comment::class, 'company_id', 'company_id');
     }
 
     // Inside the EmployeeDetails model
@@ -131,8 +137,6 @@ public function getImageUrlAttribute()
     public function conversations()
     {
 
-        return $this->hasMany(Chating::class,'sender_id')->orWhere('receiver_id',$this->emp_id)->whereNotDeleted();
-
+        return $this->hasMany(Chating::class, 'sender_id')->orWhere('receiver_id', $this->emp_id)->whereNotDeleted();
     }
-
 }

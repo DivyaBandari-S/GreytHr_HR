@@ -16,6 +16,8 @@ class PositionHistory extends Component
 {
     use WithFileUploads;
     public $peopleData;
+    public $selectedEmployeeImage;
+    public $selectedOption = 'all'; 
     public $selectedEmployeeId='';
     public $present_address;
 
@@ -31,6 +33,7 @@ class PositionHistory extends Component
     public $ItRequestaceessDialog = false;
     public $closeItRequestaccess = false;
     public $openItRequestaccess = false;
+    public $showDialog=false;
     public $isNames = false;
     public $record;
     public $subject;
@@ -92,7 +95,7 @@ class PositionHistory extends Component
     public $currentEditingProfileId=null;
     public $currentEditingJobProfileId=null;
     public $currentEditingDomainProfileId=null;
-    public $Domain;
+    public $Domain=[];
     public function editProfile($emp_id)
     {
         $this->currentEditingJobProfileId = $emp_id; // Set current employee for editing
@@ -109,6 +112,18 @@ class PositionHistory extends Component
           
         }
     }
+    public function open()
+    {
+       
+        $this->showDialog = true;
+    }
+    public function close()
+    {
+        $this->showDialog = false;
+       
+      
+    }
+
     public function cancelProfile($emp_id)
     {
         // No need to query for $selectedPerson here
@@ -151,23 +166,15 @@ class PositionHistory extends Component
     
         // Fetch employee details including related empPersonalInfo
         $employee = EmployeeDetails::with('empPersonalInfo')->find($emp_id);
-  
-        if ($employee) {
-      
     
+        if ($employee) {
             // Set form fields with employee and personal info data
-            $this->Domain = $employee->emp_domain ?? '-';  // Use relationship data
-           
-          
+            // Ensure Domain is a string
+            $this->Domain = is_array($employee->emp_domain) 
+                            ? implode(', ', $employee->emp_domain) 
+                            : $employee->emp_domain ?? '-';
         }
     }
-    public function cancelDomainProfile($emp_id)
-    {
-        // No need to query for $selectedPerson here
-        $this->currentEditingDomainProfileId = null;
-       
-    }
-
     
     public function saveDomainProfile($emp_id)
     {
@@ -181,22 +188,22 @@ class PositionHistory extends Component
                 $firstName = $nameParts[0];
                 $lastName = isset($nameParts[1]) ? $nameParts[1] : '';
     
-             
-            
-                $employee->emp_domain = $this->Domain ?? '-';
-           
+                // Convert Domain to string if it's an array
+                $employee->emp_domain = is_array($this->Domain) 
+                                        ? implode(', ', $this->Domain) 
+                                        : $this->Domain ?? '-';
+    
                 // Update EmployeeDetails fields
-              
                 $employee->save();
     
-    
                 $this->currentEditingDomainProfileId = null; // Exit edit mode after saving
-              
             }
         } catch (\Exception $e) {
             session()->flash('error', 'An error occurred while creating new record. Please try again.');
         }
     }
+    
+    
     
     public function editJobProfile($emp_id)
     {
@@ -626,45 +633,138 @@ class PositionHistory extends Component
     {
         $this->cc_to = implode(', ', array_unique($this->selectedPeopleNames));
     }
-    public function updateselectedEmployee($empId)
+
+    public function updateSelected($option)
     {
-        $this->selectedEmployeeId = $empId;
-        $this->selectedEmployeeFirstName = EmployeeDetails::where('emp_id', $empId)->value('first_name');
-        $this->selectedEmployeeLastName = EmployeeDetails::where('emp_id', $empId)->value('last_name');
-    }
+        $this->selectedOption = $option; 
+        
+        // Check if the user is logged in with the 'hr' guard
+        if (!auth()->guard('hr')->check()) {
+            return;
+        }
     
-    public function searchforEmployee()
-    {
-        if (!empty($this->searchTerm)) {
-            // Fetch employees matching the search term
-            $this->employees = EmployeeDetails::where(function ($query) {
-                $query->where('first_name', 'like', '%' . $this->searchTerm . '%')
-                      ->orWhere('last_name', 'like', '%' . $this->searchTerm . '%')
-                      ->orWhere('emp_id', 'like', '%' . $this->searchTerm . '%');
-            })->get();
+        // Get the logged-in employee ID
+        $loggedInEmpID = auth()->guard('hr')->user()->emp_id;
     
-            // Include previously selected employees not currently displayed in the search
-            foreach ($this->selectedPeople as $selectedEmpId) {
-                // Check if selected employee is in the current employees
-                if (!$this->employees->contains('emp_id', $selectedEmpId)) {
-                    $selectedEmployee = EmployeeDetails::where('emp_id', $selectedEmpId)->first();
-                    if ($selectedEmployee) {
-                        // Ensure it's marked as checked
-                        $selectedEmployee->isChecked = true;
-                        $this->employees->push($selectedEmployee);
-                    }
+        // Fetch the first company_id associated with the logged-in employee
+        $companyId = EmployeeDetails::where('emp_id', $loggedInEmpID)
+            ->pluck('company_id') 
+            ->first();
+    
+        // Handle cases where the company ID is an array or not
+        if (is_array($companyId)) {
+            $firstCompanyID = $companyId[0]; 
+        } else {
+            $firstCompanyID = $companyId; 
+        }
+    
+        // Initialize the query for employees based on company_id
+        $query = EmployeeDetails::whereJsonContains('company_id', $firstCompanyID);
+    
+        // Apply the filters based on the selected option
+        switch ($this->selectedOption) {
+            case 'current':
+                $query->where('employee_status', 'active'); // Filter for current employees
+                break;
+    
+            case 'past':
+                $query->whereIn('employee_status', ['rejected', 'terminated']); // Filter for past employees
+                break;
+    
+            case 'intern':
+                $query->where('job_role', 'intern'); // Filter for interns
+                break;
+    
+           
+            default:
+                // No additional filtering, fetch all employees
+                case 'all':
+                    $query=EmployeeDetails::whereJsonContains('company_id', $firstCompanyID);
+                break;
+        }
+    
+        // Fetch the employee IDs after filtering
+        $this->employeeIds = $query->pluck('emp_id')->toArray(); // Fetch the filtered employee IDs
+        $this->employees = $query->get(); // Fetch the employee data for rendering in the view
+  
+    
+    
+
+    
+   }
+   public function searchforEmployee() {
+    if (!empty($this->searchTerm)) {
+        // Fetch employees matching the search term
+        $this->employees = EmployeeDetails::where(function ($query) {
+            $query->where('first_name', 'like', '%' . $this->searchTerm . '%')
+                  ->orWhere('last_name', 'like', '%' . $this->searchTerm . '%')
+                  ->orWhere('emp_id', 'like', '%' . $this->searchTerm . '%');
+        })->get();
+
+        // Include previously selected employees not currently displayed in the search
+        foreach ($this->selectedPeople as $selectedEmpId) {
+            // Check if selected employee is in the current employees
+            if (!$this->employees->contains('emp_id', $selectedEmpId)) {
+                $selectedEmployee = EmployeeDetails::where('emp_id', $selectedEmpId)->first();
+                if ($selectedEmployee) {
+                    // Ensure it's marked as checked
+                    $selectedEmployee->isChecked = true;
+                    $this->employees->push($selectedEmployee);
                 }
             }
-    
-            // Set isChecked for employees in the current search results
-            foreach ($this->employees as $employee) {
-                $employee->isChecked = in_array($employee->emp_id, $this->selectedPeople);
-   
-            }
+        }
+
+        // Set isChecked for employees in the current search results
+        foreach ($this->employees as $employee) {
+            $employee->isChecked = in_array($employee->emp_id, $this->selectedPeople);
+        }
+    } else {
+        $this->employees = collect(); // Reset employees if no search term
+    }
+}
+
+public function updateselectedEmployee($empId)
+{
+    // If more than one employee is selected, only allow the first employee to be selected
+    if (count($this->selectedPeople) > 1) {
+        $this->selectedPeople = array_slice($this->selectedPeople, 0, 1); // Keep only the first selected employee
+    } else {
+        // If employee is not already selected, proceed with selecting
+        if (!in_array($empId, $this->selectedPeople)) {
+            $this->selectedPeople[] = $empId; // Add employee to the selected list
         } else {
-            $this->employees = collect(); // Reset employees if no search term
+            // If employee is already selected, remove from the list
+            $this->selectedPeople = array_filter($this->selectedPeople, fn($id) => $id != $empId);
         }
     }
+
+    // Update the selected employee details
+    $this->selectedEmployeeId = $empId;
+    $this->selectedEmployeeFirstName = EmployeeDetails::where('emp_id', $empId)->value('first_name');
+    $this->selectedEmployeeLastName = EmployeeDetails::where('emp_id', $empId)->value('last_name');
+    $this->selectedEmployeeImage = EmployeeDetails::where('emp_id', $empId)->value('image');
+    $this->searchTerm='';
+    
+}
+
+public function selectEmployee($empId)
+{
+    
+    $this->selectedEmployeeId = $empId;
+    $this->selectedEmployeeFirstName = EmployeeDetails::where('emp_id', $empId)->value('first_name');
+    $this->selectedEmployeeLastName = EmployeeDetails::where('emp_id', $empId)->value('last_name');
+    $this->selectedEmployeeImage = EmployeeDetails::where('emp_id', $empId)->value('image');
+    $this->searchTerm='';
+}
+
+public $selectedEmployee = null;
+
+public function removeSelectedEmployee()
+{
+$this->selectedEmployeeId = null;
+$this->selectedEmployeeFirstName = null;
+$this->selectedEmployeeLastName = null;
+}
     
 
     public $selectedPeopleData=[];
@@ -696,12 +796,21 @@ class PositionHistory extends Component
 
     public function selectPerson($emp_id)
     {
+        if (!empty($this->selectedPeople) && !in_array($emp_id, $this->selectedPeople)) {
+            // Flash an error message to the session
+            session()->flash('warning', 'You can only select one employee ');
+            return; // Stop further execution
+        }
+    
+
         try {
+         
             // Ensure $this->selectedPeople is initialized as an array
             if (!is_array($this->selectedPeople)) {
                 $this->selectedPeople = [];
             }
     
+         
             // Find the selected person from the list of employees
             $selectedPerson = $this->employees->where('emp_id', $emp_id)->first();
     
@@ -753,7 +862,7 @@ class PositionHistory extends Component
         } catch (\Exception $e) {
             // Handle the exception
             // Optionally, you can log the error or display a user-friendly message
-            $this->dispatchBrowserEvent('error', ['message' => 'An error occurred: ' . $e->getMessage()]);
+            $this->dispatch('error', ['message' => 'An error occurred: ' . $e->getMessage()]);
         }
     }
     public function closeMessage()
@@ -817,20 +926,38 @@ class PositionHistory extends Component
     
     
     
-  
     public function mount()
     {
+        // Retrieve the logged-in user's emp_id from the 'hr' guard
         if (auth()->guard('hr')->check()) {
             $loggedInEmpID = auth()->guard('hr')->user()->emp_id;
+            // Debugging to ensure correct emp_id is fetched
+       // Check if emp_id is correct
         } else {
-            // Debug if user is not authenticated
-        
             return;
         }
+        $loggedInEmpID = auth()->guard('hr')->user()->emp_id;
+        $companyId = EmployeeDetails::where('emp_id', $loggedInEmpID)
+->pluck('company_id') // This returns the array of company IDs
+->first();
+if (is_array($companyId)) {
+    $firstCompanyID = $companyId[0]; // Get the first element from the array
+} else {
+    $firstCompanyID = $companyId; // Handle case where it's not an array
+}
+
+
+        // Fetch the company_id associated with the employee
+        $companyID = EmployeeDetails::where('emp_id', $firstCompanyID)
+            ->pluck('company_id')
+            ->first(); // This will return the first company ID for the employee
+
+        // Outputs the company_id based on whether it's a parent or not
+        
     
         // Retrieve the company_id associated with the logged-in emp_id
         $employeeDetails = EmployeeDetails::where('emp_id', $loggedInEmpID)->first();
-        
+    
         if (!$employeeDetails) {
             // Debug if no employee details are found for this emp_id
       
@@ -838,7 +965,7 @@ class PositionHistory extends Component
         }
     
         $companyID = $employeeDetails->company_id;
-    
+ 
         if (!$companyID) {
             // Handle the case where companyID is null
         
@@ -847,8 +974,14 @@ class PositionHistory extends Component
         }
     
         // Fetch all emp_id values where company_id matches the logged-in user's company_id
-        $this->employeeIds = EmployeeDetails::whereJsonContains('company_id', $companyID)->pluck('emp_id')->toArray();
-    
+        $this->employeeIds = EmployeeDetails::whereJsonContains('company_id', $firstCompanyID)->pluck('emp_id')->toArray();
+     
+
+   
+   
+        // Fetch the employee IDs after filtering
+       
+        
         if (empty($this->employeeIds)) {
             // Handle the case where no employees are found
          
@@ -856,7 +989,7 @@ class PositionHistory extends Component
         }
     
         // Initialize employees based on search term and company_id
-        $employeesQuery = EmployeeDetails::whereJsonContains('company_id', $companyID)
+        $employeesQuery = EmployeeDetails::whereJsonContains('company_id', $firstCompanyID)
             ->where(function ($query) {
                 $query->where('first_name', 'like', '%' . $this->searchTerm . '%')
                       ->orWhere('last_name', 'like', '%' . $this->searchTerm . '%')
@@ -872,63 +1005,73 @@ class PositionHistory extends Component
             // Handle the case where no employees match the search term
          
         }
+        
     
         // Debug output for fetched employees
      
     
         // Set the component's employee data
         $this->employees = $employees;
-    
-        // Initialize other properties
-        $this->peopleData = $this->filteredPeoples ? $this->filteredPeoples : $this->employees;
-        $this->selectedPeople = [];
-        $this->selectedPeopleNames = [];
-        $this->employeess = EmployeeDetails::whereJsonContains('company_id', $companyID)
+      
+
+      
+        $this->employeess = EmployeeDetails::whereJsonContains('company_id', $firstCompanyID)
         ->orderBy('hire_date', 'desc') // Order by hire_date descending
       
         ->take(5) // Limit to 5 records
         ->get();
-    
-         
-           
+        // Initialize other properties
+        $this->peopleData = $this->filteredPeoples ? $this->filteredPeoples : $this->employees;
+        $this->selectedPeople = [];
+        $this->selectedPeopleNames = [];
     }
     
 
     public function render()
-{
-    $loggedInEmpID = auth()->guard('hr')->user()->emp_id;
-    $employeeId = auth()->user()->emp_id;
-    $companyId = auth()->user()->company_id;
+    {
+        $loggedInEmpID = auth()->guard('hr')->user()->emp_id;
+        $employeeId = auth()->user()->emp_id;
+        if (auth()->guard('hr')->check()) {
+            $loggedInEmpID = auth()->guard('hr')->user()->emp_id;
+            // Debugging to ensure correct emp_id is fetched
+       // Check if emp_id is correct
+        } else {
+            return;
+        }
+       
+   
+        
+    
+        $loggedInEmpID = auth()->guard('hr')->user()->emp_id;
 
-    // Retrieve the company_id associated with the logged-in emp_id
-    $companyID = EmployeeDetails::where('emp_id', $loggedInEmpID)
-        ->pluck('company_id')
-        ->first(); // Assuming company_id is unique for emp_id
+        // Fetch the company_id associated with the employee
+        $companyID = EmployeeDetails::where('emp_id', $loggedInEmpID)
+            ->pluck('company_id')
+            ->first(); // This will return the first company ID for the employee
+        
+ 
+        $companyId = EmployeeDetails::where('emp_id', $loggedInEmpID)
+        ->pluck('company_id') // This returns the array of company IDs
+        ->first();
+        if (is_array($companyId)) {
+            $firstCompanyID = $companyId[0]; // Get the first element from the array
+        } else {
+            $firstCompanyID = $companyId; // Handle case where it's not an array
+        }
+                    
 
-    // If no search term, fetch all employees for the logged-in user's company
-    if (empty($this->searchTerm)) {
-        $this->employees = EmployeeDetails::whereJsonContains('company_id', $companyID)->get();
+
+        // Determine if there are people found
+        $peopleFound = $this->employees->count() > 0;
+    
+        return view('livewire.position-history', [
+            'employees' => $this->employees,
+            'selectedPeople' => $this->selectedPeople,
+            'peopleFound' => $peopleFound,
+            'searchTerm' => $this->searchTerm,
+            // Add any other necessary data for your view here
+        ]);
     }
-
-    // Determine if there are people found
-    $peopleFound = $this->employees->count() > 0;
-    // Fetch employee details based on IDs
-
-    $this->employeeDetails = EmployeeDetails::with(['empBankDetails', 'empParentDetails', 'empPersonalInfo','empSpouseDetails','empSubDepartment'])
-    ->where('emp_id', $this->employeeIds)
-    ->first();
-  
-    // Ensure $peopleData is set
-    $peopleData = $this->filteredPeoples ?:  $this->employeeIds;
-
-    return view('livewire.position-history', [
-        'employees' => $this->employees,
-        'peopleData' => $peopleData,
-        'records' => $this->records,
-        'selectedPeople' => $this->selectedPeople, // Add selectedPeople to view data
-        'cc_to' => $this->cc_to, // Add cc_to to view data
-    ]);
-}
 
 
 

@@ -1,34 +1,22 @@
-<div >
+<div>
+<div class="row" style="margin-top:-20px;">
+<ul class="nav custom-nav-tabs" role="tablist" >
+    <li class="nav-item" role="presentation">
+        <a class="nav-link active custom-nav-link" id="simple-tab-0" data-bs-toggle="tab" href="#simple-tabpanel-0" role="tab" aria-controls="simple-tabpanel-0" aria-selected="true">Main</a>
+    </li>
+    <li class="nav-item" role="presentation">
+        <a class="nav-link custom-nav-link" id="simple-tab-1" data-bs-toggle="tab" href="#simple-tabpanel-1" role="tab" aria-controls="simple-tabpanel-1" aria-selected="false">Activity</a>
+    </li>
+</ul>
+</div>
 
-<div class="main__body">
-       <div class="tab-container">
-       <div class="tab-pane">
-                    <button
-                        type="button"
-                        data-tab-pane="active"
-                        class="tab-pane-item active"
-                        onclick="tabToggle()">
-                        <span class="tab-pane-item-title">01</span>
-                        <span class="tab-pane-item-subtitle">main</span>
-                    </button>
-                    <button
-                        type="button"
-                        data-tab-pane="in-review"
-                        class="tab-pane-item after"
-                        onclick="tabToggle()">
-                        <span class="tab-pane-item-title">02</span>
-                        <span class="tab-pane-item-subtitle">Activity</span>
-                    </button>
-                   
-                </div>
-
-<!-- Tab Content -->
-<div class="tab-page active" data-tab-page="active">
-<div class="row justify-content-center"  >
-                        <div class="col-md-8 custom-container d-flex flex-column">
+<div class="tab-content pt-5" id="tab-content">
+  <div class="tab-pane active" id="simple-tabpanel-0" role="tabpanel" aria-labelledby="simple-tab-0" style="overflow-x: hidden;">
+    <div class="row justify-content-center"  >
+                        <div class="col-md-9 custom-container d-flex flex-column">
                         <div class="d-flex align-items-center mb-2">
     <p class="main-text mb-0" style="width:88%">
-        This page allows you to add/edit the profile details of an employee. The page helps you to keep the employee information up to date.
+    The Position History page displays the complete history of all changes and career progression of an employee. You can also Edit various position attributes of an employee, such as Designation, Department, Grade, Location, etc., on this page.
     </p>
     <p class="hide-text" style="cursor: pointer;" wire:click="toggleDetails">
         {{ $showDetails ? 'Hide Details' : 'Info' }}
@@ -39,7 +27,7 @@
                                 
                            
                             <div class="secondary-text">
-    Explore greytHR by 
+    Explore HR Xpert by 
     <span class="hide-text">Help-Doc</span>, watching How-to 
     <span class="hide-text">Videos</span> and 
     <span class="hide-text">FAQ</span>
@@ -51,7 +39,7 @@
                  
 
                 <div class="row justify-content-center mt-2 "  >
-                <div class="col-md-8 custom-container d-flex flex-column bg-white">
+                <div class="col-md-9 custom-container d-flex flex-column bg-white" >
     <div class="row justify-content-center mt-3 flex-column m-0 employee-details-main" >
         <div class="col-md-9">
             <div class="row " style="display:flex;">
@@ -59,159 +47,133 @@
                     <p class="emp-heading" >Start searching to see specific employee details here</p>
                     <div class="col mt-3" style="display: flex;">
              
-                        <p class="main-text">Employee Type:</p>
-                        <p  class="edit-heading ml-2">Current Employees</p>
+                        <p class="main-text mt-1">Employee Type:</p>
+                       
+                        <div class="dropdown">
+                        <button class="btn btn dropdown-toggle dp-info" type="button" data-bs-toggle="dropdown" style="font-size:12px">
+    Employee: {{ ucfirst($selectedOption) }} 
+    <span class="arrow-for-employee"></span><span class="caret"></span>
+</button>
+
+    <span class="caret"></span></button>
+    <ul class="dropdown-menu" style="font-size:12px; ">
+    <li class="updated-drodown" >
+        <a href="#" wire:click.prevent="updateSelected('all')" class="dropdown-item custom-info-item">All Employees</a>
+    </li>
+    <li class="updated-drodown" >
+        <a href="#" wire:click.prevent="updateSelected('current')" class="dropdown-item custom-info-item">Current Employees</a>
+    </li>
+    <li class="updated-drodown" >
+        <a href="#" wire:click.prevent="updateSelected('past')" class="dropdown-item custom-info-item">Resigned Employees</a>
+    </li>
+    <li class="updated-drodown" >
+        <a href="#" wire:click.prevent="updateSelected('intern')" class="dropdown-item custom-info-item">Intern</a>
+    </li>
+</ul>
+
+  </div>
+         
+
+                      
                     </div>
                  
-                    <div class="profile" >
+                  
+                    <div class="profile">
     <div class="col m-0">
-     
-    <div class="row d-flex align-items-center">
-    <p class="main-text "  style="cursor:pointer" wire:click="NamesSearch">
-        Search Employee:
-    </p>
-
-    @foreach($selectedPeopleData as $personData)
-        <span class="selected-person d-flex align-items-center">
-            <img class="profile-image-selected" src="data:image/jpeg;base64,{{ $personData['image'] ?? '-' }}"
-          >
-           
-           
-            <p class="selected-name">
-    @php
-        // Split the name into parts
-        $nameParts = explode(' ', $personData['name']);
-
-        // Capitalize the first letter of the first name
-        $firstName = isset($nameParts[0]) ? ucfirst(strtolower($nameParts[0])) : '';
-
-        // Capitalize each part of the last name (all parts except the first)
-        $lastNameParts = array_slice($nameParts, 1);
-        $formattedLastName = implode(' ', array_map('ucfirst', array_map('strtolower', $lastNameParts)));
-    @endphp
-    {{ $firstName }} {{ $formattedLastName }}
-</p>
-            <svg class="close-icon-person"  
-                 wire:click="removePerson('{{ $personData['emp_id'] }}')" 
-                 xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20">
-                <path d="M6 18L18 6M6 6l12 12" stroke="#3b4452" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-        </span>
-    @endforeach
-</div>
-
-
-
-
+        <div class="row d-flex align-items-center">
+            <!-- Search Input -->
+            <div class="input-group4 d-flex align-items-center">
+                <!-- Input Field with Profile Image -->
+                <div class="position-relative">
+                    @if($selectedEmployeeId && $selectedEmployeeFirstName)
+                    <img 
+        src="{{ $selectedEmployeeImage ? 'data:image/jpeg;base64,' . $selectedEmployeeImage : asset('images/user.jpg') }}" 
+        alt="Profile Image" 
+        class="profile-image-input"
+        style="position: absolute; top: 50%; left: 10px; transform: translateY(-50%); width: 30px; height: 30px; border-radius: 50%;" 
+    />
+                    @else
+                        <img 
+                         src="{{ asset('images/user.jpg') }}" alt="Default Image"
+                            
+                            class="profile-image-input"
+                            style="position: absolute; top: 50%; left: 10px; transform: translateY(-50%); width: 30px; height: 30px; border-radius: 50%;"
+                        />
+                    @endif
 
                
-       
-    
-        <div class="col-md-6 col-12"> 
-
-@if($isNames)
-<div class="col-md-6 search-bar" >
-<div class="input-group4" >
-
-<input 
-wire:model.debounce.500ms="searchTerm" placeholder="Search employees..."
-
-type="text" 
-class="form-control search-term" 
-placeholder="Search for Emp.Name or ID" 
-aria-label="Search" 
-aria-describedby="basic-addon1"
+                  <!-- Search Input Field -->
+<input
+    wire:model.debounce.500ms="searchTerm"
+    aria-label="{{ $selectedEmployeeFirstName ? ucfirst(strtolower($selectedEmployeeFirstName)) . ' ' . ucfirst(strtolower($selectedEmployeeLastName)) : 'Search for an employee...' }}"
+    placeholder="{{ $selectedEmployeeFirstName ? ucfirst(strtolower($selectedEmployeeFirstName)) . ' ' . ucfirst(strtolower($selectedEmployeeLastName)) : 'Search for an employee...' }}"
+    type="text"
+    class="form-control search-term"
+    style="padding-left: 50px; padding-right: 35px;" 
 />
 
-<div class="input-group-append" style="display: flex; align-items: center;">
+<!-- Display Close Icon if Employee is Selected -->
+@if($selectedEmployeeId)
+    <svg class="close-icon-person"  
+         wire:click="removePerson('{{ $selectedEmployeeId }}')" 
+         xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20"
+         style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer;">
+        <path d="M6 18L18 6M6 6l12 12" stroke="#3b4452" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+@else
+    <!-- Display Search Icon if No Employee is Selected -->
+    <i 
+        class="bx bx-search search-icon position-absolute" width="20" height="20"
+        wire:click="searchforEmployee"
+        style="right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer;">
+    </i>
+@endif
 
-<button 
-  
- wire:click="searchforEmployee"  wire:model.debounce.500ms="searchTerm"  style="<?php echo ($searchEmployee) ? 'display: block;' : ''; ?>" 
-    class="search-btn" 
-    type="button" >
-    <i class='bx bx-search' style="color: white;"></i>
-</button>
-
-<button 
-    wire:click="closePeoples"   
-    type="button" 
-    class="close-btn rounded px-1 py-0" 
-    aria-label="Close" 
-   
->
-    <span aria-hidden="true" style="color: white; font-size: 24px; line-height: 0;">×</span>
-</button>
-
-</div>
-</div>
-<div>
-
-
-<!-- Display the Search Results -->
-@if ($peopleData && $peopleData->isEmpty())
-                                    <div class="search-container">
-                                        No People Found
-                                    </div>
-                                    @else
-                                 
-                                    @foreach($peopleData as $employee)
-    @if(stripos($employee->first_name . ' ' . $employee->last_name, $searchTerm) !== false)
-        <label wire:click="selectPerson('{{ $employee->emp_id }}')" class="search-container">
-            <div class="row align-items-center">
-                <div class="col-auto"> 
-                    <input type="checkbox" id="employee-{{ $employee->emp_id }}" 
-                           wire:click="updateselectedEmployee('{{ $employee->emp_id }}')"  
-                           wire:model="selectedPeople" 
-                           value="{{ $employee->emp_id }}" 
-                           {{ in_array($employee->emp_id, $selectedPeople) || $employee->isChecked ? 'checked' : '' }}>
-                </div>
-                <div class="col-auto">
-                    @if($employee->image && $employee->image !== 'null')
-                        <img class="profile-image"  src="data:image/jpeg;base64,{{($people->image ??'-') }}" >
-                    @else
-                        @if($employee->gender == "Male")
-                            <img class="profile-image" src="{{ asset('images/male-default.png') }}" alt="Default Male Image">
-                        @elseif($employee->gender == "Female")
-                            <img class="profile-image" src="{{ asset('images/female-default.jpg') }}" alt="Default Female Image">
-                        @else
-                            <img class="profile-image" src="{{ asset('images/user.jpg') }}" alt="Default Image">
-                        @endif
-                    @endif
-                </div>
-
-                <div class="col">
-                    <h6 class="name" class="mb-0" style="font-size: 12px; color: white;">
-                        @php
-                            // Capitalize the first letter of the first name
-                            $formattedFirstName = ucfirst(strtolower($employee->first_name));
-
-                            // Capitalize each part of the last name
-                            $lastNameParts = explode(' ', strtolower($employee->last_name));
-                            $formattedLastName = implode(' ', array_map('ucfirst', $lastNameParts));
-                        @endphp
-                        {{ $formattedFirstName }} {{ $formattedLastName }}
-                    </h6>
-                    <p class="mb-0" style="font-size: 12px; color: white;">(#{{ $employee->emp_id }})</p>
                 </div>
             </div>
-        </label>
-    @endif
-@endforeach
 
-@endif
-
-
-</div>
-
-
-
-
-
-</div>
-@endif
-</div> 
- 
+            <!-- Conditional Display of Search Results -->
+            @if($searchTerm)
+                @if($employees->isEmpty())
+                    <div class="search-container">
+                        <p>No People Found</p>
+                    </div>
+                @else
+                    <div class="search-container" style="max-height: 250px; overflow-y: auto;">
+                        @foreach($employees as $employee)
+                            @if(stripos($employee->first_name . ' ' . $employee->last_name, $searchTerm) !== false)
+                                <label wire:click="selectEmployee('{{ $employee->emp_id }}')" style="cursor: pointer;">
+                                    <div class="row align-items-center">
+                                        <div class="col-auto">
+                                            <input 
+                                                type="checkbox" 
+                                                id="employee-{{ $employee->emp_id }}"
+                                                wire:click="updateselectedEmployee('{{ $employee->emp_id }}')"
+                                                value="{{ $employee->emp_id }}"
+                                                class="form-check-input custom-checkbox-information"
+                                                {{ in_array($employee->emp_id, $selectedPeople) || $employee->isChecked ? 'checked' : '' }}>
+                                        </div>
+                                        <div class="col-auto">
+                                            @if($employee->image && $employee->image !== 'null')
+                                                <img class="profile-image" src="data:image/jpeg;base64,{{ $employee->image }}">
+                                            @else
+                                                <img class="profile-image" src="{{ asset('images/user.jpg') }}" alt="Default Image">
+                                            @endif
+                                        </div>
+                                        <div class="col">
+                                            <h6 class="name" style="font-size: 12px; color: black;">
+                                                {{ ucfirst(strtolower($employee->first_name)) }} {{ ucfirst(strtolower($employee->last_name)) }}
+                                            </h6>
+                                            <p style="font-size: 12px; color: grey;">(#{{ $employee->emp_id }})</p>
+                                        </div>
+                                    </div>
+                                </label>
+                            @endif
+                        @endforeach
+                    </div>
+                @endif
+            @endif
+        </div>
     </div>
 </div>
 
@@ -220,7 +182,7 @@ aria-describedby="basic-addon1"
                 <div class="col-md-1">
     <!-- Modified image container to have a fixed height -->
     <div class="image-container d-flex align-items-end" >
-        <img src="https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcTrb080MeuXwgT6ZB-x7qWZ3i_xQks-9xsRz5F9wWIyKbEEbGzL" alt="Employee Image" style="height: 180px; width:300px;align-items:end">
+        <img src="{{ asset('images/employeeleave.png') }}"  alt="Employee Image" style="height: 180px; width:280px;align-items:end">
     </div>
 </div>
 
@@ -251,7 +213,7 @@ aria-describedby="basic-addon1"
 
 
 @if($employee)
-<div class="container-fluid bg-white align-items-center justify-content-center ">
+<div class="container-fluid align-items-center justify-content-center ">
     
 <div class="row justify-content-center personalProfile mt-5" >
         <div class="col-md-3 " >
@@ -329,7 +291,10 @@ aria-describedby="basic-addon1"
                     
                     @else
                     <div class="row m-0" style="margin-top: 10px;">
-                        <div class="col-md-10 mb-3" style="color: black; font-size: 12px;">{{$employee->emp_domain ??'-'}}</div>
+                    <div class="col-md-10 mb-3" style="font-size: 12px;">
+    {{ is_array($employee->emp_domain) ? implode(', ', $employee->emp_domain) : ($employee->emp_domain ?? '-') }}
+</div>
+
                        
                     </div>
                     @endif
@@ -383,11 +348,100 @@ aria-describedby="basic-addon1"
              <div class="column" style="display:flex">
              <p style="font-size:12px;font-weight:600">Designation</p>
           
-    <button type="button" class="btn btn-sm ml-auto" style="border-radius: 5px; border: 1px solid blue;height:28px;margin-left:10px;;margin-top:-5px;">
+    <button type="button" class="btn btn-sm ml-auto" wire:click="open" style="border-radius: 5px; border: 1px solid blue;height:28px;margin-left:10px;;margin-top:-5px;">
         <p style="color:blue">add</p></button>
 
 
              </div>
+             @if($showDialog)
+        <div class="modal" tabindex="-1" role="dialog" style="display: block;overflow-y:auto;">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header helpdesk-modal align-items-center">
+                        <h5  class="modal-title helpdesk-title"><b>Add Designation</b></h5>
+
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                    <form>
+     <!-- Category Type Input (Label and Input in One Line) -->
+     <div class="form-group row align-items-center ">
+        <label for="categoryType" class="col-md-4 col-form-label " style="margin-left:70px">Category Type</label>
+        <div class="col-md-4 mt-3">
+        <p style="font-size:12px">Designation</p>
+        </div>
+    </div>
+
+    <!-- Department Input (Label and Input in One Line) -->
+
+
+    <!-- Category Dropdown (Label and Input in One Line) -->
+    <div class="form-group row align-items-center">
+        <label for="category" class="col-md-4 col-form-label "  style="margin-left:70px">Category</label>
+        <div class="col-md-4 mt-2" style="font-size:12px">
+            <select class="form-control" id="category" name="category" style="font-size:12px">
+                <option value="" hidden>Select</option>
+                <option value="Category1">Accounts Executive</option>
+                <option value="Business Development Executive">Business Development Executive</option>
+                <option value="CEO">CEO</option>
+                <option value="CFO">CFO</option>
+                <option value="Customer Service Manager">Customer Service Manager</option>
+                <option value="Director">Director</option>
+                <option value="Finance Manager">Finance Manager</option>
+                <option value="HR Director">HR Director</option>
+                <option value="HR Executive">HR Executive</option>
+                <option value="HR Manager">HR Manager</option>
+                <option value="Jr. Accounts Executive">Jr. Accounts Executive</option>
+                <option value="Jr. HR Executive">Jr. HR Executive</option>
+                <option value="Jr. Software Engineer">Jr. Software Engineer</option>
+                <option value="Office Assistant">Office Assistant</option>
+                <option value="Operations Director">Operations Director</option>
+                <option value="Operations Manager">Operations Manager</option>
+                <option value="Product Manager">Product Manager</option>
+                <option value="Project Manager">Project Manager</option>
+                <option value="Quality Assurance Manager">Quality Assurance Manager</option>
+                <option value="Sales Director">Sales Director</option>
+                <option value="Software Engineer">Software Engineer</option>
+                <option value="Sr. Software Engineer">Sr. Software Engineer</option>
+                <option value="Tech Lead">Tech Lead</option>
+                <option value="Tele Caller">Tele Caller</option>
+                <option value="Trainee">Trainee</option>
+                <!-- Add more options as needed -->
+            </select>
+        </div>
+    </div>
+
+    <!-- Effective From Date Input (Label and Input in One Line) -->
+    <div class="form-group row align-items-center" style="font-size:12px">
+        <label for="effectiveFrom" class="col-md-4 col-form-label"  style="margin-left:70px">Effective From</label>
+        <div class="col-md-4 mt-2">
+            <input type="date" class="form-control" id="effectiveFrom" name="effectiveFrom"  style="font-size:12px">
+        </div>
+    </div>
+
+    <!-- Effective To Date Input (Label and Input in One Line) -->
+    <div class="form-group row align-items-center">
+        <label for="effectiveTo" class="col-md-4 col-form-label "  style="margin-left:70px">Effective To</label>
+        <div class="col-md-4 mt-2">
+            <input type="date" class="form-control" id="effectiveTo" name="effectiveTo"  style="font-size:12px">
+        </div>
+    </div>
+    <!-- Submit Button -->
+    <div class="ml-0 p-0 mt-3 d-flex gap-3 justify-content-center">
+                            <button wire:click="submitHR" class="submit-btn" type="button">Save</button>
+                            <button wire:click="close" class="cancel-btn" type="button" style="border: 1px solid rgb(2, 17, 79);">Cancel</button>
+                        </div>
+</form>
+
+         
+
+                      
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-backdrop fade show blurred-backdrop"></div>
+        @endif
              <div class="column" style="display: flex;">
              <div class="row" style="margin-right: -5px; margin-left: -5px;">
     <div class="col-auto" style="padding-right: 5px; padding-left: 5px;">

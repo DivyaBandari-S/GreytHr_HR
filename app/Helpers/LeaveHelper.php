@@ -237,4 +237,5 @@ class LeaveHelper
             'totalPaternityDays' => $totalPaternityDays,
         ];
     }
+
 }

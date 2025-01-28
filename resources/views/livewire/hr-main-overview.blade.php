@@ -20,7 +20,7 @@
                 <div class="col-11 d-flex flex-column">
                     <p class="main-overview-text">The page guides you through an overview of your organization's
                         day-to-day
-                        HR activities including lifecycle events like additions, seperations, etc</p>
+                        HR activitwies including lifecycle events like additions, seperations, etc</p>
 
                 </div>
                 <div class="hide-main-overview-help col-1">
@@ -57,7 +57,7 @@
 
             <div class="row pt-3">
 
-                <div class="col-md-4 col-12 mb-3">
+                <!-- <div class="col-md-4 col-12 mb-3">
                     <div class="border rounded p-3 bg-white main-overview-requests-container">
                         <h2 class="main-overview-count-text">
                             {{ $hrRequestSolvedCount }}</h2>
@@ -79,7 +79,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> -->
                 {{-- <div class="col-md-4 col-12 mb-3">
                     <div class="border rounded p-3 bg-white">
                         <h2 class="main-overview-count-text">

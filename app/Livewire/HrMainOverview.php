@@ -19,6 +19,7 @@ class HrMainOverview extends Component
     public $newJoiners;
     public $employeesWithAnniversaries;
     public $employeesbirthdays;
+    public $percentageChangeText;
     public $inactiveEmployees;
     public $confirmationDue;
     public $data = [];
@@ -368,37 +369,37 @@ class HrMainOverview extends Component
         $previousMonthEnd = Carbon::now()->subMonth()->endOfMonth();
 
         // Fetch the records within the date range and category list
-        $this->hrRequestCount = DB::table('help_desks')
-            ->whereIn('category', $categories)
-            ->whereBetween('created_at', [$startDate, $endDate])
-            ->count();
+        // $this->hrRequestCount = DB::table('help_desks')
+        //     ->whereIn('category', $categories)
+        //     ->whereBetween('created_at', [$startDate, $endDate])
+        //     ->count();
 
         // Count for the current month
-        $this->hrRequestCountCurrentMonth = DB::table('help_desks')
-            ->whereIn('category', $categories)
-            ->whereBetween('created_at', [$currentMonthStart, $currentMonthEnd])
-            ->count();
+        // $this->hrRequestCountCurrentMonth = DB::table('help_desks')
+        //     ->whereIn('category', $categories)
+        //     ->whereBetween('created_at', [$currentMonthStart, $currentMonthEnd])
+        //     ->count();
 
         // Count for the previous month
-        $this->hrRequestCountPreviousMonth = DB::table('help_desks')
-            ->whereIn('category', $categories)
-            ->whereBetween('created_at', [$previousMonthStart, $previousMonthEnd])
-            ->count();
-            $percentageChange = $this->calculatePercentageChange(
-                $this->hrRequestCountCurrentMonth,
-                $this->hrRequestCountPreviousMonth
-            );
-        
-            // Format percentage change
-            $percentageChangeFormatted = number_format(abs($percentageChange), 2); // Absolute value for formatting
-     
-            $percentageChangeText = "{$percentageChangeFormatted}%";
+        // $this->hrRequestCountPreviousMonth = DB::table('help_desks')
+        //     ->whereIn('category', $categories)
+        //     ->whereBetween('created_at', [$previousMonthStart, $previousMonthEnd])
+        //     ->count();
+        //     $percentageChange = $this->calculatePercentageChange(
+        //         $this->hrRequestCountCurrentMonth,
+        //         $this->hrRequestCountPreviousMonth
+        //     );
 
-        $this->hrRequestSolvedCount = DB::table('help_desks')
-            ->whereIn('category', $categories)
-            ->whereBetween('created_at', [$startDate, $endDate])
-            ->where('status', 'Completed')
-            ->count();
+            // Format percentage change
+        //     $percentageChangeFormatted = number_format(abs($percentageChange), 2); // Absolute value for formatting
+
+        //     $percentageChangeText = "{$percentageChangeFormatted}%";
+
+        // $this->hrRequestSolvedCount = DB::table('help_desks')
+        //     ->whereIn('category', $categories)
+        //     ->whereBetween('created_at', [$startDate, $endDate])
+        //     ->where('status', 'Completed')
+        //     ->count();
 
 
 
@@ -447,12 +448,12 @@ class HrMainOverview extends Component
             'inactiveEmployees' => $this->inactiveEmployees,
             'confirmationDue' => $this->confirmationDue,
             'employeeCounts' => $this->employeeCounts,
-            'hrRequestCount' => $this->hrRequestCount,
-            'hrRequestSolvedCount' => $this->hrRequestSolvedCount,
+            // 'hrRequestCount' => $this->hrRequestCount,
+            // 'hrRequestSolvedCount' => $this->hrRequestSolvedCount,
             'months' => $this->months,
             'mobileUsersCount' => $this->mobileUsersCount,
             'data' => $this->data,
-            'percentageChangeText' =>$percentageChangeText,
+            'percentageChangeText' =>$this->percentageChangeText,
             'maxEmployeeCount' => $roundedMaxEmployeeCount
         ]);
     }

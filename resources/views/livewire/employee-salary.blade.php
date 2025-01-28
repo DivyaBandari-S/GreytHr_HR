@@ -300,7 +300,7 @@
                     <p class="employee-leave-start-para">Start searching to see specific employee details here</p>
                     <div class="d-flex mb-2">
                         <label style="margin-top: 7px;" for="">Employee Type:</label>
-                        <select class="Employee-select-leave" style="border: none; margin-left: 10px;"
+                        <select class="Employee-select-leave form-select" style="border: none; margin-left: 10px;width:fit-content"
                             wire:model="employeeType" wire:change="filterEmployeeType">
                             <option value="all">All</option>
                             <option value="active">Current Employees</option>

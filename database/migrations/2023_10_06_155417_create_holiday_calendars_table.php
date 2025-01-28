@@ -12,12 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('holiday_calendars', function (Blueprint $table) {
-            $table->id();
-            $table->string('day');
+            $table->smallInteger('id')->autoIncrement();
+            $table->string('day',10);
             $table->date('date');
-            $table->string('month');
-            $table->string('year');
-            $table->text('festivals')->nullable();
+            $table->string('month',10);
+            $table->string('year',10);
+            $table->string('festivals',50)->nullable();
+            $table->smallInteger('status')->default(5);
             $table->timestamps();
         });
     }
