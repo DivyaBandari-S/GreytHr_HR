@@ -12,15 +12,24 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('assets', function (Blueprint $table) {
+            $table->smallInteger('id')->autoIncrement();
             $table->string('emp_id');
             $table->enum('asset_type', ['Laptop', 'Keyboard', 'Monitor','Mouse']); 
-            $table->enum('asset_status', ['Active', 'Pending', 'Completed']);  
+            $table->enum('active', ['Active', 'InActive'])->default('Active')->nullable();  
+             $table->enum('asset_status', ['All','Available','Damaged','Decommissioned','Issued','Lost','Returned','Under Repair'])->default('All');
             $table->string('asset_details'); 
-            $table->date('issue_date'); 
+            $table->date('purchase_date'); 
             $table->string('asset_id')->unique();
-            $table->date('valid_till')->nullable();
-            $table->integer('asset_value'); 
-            $table->string('returned_on'); // Path to attached file (nullable)
+            $table->string('brand')->nullable();
+            $table->string('model')->nullable();
+            $table->string('invoice_no')->unique()->nullable();
+            
+            $table->decimal('original_value', 10, 2)->nullable();
+            $table->decimal('current_value', 10, 2)->nullable();
+            
+            $table->enum('warranty', ['Yes', 'No']); 
+         
+           // Path to attached file (nullable)
             $table->text('remarks')->nullable();
             $table->timestamps();
             $table->foreign('emp_id')
