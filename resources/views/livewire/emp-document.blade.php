@@ -188,7 +188,7 @@
                         <div class="col-md-9 custom-container d-flex flex-column">
                         <div class="d-flex align-items-center mb-2">
     <p class="main-text mb-0" style="width:88%">
-        This page allows you to add/edit the profile details of an employee. The page helps you to keep the employee information up to date.
+    View and manage soft copies of an employee's documents from the Employee Documents page. Documents available under the Documents tab can be Education Documents, Address Proof Documents, Previous employment-related documents, etc. Click Add Documents to add new documents. 
     </p>
     <p class="hide-text" style="cursor: pointer;" wire:click="toggleDetails">
         {{ $showDetails ? 'Hide Details' : 'Info' }}
@@ -221,29 +221,26 @@
              
                         <p class="main-text mt-1">Employee Type:</p>
                        
-                        <div class="dropdown">
-                        <button class="btn btn dropdown-toggle dp-info" type="button" data-bs-toggle="dropdown" style="font-size:12px">
-    Employee: {{ ucfirst($selectedOption) }} 
-    <span class="arrow-for-employee"></span><span class="caret"></span>
-</button>
+                        <div class="dropdown mt-1">
+    <button class="btn dropdown-toggle dp-info" type="button" data-bs-toggle="dropdown" style="font-size:12px">
+     {{ ucfirst($selectedOption) }} 
+    </button>
+    <ul class="dropdown-menu" style="font-size:12px;">
+        <li class="updated-dropdown">
+            <a href="#" wire:click.prevent="updateSelected('all')" class="dropdown-item custom-info-item">All Employees</a>
+        </li>
+        <li class="updated-dropdown">
+            <a href="#" wire:click.prevent="updateSelected('current')" class="dropdown-item custom-info-item">Current Employees</a>
+        </li>
+        <li class="updated-dropdown">
+            <a href="#" wire:click.prevent="updateSelected('past')" class="dropdown-item custom-info-item">Resigned Employees</a>
+        </li>
+        <li class="updated-dropdown">
+            <a href="#" wire:click.prevent="updateSelected('intern')" class="dropdown-item custom-info-item">Intern</a>
+        </li>
+    </ul>
+</div>
 
-    <span class="caret"></span></button>
-    <ul class="dropdown-menu" style="font-size:12px; ">
-    <li class="updated-drodown" >
-        <a href="#" wire:click.prevent="updateSelected('all')" class="dropdown-item custom-info-item">All Employees</a>
-    </li>
-    <li class="updated-drodown" >
-        <a href="#" wire:click.prevent="updateSelected('current')" class="dropdown-item custom-info-item">Current Employees</a>
-    </li>
-    <li class="updated-drodown" >
-        <a href="#" wire:click.prevent="updateSelected('past')" class="dropdown-item custom-info-item">Resigned Employees</a>
-    </li>
-    <li class="updated-drodown" >
-        <a href="#" wire:click.prevent="updateSelected('intern')" class="dropdown-item custom-info-item">Intern</a>
-    </li>
-</ul>
-
-  </div>
          
 
                       
@@ -410,38 +407,39 @@
                             <!-- Documents Filter and Add -->
                             <div class="container mt-3">
                                 <div class="row justify-content-center">
-                                    <div class="row mt-3">
-                                        <!-- First Dropdown -->
-                                        <div class="col-12 col-md-3 mb-2">
-                                            <select class="custom-select-doc dropdown-toggle" name="category" wire:model="filter_option" wire:change="loadDocuments">
-                                                <option value="All">All</option>
-                                                <option value="Accounts & Statutory">Accounts & Statutory</option>
-                                                <option value="Address">Address</option>
-                                                <option value="Background Verification">Background Verification</option>
-                                                <option value="Education">Education</option>
-                                                <option value="Experience">Experience</option>
-                                                <option value="Joining Kit">Joining Kit</option>
-                                                <option value="Previous Employment">Previous Employment</option>
-                                                <option value="Projects">Projects</option>
-                                                <option value="Qualification">Qualification</option>
-                                                <option value="Vaccination Certificate">Vaccination Certificate</option>
-                                            </select>
-                                        </div>
+                                <div class="row mt-3">
+    <!-- First Dropdown -->
+    <div class="col-12 col-md-3 mb-1">
+        <select class="custom-select-doc dropdown-toggle" name="category" wire:model="filter_option" wire:change="loadDocuments">
+            <option value="All">All</option>
+            <option value="Accounts & Statutory">Accounts & Statutory</option>
+            <option value="Address">Address</option>
+            <option value="Background Verification">Background Verification</option>
+            <option value="Education">Education</option>
+            <option value="Experience">Experience</option>
+            <option value="Joining Kit">Joining Kit</option>
+            <option value="Previous Employment">Previous Employment</option>
+            <option value="Projects">Projects</option>
+            <option value="Qualification">Qualification</option>
+            <option value="Vaccination Certificate">Vaccination Certificate</option>
+        </select>
+    </div>
 
-                                        <!-- Second Dropdown -->
-                                        <div class="col-12 col-md-2 mb-2" >
-                                            <select class="custom-select-doc" name="view" wire:model="filter_publishtype" wire:change="publishType">
-                                                <option value="All" selected>All</option>
-                                                <option value="Published">Published</option>
-                                                <option value="Unpublished">Unpublished</option>
-                                            </select>
-                                        </div>
+    <!-- Second Dropdown -->
+    <div class="col-12 col-md-2 mb-1">
+        <select class="custom-select-doc" name="view" wire:model="filter_publishtype" wire:change="publishType">
+            <option value="All" selected>All</option>
+            <option value="Published">Published</option>
+            <option value="Unpublished">Unpublished</option>
+        </select>
+    </div>
 
-                                        <!-- Add Document Button -->
-                                        <div class="col-12 col-md-6 mb-2">
-                                            <button class="btn btn-primary" style="font-size: 12px;" wire:click="addDocs">Add Documents</button>
-                                        </div>
-                                    </div>
+    <!-- Add Document Button -->
+    <div class="col-12 col-md-6 mb-1">
+        <button class="btn btn-primary" style="font-size: 12px;" wire:click="addDocs">Add Documents</button>
+    </div>
+</div>
+
 
                                     <!-- Document Modal -->
                                     @if($showDocDialog)
@@ -642,8 +640,9 @@
             @endif
         @endforeach
     @else
-        {{-- No requests available --}}
-        <p>No requests available for this employee.</p>
+    <div class="request-item-container">
+                    <h3>No requests found for Employee ID: {{ $employeeId }}</h3>
+                </div>
     @endif
 
 
@@ -652,8 +651,57 @@
                         </div>
                     @elseif($activeTab1 === 'tab3')
                         <div class="tab-pane fade show active">
-                            <h3>Content for Tab 3</h3>
-                            <p>This is the content for the third tab.</p>
+                        @foreach((array)$selectedEmployeeId as $employeeId)
+                        @if($allSalaryDetails->isNotEmpty())
+
+       
+            @foreach($allSalaryDetails as $salary)
+            <div class="document-card col-12 col-md-6 col-lg-4 ">
+                                        <div class="card-header" style="border-bottom:none">
+                                            <img src="{{ asset('images/emp-document.png') }}" style="height:40px;width:40px;">
+                                           
+                                            <div class="col">
+                                                <div class="row" style="display:flex">
+                                                <div class="col-md-3">
+                                                    <p style="margin-bottom: 5px;color:#3a87ad;font-weight:500">{{ \Carbon\Carbon::parse($salary->effective_date)->format('M Y') }}.pdf  </p>
+                                                    </div>
+                                                   
+                                                    <div class="col-md-9 d-flex justify-content-end align-items-end">
+ 
+    <i class="fas fa-eye" wire:click.prevent="viewPdf('{{$salary->month_of_sal}}')" 
+       style="font-size: 16px; margin-right: 10px; cursor: pointer;color:#3a87ad"></i>
+    <i class="fas fa-download" wire:click.prevent="downloadPdf('{{$salary->month_of_sal}}')" 
+       style="font-size: 16px; cursor: pointer;color:#3a87ad"></i>
+</div>
+
+ 
+                                                </div>
+                                          
+                                            </div>
+                                            
+                                        
+                                        </div>
+                                        <div class="row">
+                                                <p class="main-text" style="margin-top: -5px;"> {{ \Carbon\Carbon::parse($salary->effective_date)->format(' M Y') }} </p>
+                                                <p class="main-text" style="margin-top: -5px;">
+    {{ \Carbon\Carbon::parse($salary->month_of_sal)->format('d M Y h:i:s A') }} 
+  
+</p>
+
+
+                                                <p class="main-text" style="margin-top: -15px;color:#3a87ad"> Payslip for the month of {{ \Carbon\Carbon::parse($salary->effective_date)->format('M Y') }} </p>
+                                                </div>
+                                     
+                                    </div>
+            @endforeach
+      
+@else
+<div class="request-item-container">
+                    <h3>No requests found for Employee ID</h3>
+                </div>
+@endif
+@endforeach
+
                         </div>
                     @elseif($activeTab1 === 'tab4')
                         <div class="tab-pane fade show active">

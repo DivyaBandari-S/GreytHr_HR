@@ -2821,59 +2821,198 @@ input[type="date"]::before {
     align-items: center;
     justify-content: center;
 }
-
-.help-desk-table {
-    width: 100%;
-    background-color: white;
-    margin-top: 10px;
-    overflow-x: auto;
+.filter-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    font-size: 10px;
+   
 }
 
-.help-desk-table-main {
-    width: 100%;
-    background-color: white;
-
-    border-collapse: collapse;
-    overflow-x: auto;
-}
-
-.help-desk-table-row {
-    background-color:var(--main-button-color);
-
-    color: white;
-}
-
-.help-desk-table-column {
-    padding: 10px;
-    font-size: 12px;
-    text-align: center;
-}
-
-.custom-button {
+.asset-dropdown {
+    position: relative;
+    display: inline-block;
     border-radius: 5px;
-    padding: 5px 10px;
-    color: white;
+    background-color: #f4f4f4;
+    border: 1px solid #ddd;
+    height: 30px;
+    margin: 0;
+    font-size: 10px;
+    justify-content: center;
+}
+
+.asset-dropdown-toggle {
+    display: flex;
+    align-items: center;
+    padding: 5px 5px;
+    background-color: #ffffff;
+    font-size: 10px;
+    cursor: pointer;
+    border-radius: 4px;
+    width: auto; /* Adjust the width */
+    justify-content: center;
+    height: 30px;
+
+}
+
+.asset-dropdown-toggle i {
+    margin-right: 8px;
+}
+
+.asset-dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    width: 200px;
+}
+
+.asset-dropdown-menu ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.asset-dropdown-menu ul li {
+    padding: 5px;
     cursor: pointer;
 }
 
-.helpdesk-request {
-    padding: 10px;
+.asset-dropdown-menu ul li:hover {
+    background-color: #f0f0f0;
+}
+
+.asset-dropdown:hover .asset-dropdown-menu {
+    display: block;
+}
+
+
+
+
+
+        .asset-dropdown-toggle:hover {
+            background-color: #abcde8;
+            color: white;
+        }
+        .asset-dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            width: 200px;
+        }
+        .asset-dropdown:hover .asset-dropdown-menu {
+            display: block;
+        }
+        .asset-dropdown-menu ul {
+            list-style: none;
+            padding: 10px;
+            margin: 0;
+        }
+        .asset-dropdown-menu li {
+            padding: 8px 10px;
+            cursor: pointer;
+        }
+        .asset-dropdown-menu li:hover {
+            background-color: #f1f1f1;
+        }
+        .asset-search{
+            width: calc(100% - 20px);
+            margin: 0 auto 10px;
+            margin-top: 10px;
+           margin-left: 10px;
+           height:30px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+
+        /*asset table */
+        /* Specific Table Styling */
+.employee-requests-table {
+    width: 80%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    align-items: center;
+ 
+    justify-content: center;
+    border-radius: 5px;
+    margin-left: 40px;
+   
+}
+
+/* Header Styling */
+.employee-requests-table .table-header {
+    background-color:#98cae0;
     font-size: 12px;
+    font-weight: 500;
+       border-radius: 5px;
+    align-items: center;
+
+}
+.employee-requests-table .header-row {
     text-align: center;
-    text-transform: capitalize;
+    background-color:#98cae0;
+    font-size: 12px;
+    font-weight: 500;
+    border-radius: 5px;
+}
+.employee-requests-table .header-column {
+    padding: 10px;
+    font-weight: 500;
+    font-size: 12px;
+    background-color:#E4E9F0;
+    
+    align-items: center;
+    border: 1px solid #ddd;
+  }
+
+
+/* Body Styling */
+.employee-requests-table .table-body {
+    background-color: #fff;
+}
+.employee-requests-table .body-row {
+   
+    align-items: center;
+    text-align: center;
+}
+.employee-requests-table .body-column {
+    padding: 8px;
+    font-size: 13px;
+    justify-items: center;
 }
 
-.help-desk-table-main th,
-td {
-    border-bottom: none;
+/* Table Title */
+.employee-requests-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    color: #333;
 }
 
-.submit-button {
-    background-color: green;
+/* No Requests Styling */
+.no-requests-title {
+    font-size: 16px;
+    color: red;
+    margin: 10px 0;
 }
-
-.cancel-button {
-    background-color: red;
+.no-requests-message {
+    font-size: 14px;
+    color: #666;
+    margin-top: 20px;
 }
 
 .custom-checkbox-helpdesk:checked {
@@ -3097,19 +3236,24 @@ td {
 }
 
 .dropdown-menu .updated-drodown a.dropdown-item:hover {
-    background-color: #f0f0f0; /* Ensure dropdown menu has a hover effect */
+    background-color: #9cd5f8; /* Ensure dropdown menu has a hover effect */
     color: #000; /* Change text color on hover if needed */
+    font-size: 10px;
 }
 
-.dp-info{
-    background-color: var(--main-button-color);
-    color:white;
+.dp-info {
+    background-color: transparent; /* Use transparent instead of none */
+    color: var(--label-color);
+    height: 20px; /* Increased for better alignment */
+    display: flex; /* Ensures Flexbox is applied */
+    justify-content: center; /* Centers text horizontally */
+    align-items: center; /* Centers text vertically */
+    text-align: center; /* Ensures text alignment */
+    width: 100%; /* Takes full width */
+
 }
 
-.dp-info:hover {
-    background-color: var(--main-button-color);
-    color:white;
-}
+
 
 .custom-file-upload i {
     margin-right: 5px; /* Space between icon and text */
