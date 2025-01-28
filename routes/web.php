@@ -37,6 +37,7 @@ use App\Livewire\HrLeaveOverview;
 use App\Livewire\HrMainOverview;
 use App\Livewire\HrOrganisationChart;
 use App\Livewire\LeaveSettingPolicy;
+use App\Livewire\LeaveTypeReviewer;
 use App\Livewire\ParentDetails;
 use App\Livewire\PositionHistory;
 use App\Livewire\ReportsManagement;
@@ -146,7 +147,7 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
 
         //HR Leave-SetUp Submodule Routes
         Route::get('/user/holidayList', HrHolidayList::class)->name('holidayList');
-
+        Route::get('/user/leave/setup/leave-type-reviewer', LeaveTypeReviewer::class)->name('leave-type-reviewer');
         //Reports
         Route::get('/user/reports/', ReportsManagement::class)->name('reports');
 
