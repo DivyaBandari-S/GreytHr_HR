@@ -3224,15 +3224,17 @@ input[type="date"]::before {
 }
 .custom-info-item {
     padding: 8px 16px;
-    font-size: 14px;
+    font-size: 10px;
     text-decoration: none;
     color: #3b4452;
     display: block; /* Ensure block display */
 }
 
 .custom-info-item:hover {
-    background-color: var(--main-button-color) ; /* Change to your desired hover background color */
-    color: white; /* Change text color on hover if needed */
+    margin: 0;
+ 
+    background-color: #d9e2f4 ; /* Change to your desired hover background color */
+    color:#3b4452; /* Change text color on hover if needed */
 }
 
 .dropdown-menu .updated-drodown a.dropdown-item:hover {

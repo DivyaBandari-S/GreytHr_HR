@@ -419,16 +419,6 @@ class EmpDocument extends Component
             // Fetch all letter requests for the selected employee
             $this->requests = LetterRequest::whereIn('emp_id', (array)$this->selectedEmployeeId)->get();
 
-            $this->allSalaryDetails = $this->getSalaryDetails();
-
-            $employeeId = auth()->user()->emp_id;
-
-
-            $this->employeeDetails = EmployeeDetails::select('employee_details.*', 'emp_departments.department')
-                ->leftJoin('emp_departments', 'employee_details.dept_id', '=', 'emp_departments.dept_id')
-                ->leftJoin('emp_personal_infos', 'employee_details.emp_id', '=', 'emp_personal_infos.emp_id')
-                ->where('employee_details.emp_id', $employeeId)
-                ->first();
             // Debugging output
             Log::info('Fetched Letter Requests: ' . $this->requests->toJson());
         } else {
@@ -736,13 +726,13 @@ class EmpDocument extends Component
             $this->requests = LetterRequest::whereIn('emp_id', (array)$this->selectedEmployeeId)->get();
             $this->allSalaryDetails = $this->getSalaryDetails();
 
-            $employeeId = auth()->user()->emp_id;
+            $this->selectedEmployeeId ;
 
 
             $this->employeeDetails = EmployeeDetails::select('employee_details.*', 'emp_departments.department')
                 ->leftJoin('emp_departments', 'employee_details.dept_id', '=', 'emp_departments.dept_id')
                 ->leftJoin('emp_personal_infos', 'employee_details.emp_id', '=', 'emp_personal_infos.emp_id')
-                ->where('employee_details.emp_id', $employeeId)
+                ->where('employee_details.emp_id', $this->selectedEmployeeId)
                 ->first();
 
             // Debugging output
@@ -760,49 +750,62 @@ class EmpDocument extends Component
     }
     public function downloadPdf($month)
     {
-        $salaryDivisions = [];
-        $empBankDetails = [];
-        $employeeId = auth()->user()->emp_id;
-
+        if (!$this->selectedEmployeeId) {
+            return response()->json(['error' => 'No Employee Selected'], 400);
+        }
+    
+        // Fetch employee salary details
         $empSalaryDetails = EmpSalary::join('salary_revisions', 'emp_salaries.sal_id', '=', 'salary_revisions.id')
             ->where('salary_revisions.emp_id', $this->selectedEmployeeId)
             ->where('month_of_sal', 'like',  $month . '%')
             ->first();
-
-
-        if ($empSalaryDetails) {
-            $salaryDivisions = $empSalaryDetails->calculateSalaryComponents($empSalaryDetails->salary);
-            $empBankDetails = EmpBankDetail::where('emp_id', $this->selectedEmployeeId)
-                ->where('id', $empSalaryDetails->bank_id)->first();
-            $employeePersonalDetails = EmpPersonalInfo::where('emp_id', $this->selectedEmployeeId)->first();
-            // dd( $this->employeePersonalDetails);
-        } else {
-            // Handle the null case (e.g., log an error or set a default value)
-            $salaryDivisions = [];
+    
+        if (!$empSalaryDetails) {
+            return response()->json(['error' => 'Salary details not found for selected employee'], 404);
         }
-
-        // Generate PDF using the fetched data
-        $pdf = Pdf::loadView('download-pdf', [
-            'employees' =>  $this->employeeDetails,
-            'salaryRevision' =>  $salaryDivisions,
-            'empBankDetails' => $empBankDetails,
-            'rupeesInText' => $this->convertNumberToWords($salaryDivisions['net_pay']),
-            'salMonth' => Carbon::parse($month)->format('F Y')
+    
+        // Fetch employee personal & bank details
+        $employeeDetails = EmployeeDetails::select('employee_details.*', 'emp_departments.department')
+            ->leftJoin('emp_departments', 'employee_details.dept_id', '=', 'emp_departments.dept_id')
+            ->where('employee_details.emp_id', $this->selectedEmployeeId)
+            ->first();
+    
+        $salaryDivisions = $empSalaryDetails->calculateSalaryComponents($empSalaryDetails->salary);
+        $empBankDetails = EmpBankDetail::where('emp_id', $this->selectedEmployeeId)
+            ->where('id', $empSalaryDetails->bank_id)->first();
+    
+        // Debugging log (Check Laravel logs)
+        Log::info('Generating payslip for:', [
+            'Employee ID' => $this->selectedEmployeeId,
+            'Salary Details' => $salaryDivisions,
+            'Bank Details' => $empBankDetails
         ]);
-
+    
+        // Pass data to PDF view
+        $pdf = Pdf::loadView('download-pdf', [
+            'employeeDetails' => $employeeDetails, // Pass employee details
+            'salaryRevision' => $salaryDivisions,  // Pass salary breakdown
+            'empBankDetails' => $empBankDetails,   // Pass bank details
+            'rupeesInText' => $this->convertNumberToWords($salaryDivisions['net_pay']), // Pass net pay in words
+            'salMonth' => Carbon::parse($month)->format('F Y') // Pass month formatted
+        ]);
+    
         $name = Carbon::parse($month)->format('MY');
-
+    
+        // Return PDF as download
         return response()->streamDownload(function () use ($pdf) {
             echo $pdf->stream();
         }, 'payslip-' . $name . '.pdf');
     }
+    
+    
     public $rupeesInText;
     public $salMonth;
     public $month;
     public function viewPdf($month)
     {
 
-        $employeeId = auth()->user()->emp_id;
+        $this->selectedEmployeeId = auth()->user()->emp_id;
 
         $empSalaryDetails = EmpSalary::join('salary_revisions', 'emp_salaries.sal_id', '=', 'salary_revisions.id')
             ->where('salary_revisions.emp_id', $this->selectedEmployeeId)

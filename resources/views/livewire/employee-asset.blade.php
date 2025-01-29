@@ -252,29 +252,26 @@
              
                         <p class="main-text mt-1">Employee Type:</p>
                        
-                        <div class="dropdown">
-                        <button class="btn btn dropdown-toggle dp-info" type="button" data-bs-toggle="dropdown" style="font-size:12px">
-    {{ ucfirst($selectedOption) }} Employees
-    <span class="arrow-for-employee"></span><span class="caret"></span>
-</button>
+                        <div class="dropdown mt-1">
+    <button class="btn dropdown-toggle dp-info" type="button" data-bs-toggle="dropdown" style="font-size:12px">
+     {{ ucfirst($selectedOption) }} 
+    </button>
+    <ul class="dropdown-menu" style="font-size:12px;">
+        <li class="updated-dropdown">
+            <a href="#" wire:click.prevent="updateSelected('all')" class="dropdown-item custom-info-item">All Employees</a>
+        </li>
+        <li class="updated-dropdown">
+            <a href="#" wire:click.prevent="updateSelected('current')" class="dropdown-item custom-info-item">Current Employees</a>
+        </li>
+        <li class="updated-dropdown">
+            <a href="#" wire:click.prevent="updateSelected('past')" class="dropdown-item custom-info-item">Resigned Employees</a>
+        </li>
+        <li class="updated-dropdown">
+            <a href="#" wire:click.prevent="updateSelected('intern')" class="dropdown-item custom-info-item">Intern</a>
+        </li>
+    </ul>
+</div>
 
-    <span class="caret"></span></button>
-    <ul class="dropdown-menu" style="font-size:12px; ">
-    <li class="updated-drodown" >
-        <a href="#" wire:click.prevent="updateSelected('all')" class="dropdown-item custom-info-item">All Employees</a>
-    </li>
-    <li class="updated-drodown" >
-        <a href="#" wire:click.prevent="updateSelected('current')" class="dropdown-item custom-info-item">Current Employees</a>
-    </li>
-    <li class="updated-drodown" >
-        <a href="#" wire:click.prevent="updateSelected('past')" class="dropdown-item custom-info-item">Resigned Employees</a>
-    </li>
-    <li class="updated-drodown" >
-        <a href="#" wire:click.prevent="updateSelected('intern')" class="dropdown-item custom-info-item">Intern </a>
-    </li>
-</ul>
-
-  </div>
          
 
                       
@@ -656,7 +653,9 @@
     @endforeach
 @else
     {{-- No requests available --}}
-    <p class="no-requests-message d-flex justify-content-center align-items-center">No requests available for this employee.</p>
+    <div class="request-item-container">
+                    <h3>No requests found for Employee ID</h3>
+                </div>
 @endif
 
   

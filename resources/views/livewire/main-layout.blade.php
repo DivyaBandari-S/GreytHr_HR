@@ -13,6 +13,7 @@
                     <li class="title">Home</li>
                     <li><a href="{{route('home')}}">Home</a></li>
                     <li><a href="{{route('request')}}">Request</a></li>
+                    <li><a href="{{route('HelpDesk')}}">HelpDesk</a></li>
                 </ul>
             </li>
             <li>
