@@ -54,15 +54,15 @@
                             <table style="width:100%; border: none;">
                                 <tr>
                                     <td class="lableValues Labels ">Name:</td>
-                                    <td class="lableValues Labels"> {{ ucwords(strtolower($employees->first_name)) . ' ' . ucwords(strtolower($employees->last_name)) }}</td>
+                                    <td class="lableValues Labels"> {{ ucwords(strtolower($employeeDetails->first_name)) . ' ' . ucwords(strtolower($employeeDetails->last_name)) }}</td>
                                 </tr>
                                 <tr>
                                     <td class="lableValues Labels">Joining Date:</td>
-                                    <td class="lableValues Labels">  {{ \Carbon\Carbon::parse($employees->hire_date)->format('d M, Y') }}</td>
+                                    <td class="lableValues Labels">  {{ \Carbon\Carbon::parse($employeeDetails->hire_date)->format('d M, Y') }}</td>
                                 </tr>
                                 <tr>
                                     <td class="lableValues Labels">Designation:</td>
-                                    <td class="lableValues Labels"> {{$employees->job_role}}</td>
+                                    <td class="lableValues Labels"> {{$employeeDetails->job_role}}</td>
                                 </tr>
                                 <tr>
                                     <td class="lableValues Labels">Department:</td>
@@ -70,7 +70,7 @@
                                 </tr>
                                 <tr>
                                     <td class="lableValues Labels">Location:</td>
-                                    <td class="lableValues Labels">{{$employees->job_location}}</td>
+                                    <td class="lableValues Labels">{{$employeeDetails->job_location}}</td>
                                 </tr>
                                 <tr>
                                     <td class="lableValues Labels"> Effective Work Days:</td>
@@ -87,7 +87,7 @@
                             <table style="width:100%; border: none;">
                                 <tr>
                                     <td class="lableValues Labels"> Employee No:</td>
-                                    <td class="lableValues Labels"> {{$employees->emp_id}}</td>
+                                    <td class="lableValues Labels"> {{$employeeDetails->emp_id}}</td>
                                 </tr>
                                 <tr>
                                     <td class="lableValues Labels">Bank Name:</td>

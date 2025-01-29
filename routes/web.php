@@ -30,6 +30,7 @@ use App\Livewire\EmployeeSwipesForHr;
 use App\Livewire\EmployeeWeekDayChart;
 use App\Livewire\EmployeeSalary;
 use App\Livewire\Feeds;
+use App\Livewire\HelpDesk;
 use App\Livewire\HrAttendanceInfo;
 use App\Livewire\HrAttendanceOverviewNew;
 use App\Livewire\HrHolidayList;
@@ -92,7 +93,7 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
         Route::get('/add-employee-details/{employee?}', AddEmployeeDetails::class)->name('add-employee-details');
         Route::get('/update-employee-details', UpdateEmployeeDetails::class)->name('update-employee-details');
         Route::get('/resig-requests', Resignationrequests::class)->name('resig-requests');
-
+        Route::get('/HelpDesk', HelpDesk::class)->name('HelpDesk');
 
 
         //HR Employee-Main Submodule Routes
