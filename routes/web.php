@@ -28,6 +28,7 @@ use App\Livewire\EmployeeLeave;
 use App\Livewire\EmployeeProfile;
 use App\Livewire\EmployeeSwipesForHr;
 use App\Livewire\EmployeeWeekDayChart;
+use App\Livewire\EmployeeSalary;
 use App\Livewire\Feeds;
 use App\Livewire\HelpDesk;
 use App\Livewire\HrAttendanceInfo;
@@ -38,6 +39,7 @@ use App\Livewire\HrLeaveOverview;
 use App\Livewire\HrMainOverview;
 use App\Livewire\HrOrganisationChart;
 use App\Livewire\LeaveSettingPolicy;
+use App\Livewire\LeaveTypeReviewer;
 use App\Livewire\ParentDetails;
 use App\Livewire\PositionHistory;
 use App\Livewire\ReportsManagement;
@@ -124,6 +126,8 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
         Route::get('/review-pending-regularisation-for-hr/{id}/{emp_id}', RegularisationPendingForHr::class)->name('review-pending-regularisation-for-hr');
         //HR Leave-Infomation Submodule Routes
         Route::get('/user/employee-leave', EmployeeLeave::class)->name('employee-leave');
+        Route::get('/user/employee-salary', EmployeeSalary::class)->name('employee-salary');
+
 
         //HR Leave Related Routes
         Route::get('/user/attendance-exception', AttendanceExceptionForDisplay::class)->name(name: 'attendance-exception');
@@ -147,7 +151,7 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
 
         //HR Leave-SetUp Submodule Routes
         Route::get('/user/holidayList', HrHolidayList::class)->name('holidayList');
-
+        Route::get('/user/leave/setup/leave-type-reviewer', LeaveTypeReviewer::class)->name('leave-type-reviewer');
         //Reports
         Route::get('/user/reports/', ReportsManagement::class)->name('reports');
 
