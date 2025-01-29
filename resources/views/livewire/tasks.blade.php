@@ -296,7 +296,7 @@
                         <thead>
                             <tr class="task-closed-table-row">
                                 <th class="task-closed-table-1-th">
-                                    <i class="fa fa-angle-down" style="color: white; padding-left: 8px;"></i>
+                                    <i class="fa fa-angle-down task-arrow-icon"></i>
                                 </th>
                                 <th class="task-closed-table-2-th">
                                     Task ID

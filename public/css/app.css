@@ -3199,9 +3199,9 @@ td {
 
     color: #778899;
 }
-.custom-nav-link {
-    color: white; /* Default color */
-}
+/* .custom-nav-link {
+    color: white; 
+} */
 
 .custom-nav-link:hover {
     color: black; /* Hover color */
@@ -4738,6 +4738,28 @@ td {
 
 
 /* start of reports */
+.report-search-input {
+    font-size: 0.75rem !important;
+    border-radius: 5px 0 0 5px;
+    height: 32px;
+}
+
+
+.report-search-btn {
+    height: 32px;
+    width: 40px;
+    position: relative;
+    border-radius: 0 5px 5px 0;
+    background-color: var(--main-button-color);
+    color: #fff;
+    border: none;
+}
+
+.report-search-icon {
+    position: absolute;
+    top: 9px;
+    left: 11px;
+}
 .allreports {
     border: 1px solid #ccc;
     border-radius: 2px;
@@ -4927,7 +4949,7 @@ td {
 }
 
 .task-arrow-icon {
-    color: white;
+    color: var(--main-table-heading-text-color);
     padding-left: 8px;
 }
 
