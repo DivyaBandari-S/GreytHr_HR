@@ -3,7 +3,7 @@
         <span wire:click="handleLogout"> <i class="fas fa-sign-out-alt " style="color: white;margin-left:30px"></i></span>
     </div>
     <!-- Logout Modal -->
-    @if ($showLogoutModal)a
+    @if ($showLogoutModal)
     <div class="modal" id="logoutModal" tabindex="-1" style="display: block;">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">

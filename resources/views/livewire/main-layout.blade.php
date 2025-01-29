@@ -148,7 +148,7 @@
                             <li><a href="/user">Lock Configuartion</a></li>
                             <li><a href="/user">Manual Override</a></li>
                             <li><a href="/user">Shift Override</a></li>
-                            <li><a href="/user">Leave Recalculator</a></li>
+                            <li><a href="/hr/user/leave/admin/leaveRecalculator">Leave Recalculator</a></li>
                         </ul>
                     </li>
                     <li>
