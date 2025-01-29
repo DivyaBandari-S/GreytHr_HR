@@ -27,6 +27,7 @@
             <li>
                 <a href="#"><i class="ph-clipboard-fill"></i></a>
                 <ul class="sidebar__submenu">
+                    <li class="title">Task</li>
                     <li><a href="/hr/user/tasks">Tasks</a></li>
                     {{-- <li><a href="#">Basic</a></li>
                     <li><a href="#">Input group</a></li>
