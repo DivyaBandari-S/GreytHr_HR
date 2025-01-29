@@ -50,31 +50,28 @@
                     <div class="row d-flex align-items-center m-0 p-0">
                         <div class="col-md-9 py-2 px-0">
                             <div class="filters">
-                                <div class="custom-dropdown">
-                                    <div class="dropdown-selected">Grant Type: All</div>
-                                    <div class="dropdown-options">
-                                        <div class="dropdown-option">Grant Type: All</div>
-                                        <div class="dropdown-option">Grant Type: Monthly</div>
-                                        <div class="dropdown-option">Grant Type: Yearly</div>
-                                    </div>
+                                <div class="dropdown">
+                                    <select name="grantType" id="grantType">
+                                        <option value="">Grant Type: All</option>
+                                        <option value="">Grant Type: Monthly</option>
+                                        <option value="">Grant Type: Yearly</option>
+                                    </select>
                                 </div>
 
-                                <div class="custom-dropdown">
-                                    <div class="dropdown-selected">Leave Type: All</div>
-                                    <div class="dropdown-options">
-                                        <div class="dropdown-option">Leave Type: All</div>
-                                        <div class="dropdown-option">Leave Type: Sick Leave</div>
-                                        <div class="dropdown-option">Leave Type: Casual Leave</div>
-                                    </div>
+                                <div class="dropdown">
+                                    <select>
+                                        <option value="">Leave Type: All</option>
+                                        <option value="">Leave Type: Sick Leave</option>
+                                        <option value="">Leave Type: Casual Leave</option>
+                                    </select>
                                 </div>
 
-                                <div class="custom-dropdown">
-                                    <div class="dropdown-selected">Employee: All</div>
-                                    <div class="dropdown-options">
-                                        <div class="dropdown-option">Employee: All</div>
-                                        <div class="dropdown-option">Employee: Full Time</div>
-                                        <div class="dropdown-option">Employee: Part Time</div>
-                                    </div>
+                                <div class="dropdown">
+                                    <select >
+                                        <option value="">Employee: All</option>
+                                        <option value="">Employee: Full Time</option>
+                                        <option value="">Employee: Part Time</option>
+                                    </select>
                                 </div>
                             </div>
                         </div>
@@ -438,7 +435,7 @@
                             <input type="date" id="from_date" wire:model="from_date" wire:change="calculateToDate">
 
                             <label for="to_date">To Date</label>
-                            <input type="date" id="to_date" wire:model="to_date" >
+                            <input type="date" id="to_date" wire:model="to_date">
                         </div>
 
                         @endif
@@ -502,31 +499,5 @@
         </div>
 
     </div>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const dropdownSelected = document.querySelector('.dropdown-selected');
-            const dropdownOptions = document.querySelector('.dropdown-options');
 
-            // Toggle the visibility of the dropdown options when the selected item is clicked
-            dropdownSelected.addEventListener('click', function() {
-                dropdownOptions.style.display = dropdownOptions.style.display === 'block' ? 'none' : 'block';
-            });
-
-            // Close the dropdown if clicking anywhere outside of it
-            window.addEventListener('click', function(event) {
-                if (!event.target.closest('.custom-dropdown')) {
-                    dropdownOptions.style.display = 'none';
-                }
-            });
-
-            // Change the selected item when an option is clicked
-            const dropdownOptionItems = document.querySelectorAll('.dropdown-option');
-            dropdownOptionItems.forEach(option => {
-                option.addEventListener('click', function() {
-                    dropdownSelected.textContent = this.textContent;
-                    dropdownOptions.style.display = 'none'; // Hide options after selection
-                });
-            });
-        });
-    </script>
 </div>

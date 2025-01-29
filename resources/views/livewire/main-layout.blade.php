@@ -68,19 +68,30 @@
                     <li>
                         <a href="#">Admin <i class="ph-caret-right-fill"></i></a>
                         <ul class="sidebar__dropdown-menu">
-                            <li><a href="/home">Overview</a></li>
-                            <li><a href="/user">Analytics Hub</a></li>
-                            <li><a href="/user">Employee Directory</a></li>
-                            <li><a href="/user">Organization Chart</a></li>
+                            <li><a href="/home">Generate Letter</a></li>
+                            <li><a href="/user">Excel Import</a></li>
+                            <li><a href="/user">Bulk Photo Upload</a></li>
+                            <li><a href="/user">Bulk Document Upload</a></li>
+                            <li><a href="/user">Bulletin Board</a></li>
+                            <li><a href="/user">Mass Communication</a></li>
+                            <li><a href="/user">Identity Verification</a></li>
+                            <li><a href="/user">Contract Details</a></li>
+                            <li><a href="/user">Data Drive</a></li>
                         </ul>
                     </li>
                     <li>
                         <a href="#">Setup <i class="ph-caret-right-fill"></i></a>
                         <ul class="sidebar__dropdown-menu">
-                            <li><a href="/home">Overview</a></li>
-                            <li><a href="/user">Analytics Hub</a></li>
-                            <li><a href="/user">Employee Directory</a></li>
-                            <li><a href="/user">Organization Chart</a></li>
+                            <li><a href="/home">Letter Template</a></li>
+                            <li><a href="/user">Company Policies & Forms</a></li>
+                            <li><a href="/user">Employee Segment</a></li>
+                            <li><a href="/user">Employee Filter</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#">Statutory <i class="ph-caret-right-fill"></i></a>
+                        <ul class="sidebar__dropdown-menu">
+                            <li><a href="/home">Fines/Damages</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -148,7 +159,7 @@
                             <li><a href="/hr/user">Swipe Managment</a></li>
                             <li><a href="/user">Shift Rotation Calendar</a></li>
                             <li><a href="/home">Employee Week Days</a></li>
-                            <li><a href="/user">Leave Type Reviewer</a></li>
+                            <li><a href="/hr/user/leave/setup/leave-type-reviewer">Leave Type Reviewer</a></li>
                             <li><a href="/user">Ip Address Mapping</a></li>
                         </ul>
                     </li>

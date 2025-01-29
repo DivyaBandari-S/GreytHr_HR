@@ -162,7 +162,7 @@
     <!-- Second Dropdown -->
     <div class="col-md-2">
         <div class="dropdown">
-            <button class="btn btn dropdown-toggle" type="button" id="category2Dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="border-radius:5px;border:1px solid black;font-size:12px">
+            <button class="btn btn dropdown-toggle" type="button" id="category2Dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="border-radius:5px;border:1px solid black;font-size:12px;margin-left:-15px">
                Filters : All
             </button>
             <div class="dropdown-menu" aria-labelledby="category2Dropdown">

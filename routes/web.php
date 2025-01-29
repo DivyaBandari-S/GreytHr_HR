@@ -11,6 +11,7 @@ use App\Livewire\AttendanceException;
 use App\Livewire\AttendanceExceptionForDisplay;
 use App\Livewire\AttendanceMusterHr;
 use App\Livewire\AttendanceProcess;
+use App\Livewire\BankAccount;
 use App\Livewire\CreateAttendanceExceptionPage;
 use App\Livewire\CreateShiftOverride;
 use App\Livewire\EditAttendanceExceptionPage;
@@ -27,6 +28,7 @@ use App\Livewire\EmployeeLeave;
 use App\Livewire\EmployeeProfile;
 use App\Livewire\EmployeeSwipesForHr;
 use App\Livewire\EmployeeWeekDayChart;
+use App\Livewire\EmployeeSalary;
 use App\Livewire\Feeds;
 use App\Livewire\HrAttendanceInfo;
 use App\Livewire\HrAttendanceOverviewNew;
@@ -36,6 +38,7 @@ use App\Livewire\HrLeaveOverview;
 use App\Livewire\HrMainOverview;
 use App\Livewire\HrOrganisationChart;
 use App\Livewire\LeaveSettingPolicy;
+use App\Livewire\LeaveTypeReviewer;
 use App\Livewire\ParentDetails;
 use App\Livewire\PositionHistory;
 use App\Livewire\ReportsManagement;
@@ -115,9 +118,9 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
         Route::get('/employee-profile', EmployeeProfile::class)->name('employee-profile');
         Route::get('/employee-asset', EmployeeAsset::class)->name('employee-asset');
         Route::get('/position-history', PositionHistory::class)->name('position-history');
-        Route::get('/parent', ParentDetails::class)->name('parent-details');
+        Route::get('parent-details', ParentDetails::class)->name('parent-details');
         Route::get('/emp-document', EmpDocument::class)->name('emp-document');
-        Route::get('/bank-account', EmpDocument::class)->name('bank-account');
+        Route::get('/bank-account', BankAccount::class)->name('bank-account');
         Route::get('/user/attendance-process', AttendanceProcess::class)->name('attendance-process');
         Route::get('/user/swipe-management-for-hr', SwipeManagementForHr::class)->name('swipe-management-for-hr');
         Route::get('/user/employee-swipes-for-hr', EmployeeSwipesForHr::class)->name('employee-swipes-for-hr');
@@ -133,6 +136,8 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
         Route::get('/review-pending-regularisation-for-hr/{id}/{emp_id}', RegularisationPendingForHr::class)->name('review-pending-regularisation-for-hr');
         //HR Leave-Infomation Submodule Routes
         Route::get('/user/employee-leave', EmployeeLeave::class)->name('employee-leave');
+        Route::get('/user/employee-salary', EmployeeSalary::class)->name('employee-salary');
+
 
         //HR Leave Related Routes
         Route::get('/user/attendance-exception', AttendanceExceptionForDisplay::class)->name(name: 'attendance-exception');
@@ -156,9 +161,99 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
 
         //HR Leave-SetUp Submodule Routes
         Route::get('/user/holidayList', HrHolidayList::class)->name('holidayList');
-
+        Route::get('/user/leave/setup/leave-type-reviewer', LeaveTypeReviewer::class)->name('leave-type-reviewer');
         //Reports
         Route::get('/user/reports/', ReportsManagement::class)->name('reports');
 
     });
+});
+
+#########################################This are routes for checking hash and encrypt values################################################################################################################################################################
+
+use App\Models\EmpSalary;
+use Illuminate\Support\Facades\Artisan;
+use Vinkla\Hashids\Facades\Hashids;
+
+Route::get('/encode/{value}', function ($value) {
+    // Determine the number of decimal places
+    $decimalPlaces = strpos($value, '.') !== false ? strlen(substr(strrchr($value, "."), 1)) : 0;
+
+    // Convert the float to an integer with precision
+    $factor = pow(10, $decimalPlaces);
+    $integerValue = intval($value * $factor);
+
+    // Encode the integer value along with the decimal places
+    $hash = Hashids::encode($integerValue, $decimalPlaces);
+
+    return response()->json([
+        'value' => $value,
+        'hash' => $hash,
+        // 'decimalPlaces' => $decimalPlaces
+    ]);
+});
+
+
+
+Route::get('/decode/{hash}', function ($hash) {
+    // Decode the hash
+    $decoded = Hashids::decode($hash);
+
+    // Check if decoding was successful
+    if (count($decoded) === 0) {
+        return response()->json(['error' => 'Invalid hash'], 400);
+    }
+
+    // Retrieve the integer value and decimal places
+    $integerValue = $decoded[0];
+    $decimalPlaces = $decoded[1] ?? 0; // Fallback to 0 if not present
+
+    // Convert back to float
+    $originalValue = $integerValue / pow(10, $decimalPlaces);
+
+    return response()->json([
+        'hash' => $hash,
+        'value' => $originalValue
+    ]);
+});
+
+
+
+Route::get('/salary/{emp_id}', function ($emp_id) {
+    $empSalary = EmpSalary::findOrFail($emp_id);
+    // Return the salary attribute
+    return response()->json([
+        'emp_id' => $empSalary->emp_id,
+        'salary' => $empSalary->salary, // This will automatically call the getSalaryAttribute method
+        'effective_date' => $empSalary->effective_date,
+        'remarks' => $empSalary->remarks,
+    ]);
+});
+
+use Illuminate\Support\Facades\Crypt;
+
+Route::get('/encode-decode/{value}', function ($value) {
+    try {
+        // Attempt to decrypt the value
+        $decrypted = Crypt::decryptString($value);
+        return response()->json(['action' => 'decrypted', 'value' => $decrypted]);
+    } catch (\Exception $e) {
+        // If decryption fails, encrypt the value
+        $encrypted = Crypt::encryptString($value);
+        return response()->json(['action' => 'encrypted', 'value' => $encrypted]);
+    }
+});
+use Illuminate\Support\Facades\Hash;
+
+Route::get('/hash-verify/{value}', function ($value) {
+    // Attempt to verify the value against the hashed version
+    // Here, we'll assume that a certain value (e.g., 'originalValue') needs to be verified
+    $originalValue = 'originalValue'; // Replace this with the actual value you want to verify against
+
+    if (Hash::check($originalValue, $value)) {
+        return response()->json(['action' => 'verified', 'value' => $originalValue]);
+    } else {
+        // If not verified, hash the original value
+        $hashed = Hash::make($originalValue);
+        return response()->json(['action' => 'hashed', 'value' => $hashed]);
+    }
 });

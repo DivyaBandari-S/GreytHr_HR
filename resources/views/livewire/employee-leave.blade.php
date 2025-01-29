@@ -1,4 +1,4 @@
-<div>
+<div >
     <style>
         /* Calendar->Information->Employee leave styles start  */
 
@@ -584,7 +584,7 @@
                             <option value="leaveType">Leave Type</option>
                             <option value="transactionType">Transaction Type</option>
                         </select>
-                       
+
                     </div>
                 </div>
                 <div class="form-group row mb-2">
@@ -599,15 +599,15 @@
                     </div>
                 </div>
             </div>
-            
-            
+
+
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" wire:click="$set('showExportModal', false)">Close</button>
                 <button type="button" class="btn btn-primary" wire:click="generateReport">Generate</button>
             </div>
         </div>
     </div>
-   
+
 </div>
 <div class="modal-backdrop fade show blurred-backdrop"></div>
 @endif
@@ -917,7 +917,7 @@
                     </div>
                 </div>
 
-        
+
                 <div class="tab-pane fade {{ $activeTab === 'EL' ? 'show active' : '' }}" id="EL" role="tabpanel"
                     aria-labelledby="EL-tab">
                     <div class="row  p-3">
