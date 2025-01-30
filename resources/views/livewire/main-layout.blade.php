@@ -62,7 +62,7 @@
                             <li><a href="/user">Acess card details</a></li>
 
                             <li><a href="/user">Employee Contracts</a></li>
-                            <li><a href="/user">Employee Salary</a></li>
+                            <li><a href="/hr/user/employee-salary">Employee Salary</a></li>
                         </ul>
                     </li>
                     <li>
