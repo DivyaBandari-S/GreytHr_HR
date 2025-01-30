@@ -139,8 +139,8 @@
         }
 
         .arrow_icn {
-            width: 5%;
-            height: 5%;
+            width: 10px;
+            height: 10px;
         }
 
         .chart-container {
@@ -223,21 +223,31 @@
             transition: background-color 0.3s ease-in-out;
             border: 1px solid silver;
             margin-bottom: 10px;
+            padding: 5px;
+            border-radius: 5px;
         }
 
         .revision-items.active {
-            background-color: white;
+            background-color: #eff5f7;
             color: black;
+            /* border-right: none; */
         }
 
         .salary-revision-history {
             border: 1px solid silver;
+            padding: 10px;
+            background-color: #eff5f7;
+            border-radius: 5px;
         }
 
         .salary-revision-table {
-            border-collapse: collapse;
+            /* border-collapse: separate; */
             width: 100%;
+            border: 1px solid silver;
+            border-radius: 5px;
+
         }
+
 
         .salary-revision-table thead tr {
             background-color: #e4e9f0;
@@ -247,7 +257,7 @@
         .salary-revision-table thead tr th {
             text-align: end;
             width: 20%;
-            padding: 5px;
+            padding: 10px;
             font-weight: lighter;
             font-size: 13px;
         }
@@ -257,6 +267,36 @@
             text-align: center;
             font-weight: bold;
         }
+
+        .salary-revision-table tbody tr:nth-child(odd) {
+            background-color: #f2f2f2;
+            /* Light gray background for odd rows */
+        }
+
+        .salary-revision-table tbody tr:nth-child(even) {
+            background-color: white;
+        }
+
+        .salary-revision-table tbody tr td {
+            text-align: end;
+            width: 20%;
+            padding: 10px;
+            font-weight: lighter;
+            font-size: 13px;
+        }
+
+        .salary-revision-table tbody tr td:first-child {
+            width: 40%;
+            text-align: left;
+            font-weight: lighter;
+            font-size: 13px;
+        }
+
+        textarea::placeholder {
+            font-size: 12px;
+            color: #eff5f7  ;
+        }
+
 
 
 
@@ -468,8 +508,20 @@
                                     @if ($loop->last)
                                     <p>0.00% (Rs 0.00)</p>
                                     @else
-                                    <p><img class="arrow_icn" src="https://cdn0.iconfinder.com/data/icons/arrows-paper-flat/64/top-arrow-up-512.png" alt=""> <span class="month_ctc">+28.56% </span> <span class="ctc">Rs 5,712.00</span></p>
+
+                                    <p>
+                                        @if($revisionData['percentage_change_diff']>0)
+                                        <img class="arrow_icn" src="{{ asset('images/up-arrow-icon.png') }}" alt="">
+                                        <span class="month_ctc">+{{$revisionData['percentage_change_diff']}}   </span>(Rs{{number_format($revisionData['difference_amount'])}})
+                                        @elseif($revisionData['percentage_change_diff'] < 0)
+                                        <img class="arrow_icn" style="height: 13px; width:13px" src="{{ asset('images/down-arrow-icon.png') }}" alt="">
+                                        <span class="month_ctcup" style="color: red;">{{$revisionData['percentage_change_diff']}}   </span>(Rs{{number_format($revisionData['difference_amount'])}})
+                                        @else
+
+                                        @endif
+                                    </p>
                                     @endif
+
                                 </td>
                                 <td>{{$empDetails->job_role}}</td>
                                 <td>{{$empDetails->department}}</td>
@@ -570,25 +622,24 @@
 
             <div class="mt-4">
                 <div class="col text-end">
-                    <button class="btn bg-primary text-white mb-2">Add New Revision</button>
+                    <button wire:click="selectRevision ('null',{{$selected_revised_ctc}},0,'','')" class="btn bg-primary text-white mb-2">Add New Revision</button>
                     <button wire:click="showRevisedSalary" class="btn bg-white text-primary mb-2" style="border: 1px solid cornflowerblue ;">Back</button>
                 </div>
                 <div>
                     <div class="row">
-                        <div class="col-md-2">
+                        <div class="col-md-2 ">
                             <div class="list-group">
                                 @foreach($decryptedData as $revision)
-                                <button wire:click="selectRevision('{{ $revision['revision_date']}}')"
+                                <div wire:click="selectRevision('{{ $revision['revision_date']}}',{{ $revision['current_ctc']}},{{ $revision['revised_ctc']}},'{{ $revision['remarks']}}','{{ $revision['revision_type']}}')"
                                     class=" revision-items {{ $selectedDate == $revision['revision_date'] ? 'active' : '' }}">
-                                    <strong>{{ \Carbon\Carbon::parse($revision['revision_date'])->format('M Y') }}</strong>
-                                    <br>
-                                    <small>Effective: {{ \Carbon\Carbon::parse($revision['revision_date'])->format('d M Y') }}</small>
+                                    <p class="m-0" style="font-size: 12px;font-weight:500">{{ \Carbon\Carbon::parse($revision['revision_date'])->format('M Y') }}</p>
+                                    <p class="m-0" style="font-size: 9px;">Effective: {{ \Carbon\Carbon::parse($revision['revision_date'])->format('d M Y') }}</p>
 
-                                </button>
+                                </div>
                                 @endforeach
                             </div>
                         </div>
-                        <div class="col-md-10 p-0 salary-revision-history">
+                        <div class="col-md-10  salary-revision-history">
                             <table class="salary-revision-table">
                                 <thead>
                                     <tr>
@@ -600,37 +651,74 @@
                                 </thead>
                                 <tbody>
                                     <tr>
+                                        <td>FULL BASIC</td>
+                                        <td>Rs {{$comparisionData['current']['basic']}}</td>
+                                        <td>Rs {{$comparisionData['revised']['basic']}}</td>
+                                        <td>{{$comparisionData['percentage_change']}} %</td>
+                                    </tr>
+                                    <tr>
                                         <td>FULL HRA</td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
+                                        <td>Rs {{$comparisionData['current']['hra']}}</td>
+                                        <td>Rs {{$comparisionData['revised']['hra']}}</td>
+                                        <td>{{$comparisionData['percentage_change']}} %</td>
                                     </tr>
                                     <tr>
                                         <td>FULL CONVEYANCE</td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
+                                        <td>Rs {{$comparisionData['current']['conveyance']}}</td>
+                                        <td>Rs {{$comparisionData['revised']['conveyance']}}</td>
+                                        <td>0 %</td>
+                                    </tr>
+                                    <tr>
+                                        <td>FULL DA</td>
+                                        <td>Rs {{$comparisionData['current']['da']}}</td>
+                                        <td>Rs {{$comparisionData['revised']['da']}}</td>
+                                        <td>0 %</td>
                                     </tr>
                                     <tr>
                                         <td>FULL SPECIAL ALLOWANCE</td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
+                                        <td>Rs {{$comparisionData['current']['specialallowances']}}</td>
+                                        <td>Rs {{$comparisionData['revised']['specialallowances']}}</td>
+                                        <td>{{$comparisionData['percentage_change']}} %</td>
                                     </tr>
                                     <tr>
                                         <td>MONTHLY CTC</td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
+                                        <td>Rs {{$comparisionData['current']['monthly_ctc']}}</td>
+                                        <td>Rs {{$comparisionData['revised']['monthly_ctc']}}</td>
+                                        <td>{{$comparisionData['percentage_change']}} %</td>
                                     </tr>
                                     <tr>
                                         <td>ANNUAL CTC</td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
+                                        <td>Rs {{$comparisionData['current']['annual_ctc']}}</td>
+                                        <td><input wire:model="new_revised_ctc" wire:blur="getNewRevisedSalary" type="number" style="text-align: right;"></td>
+                                        <td class="d-flex" style="gap: 5px;">
+                                            <span><input wire:model="ctc_percentage" wire:blur="getPercentageRevisedSalary" type="text" style="text-align: left;"></span>
+                                            <span> %</span>
+
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
+                            <div class="p-5">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label for="">Effective From:</label>
+                                        <input wire:model="effectiveDate" class="form-control" type="date">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label for="">Employee Remarks:</label>
+                                        <textarea wire:model="reason" placeholder="This will be  visible to Employee" class="form-control" name="" ></textarea>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="">Notes: </label>
+                                        <textarea wire:model="notes" placeholder="This will be not visible to Employee" class="form-control" name="" ></textarea>
+                                    </div>
+                                </div>
+                                <div class="text-center mt-4">
+                                <button type="button" class="btn btn-primary " wire:click="saveSalaryRevision"  @if(!$isNewRevised) disabled @endif>Save</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -709,6 +797,17 @@
 </div>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
+    function formatDecimalInput(input) {
+        let value = input.value;
+        let cursorPosition = input.selectionStart;
+
+        // Allow only numbers and one decimal point
+        let formattedValue = value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');
+
+        // Update the input value while preserving cursor position
+        input.value = formattedValue;
+        input.setSelectionRange(cursorPosition, cursorPosition);
+    }
     document.addEventListener('livewire:init', () => {
         let salaryChart;
         console.log('entering script..');
@@ -734,7 +833,7 @@
                 data: {
                     labels: chartData.labels,
                     datasets: [{
-                        label: 'Revised Monthly Salary',
+                        label: 'Revised Annual Salary',
                         data: chartData.data,
                         borderColor: 'blue',
                         borderWidth: 2,
