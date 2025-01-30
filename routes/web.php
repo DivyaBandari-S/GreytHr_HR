@@ -29,6 +29,7 @@ use App\Livewire\EmployeeProfile;
 use App\Livewire\EmployeeSwipesForHr;
 use App\Livewire\EmployeeWeekDayChart;
 use App\Livewire\EmployeeSalary;
+use App\Livewire\Everyone;
 use App\Livewire\Feeds;
 use App\Livewire\HelpDesk;
 use App\Livewire\HrAttendanceInfo;
@@ -106,6 +107,7 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
         Route::get('/user/shift-rotation-calendar', ShiftRotationCalendar::class)->name('shift-rotation-calendar');
         //HR Employee-Information Submodule Routes
         Route::get('/hrFeeds', Feeds::class)->name('hrfeeds');
+        Route::get('/everyone', Everyone::class)->name('everyone');
         Route::get('/employee-profile', EmployeeProfile::class)->name('employee-profile');
         Route::get('/employee-asset', EmployeeAsset::class)->name('employee-asset');
         Route::get('/position-history', PositionHistory::class)->name('position-history');

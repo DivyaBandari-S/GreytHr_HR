@@ -139,16 +139,39 @@ public $closedSearch = '';
         }
         return redirect()->to('/HelpDesk');
     }
+    protected $listeners = ['refreshComponent' => '$refresh'];
 
-       public function pendingForDesks($taskId)
+    public function pendingForDesks($taskId)
     {
+// Fetch the HelpDesk record based on the given task ID
         $task = HelpDesks::find($taskId);
-
+    
+        // Check if the task exists
         if ($task) {
-            $task->update(['status' => 'Pending']);
+            // Log the current status_code for debugging
+          
+            // Check if the current status_code is already 8
+            if ($task->status_code == 8 || $task->status_code == 10) {
+                // You can choose whether to allow the status change or not
+              
+                        // Update the status_code to 5
+                $task->status_code = 5;
+               // Update other necessary fields if needed
+                
+                // Save the task
+                if ($task->save()) {
+                  
+                }
+            }
+
+       // Redirect back to the helpdesk page
+        } else {
+           
+            session()->flash('error', 'Task not found.');
+          
         }
-        return redirect()->to('/HelpDesk');
     }
+
     
     public function mount()
     {
@@ -222,22 +245,38 @@ public $closedSearch = '';
         logger($this->category); // Log selected category
         logger($this->records); // Log filtered records
     }
-
+    public $activeDataLoaded=false;
+    public $pendingDataLoaded=false;
+    public $closedDataLoaded=false;
     public function loadHelpDeskData()
     {
-        if ($this->activeTab === 'active') {
+        if ($this->activeTab === 'active' && !$this->activeDataLoaded) {
             $this->searchActiveHelpDesk();
-        } elseif ($this->activeTab === 'pending') {
+            $this->activeDataLoaded = true; // Track that data has been loaded
+        } elseif ($this->activeTab === 'pending' && !$this->pendingDataLoaded) {
             $this->searchPendingHelpDesk();
-        } elseif ($this->activeTab === 'closed') {
+            $this->pendingDataLoaded = true;
+        } elseif ($this->activeTab === 'closed' && !$this->closedDataLoaded) {
             $this->searchClosedHelpDesk();
+            $this->closedDataLoaded = true;
         }
     }
+
+    public function loadActiveTabData()
+{
+    // Fetch data for the 'active' tab only when it's active
+    if ($this->activeTab === 'active' && !$this->activeDataLoaded) {
+        $this->searchActiveHelpDesk();
+        $this->activeDataLoaded = true;
+    }
+}
+
     
     public function updatedActiveTab()
     {
-        $this->loadHelpDeskData(); // Reload data when the tab is updated
+        $this->loadHelpDeskData(); // Reload data only when the tab actually changes
     }
+    
     // To track the current image index
     public function setActiveImageIndex($index)
     {
@@ -417,22 +456,60 @@ public $closedSearch = '';
 
     public function openForDesks($taskId)
     {
+        // Fetch the HelpDesk record based on the given task ID
         $task = HelpDesks::find($taskId);
-
+    
+        // Check if the task exists
         if ($task) {
-            $task->update(['status' => 'Completed']);
+           
+            // Check if the current status_code is already 8
+            if ($task->status_code == 8|| $task->status_code == 5) {
+                
+                // Update the status_code to 5
+                $task->status_code = 9;
+               // Update other necessary fields if needed
+                
+                // Save the task
+                if ($task->save()) {
+                   
+                } 
+                
+            } 
+    
+
+       // Redirect back to the helpdesk page
+        } else {
+          
+            session()->flash('error', 'Task not found.');
+          
         }
-        return redirect()->to('/HelpDesk');
     }
+    
 
     public function closeForDesks($taskId)
     {
+        // Fetch the HelpDesk record based on the given task ID
         $task = HelpDesks::find($taskId);
-
+    
+        // Check if the task exists
         if ($task) {
-            $task->update(['status' => 'Open']);
+            // Log the current status_code for debugging
+          
+            // Check if the current status_code is already 8
+            if ($task->status_code == 9) {
+                // You can choose whether to allow the status change or not
+              
+                        // Update the status_code to 5
+                $task->status_code = 8;
+               // Update other necessary fields if needed
+                
+                // Save the task
+                if ($task->save()) {
+                  
+                }
+            }
+       // Redirect back to the helpdesk page
         }
-        return redirect()->to('/HelpDesk');
     }
     public function setActiveTab($tab)
     {
@@ -890,7 +967,12 @@ public function closeImageDialog()
             ->where('emp_id', $employeeId)
             ->select('emp_id', 'company_id','first_name','last_name') // Select specific columns
             ->first(); // Fetch the result as an object
-        
+          // Validate the input to ensure comment is not empty
+    $this->validate([
+        'commentText' => 'required|string|min:1'
+    ], [
+        'commentText.required' => 'Comment cannot be empty.',
+    ]);
         // Prepare the new comment text
         $newComment = $this->commentText;
 
@@ -903,9 +985,10 @@ public function closeImageDialog()
         // Save back as JSON
         $record->active_comment = json_encode($existingComments);
         $record->save();
-
+        FlashMessageHelper::flashSuccess('Comment Posted successfully.');
             // Clear the comment input field after posting
             $this->commentText = '';
+
         }
         public function exportToExcel()
         {
@@ -939,7 +1022,7 @@ public function closeImageDialog()
             // Fetch HelpDesks records filtered by company_id and HR categories
 $this->forHR = HelpDesks::with('emp')
 ->whereIn('category', $this->requestCategories['HR'])
-->whereIn('status_code', [8, 10])  // Filter by status_code 8 or 10
+
 ->orderBy('created_at', 'desc')  // Order by creation date
 ->get();  // Convert the collection to an array
 
