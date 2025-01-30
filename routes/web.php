@@ -38,6 +38,7 @@ use App\Livewire\HrLeaveCalendar;
 use App\Livewire\HrLeaveOverview;
 use App\Livewire\HrMainOverview;
 use App\Livewire\HrOrganisationChart;
+use App\Livewire\LeaveRecalculator;
 use App\Livewire\LeaveSettingPolicy;
 use App\Livewire\LeaveTypeReviewer;
 use App\Livewire\ParentDetails;
@@ -147,7 +148,7 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
         Route::get('/user/grant-summary', EmpLeaveGranterDetails::class)->name('grant-summary');
         Route::get('/user/leavePolicySettings', LeaveSettingPolicy::class)->name('leavePolicySettings');
         Route::get('/user/leaveYearEndProcess', YearEndProcess::class)->name('year-end-process');
-
+        Route::get('/user/leave/admin/leaveRecalculator', LeaveRecalculator::class)->name('leave-recalculator');
 
         //HR Leave-SetUp Submodule Routes
         Route::get('/user/holidayList', HrHolidayList::class)->name('holidayList');
