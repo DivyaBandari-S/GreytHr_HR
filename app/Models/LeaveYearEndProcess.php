@@ -15,4 +15,9 @@ class LeaveYearEndProcess extends Model
         'process_reason',
         'status',
     ];
+
+    public function employee()
+    {
+        return $this->belongsTo(EmployeeDetails::class, 'emp_id', 'emp_id');
+    }
 }

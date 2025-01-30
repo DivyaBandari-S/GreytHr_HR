@@ -30,6 +30,7 @@ use App\Livewire\EmployeeSwipesForHr;
 use App\Livewire\EmployeeWeekDayChart;
 use App\Livewire\EmployeeSalary;
 use App\Livewire\Feeds;
+use App\Livewire\HelpDesk;
 use App\Livewire\HrAttendanceInfo;
 use App\Livewire\HrAttendanceOverviewNew;
 use App\Livewire\HrHolidayList;
@@ -37,6 +38,7 @@ use App\Livewire\HrLeaveCalendar;
 use App\Livewire\HrLeaveOverview;
 use App\Livewire\HrMainOverview;
 use App\Livewire\HrOrganisationChart;
+use App\Livewire\LeaveRecalculator;
 use App\Livewire\LeaveSettingPolicy;
 use App\Livewire\LeaveTypeReviewer;
 use App\Livewire\ParentDetails;
@@ -92,7 +94,7 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
         Route::get('/add-employee-details/{employee?}', AddEmployeeDetails::class)->name('add-employee-details');
         Route::get('/update-employee-details', UpdateEmployeeDetails::class)->name('update-employee-details');
         Route::get('/resig-requests', Resignationrequests::class)->name('resig-requests');
-
+        Route::get('/HelpDesk', HelpDesk::class)->name('HelpDesk');
 
 
         //HR Employee-Main Submodule Routes
@@ -146,7 +148,7 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
         Route::get('/user/grant-summary', EmpLeaveGranterDetails::class)->name('grant-summary');
         Route::get('/user/leavePolicySettings', LeaveSettingPolicy::class)->name('leavePolicySettings');
         Route::get('/user/leaveYearEndProcess', YearEndProcess::class)->name('year-end-process');
-
+        Route::get('/user/leave/admin/leaveRecalculator', LeaveRecalculator::class)->name('leave-recalculator');
 
         //HR Leave-SetUp Submodule Routes
         Route::get('/user/holidayList', HrHolidayList::class)->name('holidayList');

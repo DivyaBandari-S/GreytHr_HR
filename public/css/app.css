@@ -21,7 +21,7 @@ body {
     --sub-headings-font-size: 0.825rem;
     --main-headings-font-size: 1rem;
     --main-table-heading-bg-color: #d4e6f4;
-    --main-table-heading-text-color:#4c4e4f ;
+    --main-table-heading-text-color: #4c4e4f;
 }
 /* //global styles for scrollbars  */
 ::-webkit-scrollbar {
@@ -420,12 +420,12 @@ ul {
     font-weight: 500;
     color: #778899;
 }
-.card-body {
+/* .card-body {
     line-height: 1.6;
     padding: 7px 0;
     margin: 0 auto;
     text-align: start;
-}
+} */
 .card-text {
     font-size: 9px;
     padding: 2px 5px;
@@ -505,7 +505,6 @@ ul {
 }
 
 .profile-name-wrapper {
-   
 }
 
 .post-profile-name {
@@ -523,8 +522,8 @@ ul {
 .description {
     font-size: 12px;
     color: #676767;
- margin-top:10px;
- margin-left: 10px;
+    margin-top: 10px;
+    margin-left: 10px;
 }
 
 .post-image {
@@ -597,7 +596,6 @@ ul {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-
 }
 .kudoseventsSection {
     display: flex;
@@ -621,7 +619,7 @@ ul {
     color: #3b4452;
     margin-top: 5px;
     position: relative;
-    width:500px
+    width: 500px;
 }
 
 .feeds-left-menu {
@@ -646,16 +644,19 @@ ul {
 }
 
 .form-select {
-
     font-size: 0.75rem;
 }
 .transparent-backdrop {
-    background-color: rgba(0, 0, 0, 0.3); /* Adjust the opacity to your liking */
+    background-color: rgba(
+        0,
+        0,
+        0,
+        0.3
+    ); /* Adjust the opacity to your liking */
 }
 
 .catagory-select:hover {
     background-color: #edf3ff;
-
 }
 
 .modal-body {
@@ -682,7 +683,7 @@ ul {
     border: 1px solid rgb(2, 17, 79);
     font-weight: 500;
     border-radius: 5px;
- 
+
     padding: 4px 10px;
     width: 60px;
     height: 20px;
@@ -991,7 +992,7 @@ ul {
 }
 
 /* Show dropdown content when the arrow is open */
-.arrow-open+.dropdown-content {
+.arrow-open + .dropdown-content {
     display: block;
 }
 
@@ -1010,11 +1011,11 @@ ul {
 }
 
 /* Show the section based on the selected radio button */
-#all:checked~#all-groups,
-#appreciations:checked~#appreciations,
-#buy-sell-rent:checked~#buy-sell-rent,
-#company-news:checked~#company-news,
-#events:checked~#events {
+#all:checked ~ #all-groups,
+#appreciations:checked ~ #appreciations,
+#buy-sell-rent:checked ~ #buy-sell-rent,
+#company-news:checked ~ #company-news,
+#events:checked ~ #events {
     display: block;
 }
 
@@ -1105,7 +1106,7 @@ ul {
 }
 
 /* CSS for when radio button is checked */
-.input[type="radio"]:checked+.radio-label {
+.input[type="radio"]:checked + .radio-label {
     background-color: #e1e7f0;
     /* Change background color when checked */
 }
@@ -1128,7 +1129,7 @@ input[type="radio"] {
 }
 
 /* Define the blue background color for the checked state */
-.input[type="radio"]:checked+.custom-radio-button {
+.input[type="radio"]:checked + .custom-radio-button {
     background-color: blue;
 }
 
@@ -1281,7 +1282,7 @@ input[type="radio"] {
 }
 
 /* CSS for when radio button is checked */
-.input[type="radio"]:checked+.radio-label {
+.input[type="radio"]:checked + .radio-label {
     background-color: #e1e7f0;
     /* Change background color when checked */
 }
@@ -1314,7 +1315,7 @@ input[type="radio"] {
     font-size: 14px;
     transition: color 0.3s;
 }
-a.custom-nav-link{
+a.custom-nav-link {
     color: #778899 !important;
 }
 .reviewActiveButtons {
@@ -1347,22 +1348,22 @@ a.custom-nav-link{
     flex-grow: 1;
     overflow: hidden;
 }
-button.nav-link{
+button.nav-link {
     color: #778899;
     font-size: 14px;
     background-color: transparent;
 }
-button.nav-link:hover{
+button.nav-link:hover {
     border-bottom: 3px solid var(--main-button-color) !important;
     background-color: white;
 }
-button.nav-link.active{
+button.nav-link.active {
     border-bottom: 3px solid var(--main-button-color) !important;
     color: white !important;
     font-weight: 500;
     background: var(--main-button-color) !important;
 }
-.nav.nav-tabs{
+.nav.nav-tabs {
     margin-top: 10px;
 }
 
@@ -1379,7 +1380,7 @@ button.nav-link.active{
 
 /* Hover state for tabs */
 .custom-nav-link:hover {
-    color: var(--main-button-color)!important;
+    color: var(--main-button-color) !important;
     background-color: #fff;
     border-color: var(--main-button-color);
 }
@@ -1407,14 +1408,13 @@ button.nav-link.active{
     display: flex;
 }
 
-
-.card-option{
-text-align: left;
-padding: 7px;
-font-style: 8px;
-align-items: center;
-justify-content: center;
-cursor: pointer;
+.card-option {
+    text-align: left;
+    padding: 7px;
+    font-style: 8px;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
 }
 /*feeds ended*/
 
@@ -1576,17 +1576,16 @@ label {
     float: inline-end;
     border-radius: 5px;
 }
-.navProfileImg{
+.navProfileImg {
     width: 35px;
-	height: 35px;
-	border-radius: 50%;
-	object-fit: cover;
-	cursor: pointer;
-	margin-right: 0px !important;
+    height: 35px;
+    border-radius: 50%;
+    object-fit: cover;
+    cursor: pointer;
+    margin-right: 0px !important;
 }
-.employee-profile-image-container
-{
-    margin-top:5px;
+.employee-profile-image-container {
+    margin-top: 5px;
 }
 .thisCircle {
     display: flex;
@@ -1654,16 +1653,11 @@ label {
     display: flex;
     flex-direction: column;
     justify-content: center;
-   
 }
-.employee-info
-{
+.employee-info {
     margin-right: 80px;
 }
-.employee-info-name
-
-{
-
+.employee-info-name {
     white-space: nowrap;
 
     max-width: 110px; /* Adjust the max width as needed */
@@ -1673,7 +1667,6 @@ label {
     overflow: hidden; /* Hide overflow text */
 
     text-overflow: ellipsis; /* Add "..." for overflow text */
-
 }
 .ilynn-btn:hover {
     cursor: pointer;
@@ -1817,14 +1810,14 @@ input {
     font-size: var(--normal-font-size);
     border: 1px solid var(--main-button-color) !important;
 }
-.approve-btn{
+.approve-btn {
     background-color: rgb(10, 201, 42);
     color: white;
     font-weight: 500;
     border-radius: 5px;
     padding: 6px 12px;
     font-size: var(--normal-font-size);
-   border: none;
+    border: none;
 }
 /* button styles ended*/
 
@@ -1978,7 +1971,7 @@ input {
     color: var(--main-button-color);
     cursor: pointer;
 }
-.analytic-up-arrow{
+.analytic-up-arrow {
     font-size: 20px;
     font-weight: 500;
     position: absolute;
@@ -2100,13 +2093,12 @@ td {
     border: 1px solid #778899;
 }
 .container-body {
-    background-color: #FFFFFF;
+    background-color: #ffffff;
     border-radius: 10px;
     display: none;
     margin-top: 2px;
     height: auto;
     border-top: 1px solid #ccc;
-
 }
 
 .container-body-active {
@@ -2305,23 +2297,22 @@ input:checked + .slider:before {
     background-color: #f3faff; /* Set background color if needed */
     font-size: 12px;
 }
-.hide-attendance-help-for-employee-week-day
-{
-    margin-top:40px;
+.hide-attendance-help-for-employee-week-day {
+    margin-top: 40px;
     position: absolute;
     bottom: 110px;
     right: 10px;
-    color: #0000FF;
-    font-weight:500;
+    color: #0000ff;
+    font-weight: 500;
     cursor: pointer;
 }
 .hide-attendance-help {
-    margin-top:40px;
+    margin-top: 40px;
     position: absolute;
     bottom: 80px;
     right: 10px;
-    color: #0000FF;
-    font-weight:500;
+    color: #0000ff;
+    font-weight: 500;
     cursor: pointer;
 }
 .field-for-employee-who-is-in {
@@ -2677,14 +2668,14 @@ input[type="date"]::before {
 /* analytics hub view all styles ended */
 /*Request Started  */
 
-.card-body {
+/* .card-body {
     background-color: white;
     padding: 20px;
     width: 80%;
     margin-top: 30px;
     border-radius: 5px;
-}
-.newReq{
+} */
+.newReq {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -2711,7 +2702,6 @@ input[type="date"]::before {
     margin-bottom: 15px;
     align-items: start;
 }
-
 
 .request-input-group-container {
     width: 230px;
@@ -2741,7 +2731,6 @@ input[type="date"]::before {
     color: #fff;
 }
 
-
 .helpdesk-btn {
     font-size: 12px;
     background-color: var(--main-button-color);
@@ -2751,8 +2740,8 @@ input[type="date"]::before {
 }
 
 .helpdesk-modal {
-    background-color:var(--main-button-color);
-    height: 50px
+    background-color: var(--main-button-color);
+    height: 50px;
 }
 
 .helpdesk-title {
@@ -2813,7 +2802,7 @@ input[type="date"]::before {
 }
 
 .hepldesk-close-people {
-    background-color:var(--main-button-color);
+    background-color: var(--main-button-color);
     height: 30px;
     width: 30px;
     margin-left: 5px;
@@ -2826,7 +2815,6 @@ input[type="date"]::before {
     flex-wrap: wrap;
     gap: 5px;
     font-size: 10px;
-   
 }
 
 .asset-dropdown {
@@ -2852,7 +2840,6 @@ input[type="date"]::before {
     width: auto; /* Adjust the width */
     justify-content: center;
     height: 30px;
-
 }
 
 .asset-dropdown-toggle i {
@@ -2892,79 +2879,72 @@ input[type="date"]::before {
     display: block;
 }
 
+.asset-dropdown-toggle:hover {
+    background-color: #abcde8;
+    color: white;
+}
+.asset-dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    width: 200px;
+}
+.asset-dropdown:hover .asset-dropdown-menu {
+    display: block;
+}
+.asset-dropdown-menu ul {
+    list-style: none;
+    padding: 10px;
+    margin: 0;
+}
+.asset-dropdown-menu li {
+    padding: 8px 10px;
+    cursor: pointer;
+}
+.asset-dropdown-menu li:hover {
+    background-color: #f1f1f1;
+}
+.asset-search {
+    width: calc(100% - 20px);
+    margin: 0 auto 10px;
+    margin-top: 10px;
+    margin-left: 10px;
+    height: 30px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
 
-
-
-
-        .asset-dropdown-toggle:hover {
-            background-color: #abcde8;
-            color: white;
-        }
-        .asset-dropdown-menu {
-            display: none;
-            position: absolute;
-            top: 100%;
-            left: 0;
-            background-color: #fff;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 12px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            z-index: 1000;
-            width: 200px;
-        }
-        .asset-dropdown:hover .asset-dropdown-menu {
-            display: block;
-        }
-        .asset-dropdown-menu ul {
-            list-style: none;
-            padding: 10px;
-            margin: 0;
-        }
-        .asset-dropdown-menu li {
-            padding: 8px 10px;
-            cursor: pointer;
-        }
-        .asset-dropdown-menu li:hover {
-            background-color: #f1f1f1;
-        }
-        .asset-search{
-            width: calc(100% - 20px);
-            margin: 0 auto 10px;
-            margin-top: 10px;
-           margin-left: 10px;
-           height:30px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-
-
-        /*asset table */
-        /* Specific Table Styling */
+/*asset table */
+/* Specific Table Styling */
 .employee-requests-table {
     width: 80%;
     border-collapse: collapse;
     margin-bottom: 20px;
     align-items: center;
- 
+
     justify-content: center;
     border-radius: 5px;
     margin-left: 40px;
-   
 }
 
 /* Header Styling */
 .employee-requests-table .table-header {
-    background-color:#98cae0;
+    background-color: #98cae0;
     font-size: 12px;
     font-weight: 500;
-       border-radius: 5px;
+    border-radius: 5px;
     align-items: center;
-
 }
 .employee-requests-table .header-row {
     text-align: center;
-    background-color:#98cae0;
+    background-color: #98cae0;
     font-size: 12px;
     font-weight: 500;
     border-radius: 5px;
@@ -2973,19 +2953,17 @@ input[type="date"]::before {
     padding: 10px;
     font-weight: 500;
     font-size: 12px;
-    background-color:#E4E9F0;
-    
+    background-color: #e4e9f0;
+
     align-items: center;
     border: 1px solid #ddd;
-  }
-
+}
 
 /* Body Styling */
 .employee-requests-table .table-body {
     background-color: #fff;
 }
 .employee-requests-table .body-row {
-   
     align-items: center;
     text-align: center;
 }
@@ -3056,7 +3034,7 @@ input[type="date"]::before {
 .option-default {
     color: var(--main-color);
 }
-.modal-dialog{
+.modal-dialog {
     font-size: 12px;
 }
 .form-control {
@@ -3071,7 +3049,6 @@ input[type="date"]::before {
     font-size: 14px;
     transition: color 0.3s;
 }
-
 
 /* Custom tab styles */
 .custom-nav-tabs {
@@ -3096,7 +3073,7 @@ input[type="date"]::before {
 /* Link styles for tabs */
 .custom-nav-link {
     color: var(--label-color);
-  
+
     text-decoration: none;
     display: block;
     transition: color 0.3s ease, background-color 0.3s ease;
@@ -3108,13 +3085,13 @@ input[type="date"]::before {
 .custom-nav-link:hover {
     color: var(--main-button-color);
     background-color: #fff;
-    border-color: var(--main-button-color)
+    border-color: var(--main-button-color);
 }
 
 /* Active tab styling */
 .custom-nav-link.active {
     color: white !important;
-    background-color:var(--main-button-color) !important;
+    background-color: var(--main-button-color) !important;
     border-color: var(--main-button-color);
     border-bottom-color: transparent;
 }
@@ -3130,7 +3107,7 @@ input[type="date"]::before {
     .custom-nav-link.active {
         border-radius: 0 !important;
     }
-    .mbl-dev-active{
+    .mbl-dev-active {
         border-top-left-radius: 5px;
         border-bottom-left-radius: 5px;
     }
@@ -3141,15 +3118,14 @@ input[type="date"]::before {
         /* flex-direction: column; */
         width: 100%;
     }
-
 }
 
 @media (max-width: 992px) {
-    .mbl-dev-closed{
+    .mbl-dev-closed {
         border-top-right-radius: 5px;
         border-bottom-right-radius: 5px;
     }
-    .mbl-dev-active{
+    .mbl-dev-active {
         border-top-left-radius: 5px;
         border-bottom-left-radius: 5px;
     }
@@ -3184,55 +3160,56 @@ input[type="date"]::before {
     font-size: 0.8125rem;
     display: flex; /* Change to flex for better alignment */
     justify-content: start;
-    width:fit-content; /* Center the tabs */
-    margin-top:60px;
+    width: fit-content; /* Center the tabs */
+    margin-top: 60px;
 }
 
 .emp-info {
     padding: 1em 1.6em;
     cursor: pointer;
-    transition: all ease .3s;
-    color:silver;
+    transition: all ease 0.3s;
+    color: silver;
 }
 
 .emp-info:hover {
-    color:white;
+    color: white;
 }
-.custom-checkbox-information:checked{
+.custom-checkbox-information:checked {
     background-color: var(--main-button-color);
-
 }
-.custom-checkbox-information{
-   appearance: none; /* Remove default checkbox styling */
+.custom-checkbox-information {
+    appearance: none; /* Remove default checkbox styling */
     /* Set the height of the checkbox */
 
-     outline: none; /* Remove outline on focus */
-     cursor: pointer;
+    outline: none; /* Remove outline on focus */
+    cursor: pointer;
 }
 .custom-file-upload {
     display: inline-flex;
     align-items: center;
     cursor: pointer;
     font-size: 12px;
-    height:25px;
+    height: 25px;
     background-color: var(--main-button-color); /* Button background color */
     color: white; /* Text color */
     padding: 10px 15px; /* Padding for button */
     border-radius: 5px; /* Rounded corners */
-    border:1px solid silver;
+    border: 1px solid silver;
     transition: background-color 0.3s; /* Smooth transition */
 }
 .custom-info-item {
     padding: 8px 16px;
-    font-size: 14px;
+    font-size: 10px;
     text-decoration: none;
     color: #3b4452;
     display: block; /* Ensure block display */
 }
 
 .custom-info-item:hover {
-    background-color: var(--main-button-color) ; /* Change to your desired hover background color */
-    color: white; /* Change text color on hover if needed */
+    margin: 0;
+ 
+    background-color: #d9e2f4 ; /* Change to your desired hover background color */
+    color:#3b4452; /* Change text color on hover if needed */
 }
 
 .dropdown-menu .updated-drodown a.dropdown-item:hover {
@@ -3250,10 +3227,7 @@ input[type="date"]::before {
     align-items: center; /* Centers text vertically */
     text-align: center; /* Ensures text alignment */
     width: 100%; /* Takes full width */
-
 }
-
-
 
 .custom-file-upload i {
     margin-right: 5px; /* Space between icon and text */
@@ -3279,20 +3253,20 @@ input[type="date"]::before {
 }
 .card-profile {
     margin-top: 20px;
-    height:auto;
-    width:70%;
+    height: auto;
+    width: 70%;
     margin-top: 20px;
     height: auto;
     width: 70%;
     border-radius: 5px;
     background: #98cbba;
 }
-.card {
+/* .card {
     margin-top: 20px;
-     height:auto;
-     width:70%;
-     box-shadow: "0 4px 8px rgba(0, 0, 0, 0.1);"
-}
+    height: auto;
+    width: 70%;
+    box-shadow: "0 4px 8px rgba(0, 0, 0, 0.1);";
+} */
 @media (max-width: 768px) {
     .card-profile {
         width: 90%; /* Adjust card width for mobile */
@@ -3360,10 +3334,10 @@ input[type="date"]::before {
     border: 1px solid #ccc;
     border-radius: 5px;
     padding: 10px;
-    height:35px;
+    height: 35px;
     font-size: 12px;
     align-items: center;
-    width:auto; /* or any specific width */
+    width: auto; /* or any specific width */
     cursor: pointer;
     transition: background-color 0.3s ease; /* Smooth transition for background color */
 }
@@ -3376,13 +3350,12 @@ input[type="date"]::before {
     background-color: white; /* Ensures the options retain the default background */
 }
 .custom-select-doc option:hover {
-    background-color:skyblue; /* Ensures the options retain the default background */
+    background-color: skyblue; /* Ensures the options retain the default background */
 }
-
 
 .custom-select-doc:focus {
     outline: none; /* Remove default outline */
-   /* Shadow on focus */
+    /* Shadow on focus */
 }
 .secondary-text {
     font-size: 12px;
@@ -3433,8 +3406,6 @@ input[type="date"]::before {
     box-shadow: none; /* Removes focus shadow */
 }
 
-
-
 /* Responsive styles */
 
 @media (max-width: 768px) {
@@ -3469,26 +3440,26 @@ input[type="date"]::before {
     margin-top: 5px;
     font-weight: 200;
 }
-.editprofilerow{
+.editprofilerow {
     color: #778899;
     margin-top: 10px;
-     margin-left:10px;
-     height:auto;
+    margin-left: 10px;
+    height: auto;
 }
 .search-container {
     max-height: 250px; /* Set maximum height */
     overflow-y: auto; /* Enable vertical scrolling */
-    
+
     padding: 10px; /* Optional: Add some padding */
-    cursor:pointer;
+    cursor: pointer;
     margin-top: 5px;
 
-    border:5px;
+    border: 5px;
     border: 1px solid #c8c8c8;
-    border-radius:5px;
-    width:300px;
+    border-radius: 5px;
+    width: 300px;
     align-items: center;
-    background-color:white; /* Optional: Set a background color */
+    background-color: white; /* Optional: Set a background color */
 }
 
 .search-container:hover {
@@ -3496,29 +3467,29 @@ input[type="date"]::before {
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow for hover effect */
     border-color: #afd4f7; /* Light blue border on hover */
 }
-.profile-image{
-    border-radius:50%;
+.profile-image {
+    border-radius: 50%;
     width: 50px;
     height: 50px;
 }
-.profile-image-selected{
-    border-radius:50%;
+.profile-image-selected {
+    border-radius: 50%;
     width: 35px;
     height: 35px;
 }
-.selected-person{
-    border:1px solid blue;
-     border-radius:50px;
-      padding: 5px;
-      width:fit-content;
-      margin-left:5px;
-      margin-top:5px
+.selected-person {
+    border: 1px solid blue;
+    border-radius: 50px;
+    padding: 5px;
+    width: fit-content;
+    margin-left: 5px;
+    margin-top: 5px;
 }
 .updated-dropdown {
     width: 100%;
     display: flex;
     margin-left: 5px;
-    height:30px;
+    height: 30px;
     transition: height 0.3s ease; /* Smooth transition */
 }
 
@@ -3526,11 +3497,11 @@ input[type="date"]::before {
     height: 30px; /* Change height on hover */
     background-color: grey; /* Optional: change background color on hover */
 }
-.selected-name{
+.selected-name {
     margin-left: 10px;
     color: #778899;
     line-height: 40px;
-    font-size:12px;
+    font-size: 12px;
     margin-bottom: 0;
 }
 .close-icon-person {
@@ -3539,7 +3510,7 @@ input[type="date"]::before {
     margin-left: 15px;
     cursor: pointer;
 }
-.hide-text{
+.hide-text {
     font-size: 12px;
     cursor: pointer;
     color: #306cc6;
@@ -3561,35 +3532,33 @@ input[type="date"]::before {
     align-items: center;
     justify-content: space-between;
 }
-.card-header{
- font-size: 15px;
- background:white;
- width:100%;
-  display:flex;
+.card-header {
+    font-size: 15px;
+    background: white;
+    width: 100%;
+    display: flex;
 
-   justify-content:space-between;
-
+    justify-content: space-between;
 }
-.card-row{
- color: #778899;
- margin-top: 10px;
- margin-left:10px;
- height:auto;
+.card-row {
+    color: #778899;
+    margin-top: 10px;
+    margin-left: 10px;
+    height: auto;
 
- display: flex;
+    display: flex;
 }
-.profile-header{
-    background:#98CBBA;
-    border-radius:5px;
-    height:60px;
-    display:flex;
-     padding: 10px;
- margin-top:10px;
-     align-items:center;
-     justify-content: center;
+.profile-header {
+    background: #98cbba;
+    border-radius: 5px;
+    height: 60px;
+    display: flex;
+    padding: 10px;
+    margin-top: 10px;
+    align-items: center;
+    justify-content: center;
 
-     width:80%;
-
+    width: 80%;
 }
 .profile-header-row {
     display: flex;
@@ -3633,73 +3602,74 @@ input[type="date"]::before {
     font-weight: 500;
     color: #3b4452;
 }
-        .profile p {
-            font-size: 14px;
-        }
-        .personalProfile{
-            margin-top: 10px;
-             width: 80%;
-             max-width: 80%;
-             margin: auto;
-        }
-        .editInformation{
-            border-radius: 5px;
-             border: 1px solid silver;
-             height:auto;
-             background:white;
-             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-        .search-term{
-            font-size: 10px;
-            cursor: pointer;
-            border-radius: 5px 0 0 5px;
-             width: 250px;
-              height: 30px;
-              padding: 5px;
-        }
-        .search-bar{
-            border-radius: 5px;
-            background-color:white;
-            border: 1px solid silver;
-             padding: 8px;
-             width: 330px;
-              margin-top: 10px;
-              height: 250px;
-              overflow-y: auto;
-        }
-        .add-details{
-            border-radius: 5px;
-             border: 1px solid blue;
-             height:28px;margin-left:10px;
-             margin-top:-5px
-        }
-        .employee-details-main{
-            border-radius: 5px;
-             font-size:12px;
-             width:88%;
-        }
-        .requests-container {
-            margin: 20px;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            box-shadow: 0px 0px 5px 1px #e4e3e3;
-        }
+.profile p {
+    font-size: 14px;
+}
+.personalProfile {
+    margin-top: 10px;
+    width: 80%;
+    max-width: 80%;
+    margin: auto;
+}
+.editInformation {
+    border-radius: 5px;
+    border: 1px solid silver;
+    height: auto;
+    background: white;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+.search-term {
+    font-size: 10px;
+    cursor: pointer;
+    border-radius: 5px 0 0 5px;
+    width: 250px;
+    height: 30px;
+    padding: 5px;
+}
+.search-bar {
+    border-radius: 5px;
+    background-color: white;
+    border: 1px solid silver;
+    padding: 8px;
+    width: 330px;
+    margin-top: 10px;
+    height: 250px;
+    overflow-y: auto;
+}
+.add-details {
+    border-radius: 5px;
+    border: 1px solid blue;
+    height: 28px;
+    margin-left: 10px;
+    margin-top: -5px;
+}
+.employee-details-main {
+    border-radius: 5px;
+    font-size: 12px;
+    width: 88%;
+}
+.requests-container {
+    margin: 20px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0px 0px 5px 1px #e4e3e3;
+}
 
-        .request-item {
-            padding: 10px;
-           /* Adds a border between items */
-        }
+.request-item {
+    padding: 10px;
+    /* Adds a border between items */
+}
 
-        .request-item:last-child {
-            border-bottom: none; /* Removes the border for the last item */
-        }
+.request-item:last-child {
+    border-bottom: none; /* Removes the border for the last item */
+}
 
-     .tab-doc {
-        font-size: 12px;
-     }
+.tab-doc {
+    font-size: 12px;
+}
 
-  /* Employee Information ended*/
+/* Employee Information ended*/
 
 /* Hr Main Overview Styles Started */
 .main-overview-container {
@@ -3779,7 +3749,7 @@ input[type="date"]::before {
 
     border-radius: 50%;
 }
-.main-overview-text{
+.main-overview-text {
     font-size: 10px;
 }
 .main-overview-text-truncate {
@@ -3888,8 +3858,6 @@ input[type="date"]::before {
 
 /* Hr Main Overview Styles Ended */
 
-
-
 /* Leave->Admin->Leave Granter styles start  */
 #myTab {
     margin-top: 3px;
@@ -3897,12 +3865,12 @@ input[type="date"]::before {
     background: #fff;
     font-size: var(--sub-headings-font-size);
 }
-.radioLabel{
+.radioLabel {
     display: flex;
     gap: 5px;
     color: var(--label-color);
 }
-.labelText{
+.labelText {
     color: var(--label-color);
     font-size: var(--normal-font-size);
     font-weight: 500;
@@ -3918,7 +3886,7 @@ input[type="date"]::before {
     gap: 10px; /* Space between the columns */
     align-items: center; /* Align items vertically */
 }
-.radio-buttons{
+.radio-buttons {
     display: flex;
     gap: 20px;
 }
@@ -3959,7 +3927,7 @@ input[type="date"]::before {
     display: flex;
     gap: 10px;
 }
-.buttonRouting{
+.buttonRouting {
     color: white !important;
 }
 /* Style for custom dropdown */
@@ -3995,11 +3963,11 @@ input[type="date"]::before {
     background-color: #ddd;
 }
 
-.search-emp{
+.search-emp {
     outline: none;
     padding: 5px 10px;
 }
-.btnAnchor{
+.btnAnchor {
     color: white !important;
 }
 .accordion-button .accordionTitle .spanText {
@@ -4020,7 +3988,7 @@ input[type="date"]::before {
     opacity: 0.8;
     box-shadow: 0 2px 2px rgba(53, 122, 184, 0.4);
 }
-.cancel-btn:hover{
+.cancel-btn:hover {
     border-color: #357ab8;
     color: #357ab8;
     opacity: 0.8;
@@ -4088,7 +4056,7 @@ input[type="date"]::before {
 }
 
 .leave-table td button.delete-btn:hover {
-    color: #b52b
+    color: #b52b;
 }
 .leave-table-wrapper .leave-table,
 .accordion-body .table {
@@ -4122,7 +4090,10 @@ input[type="date"]::before {
     padding: 10px;
 }
 /* Hover effect only for the button inside the accordion header */
-.leave-table-wrapper .accordion-flush .accordion-header .accordion-button:hover {
+.leave-table-wrapper
+    .accordion-flush
+    .accordion-header
+    .accordion-button:hover {
     background-color: #e6eaed !important;
 }
 /* Hover effect on rows inside the accordion body */
@@ -4146,7 +4117,7 @@ input[type="date"]::before {
     font-size: var(--normal-font-size);
     width: 7px;
 }
-.error-text{
+.error-text {
     font-size: var(--normal-font-size);
 }
 .placeholder-small {
@@ -4160,9 +4131,9 @@ input[type="date"]::before {
 .upload-button {
     display: inline-flex;
     align-items: center;
-     height: 30px;
-     width:100px;
-     justify-content: center;
+    height: 30px;
+    width: 100px;
+    justify-content: center;
     font-size: 10px;
     color: var(--main-button-color);
     border: 1px solid var(--main-button-color);
@@ -4180,13 +4151,15 @@ input[type="date"]::before {
     display: none;
 }
 
-.emp-doc{
+.emp-doc {
     margin-top: 10px;
     max-width: auto;
-    display: flex; align-items: center; gap: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
-.emp-doc-form{
-    width:auto;
+.emp-doc-form {
+    width: auto;
     margin-top: 5px;
     margin-left: 5px;
     font-size: 12px;
@@ -4209,10 +4182,10 @@ input[type="date"]::before {
     background-color: white;
     padding: 10px;
 }
-.fieldsWidth{
+.fieldsWidth {
     width: 50%;
 }
-.selectEmp{
+.selectEmp {
     width: 250px;
     height: 200px;
     margin-top: 3px;
@@ -4220,7 +4193,7 @@ input[type="date"]::before {
     border: 1px solid #ccc;
     padding: 5px 10px;
     border-radius: 5px;
-    box-shadow: 1px 0px 2px 2px(rgb(135, 129, 129));
+    box-shadow: 1px 0px 2px 2px (rgb(135, 129, 129));
 }
 
 .form-check {
@@ -4228,19 +4201,19 @@ input[type="date"]::before {
     align-items: center;
     gap: 7px;
 }
-.form-check-input{
+.form-check-input {
     cursor: pointer;
 }
-.managerFilter{
+.managerFilter {
     font-size: 14px;
     color: var(--main-heading-color);
 }
-.form-select{
+.form-select {
     font-size: var(--normal-font-size);
     color: var(--label-color);
 }
 
-.leaveSettings{
+.leaveSettings {
     padding: 20px;
 }
 .accordion-button:focus {
@@ -4253,7 +4226,6 @@ input[type="date"]::before {
     box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
 }
 
-
 .leaveGranter-container {
     width: 100%;
     margin: 0 auto;
@@ -4261,7 +4233,7 @@ input[type="date"]::before {
     background: #f8fafc;
     border-radius: 8px;
 }
-.leaveGranter-header{
+.leaveGranter-header {
     width: 100%;
     display: flex;
     justify-content: space-between;
@@ -4272,12 +4244,12 @@ input[type="date"]::before {
     font-weight: 600;
     color: var(--main-heading-color);
 }
-.subText{
+.subText {
     color: var(--label-color);
     font-weight: 500;
     font-size: var(--sub-headings-font-size);
 }
-.subTextValue{
+.subTextValue {
     color: var(--main-heading-color);
     font-size: var(--sub-headings-font-size);
     font-weight: 500;
@@ -4303,8 +4275,8 @@ input[type="date"]::before {
     font-size: 14px;
     cursor: pointer;
 }
-.leaveGranter-delete{
-    color:var(--label-color);
+.leaveGranter-delete {
+    color: var(--label-color);
 }
 
 .accordion-body {
@@ -4319,40 +4291,39 @@ input[type="date"]::before {
 .accordion-button:not(.collapsed) {
     border-radius: 0px;
 }
-#leaveAccordion{
+#leaveAccordion {
     width: 100%;
 }
-.collapsed{
+.collapsed {
     border-radius: 5px;
 }
-.active-edit{
+.active-edit {
     color: var(--main-button-color);
 }
-.form-container .form-group{
+.form-container .form-group {
     width: 50%;
 }
-.form-group input{
+.form-group input {
     border: 1px solid #ccd9e7;
 }
-.required{
+.required {
     color: red;
 }
 
 /* end of leave policy settings */
 
-
 /* start of year end process */
-.pendingLeaveTable .table-light th{
+.pendingLeaveTable .table-light th {
     background: var(--main-table-heading-bg-color);
     color: var(--main-table-heading-text-color);
     font-size: var(--sub-headings-font-size);
 }
-.pendingLeaveTable  td{
+.pendingLeaveTable td {
     color: var(--label-color);
     font-size: var(--normal-font-size);
 }
-.pendingLeaveTable  .trHover:hover{
-   background-color: pink !important;
+.pendingLeaveTable .trHover:hover {
+    background-color: pink !important;
 }
 .pendingLeaveTable tbody tr:nth-of-type(odd) {
     background-color: #f6f6f6 !important; /* Light gray */
@@ -4361,38 +4332,36 @@ input[type="date"]::before {
 .pendingLeaveTable tbody tr:nth-of-type(even) {
     background-color: #ffffff !important; /* White */
 }
-.yearEndtable{
+.yearEndtable {
     padding: 20px 40px;
 }
 .table-container {
     max-height: 300px; /* Set the max height for the table */
-    overflow-y: auto;  /* Add vertical scrolling when content exceeds the height */
-    display: block;    /* Make the container block-level to enable overflow */
+    overflow-y: auto; /* Add vertical scrolling when content exceeds the height */
+    display: block; /* Make the container block-level to enable overflow */
 }
-.yearEnd-accordion{
+.yearEnd-accordion {
     width: 80%;
     padding: 10px 20px;
 }
-.accordion-button{
+.accordion-button {
     color: var(--main-heading-color);
     font-size: var(--main-headings-font-size);
     font-weight: 600;
 }
-.editIcon{
+.editIcon {
     color: var(--main-heading-color);
     font-size: var(--normal-font-size);
     cursor: pointer;
 }
-.fa-times-circle:before{
+.fa-times-circle:before {
     color: #ccc !important;
 }
-.leaveType{
+.leaveType {
     color: var(--main-heading-color);
     font-size: var(--sub-headings-font-size);
     font-weight: 500;
 }
-
-
 
 /* leave calendar */
 .container-leave {
@@ -4522,7 +4491,6 @@ input[type="date"]::before {
     color: var(--main-heading-color);
     font-weight: 500;
     font-size: var(--normal-font-size);
-
 }
 .normalTextSubheading {
     color: var(--main-heading-color);
@@ -4649,7 +4617,7 @@ input[type="date"]::before {
     top: 75%;
     left: 50%;
     transform: translate(-50%, -50%);
-    
+
     /* Flexbox centering of the content inside */
     display: flex;
     justify-content: center;
@@ -4882,7 +4850,6 @@ input[type="date"]::before {
 
 /* end of leave calendar */
 
-
 /* start of reports */
 .allreports {
     border: 1px solid #ccc;
@@ -4894,7 +4861,7 @@ input[type="date"]::before {
 }
 
 .allreports-header {
-    background-color:#408EC6; /* Blue header */
+    background-color: #408ec6; /* Blue header */
     color: white;
     font-weight: bold;
     padding: 5px 10px;
@@ -4919,7 +4886,7 @@ input[type="date"]::before {
     align-items: center;
     padding: 7px 12px;
 }
-.allreports-body ul li:hover{
+.allreports-body ul li:hover {
     background-color: #e6e6e6;
     color: var(--main-button-color);
     padding: 7px 12px;
@@ -4956,7 +4923,6 @@ input[type="date"]::before {
     color: white;
     font-weight: bold;
     /* white-space: nowrap; */
-
 }
 
 .empTable tbody tr:hover {
@@ -5019,27 +4985,45 @@ input[type="date"]::before {
 /* end of resignation requests */
 
 /* //leave type reviwiwer styles */
-
+.rounded-circle {
+    background-color: #ccc;
+    color: #333;
+    padding: 8px;
+    font-weight: 500;
+}
+.empDiv:hover {
+    background-color: #98cae0;
+}
+.iconforAction{
+    cursor: pointer;
+}
+.smallText {
+    color: #778899;
+    font-size: 11px;
+}
 #typeReviewer {
     width: 100%;
     border-collapse: collapse;
     margin-bottom: 20px;
 }
-#typeReviewer thead{
+#typeReviewer thead {
     background-color: var(--main-table-heading-bg-color);
     font-size: var(--normal-font-size);
     color: var(--main-table-heading-text-color);
 }
-#typeReviewer th{
+#typeReviewer th {
     font-weight: 500 !important;
 }
-#typeReviewer, #typeReviewer th, #typeReviewer td {
+#typeReviewer,
+#typeReviewer th,
+#typeReviewer td {
     border: 1px solid #ddd;
     color: var(--label-color);
     font-size: var(--normal-font-size);
 }
 
-#typeReviewer th, #typeReviewer td {
+#typeReviewer th,
+#typeReviewer td {
     padding: 10px;
     text-align: left;
 }
@@ -5071,6 +5055,7 @@ select {
 select:focus {
     outline: none;
     border-color: #66afe9;
-    box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(102, 175, 233, .6);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075),
+        0 0 8px rgba(102, 175, 233, 0.6);
 }
 /* end of leave type reviewer */
