@@ -740,8 +740,8 @@
                                     <button id="dropdown-toggle" class="dropdown-toggle custom-feed-btn">
                                         {{ $sortType === 'newest' ? 'Newest First' : 'Most Recent Interacted' }}
                                     </button>
-                                    <div class="dropdown-menu custom-feed-menu mb-2"
-                                        style="display: {{ $dropdownVisible ? 'block' : 'none' }}">
+                                    <div class="dropdown-menu custom-feed-menu "
+                                        style="display: {{ $dropdownVisible ? 'block' : 'none' }};margin-top:-10px">
                                         <a href="#" data-sort="newest"
                                             wire:click.prevent="updateSortType('newest')"
                                             class="dropdown-item custom-feed-item">Newest First</a>
