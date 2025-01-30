@@ -688,8 +688,8 @@ $this->employees = EmployeeDetails::where('company_id', $companyId)->get();
     {
         // Define the URLs based on the radio button value
         $urls = [
-            'posts' => '/everyone',
-            'activities' => '/Feeds',
+            'posts' => '/hr/everyone',
+            'activities' => '/hr/hrFeeds',
             'kudos' => '/kudos',
             'post-requests' => '/emp-post-requests'
             // Add more mappings if necessary
@@ -1146,7 +1146,7 @@ $this->employees = EmployeeDetails::where('company_id', $companyId)->get();
             }
     
             $user = Auth::user();
-            $employeeId = auth()->guard('emp')->user()->emp_id;
+            $employeeId = auth()->user()->emp_id;
             $employeeDetails = EmployeeDetails::where('emp_id', $employeeId)->first();
              // Fetch the manager_id of the current employee
              $managerId = $employeeDetails->manager_id;

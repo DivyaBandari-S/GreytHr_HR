@@ -46,7 +46,7 @@
         }
     @endphp
 
-<img class="navProfileImgFeeds rounded-circle" src="{{ $profileImage }}" alt="Profile Image">
+<img class="navProfileImgFeeds " src="{{ $profileImage }}" alt="Profile Image" style="height:40px;width:40px">
     <div class="drive-in justify-content-center align-items-start">
 
         <span class="text-feed">Hey
@@ -352,113 +352,107 @@
                     </div>
                     <div class=" mt-2 bg-white d-flex align-items-center ">
                         <div class="d-flex ms-auto">
-                            @if ($showFeedsDialog)
-                                <div class="modal" tabindex="-1" role="dialog" style="display: block; ">
-                                    <div class="modal-dialog modal-dialog-centered" role="document">
-                                        <div class="modal-content">
-                                            <div
-                                                class="modal-header d-flex justify-content-between align-items-center">
-                                                <p class="mb-0" style="color:white">Create a post</p>
-                                                <span class="img d-flex align-items-end">
-                                                    <img src="{{ asset('images/Posts.jpg') }}"
-                                                        class="img rounded custom-height-30">
-                                                </span>
-                                            </div>
+                        @if($showFeedsDialog)
+<div class="modal" tabindex="-1" role="dialog" style="display: block;">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header d-flex justify-content-between align-items-center">
+                <p class="mb-0" style="color:white">Create a Post</p>
+                <span class="img d-flex align-items-end">
+                    <img src="{{ asset('images/Posts.jpg') }}" class="img rounded custom-height-30">
+                </span>
+            </div>
+
+            <div>
+            <form wire:submit.prevent="submit" enctype="multipart/form-data">
+    <div class="modal-body" style="padding: 20px; width: 80%;"> 
+
+        <!-- Category Selection -->
+        <div class="form-group mb-15">
+            <label for="category">You are posting in:</label>
+            <select wire:model.lazy="category" class="form-select" id="category">
+                <option value="" hidden>Select Category</option>
+                <option value="Appreciations">Appreciations</option>
+                <option value="Companynews">Company News</option>
+                <option value="Events">Events</option>
+                <option value="Everyone">Everyone</option>
+                <option value="Hyderabad">Hyderabad</option>
+                <option value="US">US</option>
+            </select>
+            @error('category') <span class="text-danger">{{ $message }}</span> @enderror
+        </div>
+
+        <!-- Quill Editor -->
+        <div class="row mt-3">
+            <label for="description">Write something here:</label>
+        </div>
+        <div id="quill-toolbar-container" style="margin-top:10px;background:#F7F7F7">
+            <div id="quill-toolbar" class="ql-toolbar ql-snow">
+                <span class="ql-formats">
+                    <button type="button" onclick="execCmd('bold')"><b>B</b></button>
+                    <button type="button" onclick="execCmd('italic')"><i>I</i></button>
+                    <button type="button" onclick="execCmd('underline')"><u>U</u></button>
+                    <button type="button" onclick="execCmd('strikeThrough')"><s>S</s></button>
+                    <button type="button" onclick="execCmd('insertUnorderedList')" style="display: inline-flex; align-items: center; gap: 5px;">
+                        <i class="fas fa-list-ul"></i>
+                    </button>
+                    <button type="button" onclick="execCmd('insertOrderedList')">  <i class="fas fa-list-ol"></i></button>
+                    <button type="button" onclick="insertVideo()">🎥</button>
+
+                </span>
+            </div>
+        </div>
+        <!-- Content Editable div with wire:ignore -->
+        <div 
+                                id="richTextEditor" 
+                                contenteditable="true"
+                                wire:ignore
+                                class="form-control" 
+                                style="border: 1px solid #ccc; border-radius: 6px; padding: 10px; min-height: 150px; background-color: #fff;"
+                                oninput="updateDescription(this.innerHTML)">
+                                {!! $description !!}
+                            </div>
 
 
 
-                                            @if (Session::has('error'))
-                                                <div class="alert alert-danger alert-dismissible fade show d-flex align-items-center justify-content-center"
-                                                    role="alert"
-                                                    style="font-size: 0.875rem; width: 90%; margin: 10px auto; padding: 10px; border-radius:4px; background-color: #f8d7da; color: #721c24;">
-                                                    {{ Session::get('error') }}
-                                                    <button type="button" class="btn-close" data-bs-dismiss="alert"
-                                                        aria-label="Close"
-                                                        style="margin-left: 10px;margin-top:-5px"></button>
-                                                </div>
-                                            @endif
-                                            <form wire:submit.prevent="submit" enctype="multipart/form-data">
-                                                <div class="modal-body" style="padding: 20px;width: 80%;">
-                                                    <!-- Category Selection -->
-                                                    <div class="form-group mb-15">
-                                                        <label for="category">You are posting in:</label>
-                                                        <select wire:model.lazy="category" class="form-select"
-                                                            id="category">
-                                                            <option value="" hidden>Select Category</option>
-                                                            <option value="Appreciations">Appreciations</option>
+        @error('description') 
+            <span class="text-danger">{{ $message }}</span> 
+        @enderror
+        <div class="form-group mt-3">
+            <label for="file_path">Upload Attachment:</label>
+            <div style="text-align: start;">
+                <input type="file" wire:model="file_path" class="form-control" id="file_path" style="margin-top: 5px">
+                @error('file_path') <span class="text-danger">{{ $message }}</span> @enderror
+            </div>
+        </div>
 
-                                                            <option value="Companynews">Company News</option>
-                                                            <option value="Events">Events</option>
-                                                            <option value="Everyone">Everyone</option>
-                                                            <option value="Hyderabad">Hyderabad</option>
-                                                            <option value="US">US</option>
-                                                        </select>
-                                                        @error('category')
-                                                            <span class="text-danger">{{ $message }}</span>
-                                                        @enderror
-                                                    </div>
-
-                                                    <!-- Description Input -->
-                                                    <div class="form-group mt-3">
-                                                        <label for="content">Write something here:</label>
-
-                                                        <textarea id="myTextarea" wire:model.lazy="description" class="form-control" rows="2"
-                                                            style="border: 1px solid #ccc; border-radius: 4px; padding: 10px; font-size: 0.875rem; resize: vertical; width: 100%; margin-top: 5px;"
-                                                            placeholder="Enter your description here...">
-    </textarea>
-                                                        @error('description')
-                                                            <span class="text-danger">{{ $message }}</span>
-                                                        @enderror
-                                                    </div>
-                                                    <!-- File Input -->
-                                                    <div id="flash-message-container"
-                                                        style="display: none;margin-top:10px"
-                                                        class="alert alert-success" role="alert"></div>
-                                                    <!-- File Upload -->
-                                                    <div class="form-group mt-3">
-                                                        <label for="file_path">Upload Attachment:</label>
-                                                        <div style="text-align: start;">
+    </div>
+    
 
 
-                                                            <input type="file" wire:model="file_path"
-                                                                class="form-control" id="file_path"
-                                                                style="margin-top:5px" onchange="handleImageChange()">
-                                                            @error('file_path')
-                                                                <span class="text-danger">{{ $message }}</span>
-                                                            @enderror
-
-                                                            <!-- Success Message -->
-
-
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <!-- Submit & Cancel Buttons -->
-                                                <div class="modal-footer border-top">
-                                                    <div class="d-flex justify-content-center w-100">
-                                                        <button type="submit" wire:target="file_path"
-                                                            wire:loading.attr="disabled"
-                                                            class="submit-btn">Submit</button>
-                                                        <button wire:click="closeFeeds" type="button"
-                                                            class="cancel-btn ms-2">Cancel</button>
-                                                    </div>
-                                                </div>
-                                            </form>
+   
+    <!-- Submit & Cancel Buttons -->
+    <div class="modal-footer border-top">
+        <div class="d-flex justify-content-center w-100">
+            <button type="submit" class="submit-btn">Submit</button>
+            <button type="button" wire:click="closeFeeds" class="cancel-btn ms-2">Cancel</button>
+        </div>
+    </div>
+</form>
 
 
 
 
-
-                                        </div>
-                                    </div>
-                                </div>
-
-
-
-
-                                <div class="modal-backdrop fade show"></div>
-                            @endif
+    <!-- Success Message -->
+    @if (session()->has('message'))
+        <div class="alert alert-success mt-3">{{ session('message') }}</div>
+    @endif
+</div>
+        </div>
+    </div>
+</div>
+<div class="modal-backdrop fade show"></div>
+@endif
                         </div>
                     </div>
                 </div>
@@ -471,7 +465,7 @@
                         <p class="feeds-left-menu">Activities</p>
                         <div class="activities">
                             <label class="custom-radio-label">
-                                <input type="radio" name="radio" value="activities" checked data-url="/Feeds"
+                                <input type="radio" name="radio" value="activities" checked data-url="/hr/hrFeeds"
                                     wire:click="handleRadioChange('activities')">
                                 <div class="feed-icon-container" style="margin-left: 10px;">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12"
@@ -512,7 +506,7 @@
                             <label class="custom-radio-label">
 
                                 <input type="radio" id="radio-hr" name="radio" value="posts"
-                                    data-url="/everyone" wire:click="handleRadioChange('posts')">
+                                    data-url="/hr/everyone" wire:click="handleRadioChange('posts')">
 
                                 <div class="feed-icon-container" style="margin-left: 10px;">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12"
@@ -583,15 +577,15 @@
                                 </div>
                                 <div id="dropdownContent1" class="Feeds-Dropdown">
                                     <ul class="d-flex flex-column m-0 p-0">
-                                        <a class="menu-item" href="/Feeds">All Feeds</a>
+                                        <a class="menu-item" href="/hr/hrFeeds">All Feeds</a>
 
-                                        <a class="menu-item" href="/events">Every One</a>
+                                        <a class="menu-item" href="/hr/everyone">Every One</a>
 
-                                        <a class="menu-item" href="/Feeds">Events</a>
+                                        <a class="menu-item" href="/hr/hrFeeds">Events</a>
 
-                                        <a class="menu-item" href="/events">Company News</a>
+                                        <a class="menu-item" href="/hr/everyone">Company News</a>
 
-                                        <a class="menu-item" href="/events">Appreciation</a>
+                                        <a class="menu-item" href="/hr/everyone">Appreciation</a>
 
 
 
@@ -621,58 +615,58 @@
                                         <a class="menu-item" style="font-weight: 700;">India</a>
 
 
-                                        <a class="menu-item" href="/events">Adilabad</a>
+                                        <a class="menu-item" href="/hr/everyone">Adilabad</a>
 
 
 
 
 
-                                        <a class="menu-item" href="/events">Doddaballapur</a>
+                                        <a class="menu-item" href="/hr/everyone">Doddaballapur</a>
 
 
-                                        <a class="menu-item" href="/events">Guntur</a>
+                                        <a class="menu-item" href="/hr/everyone">Guntur</a>
 
-                                        <a class="menu-item" href="/events">Hoskote</a>
+                                        <a class="menu-item" href="/hr/everyone">Hoskote</a>
 
-                                        <a class="menu-item" href="/events">Hyderabad</a>
+                                        <a class="menu-item" href="/hr/everyone">Hyderabad</a>
 
-                                        <a class="menu-item" href="/events">Mandya
+                                        <a class="menu-item" href="/hr/everyone">Mandya
                                         </a>
 
-                                        <a class="menu-item" href="/events">Mangalore
+                                        <a class="menu-item" href="/hr/everyone">Mangalore
                                         </a>
 
-                                        <a class="menu-item" href="/events">Mumbai
+                                        <a class="menu-item" href="/hr/everyone">Mumbai
                                         </a>
 
 
-                                        <a class="menu-item" href="/events">Mysore
+                                        <a class="menu-item" href="/hr/everyone">Mysore
                                         </a>
 
-                                        <a class="menu-item" href="/events">Pune
+                                        <a class="menu-item" href="/hr/everyone">Pune
                                         </a>
 
-                                        <a class="menu-item" href="/events">Sirsi
+                                        <a class="menu-item" href="/hr/everyone">Sirsi
                                         </a>
 
-                                        <a class="menu-item" href="/events">Thumkur
+                                        <a class="menu-item" href="/hr/everyone">Thumkur
                                         </a>
 
-                                        <a class="menu-item" href="/events">Tirupati</a>
+                                        <a class="menu-item" href="/hr/everyone">Tirupati</a>
 
-                                        <a class="menu-item" href="/events">Trivandrum</a>
+                                        <a class="menu-item" href="/hr/everyone">Trivandrum</a>
 
-                                        <a class="menu-item" href="/events">Udaipur</a>
+                                        <a class="menu-item" href="/hr/everyone">Udaipur</a>
 
-                                        <a class="menu-item" href="/events">Vijayawada</a>
+                                        <a class="menu-item" href="/hr/everyone">Vijayawada</a>
 
                                         <a class="menu-item" style="font-weight: 700;">USA</a>
 
-                                        <a class="menu-item" href="/events">California</a>
+                                        <a class="menu-item" href="/hr/everyone">California</a>
 
-                                        <a class="menu-item" href="/events">New York</a>
+                                        <a class="menu-item" href="/hr/everyone">New York</a>
 
-                                        <a class="menu-item" href="/events">Hawaii</a>
+                                        <a class="menu-item" href="/hr/everyone">Hawaii</a>
 
 
                                     </ul>
@@ -696,24 +690,24 @@
                                 <div id="dropdownContent3" class="Feeds-Dropdown">
                                     <ul class="d-flex flex-column" style="font-size: 12px; margin: 0; padding: 0;">
 
-                                        <a class="menu-item" href="/events">HR</a>
+                                        <a class="menu-item" href="/hr/everyone">HR</a>
 
 
 
 
-                                        <a class="menu-item" href="/events">Operations</a>
+                                        <a class="menu-item" href="/hr/everyone">Operations</a>
 
 
-                                        <a class="menu-item" href="/events">Production Team</a>
+                                        <a class="menu-item" href="/hr/everyone">Production Team</a>
 
 
-                                        <a class="menu-item" href="/events">QA</a>
+                                        <a class="menu-item" href="/hr/everyone">QA</a>
 
 
-                                        <a class="menu-item" href="/events">Sales Team</a>
+                                        <a class="menu-item" href="/hr/everyone">Sales Team</a>
 
 
-                                        <a class="menu-item" href="/events">Testing Team</a>
+                                        <a class="menu-item" href="/hr/everyone">Testing Team</a>
 
                                     </ul>
                                 </div>
@@ -736,12 +730,12 @@
 
                             <div class="col-md-4 d-flex justify-content-end align-items-center custom-feed">
                                 <p class="medium-header me-2 ">Sort:</p>
-                                <div class="dropdown mb-2">
+                                <div class="dropdown" style="margin-top:-7px">
                                     <button id="dropdown-toggle" class="dropdown-toggle custom-feed-btn">
                                         {{ $sortType === 'newest' ? 'Newest First' : 'Most Recent Interacted' }}
                                     </button>
                                     <div class="dropdown-menu custom-feed-menu "
-                                        style="display: {{ $dropdownVisible ? 'block' : 'none' }};margin-top:-10px">
+                                        style="display: {{ $dropdownVisible ? 'block' : 'none' }}">
                                         <a href="#" data-sort="newest"
                                             wire:click.prevent="updateSortType('newest')"
                                             class="dropdown-item custom-feed-item">Newest First</a>
@@ -3949,6 +3943,43 @@ style="display: flex; gap: 10px; align-items: center;">
         alert(event.detail
             .message); // You can replace this with a nicer UI message (e.g., using a modal or toast)
     });
+</script>
+<link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
+
+<!-- Quill.js JS -->
+<script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
+
+
+
+
+
+
+
+<script>
+    function execCmd(command) {
+        document.execCommand(command, false, null);
+    }
+
+    function updateDescription(content) {
+        @this.set('description', content); // Update Livewire description property
+    }
+    function insertVideo() {
+    const url = prompt('Enter YouTube Video URL:');
+    if (url) {
+        // Match standard YouTube or shortened URLs
+        const match = url.match(/(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)/);
+        if (match && match[1]) {
+            const embedUrl = `https://www.youtube.com/embed/${match[1]}`;
+            const iframe = `<iframe src="${embedUrl}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="width:50%; height:200px;"></iframe>`;
+            document.execCommand('insertHTML', false, iframe);
+        } else {
+            alert('Invalid YouTube URL. Please use a valid link.');
+        }
+    }
+}
+
+
+
 </script>
 <script>
     document.addEventListener('livewire:load', function() {
