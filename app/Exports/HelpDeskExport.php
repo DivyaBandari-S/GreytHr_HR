@@ -43,7 +43,7 @@ class HelpDeskExport implements FromCollection, WithHeadings, WithMapping
             $helpDesk->description,
             $helpDesk->active_comment,
             $helpDesk->priority,
-            $helpDesk->status_name,
+            $helpDesk->status ? $helpDesk->status->status_name : 'Unknown',
             $helpDesk->created_at->toDateTimeString()
         ];
     }
