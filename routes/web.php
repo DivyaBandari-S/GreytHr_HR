@@ -44,6 +44,7 @@ use App\Livewire\LeaveSettingPolicy;
 use App\Livewire\LeaveTypeReviewer;
 use App\Livewire\ParentDetails;
 use App\Livewire\PositionHistory;
+use App\Livewire\PreviousEmployeement;
 use App\Livewire\ReportsManagement;
 use App\Livewire\Requests;
 use App\Livewire\ShiftOverrideHr;
@@ -113,6 +114,7 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
         Route::get('/position-history', PositionHistory::class)->name('position-history');
         Route::get('parent-details', ParentDetails::class)->name('parent-details');
         Route::get('/emp-document', EmpDocument::class)->name('emp-document');
+        Route::get('/previous-employeement', PreviousEmployeement::class)->name('previous-employeement');
         Route::get('/bank-account', BankAccount::class)->name('bank-account');
         Route::get('/user/attendance-process', AttendanceProcess::class)->name('attendance-process');
         Route::get('/user/swipe-management-for-hr', SwipeManagementForHr::class)->name('swipe-management-for-hr');

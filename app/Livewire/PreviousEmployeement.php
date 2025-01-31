@@ -2,10 +2,10 @@
 
 namespace App\Livewire;
 
-use App\Exports\AssetExport;
+use Livewire\Component;
 use App\Helpers\FlashMessageHelper;
 use App\Models\Asset;
-use Livewire\Component;
+
 use App\Models\EmployeeDetails;
 use App\Models\HelpDesks;
 use App\Models\Request;
@@ -14,11 +14,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Livewire\WithFileUploads;
 use Maatwebsite\Excel\Facades\Excel;
-
-class EmployeeAsset extends Component
+class PreviousEmployeement extends Component
 {
-    use WithFileUploads;
-
     public $searchTerm = '';
     public $employee;
     public $filterData;
@@ -84,22 +81,13 @@ class EmployeeAsset extends Component
     public $showDialog=false;
     public $filePath;
    public $selectedOption = 'all'; 
-    public $asset_type;
-    public $asset_status;
-    public $asset_details;
-    public $issue_date;
-    public $asset_id;
-    public $valid_till;
-    public $asset_value;
-    public $returned_on;
-    public $remarks;
    
     public $employeeDetails = [];
     public $employeeIds = [];
     public $showDetails = true;
     public $editingField = false;
   
-    
+
     public function updatesearchTerm()
     {
         $this->searchTerm= $this->searchTerm;
@@ -132,48 +120,9 @@ class EmployeeAsset extends Component
     {
         $this->isNames = false;
     }
-    public function searchHelpDesk($status_code, $searchTerm)
-    {
-        dd('hii');
-        $employeeId = auth()->user()->emp_id;
-    
-        // Start the base query based on status and employee ID or cc_to
-        $query = Request::where(function ($query) use ($employeeId) {
-            $query->where('emp_id', $employeeId)->orWhere('cc_to', 'like', "%$employeeId%");
-        });
-        if (is_array($status_code)) {
-            $query->whereIn('status_code', $status_code);  // Multiple statuses (array)
-        } else {
-            $query->where('status_code', $status_code);    // Single status (string)
-        }// Apply status filter dynamically
-    
 
-        // If there's a search term, apply search filtering
-        if ($searchTerm) {
-            $query->where(function ($query) use ($searchTerm) {
-                $query->where('emp_id', 'like', '%' . $searchTerm . '%')
-                    ->orWhere('category', 'like', '%' . $searchTerm . '%')
-                    ->orWhere('subject', 'like', '%' . $searchTerm . '%')
-                    ->orWhereHas('emp', function ($query) use ($searchTerm) {
-                        $query->where('first_name', 'like', '%' . $searchTerm . '%')
-                            ->orWhere('last_name', 'like', '%' . $searchTerm . '%');
-                    });
-            });
-        }
     
-        // Get results
-        $results = $query->orderBy('created_at', 'desc')->get();
-     
-        $this->filterData = $results;
-        $this->peopleFound = count($this->filterData) > 0;
-    }
-    
-    
-    public function searchActiveHelpDesk()
-    {
-        $this->searchHelpDesk([8,10], $this->activeSearch);
-    }
-    public function filter()
+       public function filter()
     {
 
         $employeeId = auth()->user()->emp_id;
@@ -512,29 +461,7 @@ class EmployeeAsset extends Component
     
     
 
-    public function editAsset($id)
-    {
-        // Find the asset by ID
-        $asset = Asset::find($id);
-    
-        if ($asset) {
-            // Load the asset details into the component properties
-            $this->asset_id = $asset->id;
-            $this->asset_type = $asset->asset_type;
-            $this->asset_status = $asset->asset_status;
-            $this->asset_details = $asset->asset_details;
-            $this->issue_date = $asset->issue_date;
-            $this->valid_till = $asset->valid_till;
-            $this->returned_on = $asset->returned_on;
-            $this->asset_value = $asset->asset_value;
-            $this->remarks = $asset->remarks;
-    
-            // Optionally, show the asset dialog if you're using a modal for editing
-            $this->showAssetDialog = true;
-        } else {
-            session()->flash('error', 'Asset not found.');
-        }
-    }
+
     public function closeEmployeeBox()
     {
         $this->searchEmployee;
@@ -623,14 +550,7 @@ class EmployeeAsset extends Component
         }
         
     }
-    public function exportToExcel()
-    {
-        if (!empty($this->selectedEmployeeId)) {
-            return Excel::download(new AssetExport($this->selectedEmployeeId), 'assets.xlsx');
-        } else {
-            session()->flash('error', 'Please select an employee to export data.');
-        }
-    }
+
     public function selectEmployee($empId)
     {
         
@@ -642,11 +562,11 @@ class EmployeeAsset extends Component
     }
 
 public $selectedEmployee = null;
-public $showAssetDialog=false;
-public function addAsset()
+public $showPreviousDialog=false;
+public function addPrevious()
 {
     $this->resetForm();
-    $this->showAssetDialog = true;
+    $this->showPreviousDialog = true;
 }
 public function removeSelectedEmployee()
 {
@@ -657,150 +577,12 @@ public function removeSelectedEmployee()
 
 public function resetForm()
 {
-    $this->asset_id = '';
-    $this->asset_type = '';
-    $this->asset_status = '';
-    $this->asset_details = '';
- 
-    $this->asset_value = '';
-    $this->returned_on = '';
-    $this->remarks = '';
-    $this->brand = '';
-    $this->invoice_no = '';
-    $this->model = '';
-    $this->current_value='';
-    $this->original_value = '';
-    $this->purchase_date = '';
+   
   
 }
-public $purchase_date;
-    public $brand;
-    public $invoice_no;
-    public $model;
-    public $current_value;
-    public $original_value;
-    public $warranty;
-    public $file_name;
-   
-    public $mime_type;
-    public $active;
 
-public function saveAsset()
-{
-    $emp_id = $this->selectedPeople[0] ?? null; // or however you are managing selected people
-    
-    // Check if the selected person exists
-    $selectedPerson = EmployeeDetails::find($emp_id);
 
-   $this->validate([
-        
-        'asset_type' => 'required|string|max:255',
-        'asset_status' => 'required|string|max:255',
-        'asset_details' => 'required|string',
-        'purchase_date' => 'required|date',
-        'brand' => 'nullable|string|max:255',
-        'model' => 'nullable|string|max:255',
-        'invoice_no' => $this->asset_id ? 'nullable|string|max:255' : 'nullable|string|max:255|unique:assets,invoice_no', // Skip unique validation on update
-        'original_value' => 'required|numeric|min:0',
-        'current_value' => 'required|numeric|min:0',
-        'warranty' => 'required|in:Yes,No',
-        'remarks' => 'nullable|string|max:500',
-       
-    ], [
-        
-        'asset_type.required' => 'Asset type is required.',
-        'asset_status.required' => 'Asset status is required.',
-        'asset_details.required' => 'Please provide asset details.',
-        'purchase_date.required' => 'Purchase date is required.',
-      
-      'invoice_no.unique' => ' Please provide a unique invoice number.',
-        'purchase_date.date' => 'Enter a valid date.',
-        'original_value.required' => 'Original value is required.',
-        'original_value.numeric' => 'Original value must be a number.',
-        'current_value.required' => 'Current value is required.',
-        'current_value.numeric' => 'Current value must be a number.',
-        'warranty.required' => 'Please specify if there is a warranty.',
-        
-    ]);
 
-    // Check if the selected person exists
-    if ($selectedPerson) {
-    
-        try {
-            if ($this->asset_id) {
-                // Update existing asset record
-                $asset = Asset::find($this->asset_id);
-                
-                if ($asset) {
-                    $asset->update([
-                        'emp_id' => $emp_id,
-                        'asset_type' => $this->asset_type,
-                        'asset_status' => $this->asset_status,
-                        'asset_details' => $this->asset_details,
-                        'purchase_date' => $this->purchase_date,
-                       
-                        'brand' => $this->brand,
-                        'model' => $this->model,
-                        'invoice_no' => $this->invoice_no,
-                        'original_value' => $this->original_value,
-                        'current_value' => $this->current_value,
-                        'warranty' => $this->warranty,
-                        'remarks' => $this->remarks,
-                      
-
-                    ]);
-
-                    session()->flash('message', 'Asset record updated successfully.');
-                    session()->flash('success', 'Asset updated successfully!');
-                } else {
-                    session()->flash('error', 'Asset not found.');
-                }
-            } else {
-           
-                // Dynamically generate a unique asset_id with "ASS-" prefix for a new asset
-                $lastAsset = Asset::latest('created_at')->first();
-                $nextId = $lastAsset ? ((int)substr($lastAsset->asset_id, 4) + 1) : 1;
-                $generatedAssetId = 'ASS-' . str_pad($nextId, 3, '0', STR_PAD_LEFT);
-           
-                // Create a new asset record
-                Asset::create([
-                    'emp_id' => $emp_id,
-                    'asset_type' => $this->asset_type,
-                    'asset_status' => $this->asset_status,
-                    'asset_details' => $this->asset_details,
-                    'purchase_date' => $this->purchase_date,
-                   
-                    'brand' => $this->brand,
-                    'model' => $this->model,
-                    'invoice_no' => $this->invoice_no,
-                    'original_value' => $this->original_value,
-                    'current_value' => $this->current_value,
-                    'warranty' => $this->warranty,
-                    'remarks' => $this->remarks,
-                 
-                    'asset_id' => $generatedAssetId,
-                  
-                ]);
-           
-
-                session()->flash('message', 'Asset record created successfully.');
-                session()->flash('success', 'Asset added successfully!');
-                $this->resetForm();
-            }
-
-            $this->showAssetDialog = false; // Close the dialog after saving
-            $this->resetForm(); // Reset form fields
-        } catch (\Exception $e) {
-            Log::error('Asset save failed: ' . $e->getMessage());
-            session()->flash('error', 'Failed to save asset record. Please try again.');
-        }
-    } else {
-        session()->flash('error', 'Selected person not found.');
-    }
-}
-
-    
-    
     public function render()
     {
         $loggedInEmpID = auth()->guard('hr')->user()->emp_id;
@@ -828,9 +610,8 @@ public function saveAsset()
             $this->requests = collect(); // No selected employee, empty collection
             Log::info('No Employee Selected, Returning Empty Requests');
         }
-        // Determine if there are people found
         $peopleFound = $this->employees->count() > 0;
-        return view('livewire.employee-asset', [
+        return view('livewire.previous-employeement',[
             'employees' => $this->employees,
             'selectedPeople' => $this->selectedPeople,
             'peopleFound' => $peopleFound,
@@ -838,5 +619,4 @@ public function saveAsset()
             'requests'=>$this->requests,
         ]);
     }
-
 }

@@ -4824,6 +4824,7 @@ input[type="date"]::before {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    width: fit-content;
 }
 
 .no-data img {

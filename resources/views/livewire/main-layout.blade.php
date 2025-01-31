@@ -58,7 +58,7 @@
                             <li><a href="/hr/parent-details">Family Details</a></li>
                             <li><a href="/hr/emp-document">Employee Documents</a></li>
 
-                            <li><a href="/user">Previous Employement</a></li>
+                            <li><a href="/hr/previous-employeement">Previous Employement</a></li>
                             <li><a href="/user">Separration</a></li>
                             <li><a href="/user">Acess card details</a></li>
 
