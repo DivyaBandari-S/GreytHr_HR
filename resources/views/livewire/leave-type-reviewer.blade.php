@@ -183,7 +183,7 @@
                                         <div>
                                             @foreach ($employeeIds as $empData)
                                             <div wire:click="getSelecetedReviewer('{{ $empData->emp_id }}')" class="empDiv mt-2 p-2 border rounded bg-white d-flex align-items-center gap-3">
-                                                <div class="rounded-circle d-flex bg-grey align-items-center justify-content-center">
+                                                <div class="rounded-circle name d-flex bg-grey align-items-center justify-content-center">
                                                     <span>
                                                         {{ substr($empData->first_name, 0, 1) }}{{ substr($empData->last_name, 0, 1) }}
                                                     </span>
@@ -229,7 +229,7 @@
                                         <div>
                                             @foreach ($employeeIds as $empData)
                                             <div wire:click="getSelecetedReviewer2('{{ $empData->emp_id }}')" class="empDiv mt-2 p-2 border rounded bg-white d-flex align-items-center gap-3">
-                                                <div class="rounded-circle d-flex bg-grey align-items-center justify-content-center">
+                                                <div class="rounded-circle name d-flex bg-grey align-items-center justify-content-center">
                                                     <span>
                                                         {{ substr($empData->first_name, 0, 1) }}{{ substr($empData->last_name, 0, 1) }}
                                                     </span>
@@ -338,7 +338,7 @@
                                         <div>
                                             @foreach ($employeeIds as $empData)
                                             <div wire:click="getSelecetedReviewer('{{ $empData->emp_id }}')" class="empDiv mt-2 p-2 border rounded bg-white d-flex align-items-center gap-3">
-                                                <div class="rounded-circle d-flex bg-grey align-items-center justify-content-center">
+                                                <div class="rounded-circle name d-flex bg-grey align-items-center justify-content-center">
                                                     <span>{{ substr($empData->first_name, 0, 1) }}{{ substr($empData->last_name, 0, 1) }}</span>
                                                 </div>
                                                 <div class="d-flex flex-column align-items-start">
@@ -375,7 +375,7 @@
                                         <div>
                                             @foreach ($employeeIds as $empData)
                                             <div wire:click="getSelecetedReviewer2('{{ $empData->emp_id }}')" class="empDiv mt-2 p-2 border rounded bg-white d-flex align-items-center gap-3">
-                                                <div class="rounded-circle d-flex bg-grey align-items-center justify-content-center">
+                                                <div class="rounded-circle name d-flex bg-grey align-items-center justify-content-center">
                                                     <span>{{ substr($empData->first_name, 0, 1) }}{{ substr($empData->last_name, 0, 1) }}</span>
                                                 </div>
                                                 <div class="d-flex flex-column align-items-start">
