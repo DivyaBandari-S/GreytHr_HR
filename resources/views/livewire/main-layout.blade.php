@@ -28,11 +28,12 @@
             <li>
                 <a href="#"><i class="ph-clipboard-fill"></i></a>
                 <ul class="sidebar__submenu">
-                    <li class="title">Forms</li>
-                    <li><a href="#">Basic</a></li>
+                    <li class="title">Task</li>
+                    <li><a href="/hr/user/tasks">Tasks</a></li>
+                    {{-- <li><a href="#">Basic</a></li>
                     <li><a href="#">Input group</a></li>
                     <li><a href="#">Layout</a></li>
-                    <li><a href="#">Validation</a></li>
+                    <li><a href="#">Validation</a></li> --}}
                 </ul>
             </li>
             <li>
@@ -69,7 +70,7 @@
                     <li>
                         <a href="#">Admin <i class="ph-caret-right-fill"></i></a>
                         <ul class="sidebar__dropdown-menu">
-                            <li><a href="/home">Generate Letter</a></li>
+                            <li><a href="/hr/user/generate-letter">Generate Letter</a></li>
                             <li><a href="/user">Excel Import</a></li>
                             <li><a href="/user">Bulk Photo Upload</a></li>
                             <li><a href="/user">Bulk Document Upload</a></li>

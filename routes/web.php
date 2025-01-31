@@ -32,6 +32,7 @@ use App\Livewire\EmployeeSalary;
 use App\Livewire\Everyone;
 use App\Livewire\Feeds;
 use App\Livewire\HelpDesk;
+use App\Livewire\GenerateLetters;
 use App\Livewire\HrAttendanceInfo;
 use App\Livewire\HrAttendanceOverviewNew;
 use App\Livewire\HrHolidayList;
@@ -42,6 +43,7 @@ use App\Livewire\HrOrganisationChart;
 use App\Livewire\LeaveRecalculator;
 use App\Livewire\LeaveSettingPolicy;
 use App\Livewire\LeaveTypeReviewer;
+use App\Livewire\LetterPreparePage;
 use App\Livewire\ParentDetails;
 use App\Livewire\PositionHistory;
 use App\Livewire\ReportsManagement;
@@ -50,9 +52,11 @@ use App\Livewire\ShiftOverrideHr;
 use App\Livewire\ShiftRosterHr;
 use App\Livewire\ShiftRotationCalendar;
 use App\Livewire\SwipeManagementForHr;
+use App\Livewire\Tasks;
 use App\Livewire\WhoIsInChartHr;
 use App\Livewire\YearEndProcess;
 use App\Models\EmpResignations;
+use App\Models\Task;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Response;
 
@@ -98,6 +102,16 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
         Route::get('/HelpDesk', HelpDesk::class)->name('HelpDesk');
 
 
+        Route::get('/user/tasks', Tasks::class)->name('tasks');
+        Route::get('/taskfile/{id}', function ($id) {
+            $file = Task::findOrFail($id);
+        
+            return Response::make($file->file_path, 200, [
+                'Content-Type' => $file->mime_type,
+                'Content-Disposition' => (strpos($file->mime_type, 'image') === false ? 'attachment' : 'inline') . '; filename="' . $file->file_name . '"',
+            ]);
+        })->name('files.showTask');
+        
         //HR Employee-Main Submodule Routes
         Route::get('/user/main-overview', HrMainOverview::class)->name('main-overview');
         Route::get('/user/analytics-hub', AnalyticsHub::class)->name('analytics-hub');
@@ -117,6 +131,10 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
         Route::get('/user/attendance-process', AttendanceProcess::class)->name('attendance-process');
         Route::get('/user/swipe-management-for-hr', SwipeManagementForHr::class)->name('swipe-management-for-hr');
         Route::get('/user/employee-swipes-for-hr', EmployeeSwipesForHr::class)->name('employee-swipes-for-hr');
+        //HR Employee-Admin Submodule Routes
+        Route::get('/user/generate-letter', GenerateLetters::class)->name('generate-letter'); 
+        Route::get('/letter/prepare', LetterPreparePage::class)->name('letter.prepare'); 
+         
         //HR Leave-Main Submodule Routes
         Route::get('/user/hr-organisation-chart', HrOrganisationChart::class)->name('hr-organisation-chart');
         Route::get('/user/employee-weekday-chart', EmployeeWeekDayChart::class)->name('employee-weekday-chart');
