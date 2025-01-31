@@ -46,17 +46,21 @@ class YearEndProcess extends Component
     public $filteredLeaveData = [];
     public function mount()
     {
+
         try {
             $this->selectedYear = now()->year;
             $currentYear = Carbon::now()->year;
+
             $this->selectedYearRange = 'Jan ' . $currentYear . ' - Dec ' . $currentYear;
             $this->yearRange = range(2000, now()->year + 5);
 
             if (request()->has('tab')) {
                 $this->activeTab = request()->get('tab');
             }
+
             // Get the logged-in employee's ID
             $loggedInEmpID = auth()->guard('hr')->user()->emp_id;
+
             $this->leaveTypeList = LeavePolicySetting::select('leave_name', 'id')->get();
             // Fetch the company ID for the logged-in employee
             $companyID = EmployeeDetails::where('emp_id', $loggedInEmpID)
@@ -79,6 +83,7 @@ class YearEndProcess extends Component
             $this->getAllEmpLeaveReq();
             $this->updateDateRange();
             $this->getLeaveTypes();
+
         } catch (\Illuminate\Database\QueryException $e) {
             // Handle database exceptions
             Log::error("Database query error in mount: " . $e->getMessage());
@@ -754,6 +759,7 @@ class YearEndProcess extends Component
     }
 
 
+    //year end process method
     public function changeToLapsed()
     {
         // Ensure there is filtered data to update
@@ -773,17 +779,64 @@ class YearEndProcess extends Component
 
         // If any leave data is already lapsed, show a warning message
         if ($alreadyLapsed) {
-            FlashMessageHelper::flashWarning("Some leave data for the selected year is already marked as lapsed for  . $this->selectedYear . ");
+            FlashMessageHelper::flashWarning("Some leave data for the selected year is already marked as lapsed for " . $this->selectedYear . ".");
             return; // Stop further processing
         }
 
+        // To track employees we have already created a new record for
+        $processedEmployees = [];
+
         try {
-            // Iterate over the filtered leave data and update their status to lapsed
             foreach ($this->filteredLeaveData as $data) {
-                $data->update([
-                    'is_lapsed' => true,
-                    'lapsed_date' => now()
-                ]);
+                // Decode the leave_policy_id (JSON string) into an array
+                $leavePolicy = json_decode($data->leave_policy_id, true);
+                // Check if the leave policy contains "Sick Leave"
+                $isSickLeave = false;
+                foreach ($leavePolicy as $leave) {
+                    if ($leave['leave_name'] == 'Sick Leave') {
+                        $isSickLeave = true;
+                        break;
+                    }
+                }
+
+                // If it's a sick leave, update status to 'opening balance' and skip the 'is_lapsed' update
+                if ($isSickLeave) {
+                    $checkData = YearEndProcess::getLeaveBalances($data->emp_id, $this->selectedYear);
+                    $sickLeaveBalance = $checkData['sickLeaveBalance'] ?? 0;
+                    $data->lapsed_date = now();
+                    $data->save();
+
+                    // Check if we've already processed this employee
+                    if (!in_array($data->emp_id, $processedEmployees)) {
+                        // Replicate the existing record to create a new record with the same attributes
+                        $newRecord = $data->replicate();
+                        // Set the new status to 'opening balance'
+                        $newRecord->status = 'opening balance';
+                        $leavePolicyNew = json_decode($newRecord->leave_policy_id, true);
+                        // Update the 'grant_days' with the sick leave balance
+                        foreach ($leavePolicyNew as &$policy) {
+                            if ($policy['leave_name'] == 'Sick Leave') {
+                                $policy['grant_days'] = $sickLeaveBalance;
+                                break; // Exit the loop once Sick Leave is found and updated
+                            }
+                        }
+
+                        // Set 'is_lapsed' to false since this is a new record
+                        $newRecord->is_lapsed = false;
+                        $newRecord->lapsed_date = null;
+                        // Save the new record to the database
+                        $newRecord->save();
+
+                        // Mark this employee as processed
+                        $processedEmployees[] = $data->emp_id;
+                    }
+                } else {
+                    // For other leave types, update the status to 'lapsed'
+                    $data->update([
+                        'is_lapsed' => true,
+                        'lapsed_date' => now(),
+                    ]);
+                }
             }
 
             // Provide feedback to the user
@@ -796,8 +849,6 @@ class YearEndProcess extends Component
             FlashMessageHelper::flashError("An error occurred while updating leave data: " . $e->getMessage());
         }
     }
-
-
 
     public function render()
     {
