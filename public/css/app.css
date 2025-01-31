@@ -3781,7 +3781,7 @@ input[type="date"]::before {
     border-radius: 50%;
 }
 .main-overview-text{
-    font-size: 10px;
+    font-size: 15px;
 }
 .main-overview-text-truncate {
     white-space: nowrap;
@@ -3895,7 +3895,7 @@ input[type="date"]::before {
 #myTab {
     margin-top: 3px;
     padding: 0 20px;
-    background: #fff;
+    /* background: #fff; */
     font-size: var(--sub-headings-font-size);
 }
 .radioLabel{

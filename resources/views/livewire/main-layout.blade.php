@@ -69,7 +69,7 @@
                     <li>
                         <a href="#">Admin <i class="ph-caret-right-fill"></i></a>
                         <ul class="sidebar__dropdown-menu">
-                            <li><a href="/home">Generate Letter</a></li>
+                            <li><a href="/hr/user/generate-letter">Generate Letter</a></li>
                             <li><a href="/user">Excel Import</a></li>
                             <li><a href="/user">Bulk Photo Upload</a></li>
                             <li><a href="/user">Bulk Document Upload</a></li>

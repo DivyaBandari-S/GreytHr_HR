@@ -30,6 +30,7 @@ use App\Livewire\EmployeeSwipesForHr;
 use App\Livewire\EmployeeWeekDayChart;
 use App\Livewire\EmployeeSalary;
 use App\Livewire\Feeds;
+use App\Livewire\GenerateLetters;
 use App\Livewire\HrAttendanceInfo;
 use App\Livewire\HrAttendanceOverviewNew;
 use App\Livewire\HrHolidayList;
@@ -39,6 +40,7 @@ use App\Livewire\HrMainOverview;
 use App\Livewire\HrOrganisationChart;
 use App\Livewire\LeaveSettingPolicy;
 use App\Livewire\LeaveTypeReviewer;
+use App\Livewire\LetterPreparePage;
 use App\Livewire\ParentDetails;
 use App\Livewire\PositionHistory;
 use App\Livewire\ReportsManagement;
@@ -124,6 +126,10 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
         Route::get('/user/attendance-process', AttendanceProcess::class)->name('attendance-process');
         Route::get('/user/swipe-management-for-hr', SwipeManagementForHr::class)->name('swipe-management-for-hr');
         Route::get('/user/employee-swipes-for-hr', EmployeeSwipesForHr::class)->name('employee-swipes-for-hr');
+        //HR Employee-Admin Submodule Routes
+        Route::get('/user/generate-letter', GenerateLetters::class)->name('generate-letter'); 
+        Route::get('/letter/prepare', LetterPreparePage::class)->name('letter.prepare'); 
+         
         //HR Leave-Main Submodule Routes
         Route::get('/user/hr-organisation-chart', HrOrganisationChart::class)->name('hr-organisation-chart');
         Route::get('/user/employee-weekday-chart', EmployeeWeekDayChart::class)->name('employee-weekday-chart');
