@@ -13,6 +13,7 @@
                     <li class="title">Home</li>
                     <li><a href="{{route('home')}}">Home</a></li>
                     <li><a href="{{route('request')}}">Request</a></li>
+                    <li><a href="{{route('HelpDesk')}}">HelpDesk</a></li>
                 </ul>
             </li>
             <li>
@@ -63,7 +64,7 @@
                             <li><a href="/user">Acess card details</a></li>
 
                             <li><a href="/user">Employee Contracts</a></li>
-                            <li><a href="/user">Employee Salary</a></li>
+                            <li><a href="/hr/user/employee-salary">Employee Salary</a></li>
                         </ul>
                     </li>
                     <li>
@@ -149,7 +150,7 @@
                             <li><a href="/user">Lock Configuartion</a></li>
                             <li><a href="/user">Manual Override</a></li>
                             <li><a href="/user">Shift Override</a></li>
-                            <li><a href="/user">Leave Recalculator</a></li>
+                            <li><a href="/hr/user/leave/admin/leaveRecalculator">Leave Recalculator</a></li>
                         </ul>
                     </li>
                     <li>
