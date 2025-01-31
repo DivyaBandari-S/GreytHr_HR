@@ -128,11 +128,9 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
         Route::get('parent-details', ParentDetails::class)->name('parent-details');
         Route::get('/emp-document', EmpDocument::class)->name('emp-document');
         Route::get('/bank-account', BankAccount::class)->name('bank-account');
-        Route::get('/user/attendance-process', AttendanceProcess::class)->name('attendance-process');
-        Route::get('/user/swipe-management-for-hr', SwipeManagementForHr::class)->name('swipe-management-for-hr');
-        Route::get('/user/employee-swipes-for-hr', EmployeeSwipesForHr::class)->name('employee-swipes-for-hr');
+
         //HR Employee-Admin Submodule Routes
-        Route::get('/user/generate-letter', GenerateLetters::class)->name('generate-letter'); 
+        Route::get('/user/generate-letter', GenerateLetters::class)->name('generate-letter');
         Route::get('/letter/prepare', LetterPreparePage::class)->name('letter.prepare'); 
          
         //HR Leave-Main Submodule Routes
