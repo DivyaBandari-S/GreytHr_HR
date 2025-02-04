@@ -537,7 +537,7 @@
                             <tr>
                                 <td>{{ \Carbon\Carbon::parse($revisionData['revision_date'])->format('d M, Y') }}</td>
                                 <td>{{ \Carbon\Carbon::parse($revisionData['revision_date'])->format('M, Y') }}</td>
-                                <td>{{number_format( $revisionData['revised_ctc'],2) }}
+                                <td > <p style="font-weight: bold;margin-bottom:0px">Rs {{number_format( $revisionData['revised_ctc'],2) }}</p>
                                     @if ($loop->last)
                                     <p>0.00% (Rs 0.00)</p>
                                     @else
@@ -545,10 +545,10 @@
                                     <p>
                                         @if($revisionData['percentage_change_diff']>0)
                                         <img class="arrow_icn" src="{{ asset('images/up-arrow-icon.png') }}" alt="">
-                                        <span class="month_ctc">+{{$revisionData['percentage_change_diff']}} </span>(Rs{{number_format($revisionData['difference_amount'])}})
+                                        <span class="month_ctc">+{{$revisionData['percentage_change_diff']}} </span>(Rs {{number_format($revisionData['difference_amount'])}})
                                         @elseif($revisionData['percentage_change_diff'] < 0)
                                             <img class="arrow_icn" style="height: 13px; width:13px" src="{{ asset('images/down-arrow-icon.png') }}" alt="">
-                                            <span class="month_ctcup" style="color: red;">{{$revisionData['percentage_change_diff']}} </span>(Rs{{number_format($revisionData['difference_amount'])}})
+                                            <span class="month_ctcup" style="color: red;">{{$revisionData['percentage_change_diff']}} </span>(Rs {{number_format($revisionData['difference_amount'])}})
                                             @else
 
                                             @endif
@@ -592,13 +592,13 @@
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>Employee...</th>
+                            <th>Employee Number</th>
                             <th>Employee Name</th>
                             <th>Experience</th>
                             <th>Designation</th>
                             <th>Last Revision</th>
-                            <th>Monthly Revision</th>
-                            <th>Previous Month Revision</th>
+                            <th>ANNUAL CTC</th>
+                            <th>Prev ANNUAL CTC</th>
                             <th>Difference</th>
                         </tr>
                     </thead>
@@ -612,13 +612,13 @@
                             <td>{{$employeePeer['experience']}}</td>
                             <td>{{$employeePeer['designation']}}</td>
                             <td>{{ \Carbon\Carbon::parse($employeePeer['revision_date'])->format('d M, Y') }}</td>
-                            <td>{{number_format($employeePeer['revised_ctc'],2)}}</td>
-                            <td>{{number_format($employeePeer['current_ctc'],2)}}</td>
+                            <td>Rs {{number_format($employeePeer['revised_ctc'],2)}}</td>
+                            <td>Rs {{number_format($employeePeer['current_ctc'],2)}}</td>
                             <td>
                                 @if($employeePeer['percentage_change'] >= 0)
-                                + {{$employeePeer['percentage_change']}} ({{number_format($employeePeer['difference_amount'],2)}})
+                                + {{$employeePeer['percentage_change']}} (Rs {{number_format($employeePeer['difference_amount'],2)}})
                                 @else
-                                {{$employeePeer['percentage_change']}} ({{number_format($employeePeer['difference_amount'],2)}})
+                                {{$employeePeer['percentage_change']}} (Rs {{number_format($employeePeer['difference_amount'],2)}})
                                 @endif
                                 @if($employeePeer['emp_id'] != $mainEmp_id)
 
@@ -804,7 +804,7 @@
                         <table class="salaryComponents-table">
                             <tr>
                                 <th class="salary-component">Components</th>
-                                <th class="salary-amount">Amount</th>
+                                <th class="salary-amount">Amount (In Rs)</th>
                             </tr>
                             <tr>
                                 <td class="salary-component">FULL BASIC</td>
