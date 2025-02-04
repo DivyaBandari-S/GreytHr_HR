@@ -78,8 +78,8 @@
     @if($forHR->whereIn('status_code', [8, 10])->count() > 0)
     @foreach ($forHR->whereIn('status_code', [8, 10]) as $record)
             <div class="container d-flex justify-content-center align-items-center mt-2">
-    <div class="card" style="width:80%;margin-top:30px;border-radius:5px;">
-        <div class="card-header" style="background-color:#dbf0f9; color: black;border: 1px solid #ddd;border-radius: 5px;height:auto;cursor:pointer" data-bs-toggle="collapse" data-bs-target="#collapse-body-{{ $record->id }}" aria-expanded="false" aria-controls="collapse-body-{{ $record->id }}">
+    <div class="card" style="width:80%;margin-top:30px;">
+        <div class="card-header" style="background-color:#dbf0f9; color: black;border: 1px solid #ddd;height:auto;cursor:pointer" data-bs-toggle="collapse" data-bs-target="#collapse-body-{{ $record->id }}" aria-expanded="false" aria-controls="collapse-body-{{ $record->id }}">
          <div class="col-md-5" style="display:flex">
         
     @if (auth('hr')->check())
@@ -96,7 +96,7 @@
             }
         @endphp
 
-        <img class="navProfileImgFeeds rounded-circle" src="{{ $profileImage }}" alt="Profile Image" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; cursor: pointer;">
+        <img class="navProfileImgFeeds " src="{{ $profileImage }}" alt="Profile Image" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; cursor: pointer;">
         
         <div style="display: flex; flex-direction: column; font-size: 14px;padding-left:5px">
             <span style="font-weight: 500;">{{ $record->emp->first_name }} {{ $record->emp->last_name }}</span>
@@ -126,8 +126,8 @@
         </div>
         </div>
 
-        <div id="collapse-body-{{ $record->id }}" class="collapse">
-        <div class="card-body" style="padding: 5px;font-size:14px">
+        <div id="collapse-body-{{ $record->id }}" class="collapse" style="padding: 10px;">
+        <div class="card-body" style="padding: 10px;font-size:14px">
          <p ><strong >Subject:</strong>{{ $record->subject }}</p>
 <p><strong >Description:</strong> {{ $record->description }}</p>
 
@@ -180,7 +180,7 @@
 <!-- Employee Comment Section -->
 <div class="m" style="border-bottom: 1px solid #ddd; padding: 5px; background: lightgray; height: auto; display: flex; align-items: center;">
     <!-- Profile Picture -->
-    <img class="navProfileImgFeeds rounded-circle" 
+    <img class="navProfileImgFeeds " 
          src="{{ $profileImage }}" 
          alt="Profile Image" 
          style="width: 20px; height: 20px; border-radius: 50%; object-fit: cover; cursor: pointer; margin-right: 10px;">
@@ -231,14 +231,17 @@
 
             @endforeach
             @else
-             <div class="d-flex justify-content-center align-items-center">
-    <div class="card p-4 text-center">
-        <div class="no-data">
-            <img src="{{ asset('images/no-data_Gif.gif') }}" alt="No data available" width="200">
+            <div class="d-flex justify-content-center align-items-center mt-2">
+                <div class="card p-4 text-center">
+                <div class="no-data p-4 text-align-center justify-content-center align-items-center" style="width:900px;height:300px">
+        <img src="{{ asset('images/no-data_Gif.gif') }}" 
+     alt="No data available" 
+     style="width:100%; height: 250px; object-fit: contain;">
+
             <p>No data available</p>
         </div>
-    </div>
-</div>
+        </div>
+        </div>
         @endif
    
 @endif
@@ -250,8 +253,8 @@
         @if($forHR->where('status_code', 5)->count() > 0)
             @foreach ($forHR->where('status_code', 5) as $record)
             <div class="container d-flex justify-content-center align-items-center mt-2">
-    <div class="card" style="width:80%;margin-top:30px;border-radius:5px;">
-        <div class="card-header" style="background-color:#dbf0f9; color: black;border: 1px solid #ddd;border-radius: 5px;height:auto;cursor:pointer" data-bs-toggle="collapse" data-bs-target="#collapse-body-{{ $record->id }}" aria-expanded="false" aria-controls="collapse-body-{{ $record->id }}">
+    <div class="card" style="width:80%;margin-top:30px;">
+        <div class="card-header" style="background-color:#dbf0f9; color: black;border: 1px solid #ddd;height:auto;cursor:pointer" data-bs-toggle="collapse" data-bs-target="#collapse-body-{{ $record->id }}" aria-expanded="false" aria-controls="collapse-body-{{ $record->id }}">
          <div class="col-md-5" style="display:flex">
         
     @if (auth('hr')->check())
@@ -268,7 +271,7 @@
             }
         @endphp
 
-        <img class="navProfileImgFeeds rounded-circle" src="{{ $profileImage }}" alt="Profile Image" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; cursor: pointer;">
+        <img class="navProfileImgFeeds" src="{{ $profileImage }}" alt="Profile Image" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; cursor: pointer;">
         
         <div style="display: flex; flex-direction: column; font-size: 14px;margin-left:5px">
             <span style="font-weight: 500;">{{ $record->emp->first_name }} {{ $record->emp->last_name }}</span>
@@ -298,7 +301,7 @@
         </div>
         </div>
 
-        <div id="collapse-body-{{ $record->id }}" class="collapse;margin-top:-10px">
+        <div id="collapse-body-{{ $record->id }}" class="collapse;margin-top:-10px" style="padding: 10px;">
             <div class="card-body" style="padding: 5px;font-size:14px">
            <p ><strong >Subject:</strong>{{ $record->subject }}</p>
          <p><strong >Description:</strong> {{ $record->description }}</p>
@@ -350,7 +353,7 @@
 <!-- Employee Comment Section -->
 <div class="m" style="border-bottom: 1px solid #ddd; padding: 5px; background: lightgray; height: auto; display: flex; align-items: center;">
     <!-- Profile Picture -->
-    <img class="navProfileImgFeeds rounded-circle" 
+    <img class="navProfileImgFeeds " 
          src="{{ $profileImage }}" 
          alt="Profile Image" 
          style="width: 20px; height: 20px; border-radius: 50%; object-fit: cover; cursor: pointer; margin-right: 10px;">
@@ -390,14 +393,20 @@
 </div>
                 @endforeach
              @else
-             <div class="d-flex justify-content-center align-items-center">
-    <div class="card p-4 text-center">
-        <div class="no-data">
-            <img src="{{ asset('images/no-data_Gif.gif') }}" alt="No data available" width="200">
+
+  
+             <div class="d-flex justify-content-center align-items-center mt-2">
+                <div class="card p-4 text-center">
+                <div class="no-data p-4 text-align-center justify-content-center align-items-center" style="width:900px;height:300px">
+        <img src="{{ asset('images/no-data_Gif.gif') }}" 
+     alt="No data available" 
+     style="width:100%; height: 250px; object-fit: contain;">
+
             <p>No data available</p>
         </div>
-    </div>
-</div>
+        </div>
+        </div>
+
 
                 @endif
 
@@ -410,8 +419,8 @@
     @if($forHR->where('status_code', 9)->count() > 0)
     @foreach ($forHR->where('status_code', 9) as $record)
                 <div class="container d-flex justify-content-center align-items-center mt-2">
-    <div class="card" style="width:80%;margin-top:30px;border-radius:5px;">
-        <div class="card-header" style="background-color:#dbf0f9; color: black;border: 1px solid #ddd;border-radius: 5px;height:auto;cursor:pointer" data-bs-toggle="collapse" data-bs-target="#collapse-body-{{ $record->id }}" aria-expanded="false" aria-controls="collapse-body-{{ $record->id }}">
+    <div class="card" style="width:80%;margin-top:30px;">
+        <div class="card-header" style="background-color:#dbf0f9; color: black;border: 1px solid #ddd;height:auto;cursor:pointer" data-bs-toggle="collapse" data-bs-target="#collapse-body-{{ $record->id }}" aria-expanded="false" aria-controls="collapse-body-{{ $record->id }}">
          <div class="col-md-5" style="display:flex">
         
     @if (auth('hr')->check())
@@ -428,7 +437,7 @@
             }
         @endphp
 
-        <img class="navProfileImgFeeds rounded-circle" src="{{ $profileImage }}" alt="Profile Image" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; cursor: pointer;">
+        <img class="navProfileImgFeeds " src="{{ $profileImage }}" alt="Profile Image" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; cursor: pointer;">
         
         <div style="display: flex; flex-direction: column; font-size: 14px;padding-left:5px">
             <span style="font-weight: 500;">{{ $record->emp->first_name }} {{ $record->emp->last_name }}</span>
@@ -458,7 +467,7 @@
         </div>
         </div>
 
-        <div id="collapse-body-{{ $record->id }}" class="collapse">
+        <div id="collapse-body-{{ $record->id }}" class="collapse" style="padding: 10px;">
         <div class="card-body" style="padding: 5px;font-size:14px">
          <p ><strong >Subject:</strong>{{ $record->subject }}</p>
 <p><strong >Description:</strong> {{ $record->description }}</p>
@@ -512,7 +521,7 @@
 <!-- Employee Comment Section -->
 <div class="m" style="border-bottom: 1px solid #ddd; padding: 5px; background: lightgray; height: auto; display: flex; align-items: center;">
     <!-- Profile Picture -->
-    <img class="navProfileImgFeeds rounded-circle" 
+    <img class="navProfileImgFeeds" 
          src="{{ $profileImage }}" 
          alt="Profile Image" 
          style="width: 20px; height: 20px; border-radius: 50%; object-fit: cover; cursor: pointer; margin-right: 10px;">
@@ -564,14 +573,17 @@
 </div>
                 @endforeach
                 @else
-             <div class="d-flex justify-content-center align-items-center">
-    <div class="card p-4 text-center">
-        <div class="no-data">
-            <img src="{{ asset('images/no-data_Gif.gif') }}" alt="No data available" width="200">
+                <div class="d-flex justify-content-center align-items-center mt-2">
+                <div class="card p-4 text-center">
+                <div class="no-data p-4 text-align-center justify-content-center align-items-center" style="width:900px;height:300px">
+        <img src="{{ asset('images/no-data_Gif.gif') }}" 
+     alt="No data available" 
+     style="width:100%; height: 250px; object-fit: contain;">
+
             <p>No data available</p>
         </div>
-    </div>
-</div>
+        </div>
+        </div>
                 @endif
 
 

@@ -798,14 +798,17 @@ class EmpDocument extends Component
         }, 'payslip-' . $name . '.pdf');
     }
     
-    
+    public function cancel()
+    {
+        $this->showPopup = false;
+    }
     public $rupeesInText;
     public $salMonth;
     public $month;
     public function viewPdf($month)
     {
 
-        $this->selectedEmployeeId = auth()->user()->emp_id;
+        $this->selectedEmployeeId;
 
         $empSalaryDetails = EmpSalary::join('salary_revisions', 'emp_salaries.sal_id', '=', 'salary_revisions.id')
             ->where('salary_revisions.emp_id', $this->selectedEmployeeId)
@@ -823,6 +826,7 @@ class EmpDocument extends Component
         }
 
         $this->salMonth = Carbon::parse($month)->format('F Y');
+      
         $this->month = $empSalaryDetails->month_of_sal;
 
 
