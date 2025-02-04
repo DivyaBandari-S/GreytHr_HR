@@ -14,15 +14,20 @@
 <div class="tab-content pt-5" id="tab-content">
   <div class="tab-pane active" id="simple-tabpanel-0" role="tabpanel" aria-labelledby="simple-tab-0" style="overflow-x: hidden;">
     <div class="row justify-content-center"  >
-                        <div class="col-md-9 custom-container d-flex flex-column">
-                        <div class="d-flex align-items-center mb-2">
-    <p class="main-text mb-0" style="width:88%">
-        This page allows you to add/edit the profile details of an employee. The page helps you to keep the employee information up to date.
-    </p>
-    <p class="hide-text" style="cursor: pointer;" wire:click="toggleDetails">
-        {{ $showDetails ? 'Hide Details' : 'Info' }}
-    </p>
+                        <div class="col-md-11 custom-container d-flex flex-column">
+                        <div class="row d-flex align-items-center mb-2">
+    <div class="col-9">
+        <p class="main-text mb-0">
+            This page allows you to add/edit the profile details of an employee. The page helps you to keep the employee information up to date.
+        </p>
+    </div>
+    <div class="col-3 text-end">
+        <p class="hide-text mb-0" style="cursor: pointer;" wire:click="toggleDetails">
+            {{ $showDetails ? 'Hide Details' : 'Info' }}
+        </p>
+    </div>
 </div>
+
 
                             @if ($showDetails)
                                 
@@ -40,7 +45,7 @@
                  
 
                 <div class="row justify-content-center mt-2 "  >
-                <div class="col-md-9 custom-container d-flex flex-column bg-white" >
+                <div class="col-md-11 custom-container d-flex flex-column bg-white" >
     <div class="row justify-content-center mt-3 flex-column m-0 employee-details-main" >
         <div class="col-md-9">
             <div class="row " style="display:flex;">
@@ -229,7 +234,7 @@
 
 @endif
 
-<div class="card-profile mx-auto" >
+<div class="card-profile mx-auto"  style="width: 90%; height: auto;">
   
         <div class="profile-header " >
             
@@ -247,7 +252,8 @@
             @endif
 
             {{-- Employee Name --}}
-            <p style="margin-left: 15px; font-size:12px; justify-content:center;">{{ $employee->first_name }} {{ $employee->last_name }}</p>
+            <p style="margin-left: 15px; font-size:12px; justify-content:center;">{{ $employee->first_name }} {{ $employee->last_name }}</p><br>
+            <p style="margin-left: 15px; font-size:12px; justify-content:center;">(#{{ $employee->emp_id }} )</p>
 
             {{-- Update Button and File Input --}}
             <div class="d-flex align-items-center gap-2" style="margin-left: auto;">
@@ -280,7 +286,7 @@
 </div>
 
     <div class="row align-items-center ">
-        <div class="card mx-auto" >
+        <div class="card mx-auto" style="width: 90%; height: auto;margin-top:5px" >
         <div class="card-header">
     <p style="color:#3b4452; font-weight: 500;">Employee Information</p>
 
@@ -377,7 +383,7 @@
 
       
         </div>
-        <div class="card mx-auto mt-3" style="width: 70%; height: auto;">
+        <div class="card mx-auto mt-3" style="width: 90%; height: auto;">
         <div class="card-header d-flex justify-content-between align-items-center" style="font-size: 15px; background:white;">
     <p class="mb-0" style=" font-weight: 500;">Personal Information</p>
     <div style="font-size: 14px;">

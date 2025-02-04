@@ -47,8 +47,10 @@ use App\Livewire\LeaveTypeReviewer;
 use App\Livewire\LetterPreparePage;
 use App\Livewire\ParentDetails;
 use App\Livewire\PositionHistory;
+use App\Livewire\PreviousEmployeement;
 use App\Livewire\ReportsManagement;
 use App\Livewire\Requests;
+use App\Livewire\SalaryRevisionAnalytics;
 use App\Livewire\ShiftOverrideHr;
 use App\Livewire\ShiftRosterHr;
 use App\Livewire\ShiftRotationCalendar;
@@ -129,8 +131,10 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
         Route::get('/position-history', PositionHistory::class)->name('position-history');
         Route::get('parent-details', ParentDetails::class)->name('parent-details');
         Route::get('/emp-document', EmpDocument::class)->name('emp-document');
+        Route::get('/previous-employeement', PreviousEmployeement::class)->name('previous-employeement');
         Route::get('/bank-account', BankAccount::class)->name('bank-account');
         Route::get('/user/employee-salary', EmployeeSalary::class)->name('employee-salary');
+        Route::get('/user/salary-revision-analytics', SalaryRevisionAnalytics::class)->name('salary-revision-analytics');
 
         //HR Employee-Admin Submodule Routes
         Route::get('/user/generate-letter', GenerateLetters::class)->name('generate-letter');
