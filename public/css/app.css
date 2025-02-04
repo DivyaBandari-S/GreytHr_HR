@@ -2927,7 +2927,7 @@ input[type="date"]::before {
 /*asset table */
 /* Specific Table Styling */
 .employee-requests-table {
-    width: 80%;
+    width: 95%;
     border-collapse: collapse;
     margin-bottom: 20px;
     align-items: center;

@@ -184,34 +184,40 @@
 
 <div class="tab-content pt-5" id="tab-content">
   <div class="tab-pane active" id="simple-tabpanel-0" role="tabpanel" aria-labelledby="simple-tab-0" style="overflow-x: hidden;">
-    <div class="row justify-content-center"  >
-                        <div class="col-md-9 custom-container d-flex flex-column">
-                        <div class="d-flex align-items-center mb-2">
-    <p class="main-text mb-0" style="width:88%">
-    View and manage soft copies of an employee's documents from the Employee Documents page. Documents available under the Documents tab can be Education Documents, Address Proof Documents, Previous employment-related documents, etc. Click Add Documents to add new documents. 
-    </p>
-    <p class="hide-text" style="cursor: pointer;" wire:click="toggleDetails">
-        {{ $showDetails ? 'Hide Details' : 'Info' }}
-    </p>
+ 
+  <div class="row justify-content-center"  >
+  <div class="col-md-11 custom-container d-flex flex-column">
+  <div class="row d-flex align-items-center mb-2">
+    <div class="col-10">
+        <p class="main-text mb-0">
+        View and manage soft copies of an employee's documents from the Employee Documents page. Documents available under the Documents tab can be Education Documents, Address Proof Documents, Previous employment-related documents, etc. Click Add Documents to add new documents. 
+        </p>
+    </div>
+    <div class="col-2 text-end">
+        <p class="hide-text mb-0" style="cursor: pointer;" wire:click="toggleDetails">
+            {{ $showDetails ? 'Hide Details' : 'Info' }}
+        </p>
+    </div>
+    
 </div>
-
-                            @if ($showDetails)
+@if ($showDetails)
                                 
                            
-                            <div class="secondary-text">
-    Explore HR Xpert by 
-    <span class="hide-text">Help-Doc</span>, watching How-to 
-    <span class="hide-text">Videos</span> and 
-    <span class="hide-text">FAQ</span>
+                                <div class="secondary-text">
+        Explore HR Xpert by 
+        <span class="hide-text">Help-Doc</span>, watching How-to 
+        <span class="hide-text">Videos</span> and 
+        <span class="hide-text">FAQ</span>
+    </div>
+    @endif
+  
 </div>
-@endif
+</div>
 
-                        </div>
-                    </div>
                  
 
-                <div class="row justify-content-center mt-2 "  >
-                <div class="col-md-9 custom-container d-flex flex-column bg-white" >
+                <div class="row justify-content-center align-items-center mt-2 "  >
+                <div class="col-md-11 custom-container d-flex flex-column bg-white" >
     <div class="row justify-content-center mt-3 flex-column m-0 employee-details-main" >
         <div class="col-md-9">
             <div class="row " style="display:flex;">
@@ -245,8 +251,7 @@
 
                       
                     </div>
-                 
-                    <div class="profile">
+                   <div class="profile">
     <div class="col m-0">
         <div class="row d-flex align-items-center">
             <!-- Search Input -->
@@ -277,7 +282,7 @@
     placeholder="{{ $selectedEmployeeFirstName ? ucfirst(strtolower($selectedEmployeeFirstName)) . ' ' . ucfirst(strtolower($selectedEmployeeLastName)) : 'Search for an employee...' }}"
     type="text"
     class="form-control search-term"
-    style="padding-left: 50px; padding-right: 35px;" 
+    style="padding-left: 50px; padding-right: 35px;"   wire:click="searchforEmployee"
 />
 
 <!-- Display Close Icon if Employee is Selected -->
@@ -345,7 +350,6 @@
     </div>
 </div>
 
-
                     </div>
              
                 <div class="col-md-1">
@@ -365,7 +369,7 @@
  
                 
         </div>
-    </div>
+    </div> 
 
  
  
@@ -407,10 +411,10 @@
                             <!-- Documents Filter and Add -->
                             <div class="container mt-3">
                                 <div class="row justify-content-center">
-                                <div class="row mt-3 " >
+                                <div class="row mt-3 d-flex align-items-center">
     <!-- First Dropdown -->
-    <div class="col-12 col-md-4 mb-1" >
-        <select class="custom-select-doc dropdown-toggle" name="category" wire:model="filter_option" wire:change="loadDocuments">
+    <div class="col-auto">
+        <select class="custom-select-doc dropdown-toggle form-control" name="category" wire:model="filter_option" wire:change="loadDocuments" style="min-width: 190px; max-width: 250px;">
             <option value="All">All</option>
             <option value="Accounts & Statutory">Accounts & Statutory</option>
             <option value="Address">Address</option>
@@ -426,8 +430,8 @@
     </div>
 
     <!-- Second Dropdown -->
-    <div class="col-12 col-md-2 mb-1 m-0">
-        <select class="custom-select-doc" name="view" wire:model="filter_publishtype" wire:change="publishType">
+    <div class="col-auto">
+        <select class="custom-select-doc form-control" name="view" wire:model="filter_publishtype" wire:change="publishType" style="min-width: 150px; max-width: 200px;">
             <option value="All" selected>All</option>
             <option value="Published">Published</option>
             <option value="Unpublished">Unpublished</option>
@@ -435,10 +439,12 @@
     </div>
 
     <!-- Add Document Button -->
-    <div class="col-12 col-md-6 mb-1 m-0">
-        <button class="btn btn-primary" style="font-size: 12px;" wire:click="addDocs">Add Documents</button>
+    <div class="col-auto">
+        <button class="btn btn-primary" style="font-size: 12px; white-space: nowrap;" wire:click="addDocs">Add Documents</button>
     </div>
 </div>
+
+
 
 
                                     <!-- Document Modal -->

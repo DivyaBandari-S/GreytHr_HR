@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Livewire\WithFileUploads;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Models\PreviousEmployement;
+
 class PreviousEmployeement extends Component
 {
     public $searchTerm = '';
@@ -24,7 +26,7 @@ class PreviousEmployeement extends Component
     public $searchEmployee;
     public $peopleData=[];
     public $selectedEmployeeImage;
-
+public $hire_date;
     public $employeess;
     public $selectedEmployeeLastName;
 
@@ -86,7 +88,8 @@ class PreviousEmployeement extends Component
     public $employeeIds = [];
     public $showDetails = true;
     public $editingField = false;
-  
+    public $company_name, $designation, $from_date, $to_date, $years_of_experience,$months_of_experience;
+    public $nature_of_duties, $leaving_reason, $pf_member_id, $last_drawn_salary;
 
     public function updatesearchTerm()
     {
@@ -408,10 +411,9 @@ class PreviousEmployeement extends Component
         if (!empty($this->selectedEmployeeId)) {
    
             // Fetch all letter requests for the selected employee
-            $this->requests = Asset::whereIn('emp_id', (array)$this->selectedEmployeeId)->get();
+            $this->requests = Previousemployement::whereIn('emp_id', (array)$this->selectedEmployeeId)->get();
         
-            // Debugging output
-            Log::info('Fetched Letter Requests: ' . $this->requests->toJson());
+           
        
         } else {
             $this->requests = collect(); // No selected employee, empty collection
@@ -429,6 +431,8 @@ class PreviousEmployeement extends Component
     
         // Fetch the employees
         $employees = $employeesQuery->get();
+        $this->years_of_experience ;
+        $this->months_of_experience ;
   
         if ($employees->isEmpty()) {
             // Handle the case where no employees match the search term
@@ -568,6 +572,12 @@ public function addPrevious()
     $this->resetForm();
     $this->showPreviousDialog = true;
 }
+
+public function close()
+{
+    $this->resetForm();
+    $this->showPreviousDialog = false;
+}
 public function removeSelectedEmployee()
 {
     $this->selectedEmployeeId = null;
@@ -581,6 +591,89 @@ public function resetForm()
   
 }
 
+ 
+
+
+
+
+public function updated($propertyName)
+{
+    
+    if ($propertyName == 'from_date' && $propertyName == 'to_date') {
+        // Ensure both dates are set before calculating
+        if ($this->from_date < $this->to_date) {
+            $this->calculateYearsAndMonths();
+        } else {
+            // Calculate experience if dates are valid
+            $this->calculateYearsAndMonths();
+        }
+        
+    }
+}
+
+public function calculateYearsAndMonths()
+{
+    // Create DateTime objects for 'from_date' and 'to_date'
+    $fromDate = date_create($this->from_date);
+    $toDate = date_create($this->to_date);
+
+    // Calculate the difference between the two dates
+    $diff = date_diff($fromDate, $toDate);
+
+    // Calculate years and months separately
+    $years = $diff->y;
+    $months = $diff->m;
+
+    // Store the calculated values for years and months
+    $this->years_of_experience = $years;
+    $this->months_of_experience = $months;
+}
+
+
+public function saveExperience()
+{
+       // Save the experience data
+       $emp_id = $this->selectedPeople[0] ?? null;
+    $this->validate([
+        'company_name' => 'required|string|max:255',
+        'designation' => 'required|string|max:255',
+        'from_date' => 'required|date',
+        'to_date' => 'required|date|after_or_equal:from_date|before:' . $this->hire_date,
+        'nature_of_duties' => 'nullable|string',
+        'leaving_reason' => 'nullable|string',
+        'pf_member_id' => 'nullable|string|max:50',
+        'last_drawn_salary' => 'nullable|numeric|min:0',
+    ]);
+
+ 
+
+    if ($emp_id) {
+        $selectedPerson = EmployeeDetails::find($emp_id);
+        if ($selectedPerson) {
+            $years_of_experience = date_diff(date_create($this->from_date), date_create($this->to_date))->y;
+            $this->years_of_experience = $years_of_experience; 
+            PreviousEmployement::create([
+                'emp_id' => $emp_id,
+                'company_name' => $this->company_name,
+                'designation' => $this->designation,
+                'from_date' => $this->from_date,
+                'to_date' => $this->to_date,
+                'years_of_experience' => $this->years_of_experience,
+                'months_of_experience' => $this->months_of_experience,
+                'nature_of_duties' => $this->nature_of_duties,
+                'leaving_reason' => $this->leaving_reason,
+                'pf_member_id' => $this->pf_member_id,
+                'last_drawn_salary' => $this->last_drawn_salary,
+            ]);
+
+            session()->flash('message', 'Experience details saved successfully.');
+            $this->showPreviousDialog=false;
+          
+        }
+    } else {
+        session()->flash('error', 'Selected employee not found.');
+    }
+}
 
 
     public function render()
@@ -600,15 +693,12 @@ public function resetForm()
         }
         if (!empty($this->selectedEmployeeId)) {
    
-            // Fetch all letter requests for the selected employee
-            $this->requests = Asset::whereIn('emp_id', (array)$this->selectedEmployeeId)->get();
-        
-            // Debugging output
-            Log::info('Fetched  Requests: ' . $this->requests->toJson());
+            $this->requests = Previousemployement::whereIn('emp_id', (array)$this->selectedEmployeeId)->get();
+
        
         } else {
             $this->requests = collect(); // No selected employee, empty collection
-            Log::info('No Employee Selected, Returning Empty Requests');
+           
         }
         $peopleFound = $this->employees->count() > 0;
         return view('livewire.previous-employeement',[
