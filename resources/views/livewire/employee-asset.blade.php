@@ -203,7 +203,7 @@
 
     </style>
 <div class="row" style="margin-top:-20px;">
-<ul class="nav custom-nav-tabs" role="tablist" >
+<ul class="nav custom-nav-tabs" role="tablist" style="width:99%">
     <li class="nav-item" role="presentation">
         <a class="nav-link active custom-nav-link" id="simple-tab-0" data-bs-toggle="tab" href="#simple-tabpanel-0" role="tab" aria-controls="simple-tabpanel-0" aria-selected="true">Main</a>
     </li>
@@ -215,16 +215,22 @@
 
 <div class="tab-content pt-5" id="tab-content">
   <div class="tab-pane active" id="simple-tabpanel-0" role="tabpanel" aria-labelledby="simple-tab-0" style="overflow-x: hidden;">
-    <div class="row justify-content-center align-items-center"  >
-                        <div class="col-md-9 custom-container d-flex flex-column">
-                        <div class="d-flex align-items-center mb-2">
-    <p class="main-text mb-0" style="width:88%">
-    The Assets page stores information about the Company's Assets that are given to the employees. Some common assets are laptops, mobile phones, and SIM cards. This information is beneficial while performing an inventory of all assets and during the Final Settlement process.
-    </p>
-    <p class="hide-text" style="cursor: pointer;" wire:click="toggleDetails">
-        {{ $showDetails ? 'Hide Details' : 'Info' }}
-    </p>
+
+                    <div class="row justify-content-center"  >
+                        <div class="col-md-11 custom-container d-flex flex-column">
+                        <div class="row d-flex align-items-center mb-2">
+    <div class="col-10">
+        <p class="main-text mb-0">
+        The Assets page stores information about the Company's Assets that are given to the employees. Some common assets are laptops, mobile phones, and SIM cards. This information is beneficial while performing an inventory of all assets and during the Final Settlement process.
+        </p>
+    </div>
+    <div class="col-2 text-end">
+        <p class="hide-text mb-0" style="cursor: pointer;" wire:click="toggleDetails">
+            {{ $showDetails ? 'Hide Details' : 'Info' }}
+        </p>
+    </div>
 </div>
+
 
                             @if ($showDetails)
                                 
@@ -242,41 +248,43 @@
                  
 
                 <div class="row justify-content-center align-items-center mt-2 "  >
-                <div class="col-md-9 custom-container d-flex flex-column bg-white" >
+                <div class="col-md-11 custom-container d-flex flex-column bg-white" >
     <div class="row justify-content-center mt-3 flex-column m-0 employee-details-main" >
-        <div class="col-md-9">
+        <div class="col-md-10">
             <div class="row " style="display:flex;">
                 <div class="col-md-11 m-0">
                     <p class="emp-heading" >Start searching to see specific employee details here</p>
                     <div class="col mt-3" style="display: flex;">
              
-                        <p class="main-text mt-1">Employee Type:</p>
-                       
-                        <div class="dropdown mt-1">
-    <button class="btn dropdown-toggle dp-info" type="button" data-bs-toggle="dropdown" style="font-size:12px">
-     {{ ucfirst($selectedOption) }} 
-    </button>
-    <ul class="dropdown-menu" style="font-size:12px;">
-        <li class="updated-dropdown">
-            <a href="#" wire:click.prevent="updateSelected('all')" class="dropdown-item custom-info-item">All Employees</a>
-        </li>
-        <li class="updated-dropdown">
-            <a href="#" wire:click.prevent="updateSelected('current')" class="dropdown-item custom-info-item">Current Employees</a>
-        </li>
-        <li class="updated-dropdown">
-            <a href="#" wire:click.prevent="updateSelected('past')" class="dropdown-item custom-info-item">Resigned Employees</a>
-        </li>
-        <li class="updated-dropdown">
-            <a href="#" wire:click.prevent="updateSelected('intern')" class="dropdown-item custom-info-item">Intern</a>
-        </li>
-    </ul>
+             <p class="main-text mt-1">Employee Type:</p>
+            
+             <div class="dropdown mt-1">
+<button class="btn dropdown-toggle dp-info" type="button" data-bs-toggle="dropdown" style="font-size:12px">
+{{ ucfirst($selectedOption) }} 
+</button>
+<ul class="dropdown-menu" style="font-size:12px;">
+<li class="updated-dropdown">
+ <a href="#" wire:click.prevent="updateSelected('all')" class="dropdown-item custom-info-item">All Employees</a>
+</li>
+<li class="updated-dropdown">
+ <a href="#" wire:click.prevent="updateSelected('current')" class="dropdown-item custom-info-item">Current Employees</a>
+</li>
+<li class="updated-dropdown">
+ <a href="#" wire:click.prevent="updateSelected('past')" class="dropdown-item custom-info-item">Resigned Employees</a>
+</li>
+<li class="updated-dropdown">
+ <a href="#" wire:click.prevent="updateSelected('intern')" class="dropdown-item custom-info-item">Intern</a>
+</li>
+</ul>
 </div>
 
-         
 
-                      
-                    </div>
-                   <div class="profile">
+
+           
+         </div>
+                 
+                  
+                    <div class="profile">
     <div class="col m-0">
         <div class="row d-flex align-items-center">
             <!-- Search Input -->
@@ -398,9 +406,9 @@
         
  <div class="row">
  @if(!empty($selectedEmployeeId))
- <div class="row mt-2">
+ <div class="row mt-2" >
     
-    <div class="col-md-10 " >
+    <div class="col-md-11 " >
         <div class="newReq mt-2" style="align-items:end">
         <!-- Add Asset Button -->
     <button class="cancel-btn" style="margin-left:20px" wire:click="addAsset">Add Asset</button>
@@ -608,9 +616,9 @@
 
         {{-- Check if there are requests for the current employee --}}
         @if($employeeRequests->isNotEmpty())
-        <div class="row justify-content-center align-items-center mt-2" >
+        <div class="row justify-content-center align-items-center mt-5" >
             <div class="employee-requests-container d-flex justify-content-center align-items-center w-100">
-                <table class="employee-requests-table table table-bordered table-striped align-items-center justify-content-center">
+                <table class="employee-requests-table table table-bordered table-striped align-items-center justify-content-center" style="width:90%">
                     <thead class="table-header">
                         <tr class="header-row">
                             <th class="header-column">Employee ID</th>

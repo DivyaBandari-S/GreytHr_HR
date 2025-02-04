@@ -34,8 +34,8 @@
                     </div>
                     <div class="row m-0">
     
-    <div class="col-md-12 " >
-        <div class="newReq mt-2" style="align-items:end">
+    <div class="col-md-10 " >
+        <div class="newReq mt-3" style="align-items:end">
        
             <button class="cancel-btn" wire:click="IDRequest">
             Employee Offboarding 
