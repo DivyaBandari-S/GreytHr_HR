@@ -14,6 +14,7 @@ use App\Livewire\AttendanceProcess;
 use App\Livewire\BankAccount;
 use App\Livewire\CreateAttendanceExceptionPage;
 use App\Livewire\CreateShiftOverride;
+use App\Livewire\CTCSlips;
 use App\Livewire\EditAttendanceExceptionPage;
 use App\Livewire\EditShiftOverride;
 use App\Livewire\EmpBulkPhotoUpload;
@@ -46,6 +47,7 @@ use App\Livewire\LeaveSettingPolicy;
 use App\Livewire\LeaveTypeReviewer;
 use App\Livewire\LetterPreparePage;
 use App\Livewire\ParentDetails;
+use App\Livewire\Payslips;
 use App\Livewire\PositionHistory;
 use App\Livewire\PreviousEmployeement;
 use App\Livewire\ReportsManagement;
@@ -143,6 +145,9 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
 
         //HR Employee-setUp Submodule Routes
 
+        //HR Payroll Submodule Routes
+        Route::get('/payslips', Payslips::class)->name('payslips');
+        Route::get('/ctcslips', CTCSlips::class)->name('ctcslips');
 
         //HR Leave-Main Submodule Routes
         Route::get('/user/leave-overview', HrLeaveOverview::class)->name('leave-overview');
