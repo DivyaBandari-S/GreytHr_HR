@@ -596,7 +596,8 @@ ul {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: fit-content;
+     width:fit-content;
+
 }
 .kudoseventsSection {
     display: flex;
@@ -1377,6 +1378,7 @@ button.nav-link.active {
     transition: color 0.3s ease, background-color 0.3s ease;
     border: 1px solid transparent;
     box-sizing: border-box;
+    
 }
 
 /* Hover state for tabs */
@@ -3208,9 +3210,9 @@ input[type="date"]::before {
 
 .custom-info-item:hover {
     margin: 0;
-
-    background-color: #d9e2f4; /* Change to your desired hover background color */
-    color: #3b4452; /* Change text color on hover if needed */
+ 
+    background-color: #d9e2f4 ; /* Change to your desired hover background color */
+    color:#3b4452; /* Change text color on hover if needed */
 }
 
 .dropdown-menu .updated-drodown a.dropdown-item:hover {
@@ -3750,7 +3752,9 @@ input[type="date"]::before {
 
     border-radius: 50%;
 }
-
+.main-overview-text{
+    font-size: 15px;
+}
 .main-overview-text-truncate {
     white-space: nowrap;
     overflow: hidden;
@@ -4857,6 +4861,7 @@ input[type="date"]::before {
     height: 32px;
 }
 
+
 .report-search-btn {
     height: 32px;
     width: 40px;
@@ -5015,7 +5020,7 @@ input[type="date"]::before {
 .empDiv:hover {
     background-color: #98cae0;
 }
-.iconforAction {
+.iconforAction{
     cursor: pointer;
 }
 .smallText {
@@ -5081,6 +5086,7 @@ select:focus {
 }
 /* end of leave type reviewer */
 
+
 /* task module styles started */
 .task-search-container {
     margin-top: 30px;
@@ -5119,6 +5125,8 @@ select:focus {
     left: 11px;
     color: #fff;
 }
+
+
 
 /* .task-first-container {
     width: 100%;
@@ -5178,6 +5186,7 @@ select:focus {
     width: 100px;
     margin-bottom: 15px;
     margin-right: 10px;
+
 }
 
 .task-filter-section {
@@ -5670,6 +5679,7 @@ select:focus {
     width: 20%;
     min-width: 200px;
 }
+
 
 .task-closed-reopen-button {
     border: 1px solid rgb(2, 17, 79);
@@ -6269,3 +6279,8 @@ select:focus {
 }
 
 /* task module styles ended */
+
+
+
+
+
