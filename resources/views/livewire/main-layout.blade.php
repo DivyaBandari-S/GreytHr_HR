@@ -3,7 +3,7 @@
     <section id="sidebar">
         <a href="#" class="brand">
             <!-- <i class="ph-flame-fill"></i> -->
-            <img src="{{ asset('images/user-group.png') }}" alt="" style="width: 1.3em;">
+            <!-- <img src="{{ asset('images/user-group.png') }}" alt="" style="width: 1.3em;"> -->
         </a>
 
         <ul class="sidebar__menu">
@@ -430,12 +430,6 @@
                 </li>
                 <li class="profile">
                     <a href="#">
-                        @if($companiesLogo && $companiesLogo->company_logo)
-                        <img class="clientImg" src="data:image/png;base64,{{ $companiesLogo->company_logo }}">
-                        @else
-                        <p>No logo available.</p>
-                        @endif
-
                         @if ($loginAdminDetails->image !== null && $loginAdminDetails->image != "null" && $loginAdminDetails->image != "Null" && $loginAdminDetails->image != "")
                         <img src="data:image/jpeg;base64,{{($loginAdminDetails->image)}} " alt="">
                         @else
