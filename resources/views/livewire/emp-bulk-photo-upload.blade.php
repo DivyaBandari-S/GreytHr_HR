@@ -54,12 +54,12 @@
                                 <tr>
                                     <td>{{ \Carbon\Carbon::parse($history->created_at)->format('d M, Y') }}</td>
                                     <td  wire:click="downloadZipFile('{{$history->id}}')"> <span class="anchorLink">{{ $history->file_name }}</span> </td>
-                                    <td>{{ ucfirst(strtolower($history->status ))}}</td>
+                                    <td style="color: {{$history->status === 'Cancelled'? 'red' : ($history->status == 'Completed' ? 'green' : 'black')}}">{{ (strtoupper($history->status ))}}</td>
                                     <td> {{ $history->log }} </td>
                                 </tr>
                                 @endforeach
                                 @else
-                                <tr colspan="4"></tr>
+                                <tr colspan="4">No data found</tr>
                                 @endif
                             </tbody>
                         </table>
