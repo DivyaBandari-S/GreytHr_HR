@@ -596,7 +596,8 @@ ul {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: fit-content;
+     width:fit-content;
+
 }
 .kudoseventsSection {
     display: flex;
@@ -1377,6 +1378,7 @@ button.nav-link.active {
     transition: color 0.3s ease, background-color 0.3s ease;
     border: 1px solid transparent;
     box-sizing: border-box;
+    
 }
 
 /* Hover state for tabs */
@@ -3208,9 +3210,9 @@ input[type="date"]::before {
 
 .custom-info-item:hover {
     margin: 0;
-
-    background-color: #d9e2f4; /* Change to your desired hover background color */
-    color: #3b4452; /* Change text color on hover if needed */
+ 
+    background-color: #d9e2f4 ; /* Change to your desired hover background color */
+    color:#3b4452; /* Change text color on hover if needed */
 }
 
 .dropdown-menu .updated-drodown a.dropdown-item:hover {
@@ -3750,7 +3752,9 @@ input[type="date"]::before {
 
     border-radius: 50%;
 }
-
+.main-overview-text{
+    font-size: 15px;
+}
 .main-overview-text-truncate {
     white-space: nowrap;
     overflow: hidden;
@@ -4857,6 +4861,7 @@ input[type="date"]::before {
     height: 32px;
 }
 
+
 .report-search-btn {
     height: 32px;
     width: 40px;
@@ -5015,7 +5020,7 @@ input[type="date"]::before {
 .empDiv:hover {
     background-color: #98cae0;
 }
-.iconforAction {
+.iconforAction{
     cursor: pointer;
 }
 .smallText {
@@ -5081,6 +5086,7 @@ select:focus {
 }
 /* end of leave type reviewer */
 
+
 /* task module styles started */
 .task-search-container {
     margin-top: 30px;
@@ -5119,6 +5125,8 @@ select:focus {
     left: 11px;
     color: #fff;
 }
+
+
 
 /* .task-first-container {
     width: 100%;
@@ -5178,6 +5186,7 @@ select:focus {
     width: 100px;
     margin-bottom: 15px;
     margin-right: 10px;
+
 }
 
 .task-filter-section {
@@ -5670,6 +5679,7 @@ select:focus {
     width: 20%;
     min-width: 200px;
 }
+
 
 .task-closed-reopen-button {
     border: 1px solid rgb(2, 17, 79);
@@ -6331,3 +6341,183 @@ select:focus {
     border-bottom: 1px solid var(--main-button-color);
 }
 /* end of styels */
+
+/* Payslips started */
+
+
+
+.dropdown-toggle.payroll {
+    background: transparent;  /* Remove background */
+    border: none;             /* Remove border */
+ 
+    color:white            /* Optional: Adjust padding if needed */
+}
+.es-autocomplete {
+width: 200px;
+padding: 5px;
+margin-right: 10px;
+border: 1px solid #ccc;
+}
+
+.es-value {
+display: none;
+}
+
+.add-on {
+cursor: pointer;
+padding: 5px;
+background-color: #ff4d4d;
+}
+
+.cancel-search {
+color: white;
+}
+
+/* Display section */
+.es-display {
+margin-top: 15px;
+}
+
+.es-employee-photo {
+width: 50px;
+height: 50px;
+margin-right: 10px;
+}
+
+.es-display-name h4 {
+margin: 0;
+font-size: 16px;
+}
+
+.es-employee-display {
+font-weight: bold;
+}
+
+.es-button {
+margin-left: 10px;
+}
+
+.btn-mini {
+padding: 5px 10px;
+}
+
+
+
+.es-icon-search {
+margin-right: 5px;
+}
+
+
+.centered-table {
+margin: 0 auto;
+border:1px solid silver;
+border-radius: 5px;
+}
+/* Apply only a left border to cells with the .data class */
+.data {
+border-right: 1px solid #ddd !important;
+
+padding-left: 8px;
+font-size: 12px;
+}
+/* Apply flex-like styling to the row if needed */
+.payslip-row {
+display: flex;              /* Enable flex layout on the row */
+width: 100%;
+justify-content: center;    /* Center horizontally */
+align-items: center;        /* Center vertically */
+/* Outline the entire row */
+}
+
+/* Each data cell styling */
+.payslip-row td.data {
+flex: 1;                    /* Each cell takes equal width */
+padding: 8px;               /* Optional padding for spacing */
+/* Outline each data cell individually */
+background:none;
+text-align: center;         /* Center text inside the cell */
+}
+/* Ensure the table takes the full width of its container */
+/* Center the table and set its width */
+.earnings-table {
+width: 90%;
+margin: 20px auto;
+border-radius :5px;
+background:none;
+border-collapse: collapse;
+font-family: Arial, sans-serif;
+box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+border: 1px solid #ddd;
+}
+
+/* Header Styles */
+.earnings-header th {
+
+text-align: center;
+padding: 12px;
+font-size: 12px;
+background: none;
+border: 1px solid #ddd;
+font-weight: 300;
+
+}
+
+/* Data Cell Styles */
+.earnings-table td {
+padding: 10px;
+font-size: 12px;
+border: 1px solid #ddd;
+background:none;
+background:none;
+vertical-align: middle;
+}
+
+/* Add class to tbody for specific styling */
+.earnings-row .even-rows tr:nth-child(even) {
+background-color:rgb(169, 167, 167); /* Light gray for even rows */
+font-size: 12px;
+}
+
+/* Hover Effect */
+.earnings-table tbody.even-rows tr:hover {
+background-color: #e0f7fa; /* Light blue on hover */
+transition: background-color 0.3s ease;
+font-size: 12px;
+}
+
+.col-inr {
+text-align: right; /* Align labels to the left */
+font-size: 12px;
+}
+/* Align Values to the Right */
+.earnings-value, .deductions-value {
+text-align: right; /* Align values to the right */
+font-size: 12px;
+
+color: #333;
+}
+
+/* Align Labels to the Left */
+.earnings-label, .deductions-label {
+text-align: left; /* Align labels to the left */
+font-size: 12px;
+color: #333;
+}
+  .dropdown-item.employee-item:hover {
+    background-color: rgba(152, 202, 224, 0.5); /* Transparent effect */
+    border-radius: 5px;
+    color: #222; /* Keep text readable */
+}
+
+
+
+/* Styling for each item */
+.dropdown-item.employee-item {
+    padding: 0.4em;
+    line-height: 1.5;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+/*payslips ended*/
+

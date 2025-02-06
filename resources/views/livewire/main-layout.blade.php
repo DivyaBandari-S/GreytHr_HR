@@ -159,8 +159,8 @@
                     <li>
                         <a href="#">Published Info <i class="ph-caret-right-fill"></i></a>
                         <ul class="sidebar__dropdown-menu">
-                            <li><a href="/home">Payslip</a></li>
-                            <li><a href="/user">CTC Payslip</a></li>
+                            <li><a href="/hr/payslips">Payslip</a></li>
+                            <li><a href="/hr/ctcslips">CTC Payslip</a></li>
                             <li><a href="/user">Reimbursement Payslip</a></li>
                             <li><a href="/user">YTD Summary</a></li>
                             <li><a href="/user">PF YTD Statement</a></li>
