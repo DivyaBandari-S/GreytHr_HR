@@ -517,12 +517,16 @@ class CTCSlips extends Component
     public function updateselectedEmployee($empId)
     {
        
-        $this->selectedEmployeeId = $empId;
+        $this->selectedEmployeeId ;
         // dd($empId);
+        $employee = EmployeeDetails::find($empId);
 
-
-        $this->selectedEmployeeFirstName = EmployeeDetails::where('emp_id', $empId)->value('first_name');
-        $this->selectedEmployeeLastName = EmployeeDetails::where('emp_id', $empId)->value('last_name');
+        if ($employee) {
+            $this->selectedEmployeeId = $employee->emp_id;
+            $this->selectedEmployeeFirstName = ucfirst(strtolower($employee->first_name));
+            $this->selectedEmployeeLastName = ucfirst(strtolower($employee->last_name));
+            $this->searchTerm = ''; // Clears search term, but input retains full name
+        }
         if (!empty($this->selectedEmployeeId)) {
          
             $this->allSalaryDetails = $this->getSalaryDetails();
@@ -639,8 +643,8 @@ class CTCSlips extends Component
         $this->showPopup = true;
     }
 
-   
-    private function calculateNetPay()
+
+        private function calculateNetPay()
     {
         $totalGrossPay = 0;
         $totalDeductions = 0;

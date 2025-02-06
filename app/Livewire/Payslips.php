@@ -517,10 +517,17 @@ class Payslips extends Component
     public function updateselectedEmployee($empId)
     {
        
-        $this->selectedEmployeeId = $empId;
+        $this->selectedEmployeeId ;
         // dd($empId);
 
+        $employee = EmployeeDetails::find($empId);
 
+        if ($employee) {
+            $this->selectedEmployeeId = $employee->emp_id;
+            $this->selectedEmployeeFirstName = ucfirst(strtolower($employee->first_name));
+            $this->selectedEmployeeLastName = ucfirst(strtolower($employee->last_name));
+            $this->searchTerm = ''; // Clears search term, but input retains full name
+        }
         $this->selectedEmployeeFirstName = EmployeeDetails::where('emp_id', $empId)->value('first_name');
         $this->selectedEmployeeLastName = EmployeeDetails::where('emp_id', $empId)->value('last_name');
         if (!empty($this->selectedEmployeeId)) {
@@ -600,7 +607,8 @@ class Payslips extends Component
             echo $pdf->stream();
         }, 'payslip-' . $name . '.pdf');
     }
-    
+
+      
     public function cancel()
     {
         $this->showPopup = false;

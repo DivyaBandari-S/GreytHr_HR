@@ -49,7 +49,7 @@
             <div class="es-display-name" style="margin-left: 5px; display: flex; align-items: center;">
             @if($selectedEmployeeId && $selectedEmployeeFirstName)
                     <img 
-        src="{{ $selectedEmployeeImage ? 'data:image/jpeg;base64,' . $selectedEmployeeImage : asset('images/user.jpg') }}" 
+        src="{{ $selectedEmployeeImage ? 'data:image/jpeg;base64,' . $selectedEmployeeImage : asset('images/profile.png') }}" 
         alt="Profile Image" 
         class="profile-image-input"
         style="width: 30px; height: 30px; border-radius: 50%;" 
@@ -57,26 +57,26 @@
 
                
                   <!-- Search Input Field -->
-<span
+<span 
     
    
-     class="es-employee-display"
-    style="padding-left: 5px; "  
+     class="es-employee-display ml-2"
+    style="padding-left: 5px; cursor:pointer"  
 >{{ $selectedEmployeeFirstName ? ucfirst(strtolower($selectedEmployeeFirstName)) . ' ' . ucfirst(strtolower($selectedEmployeeLastName)) : 'Search for an employee...' }}</span>
 
 
 @else
-                <img src="{{ asset('images/user.jpg') }}" alt="Default Image" class="profile-image-input" style="width: 30px; height: 30px; border-radius: 50%; margin-left: 5px;" />
-                <span class="es-employee-display" style="font-size: 14px; font-weight: 600;">select an employee...</span>
+                <img src="{{ asset('images/profile.png') }}" alt="Default Image" class="profile-image-input" style="width: 30px; height: 30px; border-radius: 50%; margin-left: 5px;" />
+                <span class="es-employee-display " style="font-size: 14px; font-weight: 500;cursor:pointer;margin-left:2px" wire:click="toggleSearch">select an employee...</span>
                 <span class="empNo es-employee-no"></span>
                 @endif
             </div>
             <div class="pull-left es-button">
     <button class="cancel-btn" wire:click="toggleSearch" style="border: 1px solid black; background: white; padding: 5px 10px; display: flex; align-items: center; justify-content: center; border-radius: 5px; gap: 5px;">
 
-            <i class="fa fa-search" style="color: black; font-size: 16px;"></i> <!-- Box Icon -->
+            <i class="fa fa-search" style="color: blue; font-size: 14px;"></i> <!-- Box Icon -->
   
-        <span style="font-weight: 600; color: black;">Search</span>
+        <span style=" color: blue;">Search</span>
     </button>
 </div>
 
@@ -94,62 +94,45 @@
                     </button>
                 </span>
 
-                <!-- Employee details input -->
-                <input type="text" class="form-control" aria-describedby="basic-addon1"     wire:click="searchforEmployee" style="height:30px"  wire:model.live="searchTerm"
-                aria-label="{{ $selectedEmployeeFirstName ? ucfirst(strtolower($selectedEmployeeFirstName)) . ' ' . ucfirst(strtolower($selectedEmployeeLastName)) : 'Search for an employee...' }}"  
-                placeholder="{{ $selectedEmployeeFirstName ? ucfirst(strtolower($selectedEmployeeFirstName)) . ' ' . ucfirst(strtolower($selectedEmployeeLastName)) : 'Search for an employee...' }}">
 
-                <!-- Close icon on the right side -->
-                <button class="btn" style="border: 1px solid silver; background:#5bb75b; width: 30px; text-align: center; display: flex; justify-content: center; align-items: center;height:30px" wire:click="toggleSearch" type="button">
-                    <i class="fa fa-times" style="color:white;"></i> <!-- Close icon -->
-                </button>
+        <input type="text" class="form-control" 
+            wire:click="searchforEmployee"
+         wire:model.debounce.600ms="searchTerm"
+               aria-label="{{ $selectedEmployeeFirstName ? ucfirst(strtolower($selectedEmployeeFirstName)) . ' ' . ucfirst(strtolower($selectedEmployeeLastName)) : 'Search for an employee...' }}"
+    placeholder="{{ $selectedEmployeeFirstName ? ucfirst(strtolower($selectedEmployeeFirstName)) . ' ' . ucfirst(strtolower($selectedEmployeeLastName)) : 'Search for an employee...' }}"
+            style="height: 30px; font-size: 12px;"
+     
+        >
+
+        <!-- Close Button -->
+        <button class="btn" 
+            style="border: 1px solid silver; background:#5bb75b; width: 30px; height: 30px;
+            display: flex; justify-content: center; align-items: center;" 
+            wire:click="clearSelection" type="button">
+            <i class="fa fa-times" style="color: white;"></i>
+        </button>
+    </div>
+
+    <!-- Employee Dropdown -->
+    @if($searchTerm && !$selectedEmployeeFirstName)
+    @if(!isset($employees) || $employees->isEmpty())
+        <div class="dropdown-menu show" style="display: block; font-size: 12px; padding: 8px;">
+            <p class="m-0 text-muted">No People Found</p>
+        </div>
+    @else
+            <div class="dropdown-menu show" style="display: block; max-height: 200px; overflow-y: auto; font-size: 12px;">
+                @foreach($employees as $employee)
+                    @if(stripos($employee->first_name . ' ' . $employee->last_name, $searchTerm) !== false)
+                        <a class="dropdown-item employee-item" 
+                            wire:click="updateselectedEmployee('{{ $employee->emp_id }}')"
+                            wire:key="emp-{{ $employee->emp_id }}">
+                            {{ ucfirst(strtolower($employee->first_name)) }} {{ ucfirst(strtolower($employee->last_name)) }} ({{ $employee->emp_id }})
+                        </a>
+                    @endif
+                @endforeach
             </div>
-        </div>
-        <div class="row">
-  
-    @if($searchTerm)
-         
-    @if($employees->isEmpty())
-                    <div class="search-container">
-                        <p>No People Found</p>
-                    </div>
-                @else
-    <div class="search-container" style="max-height: 250px; overflow-y: auto;">
-            @foreach($employees as $employee)
-                @if(stripos($employee->first_name . ' ' . $employee->last_name, $searchTerm) !== false)
-                    <label wire:click="selectEmployee('{{ $employee->emp_id }}')" style="cursor: pointer;">
-                        <div class="row align-items-center">
-                            <div class="col-auto">
-                                <!-- Remove checkbox, now trigger selection by clicking on the name -->
-                            </div>
-                            <div class="col-auto">
-                                @if($employee->image && $employee->image !== 'null')
-                                    <img class="profile-image" src="data:image/jpeg;base64,{{ $employee->image }}"          id="employee-{{ $employee->emp_id }}"
-                                                wire:click="updateselectedEmployee('{{ $employee->emp_id }}')"
-                                                value="{{ $employee->emp_id }}">
-                                @else
-                                    <img class="profile-image" src="{{ asset('images/user.jpg') }}" alt="Default Image">
-                                @endif
-                            </div>
-                            <div class="col">
-                                <h6 class="name" style="font-size: 12px; color: black;"      id="employee-{{ $employee->emp_id }}"
-                                                wire:click="updateselectedEmployee('{{ $employee->emp_id }}')"
-                                                value="{{ $employee->emp_id }}">
-                                    {{ ucfirst(strtolower($employee->first_name)) }} {{ ucfirst(strtolower($employee->last_name)) }}
-                                </h6>
-                                <p style="font-size: 12px; color: grey;"          id="employee-{{ $employee->emp_id }}"
-                                                wire:click="updateselectedEmployee('{{ $employee->emp_id }}')"
-                                                value="{{ $employee->emp_id }}">(#{{ $employee->emp_id }})</p>
-                            </div>
-                        </div>
-                    </label>
-                @endif
-            @endforeach
-        </div>
-  
-   
+        @endif
     @endif
-@endif
         </div>
 
 

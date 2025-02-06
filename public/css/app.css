@@ -6280,6 +6280,10 @@ select:focus {
 
 /* task module styles ended */
 
+
+
+
+
 /* Payslips started */
 
 
@@ -6441,6 +6445,20 @@ text-align: left; /* Align labels to the left */
 font-size: 12px;
 color: #333;
 }
+.dropdown-item.employee-item:hover {
+    background-color: rgba(152, 202, 224, 0.5); /* Transparent effect */
+    border-radius: 5px;
+    color: #222; /* Keep text readable */
+}
 
+
+
+/* Styling for each item */
+.dropdown-item.employee-item {
+    padding: 0.4em;
+    line-height: 1.5;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
 
 /*payslips ended*/
