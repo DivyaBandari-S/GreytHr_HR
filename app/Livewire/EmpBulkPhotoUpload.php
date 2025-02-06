@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Helpers\FlashMessageHelper;
+use App\Models\EmployeeDetails;
 use App\Models\UploadBulkPhotos;
 use Illuminate\Support\Facades\Log;
 use Livewire\Component;
@@ -15,12 +16,16 @@ class EmpBulkPhotoUpload extends Component
     public $currentStep = 1;
     public $upload;
     public $zip_file;
+    public $errorMessages = [];
     public $uploaded_by;
     public $uploaded_at;
     public $log;
     public $status;
+    public $searchTerm;
+    public $selecetedEmployee;
     public $showUploadContent  = false;
 
+    public $employeeIds = [];
     public function toggleUploadBtn()
     {
         $this->showHistory = false;
@@ -33,6 +38,183 @@ class EmpBulkPhotoUpload extends Component
             $this->currentStep++;
         }
     }
+    public function toggleEmployeeContainer($index)
+    {
+        // Reset search term (if required)
+        $this->searchTerm = null;
+
+        // Initialize the array if it's not set
+        if (!isset($this->openEmployeeContainers) || !is_array($this->openEmployeeContainers)) {
+            $this->openEmployeeContainers = [];
+        }
+
+        // Make sure the specific index is set to a boolean value before toggling
+        if (!isset($this->openEmployeeContainers[$index])) {
+            // If it's not set, initialize the index to `false` (assuming it's a boolean toggle)
+            $this->openEmployeeContainers[$index] = false;
+        }
+
+        // Toggle the visibility for the specific index (flip the boolean value)
+        $this->openEmployeeContainers[$index] = !$this->openEmployeeContainers[$index];
+    }
+
+
+    public function getEmployeeData($searchTerm = null)
+    {
+        $searchTerm = $this->searchTerm;
+        try {
+            $loggedInEmpId = auth()->guard('hr')->user()->emp_id;
+            $employee = EmployeeDetails::where('emp_id', $loggedInEmpId)->first();
+
+            if ($employee) {
+                $companyId = $employee->company_id;
+                // Ensure company_id is decoded if it's a JSON string
+                $companyIdsArray = is_array($companyId) ? $companyId : json_decode($companyId, true);
+            }
+
+            // Check if companyIdsArray is an array and not empty
+            if (empty($companyIdsArray)) {
+                // Handle the case where companyIdsArray is empty or invalid
+                return 0;  // or handle as needed
+            }
+
+            // Step 1: Get all employees' emp_ids that belong to the company or companies in companyIdsArray
+            $query = EmployeeDetails::whereJsonContains('company_id', $companyIdsArray)
+                ->whereNotIn('employee_status', ['resigned', 'terminated'])
+                ->select('emp_id', 'first_name', 'last_name'); // Get a collection of emp_ids
+
+            // Step 2: Apply search if a search term is provided
+            if ($searchTerm) {
+                $query->where(function ($q) use ($searchTerm) {
+                    $q->where('emp_id', 'like', '%' . $searchTerm . '%')
+                        ->orWhere('first_name', 'like', '%' . $searchTerm . '%')
+                        ->orWhere('last_name', 'like', '%' . $searchTerm . '%');
+                });
+            }
+            // Step 3: Execute the query and get the results
+            $this->employeeIds = $query->get(); // Convert to an array
+            return $this->employeeIds;
+        } catch (\Exception $e) {
+            // Log the exception message (can use a logging library, or log to a file)
+            Log::error('Error fetching employee data: ' . $e->getMessage());
+            FlashMessageHelper::flashWarning('Something went wrong while fetching employee data.');
+        }
+    }
+
+    public $selectedEmployees = [];
+    public $openEmployeeContainers = [];
+    public function getSelectedEmployee($empId, $imagePath, $index)
+    {
+        // Initialize selected employees array if it's not set
+        if (!isset($this->selectedEmployees)) {
+            $this->selectedEmployees = [];
+        }
+
+        // Check for duplicate assignments
+        if (isset($this->selectedEmployees[$empId])) {
+            // If the employee is already assigned an image, don't add again
+            Log::warning('Employee already assigned an image: ' . $empId);
+            return;
+        }
+
+        // Add the employee and their assigned image if not already added
+        $this->selectedEmployees[$empId] = $imagePath;
+        $this->openEmployeeContainers[$index] = false;
+
+    }
+
+    public function storeImageOfEmployee()
+    {
+
+        // // Reset the error messages array before each validation
+        $this->errorMessages = [];
+        // Validate that all images are assigned to employees
+        if (count($this->selectedEmployees) < count($this->imagePaths)) {
+            // Flash an error if some images are not assigned
+            FlashMessageHelper::flashError('Please assign all images to employees before proceeding.');
+            return;
+        }
+        set_time_limit(300);
+        try {
+
+            if ($this->selectedEmployees) {
+                foreach ($this->selectedEmployees as $empID => $imagePath) {
+                    // Fetch employee data
+                    $data = EmployeeDetails::where('emp_id', $empID)->first();
+
+                    if ($data) {
+                        try {
+                            // Check if imagePath is a URL
+                            if (filter_var($imagePath, FILTER_VALIDATE_URL)) {
+                                $localPath = public_path(str_replace(url('/'), '', $imagePath));
+                                // If it's a URL, fetch the image content from the URL directly
+                                $imageBinary = base64_encode(file_get_contents($localPath));
+                            } else {
+                                // If it's a local file, we need to remove the URL part and use the relative path
+                                $localPath = public_path(str_replace(url('/'), '', $imagePath));  // Remove the base URL
+
+                                // Check if the file exists
+                                if (file_exists($localPath)) {
+                                    $imageBinary = base64_encode(file_get_contents($localPath));
+                                } else {
+                                    Log::error('File not found at ' . $localPath);
+                                    dd('File not found at ' . $localPath);
+                                }
+                            }
+
+                            // Update the employee's image field
+                            $data->image = $imageBinary;
+                            // Save the updated record
+                            $data->save();
+
+                            // Optional: Debugging or success message
+                            dd('Image saved successfully for employee: ' . $empID);
+
+                            // Delete the extracted files directory after saving the image
+                            $this->deleteExtractedFiles(public_path('extracted_images'));
+
+                            // Log or notify that the directory has been deleted
+                            Log::info('Successfully deleted extracted_images directory after saving the image for employee: ' . $empID);
+                        } catch (\Exception $e) {
+                            // Catch any error specific to image processing or saving
+                            Log::error('Error processing image for employee ' . $empID . ': ' . $e->getMessage());
+                            dd('Error processing image for employee ' . $empID . ': ' . $e->getMessage());
+                        }
+                    } else {
+                        // Handle case when employee data is not found
+                        Log::warning('Employee not found for emp_id: ' . $empID);
+                        dd('Employee not found for emp_id: ' . $empID);
+                    }
+                }
+            }
+        } catch (\Exception $e) {
+            // Catch any unexpected error in the main method
+            Log::error('General error: ' . $e->getMessage());
+            dd('General error: ' . $e->getMessage());
+        }
+    }
+
+    // Recursive method to delete files and directories
+    public function deleteExtractedFiles($path)
+    {
+        // Process in chunks (if directory is large)
+        $files = array_diff(scandir($path), ['.', '..']);
+        $chunkedFiles = array_chunk($files, 100); // Process files in chunks of 100
+        foreach ($chunkedFiles as $chunk) {
+            foreach ($chunk as $file) {
+                $filePath = $path . DIRECTORY_SEPARATOR . $file;
+                if (is_file($filePath)) {
+                    unlink($filePath);
+                } elseif (is_dir($filePath)) {
+                    $this->deleteExtractedFiles($filePath);
+                }
+            }
+        }
+        rmdir($path); // Remove the directory after processing
+    }
+
+
+
 
     protected $rules = [
         'zip_file' => 'required|file|mimes:zip|max:10240',
@@ -87,12 +269,12 @@ class EmpBulkPhotoUpload extends Component
     public function extractZipFile($upload)
     {
         try {
-            // Define the temporary extraction path
+            // Define the public extraction path (inside the public folder)
             $zip = new \ZipArchive;
-            $tempExtractPath = storage_path('app/public/extracted_images/' . $upload->id);
+            $tempExtractPath = public_path('extracted_images/' . $upload->id); // Changed to public_path
             // Create the directory if it doesn't exist
             if (!file_exists($tempExtractPath)) {
-                mkdir($tempEaxtractPath, 0777, true); // Ensure directory is created
+                mkdir($tempExtractPath, 0777, true); // Ensure directory is created
             }
 
             // Open and extract the ZIP file
@@ -118,9 +300,11 @@ class EmpBulkPhotoUpload extends Component
             // Instead of storing extracted images in the database, we'll just pass the paths to frontend
             $imagePaths = [];
             foreach ($extractedFiles as $file) {
-                // Add the file paths, pointing to the temporary directory
-                $this->imagePaths[] = asset('storage/app/public/extracted_images/' . $upload->id . '/' . $file);
+                // Add the file paths, pointing to the public directory
+                // Use the public URL for the extracted images (relative path from the public folder)
+                $this->imagePaths[] = asset('extracted_images/' . $upload->id . '/' . $file);
             }
+
             // Pass the image paths to frontend (you can also store them temporarily in a session if needed)
             session()->put('extracted_images_' . $upload->id, $imagePaths);
 
@@ -131,24 +315,6 @@ class EmpBulkPhotoUpload extends Component
                 'upload_id' => $upload->id ?? 'N/A',
             ]);
             FlashMessageHelper::flashError('Failed to extract images.');
-        }
-    }
-
-    // Helper function to delete the extracted files after use (optional)
-    private function deleteExtractedFiles($path)
-    {
-        // Recursively delete the extracted files and directories
-        if (is_dir($path)) {
-            $files = array_diff(scandir($path), ['.', '..']);
-            foreach ($files as $file) {
-                $filePath = $path . DIRECTORY_SEPARATOR . $file;
-                if (is_dir($filePath)) {
-                    $this->deleteExtractedFiles($filePath);
-                } else {
-                    unlink($filePath);
-                }
-            }
-            rmdir($path); // Remove the directory after deleting files
         }
     }
 

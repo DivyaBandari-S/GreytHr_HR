@@ -103,17 +103,68 @@
                             <h3>Assign profile photos to employees</h3>
                             @if($imagePaths && count($imagePaths) > 0)
                             <div class="image-gallery">
-
-                                @foreach($imagePaths as $path)
+                                @foreach($imagePaths as $index => $path)
+                                @php
+                                // Extract the filename from the path
+                                $filename = basename($path);
+                                @endphp
                                 <div class="image-item">
-                                    <img src="{{ asset($path) }}" alt="Extracted Image" style="max-width: 150px; max-height: 150px;">
+                                    <img src="{{ asset($path) }}" alt="Extracted Image" style="max-width: 100px; max-height: 100px;">
+                                    <div class="d-flex flex-column">
+                                        <div>
+                                            <p class="mb-0 normalTextFile"> File name: {{ $filename }}</p>
+                                        </div>
+                                        <div class="form-group d-flex align-items-start mb-2 position-relative">
+                                            <div class="input-group">
+                                                <!-- Input field bound to the selected employee for this index -->
+                                                <input type="text" class="form-control" id="selecetedEmployee_{{ $index }}"
+                                                    wire:click="toggleEmployeeContainer('{{ $index }}')"
+                                                    wire:model="selectedEmployees.{{ $index }}" value="selectedEmployees.{{ $index }}" readonly>
+                                                <div class="input-group-append bg-white border" wire:click="toggleEmployeeContainer('{{ $index }}')">
+                                                    <span class="input-group-text" style="border:none; background:none;">
+                                                        <i class="ph-caret-down-fill"></i>
+                                                    </span>
+                                                </div>
+                                            </div>
+
+                                            @if(isset($this->openEmployeeContainers[$index]) && $this->openEmployeeContainers[$index])
+                                            <div class="search-container position-absolute" style="top:100%;z-index:1;">
+                                                <input type="text" wire:input="getEmployeeData" wire:model="searchTerm" class="form-control" id="employeeSearch" placeholder="Search for employee..." />
+                                                @if(!is_null($employeeIds) && $employeeIds)
+                                                <div>
+                                                    @foreach ($employeeIds as $empData)
+                                                    <div wire:click="getSelectedEmployee('{{ $empData->emp_id }}', '{{ $path }}', {{ $index }})"
+                                                        class="empDiv mt-2 p-2 border rounded bg-white d-flex align-items-center gap-3">
+                                                        <div class="rounded-circle name d-flex bg-grey align-items-center justify-content-center">
+                                                            <span>
+                                                                {{ substr($empData->first_name, 0, 1) }}{{ substr($empData->last_name, 0, 1) }}
+                                                            </span>
+                                                        </div>
+                                                        <div class="d-flex flex-column align-items-start">
+                                                            <div>
+                                                                <span class="normalText">{{ ucwords(strtolower($empData->first_name)) }} {{ ucwords(strtolower($empData->last_name)) }}</span>
+                                                            </div>
+                                                            <span class="smallText">{{ $empData->emp_id }}</span>
+                                                        </div>
+                                                    </div>
+                                                    @endforeach
+                                                </div>
+                                                @else
+                                                <p>No employees found matching the search criteria.</p>
+                                                @endif
+                                            </div>
+                                            @endif
+                                        </div>
+                                    </div>
                                 </div>
                                 @endforeach
                             </div>
                             @else
                             <p>No images extracted from the ZIP file.</p>
                             @endif
+                            <button class="submit-btn" type="button" wire:click="storeImageOfEmployee">Finish</button>
                         </div>
+
                         @endif
                     </div>
                 </div>

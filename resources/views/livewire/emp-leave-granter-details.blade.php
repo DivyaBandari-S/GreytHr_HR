@@ -1,4 +1,4 @@
-<div>
+<div  r>
 
     <div class="container-fluid px-1  rounded">
 

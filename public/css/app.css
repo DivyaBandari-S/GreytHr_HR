@@ -6289,7 +6289,10 @@ select:focus {
     position: relative;
     margin: 20px 130px;
 }
-
+.normalTextFile{
+    color: var(--main-button-color);
+    font-size: 10px;
+}
 .progress-line {
     position: absolute;
     top: 30%;
