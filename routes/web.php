@@ -60,6 +60,7 @@ use App\Livewire\SwipeManagementForHr;
 use App\Livewire\Tasks;
 use App\Livewire\WhoIsInChartHr;
 use App\Livewire\YearEndProcess;
+use App\Livewire\YtdReport;
 use App\Models\EmpResignations;
 use App\Models\Task;
 use Illuminate\Support\Facades\Route;
@@ -148,7 +149,7 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
         //HR Payroll Submodule Routes
         Route::get('/payslips', Payslips::class)->name('payslips');
         Route::get('/ctcslips', CTCSlips::class)->name('ctcslips');
-
+        Route::get('/ytdreport', YtdReport::class)->name('ytdreport');
         //HR Leave-Main Submodule Routes
         Route::get('/user/leave-overview', HrLeaveOverview::class)->name('leave-overview');
         Route::get('/user/leave-overview/{month}/{leaveType?}', HrLeaveOverview::class)->name('leave-overview.month');
