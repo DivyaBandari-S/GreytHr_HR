@@ -1,6 +1,4 @@
 <div class="container mt-4">
-
-
     <!-- Progress Bar -->
     <style>
         .progress-container {
@@ -11,7 +9,7 @@
             position: relative;
             margin: 20px 130px;
         }
-    
+
         .progress-line {
             position: absolute;
             top: 30%;
@@ -22,9 +20,7 @@
             z-index: 0;
             transform: translateY(-50%);
         }
-    
-       
-    
+
         .progress-step {
             position: relative;
             z-index: 2;
@@ -32,7 +28,7 @@
             flex-direction: column;
             align-items: center;
         }
-    
+
         .circle {
             width: 35px;
             height: 35px;
@@ -45,22 +41,22 @@
             transition: background-color 0.3s ease-in-out;
             border: 2px solid #d1d1d1;
         }
-    
+
         .circle.completed {
             background-color: lightgreen;
             border-color: lightgreen;
         }
-    
+
         .circle.active {
             background-color: darkgreen;
             border-color: darkgreen;
         }
-    
+
         .circle.pending {
             background-color: #d1d1d1;
             border-color: #d1d1d1;
         }
-    
+
         .label {
             margin-top: 5px;
             font-size: 14px;
@@ -363,7 +359,7 @@
             </div>
         @endif
     </div>
-    
+
     <div class="progress-container">
         <div class="progress-line"></div>
 
@@ -420,7 +416,7 @@
                 <label class="form-label">Remarks</label>
                 <textarea class="form-control" wire:model="remarks"></textarea>
             </div>
-        
+
             @elseif($currentStep == 2)
             <h5>Step 2: Select Employees</h5>
             <p>Select employees for the letter.</p>
