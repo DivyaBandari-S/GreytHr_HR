@@ -3,7 +3,7 @@
     <section id="sidebar">
         <a href="#" class="brand">
             <!-- <i class="ph-flame-fill"></i> -->
-            <img src="{{ asset('images/user-group.png') }}" alt="" style="width: 1.3em;">
+            <!-- <img src="{{ asset('images/user-group.png') }}" alt="" style="width: 1.3em;"> -->
         </a>
 
         <ul class="sidebar__menu">
@@ -72,7 +72,7 @@
                         <ul class="sidebar__dropdown-menu">
                             <li><a href="/hr/user/generate-letter">Generate Letter</a></li>
                             <li><a href="/user">Excel Import</a></li>
-                            <li><a href="/user">Bulk Photo Upload</a></li>
+                            <li><a href="/hr/user/emp/admin/bulkphoto-upload">Bulk Photo Upload</a></li>
                             <li><a href="/user">Bulk Document Upload</a></li>
                             <li><a href="/user">Bulletin Board</a></li>
                             <li><a href="/user">Mass Communication</a></li>
@@ -159,8 +159,8 @@
                     <li>
                         <a href="#">Published Info <i class="ph-caret-right-fill"></i></a>
                         <ul class="sidebar__dropdown-menu">
-                            <li><a href="/home">Payslip</a></li>
-                            <li><a href="/user">CTC Payslip</a></li>
+                            <li><a href="/hr/payslips">Payslip</a></li>
+                            <li><a href="/hr/ctcslips">CTC Payslip</a></li>
                             <li><a href="/user">Reimbursement Payslip</a></li>
                             <li><a href="/user">YTD Summary</a></li>
                             <li><a href="/user">PF YTD Statement</a></li>
@@ -430,7 +430,6 @@
                 </li>
                 <li class="profile">
                     <a href="#">
-                        <img class="clientImg" src="{{ $companiesLogo->company_logo }}">
                         @if ($loginAdminDetails->image !== null && $loginAdminDetails->image != "null" && $loginAdminDetails->image != "Null" && $loginAdminDetails->image != "")
                         <img src="data:image/jpeg;base64,{{($loginAdminDetails->image)}} " alt="">
                         @else
