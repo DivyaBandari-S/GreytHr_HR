@@ -163,7 +163,7 @@
                             <li><a href="/hr/ctcslips">CTC Payslip</a></li>
                             <li><a href="/user">Reimbursement Payslip</a></li>
                             <li><a href="/hr/ytdreport">YTD Summary</a></li>
-                            <li><a href="/user">PF YTD Statement</a></li>
+                            <li><a href="/hr/pfytdreport">PF YTD Statement</a></li>
                             <li><a href="/user">Reimbursement Statement</a></li>
                             <li><a href="/user">IT Statement</a></li>
                             <li><a href="/user">Loan Statement</a></li>

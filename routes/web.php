@@ -48,6 +48,7 @@ use App\Livewire\LeaveTypeReviewer;
 use App\Livewire\LetterPreparePage;
 use App\Livewire\ParentDetails;
 use App\Livewire\Payslips;
+use App\Livewire\PfYtdReport;
 use App\Livewire\PositionHistory;
 use App\Livewire\PreviousEmployeement;
 use App\Livewire\ReportsManagement;
@@ -150,6 +151,9 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
         Route::get('/payslips', Payslips::class)->name('payslips');
         Route::get('/ctcslips', CTCSlips::class)->name('ctcslips');
         Route::get('/ytdreport', YtdReport::class)->name('ytdreport');
+        Route::get('/pfytdreport', PfYtdReport::class)->name('pfytdreport');
+
+
         //HR Leave-Main Submodule Routes
         Route::get('/user/leave-overview', HrLeaveOverview::class)->name('leave-overview');
         Route::get('/user/leave-overview/{month}/{leaveType?}', HrLeaveOverview::class)->name('leave-overview.month');
