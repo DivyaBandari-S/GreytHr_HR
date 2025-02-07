@@ -39,6 +39,7 @@
             padding: 4px;
             padding-right: 30px;
         }
+
         .emp-sal1-table th,
         .emp-sal1-table td {
             text-align: center;
@@ -70,7 +71,7 @@
             <div class="row d-flex">
                 <div style="width:50%">
                     <div class=" d-flex" style="width:100%;justify-content:space-between;align-items:center">
-                        <label>Revision not done between
+                        <label>Revision  @if($activeTab !='revised')not @endif done between
                             <span class="text-primary fw-bold" id="rangeValue">
                                 {{ $selectedRange[0] }} to {{ $selectedRange[1] }} months
                             </span>
@@ -78,10 +79,10 @@
 
                         <div class="tabs" style="margin-left:auto ; height:fit-content;margin-bottom:0px">
                             <div class="tabButtons">
-                                <button wire:click="changeTab('pending')" class="tab-button {{ $activeTab === 'pending' ? 'active' : '' }}" title="Not Revised">
+                                <button wire:click="changeTab('not_revised')" class="tab-button {{ $activeTab === 'not_revised' ? 'active' : '' }}" title="Not Revised">
                                     <img src="{{asset('images/stairs-block.png')}}" alt="">
                                 </button>
-                                <button wire:click="changeTab('completed')" class="tab-button {{ $activeTab === 'completed' ? 'active' : '' }}" title="Revised">
+                                <button wire:click="changeTab('revised')" class="tab-button {{ $activeTab === 'revised' ? 'active' : '' }}" title="Revised">
                                     <img style="height: 10px;" src="{{asset('images/stairs-revised.png')}}" alt="">
                                 </button>
                             </div>
@@ -100,8 +101,20 @@
 
                         </tr>
                         <tr>
-                            <td style="font-weight: bold;">14 months</td>
-                            <td style="font-weight: bold;">12 months</td>
+                            <td style="font-weight: bold;">
+                                @if($longestRevision != '-')
+                                {{round($longestRevision)}} month/s
+                                @else
+                                {{$longestRevision}}
+                                @endif
+                            </td>
+                            <td style="font-weight: bold;">
+                            @if($medianRevision != '-')
+                                {{floor($medianRevision)}} month/s
+                             @else
+                                {{$medianRevision}}
+                            @endif
+                           </td>
                         </tr>
                     </table>
                 </div>
@@ -110,25 +123,76 @@
         </div>
     </div>
     <div class="col-md-12 mt-2">
-            <div class="table-responsive">
-                <table class="table table-bordered emp-sal1-table">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Employee Number</th>
-                            <th>Name</th>
-                            <th>Experience</th>
-                            <th>Designation</th>
-                            <th>Department</th>
-                            <th>Revised salary</th>
-                            <th>Prior Salary</th>
-                            <th>Difference</th>
-                            <th>Percet</th>
-                        </tr>
-                    </thead>
-                </table>
-            </div>
+        <div class="table-responsive">
+            <table class="table table-bordered emp-sal1-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Employee Number</th>
+                        <th>Name</th>
+                        <th>Experience</th>
+                        <th>Designation</th>
+                        <th>Department</th>
+                        <th>Revised salary</th>
+                        <th>Prior Salary</th>
+                        <th>Difference</th>
+                        <th>Percet</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if($tableData )
+                    @foreach($tableData as $index=> $employee)
+                    <tr>
+                        <td>{{ $index +1}}</td>
+                        <td>{{$employee['emp_id']}}</td>
+                        <td style="text-transform: capitalize;">{{$employee['emp_name']}}</td>
+                        <td>{{$employee['experience']}}</td>
+                        <td>{{$employee['designation']}}</td>
+                        <td>{{$employee['department']}}</td>
+
+                        <td>
+                            @if($employee['revised_ctc'] !=0)
+                            Rs {{number_format($employee['revised_ctc'],2)}}
+                            @else
+                            {{$employee['revised_ctc']}}
+                            @endif
+                        </td>
+                        <td>
+                            @if($employee['current_ctc'] !=0)
+                            Rs {{number_format($employee['current_ctc'],2)}}
+                            @else
+                            {{$employee['current_ctc']}}
+                            @endif
+                        </td>
+                        <td>
+                            @if($employee['difference_amount'] !=0)
+                            @if($employee['percentage_change'] >= 0)
+                            Rs {{number_format($employee['difference_amount'],2)}}
+                            @else
+                            Rs {{number_format($employee['difference_amount'],2)}}
+                            @endif
+
+                            @else
+                            {{$employee['difference_amount']}}
+                            @endif
+                        </td>
+                        <td>
+                            @if($employee['percentage_change'] > 0)
+                            + {{$employee['percentage_change']}} %
+                            @elseif($employee['percentage_change'] == 0)
+                            0%
+                            @else
+                            {{$employee['percentage_change']}} %
+                            @endif
+
+                        </td>
+                    </tr>
+                    @endforeach
+                    @endif
+                </tbody>
+            </table>
         </div>
+    </div>
 
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.1/nouislider.min.css">
@@ -138,11 +202,19 @@
         document.addEventListener('DOMContentLoaded', function() {
             var slider = document.getElementById('revisionRangeSlider');
             noUiSlider.create(slider, {
-        start: [{{$selectedRange[0]}}, {{$selectedRange[1]}}],
-        connect: true,
-        range: {'min': {{$minMonths}}, 'max': {{$maxMonths}}},
-        step: 1,
-    });
+                start: [{{$selectedRange[0]}}, {{$selectedRange[1]}}],
+                connect: true,
+                range: {'min': {{$minMonths}}, 'max': {{$maxMonths}}},
+                step: 1,
+            });
+            // document.addEventListener('DOMContentLoaded', function() {
+            //         var slider = document.getElementById('revisionRangeSlider');
+            //         noUiSlider.create(slider, {
+            //     start: [{{$selectedRange[0]}}, {{$selectedRange[1]}}],
+            //     connect: true,
+            //     range: {'min': {{$minMonths}}, 'max': {{$maxMonths}}},
+            //     step: 1,
+            // });
 
             slider.noUiSlider.on('update', function(values) {
                 console.log(values);

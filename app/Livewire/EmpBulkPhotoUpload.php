@@ -23,13 +23,20 @@ class EmpBulkPhotoUpload extends Component
     public $status;
     public $searchTerm;
     public $selecetedEmployee;
+    public $imagePaths;
+
     public $showUploadContent  = false;
 
     public $employeeIds = [];
+
+    public function mount()
+    {
+        $this->getUploadedZipFiles();
+    }
     public function toggleUploadBtn()
     {
-        $this->showHistory = false;
-        $this->showUploadContent  = true;
+        $this->showHistory = !$this->showHistory;
+        $this->showUploadContent  = !$this->showUploadContent;
     }
     public function nextStep()
     {
@@ -38,6 +45,14 @@ class EmpBulkPhotoUpload extends Component
             $this->currentStep++;
         }
     }
+
+    public function gotoBack()
+    {
+        if ($this->currentStep) {
+            $this->currentStep--;
+        }
+    }
+
     public function toggleEmployeeContainer($index)
     {
         // Reset search term (if required)
@@ -58,7 +73,12 @@ class EmpBulkPhotoUpload extends Component
         $this->openEmployeeContainers[$index] = !$this->openEmployeeContainers[$index];
     }
 
-
+    public $uploadedHistory;
+    //getUp,oaded zip file hostory
+    public function getUploadedZipFiles()
+    {
+        $this->uploadedHistory = UploadBulkPhotos::all();
+    }
     public function getEmployeeData($searchTerm = null)
     {
         $searchTerm = $this->searchTerm;
@@ -120,12 +140,11 @@ class EmpBulkPhotoUpload extends Component
         // Add the employee and their assigned image if not already added
         $this->selectedEmployees[$empId] = $imagePath;
         $this->openEmployeeContainers[$index] = false;
-
     }
 
     public function storeImageOfEmployee()
     {
-
+        set_time_limit(300);
         // // Reset the error messages array before each validation
         $this->errorMessages = [];
         // Validate that all images are assigned to employees
@@ -134,7 +153,6 @@ class EmpBulkPhotoUpload extends Component
             FlashMessageHelper::flashError('Please assign all images to employees before proceeding.');
             return;
         }
-        set_time_limit(300);
         try {
 
             if ($this->selectedEmployees) {
@@ -158,7 +176,6 @@ class EmpBulkPhotoUpload extends Component
                                     $imageBinary = base64_encode(file_get_contents($localPath));
                                 } else {
                                     Log::error('File not found at ' . $localPath);
-                                    dd('File not found at ' . $localPath);
                                 }
                             }
 
@@ -166,13 +183,6 @@ class EmpBulkPhotoUpload extends Component
                             $data->image = $imageBinary;
                             // Save the updated record
                             $data->save();
-
-                            // Optional: Debugging or success message
-                            dd('Image saved successfully for employee: ' . $empID);
-
-                            // Delete the extracted files directory after saving the image
-                            $this->deleteExtractedFiles(public_path('extracted_images'));
-
                             // Log or notify that the directory has been deleted
                             Log::info('Successfully deleted extracted_images directory after saving the image for employee: ' . $empID);
                         } catch (\Exception $e) {
@@ -186,6 +196,9 @@ class EmpBulkPhotoUpload extends Component
                         dd('Employee not found for emp_id: ' . $empID);
                     }
                 }
+                FlashMessageHelper::flashSuccess('Profile updated');
+                // Delete the extracted files directory after saving the image
+                $this->deleteExtractedFiles(public_path('extracted_images'));
             }
         } catch (\Exception $e) {
             // Catch any unexpected error in the main method
@@ -213,7 +226,35 @@ class EmpBulkPhotoUpload extends Component
         rmdir($path); // Remove the directory after processing
     }
 
-
+    //cancel updating images
+    public function cancelUpdating($index)
+    {
+        // Get the corresponding record ID from your source (this might vary based on your logic)
+        $recordId = UploadBulkPhotos::find($index)->first(); // Implement this method to map index to record ID
+        if ($recordId) {
+            try {
+                if ($recordId) {
+                    // Update the status to 'Cancelled'
+                    $recordId->status = 'Cancelled';
+                    $recordId->log = 'File Association is cancelled.';
+                    $recordId->save();
+                    // Optional: You can flash a message or log the cancellation for debugging purposes
+                    FlashMessageHelper::flashSuccess('Status updated to Cancelled for record ID');
+                    $this->deleteExtractedFiles(public_path('extracted_images'));
+                    $this->toggleUploadBtn();
+                } else {
+                    // Handle case if record not found
+                    FlashMessageHelper::flashError('Record not found for the given ID');
+                }
+            } catch (\Exception $e) {
+                // Log error if there's an issue
+                Log::error('Error updating status to cancelled: ' . $e->getMessage());
+                FlashMessageHelper::flashError('An error occurred while updating the status.');
+            }
+        } else {
+            FlashMessageHelper::flashError('Invalid index provided.');
+        }
+    }
 
 
     protected $rules = [
@@ -222,6 +263,10 @@ class EmpBulkPhotoUpload extends Component
 
     public function UploadBulkZipFile()
     {
+        // Validate the file based on the rules defined
+        $this->validate([
+            'zip_file' => 'required|file|mimes:zip|max:10240',
+        ]);
         try {
             // Get logged-in employee ID
             $loggedInEmpId = auth()->guard('hr')->user()->emp_id;
@@ -265,7 +310,6 @@ class EmpBulkPhotoUpload extends Component
             dd('Error: ' . $e->getMessage()); // You can log this error or return a user-friendly message
         }
     }
-    public $imagePaths;
     public function extractZipFile($upload)
     {
         try {
@@ -318,12 +362,59 @@ class EmpBulkPhotoUpload extends Component
         }
     }
 
+    public function downloadZipFile($id)
+    {
+        try {
+            // Retrieve the record by ID
+            $downloadData = UploadBulkPhotos::find($id);
+    
+            // Check if the file exists
+            if ($downloadData && $downloadData->zip_file) {
+                // Get the binary content of the zip file
+                $fileContent = $downloadData->zip_file;
+                $fileName = $downloadData->file_name; // You can set a default name if needed
+    
+                // Debug: Check if fileContent is non-empty
+                if (empty($fileContent)) {
+                    Log::error("Error: File content is empty for file ID: {$id}");
+                    FlashMessageHelper::flashError("File content is empty for file ID: {$id}");
+                    return;
+                }
+    
+                // Debug: Check file name
+                Log::info("Preparing to download file: {$fileName}");
+    
+                // Return the response to download the file
+                return response()->stream(function () use ($fileContent) {
+                    echo $fileContent;
+                }, 200, [
+                    'Content-Type' => $downloadData->mime_type,  // Example: 'application/zip'
+                    'Content-Disposition' => 'attachment; filename="' . $fileName . '"',
+                ]);
+            } else {
+                // Handle case if the file is not found
+                FlashMessageHelper::flashError('File not found.');
+            }
+        } catch (\Exception $e) {
+            // Catch any exceptions and log the error
+            Log::error('Error downloading file', [
+                'error_message' => $e->getMessage(),
+                'file_id' => $id,
+            ]);
+    
+            // Handle the error (could display a friendly message, etc.)
+            FlashMessageHelper::flashError('An error occurred while downloading the file. Please try again later.');
+        }
+    }
+
+
 
 
     public function render()
     {
         return view('livewire.emp-bulk-photo-upload', [
-            'imagePaths' => $this->imagePaths
+            'imagePaths' => $this->imagePaths,
+            'uploadedHistory' => $this->uploadedHistory
         ]);
     }
 }
