@@ -68,7 +68,7 @@ class MainLayout extends Component
         $companyIds = $employeeDetails->company_id;
         if (is_array($companyIds)) {
             // Step 4: Fetch company logo and name for each company_id
-            $this->companiesLogo = Company::whereIn('company_id', $companyIds)->select('company_logo')
+            $this->companiesLogo = Company::where('company_id', $companyIds)->select('company_logo')
             ->where('is_parent','yes')
             ->select('company_logo')
             ->first();

@@ -165,79 +165,130 @@
                 </div>
             </div>
             <div class="tab-pane fade {{ $activeTab === 'nav-contact' ? 'show active' : '' }}" id="nav-contact">
-                <div>
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <div>
-                            <select class="form-select" wire:model="selectedLeaveType">
+                <div class="yearEndtable">
+                    <div class="row mb-3 mt-2">
+                        <div class="col-md-4 px-2">
+                            <select class="form-select" wire:model="leaveType" wire:change="getEmployeeLeaveDetailsWithBalance">
                                 <option value="All">Leave Type: All</option>
                                 <option value="Sick Leave">Sick Leave</option>
                                 <option value="Casual Leave">Casual Leave</option>
-                                <option value="Loss Of Pay">Loss Of Pay</option>
-                                <!-- Add other leave types as needed -->
+                                <option value="Casual Leave Probation">Probation</option>
+                                <option value="Marriage Leave">Marriage</option>
+                                <option value="Paternity Leave">Paternity</option>
+                                <option value="Maternity Leave">Maternity</option>
                             </select>
-
-                            <span class="ms-3">
-                                Period: 01 Jan 2024 to 31 Dec 2024
-                            </span>
                         </div>
 
-                        <button class="btn btn-primary" wire:click="triggerYearEndProcess">Year End Process</button>
-                        @if($showYearEndProcessModal)
-                        <div class="modal" id="logoutModal" tabindex="-1" style="display: block;">
-                            <div class="modal-dialog modal-dialog-centered">
-                                <div class="modal-content">
-                                    <div class="modal-header text-white">
-                                        <h6 class="modal-title " id="logoutModalLabel" style="align-items: center;">Confirmation</h6>
+                        <div class="col-md-4 date-picker d-flex justify-content-end">
+                            <select id="selectedYear" wire:model="selectedYear" wire:change="updateDateRange" class="form-control" style="font-size: 14px;">
+                                <option value="" disabled>Select Year</option>
+                                @foreach($yearRange as $year)
+                                <option value="{{ $year }}">Jan {{ $year }} - Dec {{$year}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-4 px-2 d-flex justify-content-end">
+                            <button class="submit-btn" wire:click="triggerYearEndProcess">Year End Process</button>
+                        </div>
+                    </div>
+                    @if($showYearEndProcessModal)
+                    <div class="modal" id="logoutModal" tabindex="-1" style="display: block;">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header text-white">
+                                    <h6 class="modal-title " id="logoutModalLabel" style="align-items: center;">Confirmation</h6>
+                                </div>
+                                <div class="modal-body text-center" style="font-size: 14px;color:var( --main-heading-color);">
+                                    <div class="date-picker mb-3 d-flex justify-content-end">
+                                        <select id="selectedYear" wire:model="selectedYear" wire:change="updateDateRange" class="form-control custom-dropdown" style="font-size: 14px;">
+                                            <option value="" disabled>Select Year</option>
+                                            @foreach($yearRange as $year)
+                                            <option value="{{ $year }}">Jan {{ $year }} - Dec {{$year}}</option>
+                                            @endforeach
+                                        </select>
                                     </div>
-                                    <div class="modal-body text-center" style="font-size: 14px;color:var( --main-heading-color);">
-                                        Are you sure you want to Lapse the all leaves?
-                                    </div>
-                                    <div class="d-flex gap-3 justify-content-center p-3">
-                                        <button type="button" class="submit-btn " wire:click="changeToLapsed">Confirm</button>
-                                        <button type="button" class="cancel-btn" wire:click="triggerYearEndProcess">Cancel</button>
-                                    </div>
+                                    <form>
+                                        <table class="leave-table">
+                                            <thead>
+                                                <tr>
+                                                    <th><input type="checkbox" wire:model="selectAll" /> <!-- Select All Checkbox -->
+                                                    </th>
+                                                    <th>Leave Name</th>
+                                                    <th>Grant Days</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach($leavePolicyData as $index => $leave)
+                                                <tr>
+                                                    <!-- Checkbox for each row, bound to the individual leave -->
+                                                    <td>
+                                                        <input type="checkbox" wire:click="updateSelectedLeaveTypes({{ $leave['id'] }})" />
+                                                    </td>
+                                                    <td>{{ $leave['leave_name'] ?? $leave->leave_name }}</td>
+                                                    <td>
+                                                        <!-- Bind the grant_days value to allow editing -->
+                                                        <input type="number" class="form-control"
+                                                            wire:model="leavePolicyData.{{ $index }}.grant_days"
+                                                            value="{{ $leave['grant_days'] ?? $leave->grant_days }}">
+                                                    </td>
+                                                </tr>
+                                                @endforeach
+
+                                            </tbody>
+                                        </table>
+                                    </form>
+                                </div>
+                                <div class="d-flex gap-3 justify-content-center p-3">
+                                    <button type="button" class="submit-btn " wire:click="changeToLapsed">Confirm</button>
+                                    <button type="button" class="cancel-btn" wire:click="triggerYearEndProcess">Cancel</button>
                                 </div>
                             </div>
                         </div>
-                        <div class="modal-backdrop fade show"></div>
-                        @endif
                     </div>
-                    <table class="table pendingLeaveTable table-bordered table-hover">
-                        <thead class="table-light">
-                            <tr>
-                                <th>Employee ID</th>
-                                <th>Leave Name</th>
-                                <th>Grant Days</th>
-                                <th>Balance</th>
-                                <th>Lapsed</th>
-                                <th>Encashed</th>
-                                <th>Closing Balance</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if($leaveDetailsWithBalance && count($leaveDetailsWithBalance) > 0)
-                            @foreach($leaveDetailsWithBalance as $data)
-                            @foreach($data['leave_details'] as $leave)
-                            <tr>
-                                <td>{{ $data['emp_id'] }}</td>
-                                <td>{{ $leave['leave_name'] }}</td>
-                                <td>{{ $leave['grant_days'] }}</td>
-                                <td>{{ $leave['remaining_balance'] ?? '-' }}</td>
-                                <td>{{ $leave['lapsed'] ?? '-' }}</td>
-                                <td>{{ $leave['encashed'] ?? '-' }}</td>
-                                <td>{{ isset($leave['remaining_balance']) && isset($leave['lapsed']) && isset($leave['encashed']) 
-                            ? $leave['remaining_balance'] - ($leave['lapsed'] + $leave['encashed'])
-                            : '-' }}</td>
-                            </tr>
-                            @endforeach
-                            @endforeach
-                            @else
-                            <tr>
-                                <td colspan="7" class="text-center">No data found</td>
-                            </tr>
-                            @endif
-                        </tbody>
-                    </table>
+                    <div class="modal-backdrop fade show"></div>
+                    @endif
+                    <div class="table-responsive">
+                        <table class="table pendingLeaveTable table-bordered table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Employee ID</th>
+                                    <th>Leave Name</th>
+                                    <th>Grant Days</th>
+                                    <th>Balance</th>
+                                    <th>Lapsed</th>
+                                    <th>Encashed</th>
+                                    <th>Closing Balance</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if($leaveDetailsWithBalance && count($leaveDetailsWithBalance) > 0)
+                                @foreach($leaveDetailsWithBalance as $data)
+                                @foreach($data['leave_details'] as $leave)
+                                <tr>
+                                    <td>{{ $data['emp_id'] }}</td>
+                                    <td>{{ $leave['leave_name'] }}</td>
+                                    <td>{{ $leave['grant_days'] }}</td>
+                                    <td>{{ $leave['remaining_balance'] ?? '-' }}</td>
+                                    <td>{{ $leave['lapsed'] ?? '-' }}</td>
+                                    <td>{{ $leave['encashed'] ?? '-' }}</td>
+                                    <td>
+                                        @if(isset($leave['remaining_balance']) && isset($leave['lapsed']) && isset($leave['encashed']))
+                                        {{ $leave['remaining_balance'] - ($leave['lapsed'] + $leave['encashed']) }}
+                                        @else
+                                        -
+                                        @endif
+                                    </td>
+                                </tr>
+                                @endforeach
+                                @endforeach
+                                @else
+                                <tr>
+                                    <td colspan="7" class="text-center">No data found</td>
+                                </tr>
+                                @endif
+                            </tbody>
+                        </table>
+                    </div>
 
                 </div>
             </div>

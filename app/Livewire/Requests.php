@@ -20,6 +20,7 @@ class Requests extends Component
     public $job_role;
     public $employeeId;
     public $file_paths = [];
+    public $offboardingRequests;
 
     public $short_description;
     public $rejection_reason;
@@ -33,7 +34,6 @@ class Requests extends Component
     public $closedCategory = '';
     public $last_working_day;
    
-    public $searchTerm = '';
     public $showViewFileDialog = false;
     public $fileDataArray;
     public $LapRequestaceessDialog=false;
@@ -42,7 +42,7 @@ class Requests extends Component
     public $search = '';
     public $isRotated = false;
     public $requestId;
-
+    public $searchTerm = '';
     public $requestCategories = '';
     public $selectedPerson = null;
     public $peoples;
@@ -76,13 +76,18 @@ class Requests extends Component
     public $record;
     public $peopleData = '';
     public $filterData;
+    public $requests;
     public $activeTab = 'active';
     public $selectedPeople = [];
     public $activeSearch = [];
     public $pendingSearch = '';
     public $addselectedPeople = [];
     public $closedSearch = '';
-
+    public $showDetails = true;
+    public function toggleDetails()
+    {
+        $this->showDetails = !$this->showDetails;
+    }
     public function mount()
     {
         // Fetch unique requests with their categories
@@ -116,13 +121,8 @@ class Requests extends Component
             ->orderBy('first_name')
             ->orderBy('last_name')
             ->get();
-            $this->records = OffboardingRequest::where(function ($query) use ($employeeId, $employeeName) {
-                $query->where('emp_id', $employeeId)
-                    ->orWhere('cc_to', 'LIKE', "%$employeeName%");
-            })
-            ->orderBy('created_at', 'desc')
-            ->get(); 
-          
+        
+            $this->requests = OffboardingRequest::all();
       
     }
     public function LapRequest()
@@ -137,6 +137,7 @@ class Requests extends Component
 
     public function IDRequest()
     {
+       
 
         $this->IDRequestaceessDialog = true;
         $this->showModal = true;
@@ -297,51 +298,64 @@ class Requests extends Component
             return;
         }
     }
+
+    public function toggleRotation()
+    {
+
+        $this->isRotated = true;
+
+
+        $this->selectedPeopleNames = [];
+
+        $this->cc_to = '';
+    }
+    public function toggle()
+    {
+
+        $this->isRotated = true;
+
+
+        $this->selectedPeopleNames = [];
+
+        $this->cc_to = '';
+    }
+
         // Close the image modal
         public function closeViewImage()
         {
             $this->showViewImageDialog = false;
         }
- 
-    public function searchHelpDesk($status_code, $searchTerm,$selectedCategory)
-    {
-        $employeeId = auth()->user()->emp_id;
-    
-        // Start the base query based on status and employee ID or cc_to
-        $query = Request::where(function ($query) use ($employeeId) {
-            $query->where('emp_id', $employeeId)->orWhere('cc_to', 'like', "%$employeeId%");
-        });
-        if (is_array($status_code)) {
-            $query->whereIn('status_code', $status_code);  // Multiple statuses (array)
-        } else {
-            $query->where('status_code', $status_code);    // Single status (string)
-        }// Apply status filter dynamically
-    
-        // If a category is selected, apply category filtering
-        if ($selectedCategory) {
-            logger('Selected Category: ' . $selectedCategory);
-            $query->whereIn('category', Request::where('Request', $selectedCategory)->pluck('category'));
-        }
-    
-        // If there's a search term, apply search filtering
-        if ($searchTerm) {
-            $query->where(function ($query) use ($searchTerm) {
-                $query->where('emp_id', 'like', '%' . $searchTerm . '%')
-                    ->orWhere('category', 'like', '%' . $searchTerm . '%')
-                    ->orWhere('subject', 'like', '%' . $searchTerm . '%')
-                    ->orWhereHas('emp', function ($query) use ($searchTerm) {
-                        $query->where('first_name', 'like', '%' . $searchTerm . '%')
-                            ->orWhere('last_name', 'like', '%' . $searchTerm . '%');
-                    });
+        public function searchHelpDesk($searchTerm)
+        {
+            $employeeId = auth()->user()->emp_id;
+            
+            // Start the base query based on status and employee ID or cc_to
+            $query = OffboardingRequest::where(function ($query) use ($employeeId) {
+                $query->where('emp_id', $employeeId)->orWhere('cc_to', 'like', "%$employeeId%");
             });
-        }
+
+            // If there's a search term, apply search filtering
+            if ($searchTerm) {
+                $query->where(function ($query) use ($searchTerm) {
+                    $query->where('emp_id', 'like', '%' . $searchTerm . '%')
+                        
+                        ->orWhereHas('emp', function ($query) use ($searchTerm) {
+                            $query->where('first_name', 'like', '%' . $searchTerm . '%')
+                                ->orWhere('last_name', 'like', '%' . $searchTerm . '%');
+                        });
+                });
+            }
+        
+            // Log the query to check if it's correct
+            Log::info("HelpDesk Query: " . $query->toSql());
+            Log::info("Bindings: " . implode(', ', $query->getBindings()));
     
-        // Get results
-        $results = $query->orderBy('created_at', 'desc')->get();
-     
-        $this->filterData = $results;
-        $this->peopleFound = count($this->filterData) > 0;
-    }
+            // Get results and update filterData
+            $this->filterData = $query->orderBy('created_at', 'desc')->get();
+        
+            $this->peopleFound = count($this->filterData) > 0;
+        }
+        
     
     public function closePeoples()
     {
@@ -351,20 +365,15 @@ class Requests extends Component
     {
         $this->isNames = !$this->isNames;
     }
+  
+    
     public function searchActiveHelpDesk()
     {
-        $this->searchHelpDesk([8,10], $this->activeSearch,$this->activeCategory);
+        // Pass the activeSearch property (which holds the search term)
+        $this->searchHelpDesk($this->activeSearch);
     }
     
-    public function searchPendingHelpDesk()
-    {
-        $this->searchHelpDesk(6, $this->pendingSearch,$this->pendingCategory);
-    }
-    
-    public function searchClosedHelpDesk()
-    {
-        $this->searchHelpDesk([12,4], $this->closedSearch,$this->closedCategory);
-    }
+
     public function closecatalog()
     {
         $this->showModal = false;
@@ -552,102 +561,21 @@ public function addselectPerson($personId)
         }
      
     }
-    public function Onboarding()
-    {
-        $messages = [
-            'priority.required' => 'Priority is required.',
-            'last_working_day.required' => 'Last working day date is required',
-        ];
-
-        // Validate input fields
-        $this->validate([
-            'last_working_day' => 'required|date',
-            'priority' => 'required|in:High,Medium,Low',
-         
-        ], $messages);
-
-        // Validate file uploads
-        $filePaths = $this->file_paths ?? [];
-        $validator = Validator::make(
-            ['file_paths' => $filePaths],
-            [
-                'file_paths' => 'array', 
-                'file_paths.*' => 'file|mimes:xls,csv,xlsx,pdf,jpeg,png,jpg,gif', // 1MB max
-            ],
-            [
-                'file_paths.*.mimes' => 'Invalid file type. Only xls, csv, xlsx, pdf, jpeg, png, jpg, and gif are allowed.',
-                'file_paths.*.max' => 'Each file must not exceed 1MB in size.',
-            ]
-        );
-
-        if ($validator->fails()) {
-            return response()->json($validator->errors(), 422);
-        }
-
-        // Process files
-        $fileDataArray = [];
-        foreach ($filePaths as $file) {
-            if ($file->isValid()) {
-                $fileDataArray[] = [
-                    'data' => base64_encode(file_get_contents($file->getRealPath())),
-                    'mime_type' => $file->getMimeType(),
-                    'original_name' => $file->getClientOriginalName(),
-                ];
-            }
-        }
-
-        try {
-            // Fetch logged-in employee details
-            $employeeId = auth()->user()->emp_id;
-            
-            if (!$employeeId) {
-                FlashMessageHelper::flashError('Employee ID is missing.');
-                return;
-            }
-
-            // Create the offboarding request
-            OffboardingRequest::create([
-                'emp_id' => $employeeId,
-                'priority' => $this->priority,
-               
-                'mobile' => $this->mobile,
-                'mail' => $this->mail,
-        'file_paths' => !empty($fileDataArray) ? json_encode($fileDataArray) : null, 
-                'cc_to' => $this->cc_to ?? '-',
-                'status_code' => 8, // Pending or any default status code
-                'last_working_day' => $this->last_working_day, // Make sure this is added
-            ]);
-         
-
-            FlashMessageHelper::flashSuccess('Request created successfully.');
-            $this->reset();
-            return redirect()->to('/request');
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            $this->setErrorBag($e->validator->getMessageBag());
-        } catch (\Exception $e) {
-            Log::error('Error creating request: ' . $e->getMessage(), [
-              
-                'category' => $this->category ?? null,
-                'subject' => $this->subject ?? null,
-                'description' => $this->description ?? null,
-                'file_paths' => $fileDataArray,
-            ]);
-            FlashMessageHelper::flashError('An error occurred while creating the request. Please try again.');
-        }
-    }
+ 
  public function Offboarding()
     {
         $messages = [
             'priority.required' => 'Priority is required.',
-            'last_working_day.required' => 'Last working day date is required',
+            'last_working_day.required' => 'Last working day date is required.',
+            'last_working_day.after_or_equal' => 'Last working day must be today or a future date.',
         ];
-
+        
         // Validate input fields
         $this->validate([
-            'last_working_day' => 'required|date',
+            'last_working_day' => 'required|date|after_or_equal:' . now()->toDateString(),
             'priority' => 'required|in:High,Medium,Low',
-         
         ], $messages);
+        
 
         // Validate file uploads
         $filePaths = $this->file_paths ?? [];
@@ -696,7 +624,7 @@ public function addselectPerson($personId)
                 'mobile' => $this->mobile,
                 'mail' => $this->mail,
         'file_paths' => !empty($fileDataArray) ? json_encode($fileDataArray) : null, 
-                'cc_to' => $this->cc_to ?? '-',
+                'cc_to' => $this->cc_to ,
                 'status_code' => 8, // Pending or any default status code
                 'last_working_day' => $this->last_working_day, // Make sure this is added
             ]);
@@ -724,6 +652,7 @@ public function addselectPerson($personId)
 public function setActiveTab($tab) {
     $this->activeTab = $tab;
 }
+
     public function render()
     {
         $requestCategories = Request::select('Request', 'category')->get();
@@ -736,18 +665,20 @@ public function setActiveTab($tab) {
         $this->peoples = EmployeeDetails::whereJsonContains('company_id', $companyId)
         ->whereNotIn('employee_status', ['rejected', 'terminated'])
         ->get();
- 
-   
+    // Filter people data if necessary
+    $query = OffboardingRequest::with('emp')
+    ->where('emp_id', $employeeId);
+        $this->requests = OffboardingRequest::all();
         $peopleData = $this->filteredPeoples ? $this->filteredPeoples : $this->peoples;
      
         $employeeName = auth()->user()->first_name . ' #(' . $employeeId . ')';
-        $searchData = $this->filterData ?: $this->records;
-
+        $searchData = $this->filterData ?: $this->requests;
 
         if ($this->employeeDetails) {
             // Combine first and last names
             $this->full_name = $this->employeeDetails->first_name . ' ' . $this->employeeDetails->last_name;
         }
-        return view('livewire.requests',[ 'searchData' => $this->filterData ?: $this->records,  'peopleData' => $peopleData,]);
+        return view('livewire.requests',[   'searchData' => $searchData?: $this->requests,
+          'peopleData' => $peopleData,'requests'=>$this->requests]);
     }
 }

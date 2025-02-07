@@ -263,7 +263,7 @@ class BankAccount extends Component
             $this->dispatchBrowserEvent('error', ['message' => 'An error occurred: ' . $e->getMessage()]);
         }
     }
-   public $currentEditingBankProfile; 
+   public $currentEditingBankProfile;
  
    public $fatherName;
    public $FatherDOB;

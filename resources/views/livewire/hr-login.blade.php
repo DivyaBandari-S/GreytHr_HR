@@ -1,106 +1,146 @@
-<div class="container-fluid p-0 loginBGGradiant">
-    <!-- <div class="m-0 pt-3 row">
-        <div class="col-md-12" style="text-align: end;">
-            <button class="btn btn-primary" wire:click="jobs" style="background-color: rgb(2, 17, 79);color:white;border-radius:5px;border:none">
-                Recruitment</button>
+<div class="auth-page-wrapper pt-5">
+    <!-- auth page bg -->
+    <div class="auth-one-bg-position auth-one-bg" id="auth-particles">
+        <div class="bg-overlay"></div>
+
+        <div class="shape">
+            <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1440 120">
+                <path d="M 0,36 C 144,53.6 432,123.2 720,124 C 1008,124.8 1296,56.8 1440,40L1440 140L0 140z"></path>
+            </svg>
         </div>
-    </div> -->
+    </div>
 
-
-    <div class="row m-0">
-        <!-- Left Side (Login Form) -->
-        <div class="col-md-6 loginform  ">
-            @if (Session::has('success'))
-            <div style="height: 30px; display: flex; align-items: center;" class="mb-4">
-                <div class="alert alert-success alert-dismissible fade show d-flex justify-content-between align-items-center" role="alert" style="font-size: 15px;">
-                    {{ Session::get('success') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" style="border: 0;"></button>
-                </div>
-            </div>
-            @endif
-            @if (session('sessionExpired'))
-            <div class="alert alert-danger">
-                {{ session('sessionExpired') }}
-            </div>
-            @endif
-
-            <form wire:submit.prevent="empLogin" class="login-form-with-shadow" style="margin-top: 10px; background-color: #f2f2f6; backdrop-filter: blur(36px);">
-                <div class="text-center mb-1" style="padding-top: 20px;">
-                    <img src="{{ asset('images/hr_new_blue.png') }}" alt="Company Logo" style="width: 14em !important; height: auto !important; margin-bottom: 10px;">
-                </div>
-
-                <hr class="bg-white" />
-                <header _ngcontent-hyf-c110="" class="mb-12 text-center">
-                    <div _ngcontent-hyf-c110="" class="text-12gpx font-bold font-title-poppins-bold opacity-90 text-text-default justify-items-center">
-
-                        Hello there! <span _ngcontent-hyf-c110="" class="font-emoji text-12gpx">👋</span>
-
+    <!-- auth page content -->
+    <div class="auth-page-content">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="text-center mt-sm-5 mb-4 text-white-50">
+                        <div>
+                            <a routerLink="/" class="d-inline-block auth-logo">
+                                <img src="{{ asset('images/hr_new_white.png') }}" alt="" style="width: 10em;">
+                            </a>
+                        </div>
+                        <p class="mt-3 fs-15 fw-medium text-white-50">Premium HR Solutions</p>
                     </div>
-                </header><br>
-                @if ($error)
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <strong style="font-size: 12px;">{{ $error }}</strong>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            </div>
+            <!-- end row -->
+
+            <div class="row justify-content-center">
+                @if (Session::has('success'))
+                <div style="height: 30px; display: flex; align-items: center;" class="mb-4">
+                    <div class="alert alert-success alert-dismissible fade show d-flex justify-content-between align-items-center" role="alert" style="font-size: 15px;">
+                        {{ Session::get('success') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" style="border: 0;"></button>
+                    </div>
                 </div>
                 @endif
-                <div class="form-group">
-                    <input type="text" class="form-control" placeholder="ID / Mail" wire:model="form.emp_id" />
-                    @error('form.emp_id')
-                    <p class="pt-2 px-1 text-danger">{{ str_replace('form.emp id', 'Employee ID', $message) }}</p>
-                    @enderror
+                @if (session('sessionExpired'))
+                <div class="alert alert-danger">
+                    {{ session('sessionExpired') }}
                 </div>
-                <div class="form-group" style="margin-top: 20px;">
-                    <input type="password" class="form-control" placeholder="Password" wire:model="form.password" />
-                    @error('form.password')
-                    <p class="pt-2 px-1 text-danger">{{ str_replace('form.password', 'Password', $message) }}</p>
-                    @enderror
-                </div>
-                <div style="margin-left: 60%; text-align: center;" wire:click="show">
-                    <span><a style="color: rgb(2, 17, 79);font-size:15px; cursor:pointer">Forgot
-                            Password?</a></span>
-                </div>
-                <div class="form-group" style="text-align:center; margin-top:10px;">
-                    <input data-bs-toggle="modal" data-bs-target="#loginLoader" style="background-color:rgb(2,17,79); font-size:20px; width:100px; margin: 0 auto;" type="submit" class="btn btn-primary btn-block" value="Login" />
-                </div>
-            </form>
+                @endif
+                <div class="col-md-8 col-lg-6 col-xl-5">
+                    <div class="card mt-4">
 
+                        <div class="card-body p-4">
+                            <div class="text-center mt-2">
+                                <h5 class="text-primary">Welcome Back !</h5>
+                                <p class="text-muted">Sign in to continue to Hr Xpert.</p>
+                            </div>
+                            <div class="p-2 mt-4">
+                                <form wire:submit.prevent="empLogin">
+
+                                    @if ($error)
+                                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                        <strong style="font-size: 12px;">{{ $error }}</strong>
+                                        <button type="button" class="btn-close alertCloseBtn" data-bs-dismiss="alert" aria-label="Close"></button>
+                                    </div>
+                                    @endif
+
+                                    <div class="mb-3">
+                                        <label class="form-label" for="username">Email</label>
+                                        <input type="text" class="form-control" id="email" formControlName="email"  placeholder="ID / Mail" wire:model="form.emp_id">
+                                        @error('form.emp_id')
+                                        <div class="invalid-feedback">
+                                            <div>{{ str_replace('form.emp id', 'Employee ID', $message) }}</div>
+                                        </div>
+                                        @enderror
+
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <div class="float-end">
+                                            <a style="font-size: 12px;" wire:click="show" class="text-muted">Forgot password?</a>
+                                        </div>
+                                        <label class="form-label" for="password-input">Password</label>
+                                        <div class="position-relative auth-pass-inputgroup mb-3">
+                                            <input type="password" class="form-control pe-5" placeholder="Password" wire:model="form.password" id="password-input">
+                                            <button class="btn btn-link position-absolute end-0 top-0 text-decoration-none text-muted" type="button" id="password-addon"><i class="fa-regular fa-eye"></i></button>
+                                            @error('form.password')
+                                            <div class="invalid-feedback">
+                                                <span>{{ str_replace('form.password', 'Password', $message) }}</span>
+                                            </div>
+                                            @enderror
+                                        </div>
+                                    </div>
+
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="" id="auth-remember-check">
+                                        <label class="form-check-label" for="auth-remember-check">Remember me</label>
+                                    </div>
+
+                                    <div class="mt-4">
+                                        <button class="btn btn-success w-100" data-bs-toggle="modal" data-bs-target="#loginLoader" type="submit" style="font-size: 12px;">Log In</button>
+                                    </div>
+
+                                    <!-- <div class="mt-4 text-center">
+                                        <div class="signin-other-title">
+                                            <h5 class="fs-13 mb-4 title">Sign In with</h5>
+                                        </div>
+                                        <div class="d-flex gap-2 justify-content-center">
+                                            <button type="button" class="btn btn-primary btn-icon waves-effect waves-light"><i class="ri-facebook-fill fs-16"></i></button>
+                                            <button type="button" class="btn btn-danger btn-icon waves-effect waves-light"><i class="ri-google-fill fs-16"></i></button>
+                                            <button type="button" class="btn btn-dark btn-icon waves-effect waves-light"><i class="ri-github-fill fs-16"></i></button>
+                                            <button type="button" class="btn btn-info btn-icon waves-effect waves-light"><i class="ri-twitter-fill fs-16"></i></button>
+                                        </div>
+                                    </div> -->
+                                </form>
+                            </div>
+                        </div>
+                        <!-- end card body -->
+                    </div>
+                    <!-- end card -->
+
+                    <div class="mt-4 text-center">
+                        <p class="mb-0 fs12">Don't have an account ? <a routerLink="/auth/register" class="fw-semibold text-primary text-decoration-underline"> Signup </a> </p>
+                    </div>
+
+                </div>
+            </div>
+            <!-- end row -->
         </div>
-        <!-- Right Side (Carousel) -->
-        <div class="col-md-6 p-0 loginanimation  " style="background-color:rgb(244 244 244);height:100vh; background-color:white">
-            <!-- Carousel -->
+        <!-- end container -->
+    </div>
+    <!-- end auth page content -->
 
-            <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel" style=" aspect-ratio: 16/9;border-radius:10px">
-                <div class="carousel-indicators">
-                    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-                    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
-                    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
-                </div>
-                <div class="carousel-inner">
-                    <div class="carousel-item active">
-                        <img src="{{ asset('images/communication.svg') }}" style="width: 85%;" alt="Los Angeles" class="d-block">
-
-
-                    </div>
-                    <div class="carousel-item">
-                        <img src="{{ asset('images/task.svg') }}" style="width: 85%;" alt="Chicago" class="d-block">
-
-                    </div>
-                    <div class="carousel-item">
-                        <img src="{{ asset('images/working.svg') }}" style="width: 85%;" alt="New York" class="d-block">
+     <!-- footer -->
+     <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="text-center">
+                        <p class="mb-0 text-muted">&copy; 2025 HR Xpert. Crafted with <i class="mdi mdi-heart text-danger"></i> by Xsilica Solutions</p>
                     </div>
                 </div>
-                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
-                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Previous</span>
-                </button>
-                <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
-                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Next</span>
-                </button>
             </div>
         </div>
+    </footer>
+    <!-- end Footer -->
 
-        @if ($showDialog)
+
+    @if ($showDialog)
         <div class="modal" tabindex="-1" role="dialog" style="display: block;">
             <div class="modal-dialog modal-dialog-centered" style="justify-content: center;display: flex;" role="document">
                 <div class="modal-content" style="width: 80%;">
@@ -304,5 +344,4 @@
         </div>
         @endif
 
-    </div>
 </div>
