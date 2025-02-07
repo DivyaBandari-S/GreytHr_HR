@@ -45,7 +45,7 @@
 
                         </div>
                     </div>
-                    <div class="row mt-3" style="margin-left:60px">
+                    <div class="row mt-3" style="margin-left:20px">
                     @if(!$showSearch)
         <div class="es-display empName" style="display: flex; align-items: center;">
             <div class="es-display-name" style="margin-left: 5px; display: flex; align-items: center;">
