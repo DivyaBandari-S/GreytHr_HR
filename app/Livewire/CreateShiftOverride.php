@@ -13,6 +13,7 @@ class CreateShiftOverride extends Component
 {
     public $searchEmployee=0;
 
+    public $validationErrors = [];
     public $reason;
 
     public $to_date;
@@ -56,33 +57,51 @@ class CreateShiftOverride extends Component
     {
         $this->to_date=$this->to_date;
     }
+    public function updated($propertyName)
+    {
+        // Remove validation message as soon as user enters value
+        $this->resetErrorBag($propertyName);
+    }
     public function submitAttendanceException()
     {
-
         if (empty($this->selectedEmployeeId)) {
-            FlashMessageHelper::flashError( 'Please select the employee.');
+            FlashMessageHelper::flashError('Please select the employee.');
             return;
         }
-        $this->validate([
-            
+
+        $rules = [
             'from_date' => 'required|date|before_or_equal:to_date',
             'to_date' => 'required|date|after_or_equal:from_date',
             'shift' => 'required|string',
             'reason' => 'required|string|max:255',
-            'selectedEmployeeId' => 'required',  // Ensuring selectedEmployeeId is not empty
-        ], [
-            'from_date.required' => 'The From Date field is required.',
-            'from_date.date' => 'The From Date must be a valid date.',
-            'from_date.before_or_equal' => 'The From Date must be before or equal to the To Date.',
-            'to_date.required' => 'The To Date field is required.',
-            'to_date.date' => 'The To Date must be a valid date.',
-            'to_date.after_or_equal' => 'The To Date must be after or equal to the From Date.',
+            'selectedEmployeeId' => 'required',
+        ];
+    
+        $messages = [
+            'from_date' => 'From Date is required',
+            'to_date' => 'To Date is required',
             'shift.required' => 'The shift field is required.',
             'reason.required' => 'Please provide a reason.',
             'reason.max' => 'The reason may not exceed 255 characters.',
-           
-        ]);
-        
+        ];
+
+        // Only validate `from_date` if it's entered
+        if (!empty($this->from_date)) {
+            $rules['from_date'] = 'required|date|before_or_equal:to_date';
+            $messages['from_date.required'] = 'The From Date field is required.';
+            $messages['from_date.date'] = 'The From Date must be a valid date.';
+            $messages['from_date.before_or_equal'] = 'The From Date must be before or equal to the To Date.';
+        }
+
+        // Only validate `to_date` if it's entered
+        if (!empty($this->to_date)) {
+            $rules['to_date'] = 'required|date|after_or_equal:from_date';
+            $messages['to_date.required'] = 'The To Date field is required.';
+            $messages['to_date.date'] = 'The To Date must be a valid date.';
+            $messages['to_date.after_or_equal'] = 'The To Date must be after or equal to the From Date.';
+        }
+    
+        $this->validate($rules, $messages);
         ShiftOverride::create([
             'emp_id' => $this->selectedEmployeeId,
             'from_date' => $this->from_date,

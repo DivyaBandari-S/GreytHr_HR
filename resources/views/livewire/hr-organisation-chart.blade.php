@@ -501,9 +501,13 @@
                             <span class="vertical-arrow"style="color:white;">&#x21d5;</span> <!-- Vertical double-sided arrow -->
                             <span class="horizontal-arrow">&#x21d4;</span> <!-- Horizontal double-sided arrow -->
                         </label>
-                       
-                            <button class="submit-btn">Export</button>
-                       
+                        <div id="contentToExport" style="padding: 20px; border: 1px solid #ddd; width: 300px;">
+                            <h2>HR Organisation Chart</h2>
+                            <p>This content will be exported as PNG when the button is clicked.</p>
+                            <!-- You can add more content here, like a chart or other data -->
+                        </div>
+                        
+                        <button class="submit-btn" wire:click="exportContent">Export</button>
                         <i class="fa fa-filter"></i>
                 </div>        
         </div>
@@ -603,5 +607,19 @@
         
         
     </div>  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
 
+<script>
+    document.querySelector('.submit-btn').addEventListener('click', function () {
+        const content = document.getElementById('contentToExport');
+        
+        // Use html2canvas to capture the content and export as PNG
+        html2canvas(content).then(function (canvas) {
+            const link = document.createElement('a');
+            link.download = 'organisation-chart.png'; // PNG filename
+            link.href = canvas.toDataURL("image/png"); // PNG data URL
+            link.click(); // Trigger the download
+        });
+    });
+</script>
 </div>

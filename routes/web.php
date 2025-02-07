@@ -1,6 +1,7 @@
 <?php
 
 use App\Livewire\AdminDashboard;
+use App\Livewire\AttendanceLockConfiguration;
 use App\Livewire\Dashboard;
 use App\Livewire\HrLogin;
 use App\Livewire\HomeDashboard;
@@ -12,6 +13,10 @@ use App\Livewire\AttendanceExceptionForDisplay;
 use App\Livewire\AttendanceMusterHr;
 use App\Livewire\AttendanceProcess;
 use App\Livewire\CreateAttendanceExceptionPage;
+use App\Livewire\CreateEmployeeWeekDayChart;
+use App\Livewire\CreateLockConfiguration;
+use App\Livewire\CreateLockConfigurationPage;
+use App\Livewire\CreateNewLockConfigurationPage;
 use App\Livewire\CreateShiftOverride;
 use App\Livewire\EditAttendanceExceptionPage;
 use App\Livewire\EditShiftOverride;
@@ -33,6 +38,7 @@ use App\Livewire\HrAttendanceOverviewNew;
 use App\Livewire\HrHolidayList;
 use App\Livewire\HrLeaveOverview;
 use App\Livewire\HrMainOverview;
+use App\Livewire\HrManualOverride;
 use App\Livewire\HrOrganisationChart;
 use App\Livewire\LeaveSettingPolicy;
 use App\Livewire\ParentDetails;
@@ -42,7 +48,6 @@ use App\Livewire\ShiftRosterHr;
 use App\Livewire\ShiftRotationCalendar;
 use App\Livewire\SwipeManagementForHr;
 use App\Livewire\WhoIsInChartHr;
-use App\Livewire\YearEndProcess;
 use App\Models\EmpResignations;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Response;
@@ -77,7 +82,6 @@ Route::get('/file/{id}', function ($id) {
 Route::middleware(['auth:hr', 'handleSession'])->group(function () {
 
     Route::get('/', HomeDashboard::class)->name('home');
-    Route::get('/request', Requests::class)->name('request');
     // Group routes under the 'hr' prefix
     Route::prefix('hr')->group(function () {
 
@@ -96,6 +100,8 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
         Route::get('/user/hremployeedirectory', EmployeeDirectory::class)->name('employee-directory');
         Route::get('/user/create-attendance-exception',CreateAttendanceExceptionPage::class)->name('create-attendance-exception');
         Route::get('/user/shift-rotation-calendar',ShiftRotationCalendar::class)->name('shift-rotation-calendar');
+        Route::get('/user/attendance-lock-configuration',AttendanceLockConfiguration::class)->name('attendance-lock-configuration');
+        Route::get('/user/create-lock-configuration',action: CreateNewLockConfigurationPage::class)->name('create-new-lock-configuration-page');
         //HR Employee-Information Submodule Routes
         Route::get('/hrFeeds', Feeds::class)->name('hrfeeds');
         Route::get('/employee-profile', EmployeeProfile::class)->name('employee-profile');
@@ -107,9 +113,11 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
         Route::get('/user/attendance-process',AttendanceProcess::class)->name('attendance-process');
         Route::get('/user/swipe-management-for-hr',SwipeManagementForHr::class)->name('swipe-management-for-hr');
         Route::get('/user/employee-swipes-for-hr',EmployeeSwipesForHr::class)->name('employee-swipes-for-hr');
+        Route::get('/user/hr-manual-override',HrManualOverride::class)->name('hr-manual-override');
         //HR Leave-Main Submodule Routes
         Route::get('/user/hr-organisation-chart', HrOrganisationChart::class)->name('hr-organisation-chart');
         Route::get('/user/employee-weekday-chart', EmployeeWeekDayChart::class)->name('employee-weekday-chart');
+        Route::get('/user/create-employee-weekday-chart', CreateEmployeeWeekDayChart::class)->name('create-employee-weekday-chart');
         Route::get('/user/hr-attendance-overview', HrAttendanceOverviewNew::class)->name('attendance-overview');
         Route::get('/user/who-is-in-chart-hr', WhoIsInChartHr::class)->name('who-is-in-chart-hr');
         Route::get('/user/edit-attendance-exception-page/{id}',EditAttendanceExceptionPage::class)->name('edit-attendance-exception-page');
@@ -138,7 +146,6 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
         Route::get('/user/grantLeave', GrantLeaveBalance::class)->name('grantLeave');
         Route::get('/user/grant-summary', EmpLeaveGranterDetails::class)->name( 'grant-summary');
         Route::get('/user/leavePolicySettings', LeaveSettingPolicy::class)->name( 'leavePolicySettings');
-        Route::get('/user/leaveYearEndProcess', YearEndProcess::class)->name( 'year-end-process');
 
 
         //HR Leave-SetUp Submodule Routes
@@ -147,3 +154,4 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
 
     });
 });
+

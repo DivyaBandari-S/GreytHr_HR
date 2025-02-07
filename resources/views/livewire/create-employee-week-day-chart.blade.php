@@ -1,13 +1,5 @@
 <div>
-     <style>
-      .hide-attendance-help {
-    position: absolute;
-    bottom: 75px; /* Adjust as needed */
-    right: 10px;
-    color: #0000FF;
-    font-weight: 500;
-    cursor: pointer;
-}
+    <style>
 .exception-form {
     max-width: 400px;
     margin: auto;
@@ -93,6 +85,7 @@
     background-color: #f8f9fa;
     color: #6c757d;
 }
+
 .scrollApplyingTO {
             height: 200px;
             max-height: 200px;
@@ -159,17 +152,16 @@
             cursor: pointer;
             /* Change cursor on hover */
         }
-      
-     </style>     
-    <div class="attendance-overview-help"style="position: relative; padding: 20px; border: 1px solid #ccc; border-radius: 5px;">
+
+    </style>    
+                <div class="attendance-overview-help">
                     
-                    <p>This page enables you to create an Attendance Exception for an employee. Select an employee and add other details to create an exception. The exception created, is then displayed on the <span style="font-weight:bold;">Attendance Exception</span> page.</p>
+                    <p>The <span style="font-weight:bold;">Add/Edit Employee Week Days</span> page enables you to add/update a work pattern (working days and weekly offs) for an <br/> employee. This pattern can be specified for a time period. If you select <span style="font-weight:bold;">Default</span>, then the fact that the day is a working day <br/> or a weekly off is determined by the Leave Policy and Leave Scheme.</p>
+                    <p>If you want to mark a day as a Weekly off, select <span style="font-weight:bold;">Off</span> in the dropdown. If you want to mark one session as a working session, select the specific session.</p>
                     
-                    <span class="hide-attendance-help" style="display: block; text-align: center; margin-top: 40px; cursor: pointer; color: blue; font-weight: bold;">
-                                 Hide Help
-                    </span>
-    </div>
-    <div class="exception-form">
+                    <span class="hide-attendance-help-for-employee-week-day" style="margin-top:-70px;" wire:click="hideHelp">Hide Help</span>
+                </div>
+                <div class="exception-form">
    
       
         <!-- Employee Selection -->
@@ -298,31 +290,94 @@
         @error('to_date') <span class="text-danger">{{ $message }}</span> @enderror
         <!-- Status -->
         <div class="form-group">
-             <label for="status" class="form-label">Status:</label>
-             <select id="status" class="form-control" wire:model="status"wire:change="updateStatus">
-                    <option value="">-- Select --</option>
-                    <option value="Absent">Absent</option>
-                    <option value="Holiday">Holiday</option>
-                    <option value="Leave">Leave</option>
-                    <option value="Off Day">Off Day</option>
-                    <option value="On Duty">On Duty</option>
-                    <option value="Present">Present</option>
-                    <option value="Rest Day">Rest Day</option>
+             <label for="sundaystatus" class="form-label">Sunday:</label>
+             <select id="sundaystatus" class="form-control" wire:model="sundaystatus"wire:change="updatesundaystatus">
+                    <option value="default">Default</option>
+                    <option value="off">OFF</option>
+                    <option value="Session1">Session1</option>
+                    <option value="Session2">Session2</option>
+                    <option value="Full">Full</option>
             </select>
         </div>
-        @error('status') <span class="text-danger">{{ $message }}</span> @enderror
-        <!-- Reason -->
+        @error('sundaystatus') <span class="text-danger">{{ $message }}</span> @enderror
+        
         <div class="form-group">
-            <label for="reason" class="form-label">Reason</label>
-            <textarea id="reason" rows="3" class="form-control"wire:model="reason"wire:change="updateReason"></textarea>
+             <label for="mondaystatus" class="form-label">Monday:</label>
+             <select id="mondaystatus" class="form-control" wire:model="mondaystatus"wire:change="updatemondaystatus">
+                    <option value="default">Default</option>
+                    <option value="off">OFF</option>
+                    <option value="Session1">Session1</option>
+                    <option value="Session2">Session2</option>
+                    <option value="Full">Full</option>
+            </select>
         </div>
-        @error('reason') <span class="text-danger">{{ $message }}</span> @enderror
+        @error('mondaystatus') <span class="text-danger">{{ $message }}</span> @enderror
+        
+        <div class="form-group">
+             <label for="tuesdaystatus" class="form-label">Tuesday:</label>
+             <select id="tuesdaystatus" class="form-control" wire:model="tuesdaystatus"wire:change="updatetuesdaystatus">
+             <option value="default">Default</option>
+                    <option value="off">OFF</option>
+                    <option value="Session1">Session1</option>
+                    <option value="Session2">Session2</option>
+                    <option value="Full">Full</option>
+            </select>
+        </div>
+        @error('tuesdaystatus') <span class="text-danger">{{ $message }}</span> @enderror
+        
+        <div class="form-group">
+             <label for="wednesdaystatus" class="form-label">Wednesday:</label>
+             <select id="wednesdaystatus" class="form-control" wire:model="wednesdaystatus"wire:change="updatewednesdaystatus">
+             <option value="default">Default</option>
+                    <option value="off">OFF</option>
+                    <option value="Session1">Session1</option>
+                    <option value="Session2">Session2</option>
+                    <option value="Full">Full</option>
+            </select>
+        </div>
+        @error('wednesdaystatus') <span class="text-danger">{{ $message }}</span> @enderror
+        
+        <div class="form-group">
+             <label for="thursdaystatus" class="form-label">Thursday:</label>
+             <select id="thursdaystatus" class="form-control" wire:model="thursdaystatus"wire:change="updatethursdaystatus">
+                    <option value="default">Default</option>
+                    <option value="off">OFF</option>
+                    <option value="Session1">Session1</option>
+                    <option value="Session2">Session2</option>
+                    <option value="Full">Full</option>
+            </select>
+        </div>
+        @error('thursdaystatus') <span class="text-danger">{{ $message }}</span> @enderror
+        
+        <div class="form-group">
+             <label for="fridaystatus" class="form-label">Friday:</label>
+             <select id="fridaystatus" class="form-control" wire:model="fridaystatus"wire:change="updatefridaystatus">
+                    <option value="default">Default</option>
+                    <option value="off">OFF</option>
+                    <option value="Session1">Session1</option>
+                    <option value="Session2">Session2</option>
+                    <option value="Full">Full</option>
+            </select>
+        </div>
+        @error('fridaystatus') <span class="text-danger">{{ $message }}</span> @enderror
+        
+        <div class="form-group">
+             <label for="saturdaystatus" class="form-label">Saturday:</label>
+             <select id="saturdaystatus" class="form-control" wire:model="saturdaystatus"wire:change="updateSaturdaystatus">
+                   <option value="default">Default</option>
+                    <option value="off">OFF</option>
+                    <option value="Session1">Session1</option>
+                    <option value="Session2">Session2</option>
+                    <option value="Full">Full</option>
+            </select>
+        </div>
+        @error('saturdaystatus') <span class="text-danger">{{ $message }}</span> @enderror
+        
         <!-- Action Buttons -->
         <div class="C">
-            <button type="submit" class="btn btn-primary"wire:click="submitAttendanceException">Save</button>
-            <button type="button" class="btn btn-secondary"wire:click="closeAttendanceException">Cancel</button>
+            <button type="submit" class="btn btn-primary"wire:click="submitweekdayshift">Save</button>
+            <button type="button" class="btn btn-secondary"wire:click="closeweekdayshift">Cancel</button>
         </div>
     
 </div>
-
 </div>
