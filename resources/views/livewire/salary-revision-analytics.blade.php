@@ -56,7 +56,7 @@
         }
     </style>
     @if($isShowHelp)
-    <div class="help-section d-flex " style="padding: 10px;font-size:11px;background-color:#f5feff">
+    <div class="help-section d-flex " style="padding: 10px;font-size:13px;background-color:#f5feff">
         <p>The <span class="bold-items"> Salary Revision Analytics </span> page lets you quickly see which employees did <span class="bold-items">NOT</span> get a salary revision in the last 1 to 30 months. You can easily flip the question and ask who are the people who had a salary revision in a given period by using the <span class="bold-items">Revised</span> and <span class="bold-items">Not Revised </span> buttons. Use the slider control to adjust the period for which you want the revision data. </p>
         <span><button style="border: none;color:cornflowerblue;width:max-content;background-color:#f5feff;margin-left:15px;font-weight:bold" wire:click="toogleHelp">Hide Help </button></span>
     </div>

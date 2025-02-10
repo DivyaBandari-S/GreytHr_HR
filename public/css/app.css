@@ -1377,6 +1377,7 @@ button.nav-link.active {
     transition: color 0.3s ease, background-color 0.3s ease;
     border: 1px solid transparent;
     box-sizing: border-box;
+
 }
 
 /* Hover state for tabs */
@@ -3209,8 +3210,8 @@ input[type="date"]::before {
 .custom-info-item:hover {
     margin: 0;
 
-    background-color: #d9e2f4; /* Change to your desired hover background color */
-    color: #3b4452; /* Change text color on hover if needed */
+    background-color: #d9e2f4 ; /* Change to your desired hover background color */
+    color:#3b4452; /* Change text color on hover if needed */
 }
 
 .dropdown-menu .updated-drodown a.dropdown-item:hover {
@@ -3319,7 +3320,7 @@ input[type="date"]::before {
     color: #778899;
 }
 /* .custom-nav-link {
-    color: white; 
+    color: white;
 } */
 
 .custom-nav-link:hover {
@@ -4970,7 +4971,7 @@ input[type="date"]::before {
 .tabButtons {
     display: flex;
     /* Ensure buttons are in a row */
-    border: 0.5px solid #007bff;
+    border: 0.5px solid #555;
     border-radius: 5px;
     overflow: hidden;
     gap: 1px;
@@ -4983,7 +4984,7 @@ input[type="date"]::before {
 
     border: none;
     color: #555;
-    background-color: #f0f0f0;
+    background-color: white;
     cursor: pointer;
     transition: background-color 0.3s;
     flex: 1;
@@ -4993,14 +4994,14 @@ input[type="date"]::before {
 }
 
 .tab-button:hover {
-    background-color: #e4e1e1;
+    background-color: #fdf9f9;
     /* color: white; */
     /* border: 1px solid black; */
     /* Add a hover effect */
 }
 
 .tab-button.active {
-    background-color: #007bff;
+    background-color: #5473e3;
     color: white;
 }
 
@@ -6379,10 +6380,10 @@ select:focus {
 
 /* Payslips started */
 .dropdown-toggle.payroll {
-    background: transparent; /* Remove background */
-    border: none; /* Remove border */
+    background: transparent;  /* Remove background */
+    border: none;             /* Remove border */
 
-    color: white; /* Optional: Adjust padding if needed */
+    color:white            /* Optional: Adjust padding if needed */
 }
 .es-autocomplete {
     width: 200px;
