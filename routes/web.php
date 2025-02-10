@@ -54,6 +54,7 @@ use App\Livewire\LeaveTypeReviewer;
 use App\Livewire\LetterPreparePage;
 use App\Livewire\ParentDetails;
 use App\Livewire\Payslips;
+use App\Livewire\PfYtdReport;
 use App\Livewire\PositionHistory;
 use App\Livewire\PreviousEmployeement;
 use App\Livewire\ReportsManagement;
@@ -157,9 +158,17 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
         Route::get('/review-pending-regularisation-for-hr/{id}/{emp_id}', RegularisationPendingForHr::class)->name('review-pending-regularisation-for-hr');
         //HR Leave-Infomation Submodule Routes
         Route::get('/user/employee-leave', EmployeeLeave::class)->name('employee-leave');
+      
+        //HR Payroll Submodule Routes
+        Route::get('/payslips', Payslips::class)->name('payslips');
+        Route::get('/ctcslips', CTCSlips::class)->name('ctcslips');
+        Route::get('/ytdreport', YtdReport::class)->name('ytdreport');
+        Route::get('/pfytdreport', PfYtdReport::class)->name('pfytdreport');
+
 
         //HR Leave Related Routes
         Route::get('/user/attendance-exception', AttendanceExceptionForDisplay::class)->name(name: 'attendance-exception');
+      
         //HR Leave-Main Submodule Routes
         Route::get('/user/leave-overview', HrLeaveOverview::class)->name('leave-overview');
         Route::get('/user/leave-overview/{month}/{leaveType?}', HrLeaveOverview::class)->name('leave-overview.month');

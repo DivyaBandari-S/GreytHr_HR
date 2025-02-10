@@ -18,7 +18,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
-class YtdReport extends Component
+class PfYtdReport extends Component
 {
     use WithFileUploads;
     public $requests;
@@ -815,21 +815,18 @@ class YtdReport extends Component
 
       
 
-                $pdf = Pdf::loadView('download-ytd-pdf', [
-                    'employees' => $this->employeeDetails,
-                    'empBankDetails' => $this->empBankDetails,
-                    'salaryData' => $this->salaryData,
-                    'salaryTotals' => $this->totals,
-                    'startDate' => $this->start_date,
-                    'endDate' => $this->end_date,
-                ],)
-                
-                
-                    ->setPaper([0, 0, $width, $height]);
-               
-                return response()->streamDownload(function () use ($pdf) {
-                    echo $pdf->stream();
-                }, 'YTDPayslip-' . $this->start_date . '-' . $this->end_date . '.pdf');
+            $pdf = Pdf::loadView('download-pfytd-pdf', [
+                'employees' => $this->employeeDetails,
+                'empBankDetails' => $this->empBankDetails,
+                'pfData' =>  $this->pfData,
+                'pfTotals' => $this->pftotals,
+                'startDate' => $this->start_date,
+                'endDate' => $this->end_date,
+            ]);
+            return response()->streamDownload(function () use ($pdf) {
+                echo $pdf->stream();
+            }, 'PF-YTD-Payslip-' . $this->start_date . '-' . $this->end_date . '.pdf');
+
             
       }
 
@@ -929,7 +926,7 @@ class YtdReport extends Component
         $this->documents = $query->get();
 
 
-        return view('livewire.ytd-report', [
+        return view('livewire.pf-ytd-report', [
             'employees' => $this->employees,
             'selectedPeople' => $this->selectedPeople,
             'peopleFound' => $peopleFound,
