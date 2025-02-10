@@ -12,8 +12,7 @@
                 <ul class="sidebar__submenu">
                     <li class="title">Home</li>
                     <li><a href="{{route('home')}}">Home</a></li>
-                    <li><a href="{{route('request')}}">Request</a></li>
-                    <li><a href="{{route('HelpDesk')}}">HelpDesk</a></li>
+                   
                 </ul>
             </li>
             <li>
@@ -46,7 +45,7 @@
                             <li><a href="/hr/user/main-overview">Overview</a></li>
                             <li><a href="/hr/user/analytics-hub">Analytics Hub</a></li>
                             <li><a href="/hr/user/hremployeedirectory">Employee Directory</a></li>
-                            <li><a href="/user">Organization Chart</a></li>
+                            <li><a href="/hr/user/hr-organisation-chart">Organization Chart</a></li>
                         </ul>
                     </li>
                     <li>
@@ -231,7 +230,7 @@
                         <ul class="sidebar__dropdown-menu">
                             <li><a href="/hr/user/employee-leave">Employee Leave</a></li>
                             <li><a href="/hr/user/shift-roster-hr">Shift Roaster</a></li>
-                            <li><a href="/user">Employee Swipes</a></li>
+                            <li><a href="/hr/user/employee-swipes-for-hr">Employee Swipes</a></li>
                             <li><a href="/hr/user/attendance-muster-hr">Attendance Muster</a></li>
                             <li><a href="/hr/user/attendance-info">Attendance Info</a></li>
                         </ul>
@@ -245,11 +244,12 @@
                             <li><a href="/user">Assign Attendnace Scheme</a></li>
                             <li><a href="/user">Process Attendance</a></li>
                             <li><a href="/home">Attendance Period Finalisation</a></li>
-                            <li><a href="/user">Attendance Exception</a></li>
-                            <li><a href="/user">Lock Configuartion</a></li>
-                            <li><a href="/user">Manual Override</a></li>
-                            <li><a href="/user">Shift Override</a></li>
-                            <li><a href="/hr/user/leave/admin/leaveRecalculator">Leave Recalculator</a></li>
+                            <li><a href="/hr/user/attendance-exception">Attendance Exception</a></li>
+                            <li><a href="/user">Assign Attendnace Scheme</a></li>
+                            <li><a href="/hr/user/attendance-lock-configuration">Lock Configuartion</a></li>
+                            <li><a href="/hr/user/hr-manual-override">Manual Override</a></li>
+                            <li><a href="/hr/user/shift-override">Shift Override</a></li>
+                            <li><a href="/user">Leave Recalculator</a></li>
                         </ul>
                     </li>
                     <li>
@@ -258,9 +258,9 @@
                             <li><a href="/hr/user/holidayList">Holiday List</a></li>
                             <li><a href="/user">weekend Override</a></li>
                             <li><a href="/hr/user">Swipe Managment</a></li>
-                            <li><a href="/user">Shift Rotation Calendar</a></li>
-                            <li><a href="/home">Employee Week Days</a></li>
-                            <li><a href="/hr/user/leave/setup/leave-type-reviewer">Leave Type Reviewer</a></li>
+                            <li><a href="/hr/user/shift-rotation-calendar">Shift Rotation Calendar</a></li>
+                            <li><a href="/hr/user/employee-weekday-chart">Employee Week Days</a></li>
+                            <li><a href="/user">Leave Type Reviewer</a></li>
                             <li><a href="/user">Ip Address Mapping</a></li>
                         </ul>
                     </li>

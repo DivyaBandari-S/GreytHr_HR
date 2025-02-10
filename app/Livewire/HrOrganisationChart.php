@@ -3,8 +3,12 @@
 namespace App\Livewire;
 
 use App\Models\EmployeeDetails;
-use Barryvdh\DomPDF\PDF;
+use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
+use Barryvdh\DomPDF\PDF as PDF;
+use Intervention\Image\ImageManagerStatic as Image;
+use Imagick;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
 
@@ -50,11 +54,23 @@ class HrOrganisationChart extends Component
     public $primary_lower_authorities;
 
     public $manager_id;
+
+    public $chartData;
     public function mount()
     {
         // Initialize with any preselected employee IDs if necessary
         $this->shiftSummary = []; // Example: [1, 2, 3]
         $this->selectedManagers=[];
+        $this->chartData = $this->fetchChartData();
+    }
+    public function fetchChartData()
+    {
+        // Fetch your chart data from the database or any other source
+        // For example:
+        return [
+            'title' => 'HR Organisation Chart',
+            'content' => 'This is a sample content for the HR Organisation Chart.'
+        ];
     }
     public function updateselectedMassTransferManager()
     {
@@ -87,6 +103,42 @@ class HrOrganisationChart extends Component
         }
         $this->massTransferDialog=false;  
     }
+
+   
+    
+    public function exportContent()
+    {
+        // Generate PDF
+        $content = '<h1>Hi</h1>';
+        $pdf = FacadePdf::loadHTML($content);
+        $pdfPath = storage_path('app/public/temp-exported.pdf');
+        $pdf->save($pdfPath);
+    
+        // Convert PDF to PNG (using external tool like pdftoppm or similar alternative)
+        // You can replace this with a similar approach to converting the PDF to an image using PHP
+        $pngPath = storage_path('app/public/hi-image.png');
+    
+        try {
+            // You might use an alternative method (e.g., external command) to convert PDF to image
+    
+            // For now, let's say we have a PDF-to-image tool that we can call
+            // This could be an external tool, or you could add custom logic here to convert
+    
+            $image = Image::make($pdfPath); // Here you would use a real method to convert PDF to image
+    
+            // Set the image format to PNG
+            $image->encode('png');
+            $image->save($pngPath);
+    
+            // Respond with the PNG image
+            return response()->download($pngPath)->deleteFileAfterSend(true);
+    
+        } catch (\Exception $e) {
+            Log::error("Image processing failed: " . $e->getMessage());
+            return response()->json(['error' => 'Image conversion failed'], 500);
+        }
+    }
+
     public function updateselectedEmployee()
     {
         $this->selectedEmployee=$this->selectedEmployee;

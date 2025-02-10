@@ -143,9 +143,11 @@
                 </div>
             </div>
       </div>
+    <div class="row m-0 p-0">  
+    <div class="col-md-9 mb-6">    
     <div class="table-container"style="max-height:300px;overflow-y:auto;width:100%; margin:0;padding:0 10px;">  
       <table id="employee-table">
-        <thead>
+        <thead style="position:sticky;top:0;">
             <tr>
                 <th>#</th>
                 <th>Employee ID</th>
@@ -161,11 +163,11 @@
         @if(count($records)>0)    
         @foreach($records as $r1)    
             <tr>
-                <td>{{++$s1}}</td>
-                <td>{{$r1->emp_id}}</td>
-                <td style="text-decoration:underline;">{{ucwords(strtolower($r1->first_name))}}&nbsp;&nbsp;{{ucwords(strtolower($r1->last_name))}}</td>
-                <td>{{ \Carbon\Carbon::createFromFormat('Y-m-d', $r1->hire_date)->format('d M Y') }}</td>
-                <td>
+                <td style="font-size:12px;">{{++$s1}}</td>
+                <td style="font-size:12px;">{{$r1->emp_id}}</td>
+                <td style="text-decoration:underline;font-size:12px;">{{ucwords(strtolower($r1->first_name))}}&nbsp;&nbsp;{{ucwords(strtolower($r1->last_name))}}</td>
+                <td style="white-space:nowrap;font-size:12px;">{{\Carbon\Carbon::parse($r1->hire_date)->format('jS M, Y')}}</td>
+                <td style="font-size:12px;">
                 {{
                      preg_replace_callback('/\b\w+\b/', function ($matches) {
                               $word = $matches[0];
@@ -174,22 +176,25 @@
                                        return $word;
                                }
                                        return ucwords($word);
-                               }, $r1->job_title)
+                               }, $r1->job_role)
                 }}
                 </td>
-                <td>{{ str_replace('-', '', $r1->mobile_number) }}</td>
-                <td>{{$r1->email}}</td>
-                <td></td>
+                <td style="font-size:12px;">{{ str_replace('-', '', $r1->emergency_contact) }}</td>
+                <td style="font-size:12px;">{{$r1->email}}</td>
+                <td style="font-size:12px;">-</td>
             </tr>
         @endforeach   
         @else
+          <tr>
             <td colspan="12"style="text-align:center;">No records found</td>
-             
+          </tr>   
         @endif     
             <!-- Add more rows as needed -->
         </tbody>
      </table>
-    </div>    
+     </div>
+    </div>  
+    </div>  
 </div>
 
 

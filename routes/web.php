@@ -1,6 +1,7 @@
 <?php
 
 use App\Livewire\AdminDashboard;
+use App\Livewire\AttendanceLockConfiguration;
 use App\Livewire\Dashboard;
 use App\Livewire\HrLogin;
 use App\Livewire\HomeDashboard;
@@ -13,6 +14,10 @@ use App\Livewire\AttendanceMusterHr;
 use App\Livewire\AttendanceProcess;
 use App\Livewire\BankAccount;
 use App\Livewire\CreateAttendanceExceptionPage;
+use App\Livewire\CreateEmployeeWeekDayChart;
+use App\Livewire\CreateLockConfiguration;
+use App\Livewire\CreateLockConfigurationPage;
+use App\Livewire\CreateNewLockConfigurationPage;
 use App\Livewire\CreateShiftOverride;
 use App\Livewire\CTCSlips;
 use App\Livewire\EditAttendanceExceptionPage;
@@ -41,6 +46,7 @@ use App\Livewire\HrHolidayList;
 use App\Livewire\HrLeaveCalendar;
 use App\Livewire\HrLeaveOverview;
 use App\Livewire\HrMainOverview;
+use App\Livewire\HrManualOverride;
 use App\Livewire\HrOrganisationChart;
 use App\Livewire\LeaveRecalculator;
 use App\Livewire\LeaveSettingPolicy;
@@ -60,8 +66,6 @@ use App\Livewire\ShiftRotationCalendar;
 use App\Livewire\SwipeManagementForHr;
 use App\Livewire\Tasks;
 use App\Livewire\WhoIsInChartHr;
-use App\Livewire\YearEndProcess;
-use App\Livewire\YtdReport;
 use App\Models\EmpResignations;
 use App\Models\Task;
 use Illuminate\Support\Facades\Route;
@@ -97,7 +101,6 @@ Route::get('/file/{id}', function ($id) {
 Route::middleware(['auth:hr', 'handleSession'])->group(function () {
 
     Route::get('/', HomeDashboard::class)->name('home');
-    Route::get('/request', Requests::class)->name('request');
     // Group routes under the 'hr' prefix
     Route::prefix('hr')->group(function () {
 
@@ -127,26 +130,35 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
         Route::get('/user/analytics-hub', AnalyticsHub::class)->name('analytics-hub');
         Route::get('/user/analytics-hub-viewall', AnalyticsHubViewAll::class)->name('analytics-hub-viewall');
         Route::get('/user/hremployeedirectory', EmployeeDirectory::class)->name('employee-directory');
-        Route::get('/user/hr-organisation-chart', HrOrganisationChart::class)->name('hr-organisation-chart');
-
+        Route::get('/user/create-attendance-exception',CreateAttendanceExceptionPage::class)->name('create-attendance-exception');
+        Route::get('/user/shift-rotation-calendar',ShiftRotationCalendar::class)->name('shift-rotation-calendar');
+        Route::get('/user/attendance-lock-configuration',AttendanceLockConfiguration::class)->name('attendance-lock-configuration');
+        Route::get('/user/create-lock-configuration',action: CreateNewLockConfigurationPage::class)->name('create-new-lock-configuration-page');
         //HR Employee-Information Submodule Routes
         Route::get('/employee-profile', EmployeeProfile::class)->name('employee-profile');
         Route::get('/employee-asset', EmployeeAsset::class)->name('employee-asset');
         Route::get('/position-history', PositionHistory::class)->name('position-history');
         Route::get('parent-details', ParentDetails::class)->name('parent-details');
         Route::get('/emp-document', EmpDocument::class)->name('emp-document');
-        Route::get('/previous-employeement', PreviousEmployeement::class)->name('previous-employeement');
-        Route::get('/bank-account', BankAccount::class)->name('bank-account');
-        Route::get('/user/employee-salary', EmployeeSalary::class)->name('employee-salary');
-        Route::get('/user/salary-revision-analytics', SalaryRevisionAnalytics::class)->name('salary-revision-analytics');
-
-        //HR Employee-Admin Submodule Routes
-        Route::get('/user/generate-letter', GenerateLetters::class)->name('generate-letter');
-        Route::get('/letter/prepare', LetterPreparePage::class)->name('letter.prepare');
-        Route::get('/user/emp/admin/bulkphoto-upload', EmpBulkPhotoUpload::class)->name('bulk-photo-upload');
-
-        //HR Employee-setUp Submodule Routes
-
+        Route::get('/bank-account', EmpDocument::class)->name('bank-account');
+        Route::get('/user/attendance-process',AttendanceProcess::class)->name('attendance-process');
+        Route::get('/user/swipe-management-for-hr',SwipeManagementForHr::class)->name('swipe-management-for-hr');
+        Route::get('/user/employee-swipes-for-hr',EmployeeSwipesForHr::class)->name('employee-swipes-for-hr');
+        Route::get('/user/hr-manual-override',HrManualOverride::class)->name('hr-manual-override');
+        //HR Leave-Main Submodule Routes
+        Route::get('/user/hr-organisation-chart', HrOrganisationChart::class)->name('hr-organisation-chart');
+        Route::get('/user/employee-weekday-chart', EmployeeWeekDayChart::class)->name('employee-weekday-chart');
+        Route::get('/user/create-employee-weekday-chart', CreateEmployeeWeekDayChart::class)->name('create-employee-weekday-chart');
+        Route::get('/user/hr-attendance-overview', HrAttendanceOverviewNew::class)->name('attendance-overview');
+        Route::get('/user/who-is-in-chart-hr', WhoIsInChartHr::class)->name('who-is-in-chart-hr');
+        Route::get('/user/edit-attendance-exception-page/{id}',EditAttendanceExceptionPage::class)->name('edit-attendance-exception-page');
+        Route::get('/user/edit-shift-override/{id}',EditShiftOverride::class)->name('edit-shift-override');
+        Route::get('/user/shift-override',ShiftOverrideHr::class)->name('shift-override');
+        Route::get('/user/attendance-info', HrAttendanceInfo::class)->name('attendance-info');
+        Route::get('/review-pending-regularisation-for-hr/{id}/{emp_id}', RegularisationPendingForHr::class)->name('review-pending-regularisation-for-hr');
+        //HR Leave-Infomation Submodule Routes
+        Route::get('/user/employee-leave', EmployeeLeave::class)->name('employee-leave');
+      
         //HR Payroll Submodule Routes
         Route::get('/payslips', Payslips::class)->name('payslips');
         Route::get('/ctcslips', CTCSlips::class)->name('ctcslips');
@@ -154,6 +166,9 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
         Route::get('/pfytdreport', PfYtdReport::class)->name('pfytdreport');
 
 
+        //HR Leave Related Routes
+        Route::get('/user/attendance-exception', AttendanceExceptionForDisplay::class)->name(name: 'attendance-exception');
+      
         //HR Leave-Main Submodule Routes
         Route::get('/user/leave-overview', HrLeaveOverview::class)->name('leave-overview');
         Route::get('/user/leave-overview/{month}/{leaveType?}', HrLeaveOverview::class)->name('leave-overview.month');
@@ -172,17 +187,9 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
 
         //HR Leave-Admin Submodule Routes
         Route::get('/user/grantLeave', GrantLeaveBalance::class)->name('grantLeave');
-        Route::get('/user/grant-summary', EmpLeaveGranterDetails::class)->name('grant-summary');
-        Route::get('/user/leavePolicySettings', LeaveSettingPolicy::class)->name('leavePolicySettings');
-        Route::get('/user/leaveYearEndProcess', YearEndProcess::class)->name('year-end-process');
-        Route::get('/user/attendance-exception', AttendanceExceptionForDisplay::class)->name(name: 'attendance-exception');
-        Route::get('/user/create-attendance-exception', CreateAttendanceExceptionPage::class)->name('create-attendance-exception');
-        Route::get('/user/edit-attendance-exception-page/{id}', EditAttendanceExceptionPage::class)->name('edit-attendance-exception-page');
-        Route::get('/user/create-shift-override', CreateShiftOverride::class)->name(name: 'create-shift-override');
-        Route::get('/user/edit-shift-override/{id}', EditShiftOverride::class)->name('edit-shift-override');
-        Route::get('/user/shift-override', ShiftOverrideHr::class)->name('shift-override');
-        Route::get('/user/leave/admin/leaveRecalculator', LeaveRecalculator::class)->name('leave-recalculator');
-        Route::get('/user/attendance-process', AttendanceProcess::class)->name('attendance-process');
+        Route::get('/user/grant-summary', EmpLeaveGranterDetails::class)->name( 'grant-summary');
+        Route::get('/user/leavePolicySettings', LeaveSettingPolicy::class)->name( 'leavePolicySettings');
+
 
         //HR Leave-SetUp Submodule Routes
         Route::get('/user/holidayList', HrHolidayList::class)->name('holidayList');
@@ -198,93 +205,3 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
     });
 });
 
-#########################################This are routes for checking hash and encrypt values################################################################################################################################################################
-
-use App\Models\EmpSalary;
-use Illuminate\Support\Facades\Artisan;
-use Vinkla\Hashids\Facades\Hashids;
-
-Route::get('/encode/{value}', function ($value) {
-    // Determine the number of decimal places
-    $decimalPlaces = strpos($value, '.') !== false ? strlen(substr(strrchr($value, "."), 1)) : 0;
-
-    // Convert the float to an integer with precision
-    $factor = pow(10, $decimalPlaces);
-    $integerValue = intval($value * $factor);
-
-    // Encode the integer value along with the decimal places
-    $hash = Hashids::encode($integerValue, $decimalPlaces);
-
-    return response()->json([
-        'value' => $value,
-        'hash' => $hash,
-        // 'decimalPlaces' => $decimalPlaces
-    ]);
-});
-
-
-
-Route::get('/decode/{hash}', function ($hash) {
-    // Decode the hash
-    $decoded = Hashids::decode($hash);
-
-    // Check if decoding was successful
-    if (count($decoded) === 0) {
-        return response()->json(['error' => 'Invalid hash'], 400);
-    }
-
-    // Retrieve the integer value and decimal places
-    $integerValue = $decoded[0];
-    $decimalPlaces = $decoded[1] ?? 0; // Fallback to 0 if not present
-
-    // Convert back to float
-    $originalValue = $integerValue / pow(10, $decimalPlaces);
-
-    return response()->json([
-        'hash' => $hash,
-        'value' => $originalValue
-    ]);
-});
-
-
-
-Route::get('/salary/{emp_id}', function ($emp_id) {
-    $empSalary = EmpSalary::findOrFail($emp_id);
-    // Return the salary attribute
-    return response()->json([
-        'emp_id' => $empSalary->emp_id,
-        'salary' => $empSalary->salary, // This will automatically call the getSalaryAttribute method
-        'effective_date' => $empSalary->effective_date,
-        'remarks' => $empSalary->remarks,
-    ]);
-});
-
-use Illuminate\Support\Facades\Crypt;
-
-Route::get('/encode-decode/{value}', function ($value) {
-    try {
-        // Attempt to decrypt the value
-        $decrypted = Crypt::decryptString($value);
-        return response()->json(['action' => 'decrypted', 'value' => $decrypted]);
-    } catch (\Exception $e) {
-        // If decryption fails, encrypt the value
-        $encrypted = Crypt::encryptString($value);
-        return response()->json(['action' => 'encrypted', 'value' => $encrypted]);
-    }
-});
-
-use Illuminate\Support\Facades\Hash;
-
-Route::get('/hash-verify/{value}', function ($value) {
-    // Attempt to verify the value against the hashed version
-    // Here, we'll assume that a certain value (e.g., 'originalValue') needs to be verified
-    $originalValue = 'originalValue'; // Replace this with the actual value you want to verify against
-
-    if (Hash::check($originalValue, $value)) {
-        return response()->json(['action' => 'verified', 'value' => $originalValue]);
-    } else {
-        // If not verified, hash the original value
-        $hashed = Hash::make($originalValue);
-        return response()->json(['action' => 'hashed', 'value' => $hashed]);
-    }
-});
