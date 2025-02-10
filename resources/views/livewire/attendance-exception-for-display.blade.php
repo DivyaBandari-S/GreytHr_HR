@@ -4,7 +4,6 @@
             table {
             width: 100%;
             border-collapse: collapse;
-            margin: 20px 0;
             font-size: 16px;
             text-align: left;
         }
@@ -24,7 +23,7 @@
        
     </style>
      @php
-                 $i=0;
+        $i=0;
      @endphp
     <div class="attendance-overview-help">
                    
@@ -36,8 +35,9 @@
     <button style="border:1px solid blue;margin-right:40px;margin-top:40px;background-color:white;color:blue;border-radius:5px;padding:8px 10px;font-size:14px;float:right;"wire:click="addException">
         <span style="font-size:12px;">Add Exception</span>
     </button>
-   
-        <div class="table-container"style="max-height:300px;overflow-y:auto;width:100%; margin:0;padding:0 10px;">  
+    <div class="row m-0 p-0">
+        <div class="col-md-10 mb-6">
+    <div class="table-container table-responsive p-0 m-0"style="border-radius:5px;border:1px solid #ddd;">  
       <table id="employee-table">
         <thead>
             <tr>
@@ -60,13 +60,13 @@
             
          
             <tr>
-                <td>{{++$i}}.</td>
-                <td>{{$a1->emp_id}}</td>
-                <td>{{ucwords(strtolower($a1->employee->first_name))}} {{ucwords(strtolower($a1->employee->last_name))}}</td>
-                <td>{{\Carbon\Carbon::parse($a1->from_date)->format('jS F Y')}}</td>
-                <td>{{\Carbon\Carbon::parse($a1->to_date)->format('jS F Y')}}</td>
-                <td>{{$a1->status}}</td>
-                <td>
+                <td style="white-space:nowrap;font-size:12px;">{{++$i}}.</td>
+                <td style="white-space:nowrap;font-size:12px;">{{$a1->emp_id}}</td>
+                <td style="white-space:nowrap;font-size:12px;">{{ucwords(strtolower($a1->employee->first_name))}} {{ucwords(strtolower($a1->employee->last_name))}}</td>
+                <td style="white-space:nowrap;font-size:12px;">{{\Carbon\Carbon::parse($a1->from_date)->format('jS F Y')}}</td>
+                <td style="white-space:nowrap;font-size:12px;">{{\Carbon\Carbon::parse($a1->to_date)->format('jS F Y')}}</td>
+                <td style="white-space:nowrap;font-size:12px;">{{$a1->status}}</td>
+                <td style="white-space:nowrap;">
                         <a href="#" wire:click="editAttendanceException({{ $a1->id }})" class="text-primary" title="Edit">
                             <i class="fas fa-edit"></i>
                         </a>
@@ -107,14 +107,48 @@
             </tr>
          
             @endforeach
-
+                
             @else
                 <td colspan="12"style="text-align:center;">Record Not Found</td>
             <!-- Add more rows as needed -->
-            @endif 
+            @endif
+             
         </tbody>
      </table>
-    </div>
+     </div>
+     </div>
+     </div>
+     @if($totalPages > 1)
+        <div class="mt-3 text-center">
+            <!-- Previous Button -->
+            <button 
+                wire:click="previousPage" 
+                class="btn btn-sm btn-secondary"
+                style="{{ $currentPage != 1 ? 'background-color: #306cc6; border-color: #306cc6; color: #fff;' : 'background-color: lightgrey; border-color: lightgrey; color: #fff;' }}">
+                Previous
+            </button>
+
+            <!-- Numbered Page Buttons -->
+            @for($page = 1; $page <= $totalPages; $page++)
+                <button 
+                    wire:click="setPage({{ $page }})" 
+                    class="btn btn-sm"
+                    style="margin: 0 5px; background-color: {{ $currentPage == $page ? '#306cc6' : 'lightgrey' }}; border-color: {{ $currentPage == $page ? '#306cc6' : 'lightgrey' }}; color: #fff;">
+                    {{ $page }}
+                </button>
+            @endfor
+
+            <!-- Next Button -->
+            <button 
+                wire:click="nextPage" 
+                class="btn btn-sm"
+                style="{{ $currentPage == $totalPages? 'background-color: lightgrey; border-color: lightgrey; color: #fff;' : 'background-color: #306cc6; border-color: #306cc6; color: #fff;' }}">
+                Next
+            </button>
+        </div>
+    @endif
+
+  
  
 </div>
  

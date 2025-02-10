@@ -49,66 +49,91 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                @if($uploadedHistory)
+                                @foreach ($uploadedHistory as $history )
                                 <tr>
-                                    <td>22 Mar, 2024</td>
-                                    <td>zip</td>
-                                    <td>Pending</td>
-                                    <td>View file</td>
+                                    <td>{{ \Carbon\Carbon::parse($history->created_at)->format('d M, Y') }}</td>
+                                    <td wire:click="downloadZipFile('{{$history->id}}')"> <span class="anchorLink">{{ $history->file_name }}</span> </td>
+                                    <td style="color: {{$history->status === 'Cancelled'? 'red' : ($history->status == 'Completed' ? 'green' : 'black')}}">{{ (strtoupper($history->status ))}}</td>
+                                    <td> {{ $history->log }} </td>
                                 </tr>
+                                @endforeach
+                                @else
+                                <tr colspan="4">No data found</tr>
+                                @endif
                             </tbody>
                         </table>
                     </div>
                 </div>
                 @endif
                 @if($showUploadContent)
-                <div>
+                <div class="photoUpload">
+                    <div class="main-overview-help w-100 m-auto mb-2 p-2">
+                        <p class="mb-0">
+                            Upload the zip file of employee photos here. Read the below instructions before you upload a set of photos.
+                            <br>
+                            Learn more about the process by watching the video here.
+                        </p>
+                    </div>
                     <div class="progress-container">
                         <div class="progress-line"></div>
 
                         <!-- Step 1 -->
                         <div class="progress-step">
-                            <div class="circle {{ $currentStep >= 1 ? ($currentStep == 1 ? 'active' : 'completed') : 'pending' }}">1</div>
-                            <div class="label">General</div>
+                            <div class="circle {{ $currentStep >= 1 ? ($currentStep == 1 ? 'active' : 'completed') : 'pending' }}"></div>
+                            <div class="label">Upload</div>
                         </div>
 
                         <!-- Step 2 -->
                         <div class="progress-step">
-                            <div class="circle {{ $currentStep >= 2 ? ($currentStep == 2 ? 'active' : 'completed') : 'pending' }}">2</div>
-                            <div class="label">Select Employees</div>
+                            <div class="circle {{ $currentStep >= 2 ? ($currentStep == 2 ? 'active' : 'completed') : 'pending' }}"></div>
+                            <div class="label">Associate</div>
                         </div>
                     </div>
                     <div>
                         @if($currentStep == 1)
-                        <div>Step 1: Upload
 
-                            You can upload photos of multiple employees in one shot by uploading a zip file containing all photos.
-
-                            If photos are named according to employee numbers (for example, 01290.jpg), the assignment is automatically done. If not, you can
-                            easily associate an employee with the photos in the next step.
-
+                        <div class="mb-2">
+                            <strong class="mb-3"> Step 1: Upload</strong>
+                            <p class="textDesc mt-2">
+                                You can upload photos of multiple employees in one shot by uploading a zip file containing all photos.
+                            </p>
+                            <p class="textDesc mb-0">
+                                If photos are named according to employee numbers (for example, 01290.jpg), the assignment is automatically done. If not, you can
+                                easily associate an employee with the photos in the next step.
+                            </p>
                         </div>
-                        <div class="bg-grey p-4">
-                            <div class="form-group">
-                                <input type="file" wire:model="zip_file" class="form-control" accept=".zip">
+                        <div class="bg-grey py-4 mb-2 ">
+                            <div class="form-group px-3 py-4 rounded d-flex gap-2 align-items-center" style="background:#d8d8d8;border:1px solid gray;">
+                                <input type="file" wire:model.lazy.200s="zip_file" class="form-control w-25" accept=".zip" wire:change="validateProperty('zip_file')">
+                                <span class="diffColor">Only ZIP file containing JPG images is allowed. (Max size of .zip file that can be uploaded is 1 MB)</span>
                             </div>
+                            @error('zip_file')
+                            <span class="mt-1 text-danger">{{ $message }}</span>
+                            @enderror
                         </div>
 
-                        <div class="buttons-container d-flex gap-3">
-                            <button class="cancel-btn">Previous</button>
-                            <button class="cancel-btn" wire:click="UploadBulkZipFile">Next</button>
-                            <button class="cancel-btn">cancel</button>
+                        <div class="buttons-container d-flex py-1 gap-3">
+                            <button class="cancel-btn" wire:click="toggleUploadBtn">Cancel</button>
+                            <button class="submit-btn px-3" wire:click="UploadBulkZipFile">Next</button>
                         </div>
                         @elseif($currentStep == 2)
                         <div>
                             <h3>Assign profile photos to employees</h3>
-                            @if($imagePaths && count($imagePaths) > 0)
+
+                            @php
+                            $imagePaths = session('extracted_images_' . $upload->id, []);
+                            @endphp
+
+                            @if(count($imagePaths) > 0)
                             <div class="image-gallery">
                                 @foreach($imagePaths as $index => $path)
                                 @php
-                                // Extract the filename from the path
+                                $folderId = basename(dirname(dirname($path)));
                                 $filename = basename($path);
                                 @endphp
-                                <div class="image-item">
+
+                                <div class="image-item rounded">
                                     <img src="{{ asset($path) }}" alt="Extracted Image" style="max-width: 100px; max-height: 100px;">
                                     <div class="d-flex flex-column">
                                         <div>
@@ -116,10 +141,9 @@
                                         </div>
                                         <div class="form-group d-flex align-items-start mb-2 position-relative">
                                             <div class="input-group">
-                                                <!-- Input field bound to the selected employee for this index -->
                                                 <input type="text" class="form-control" id="selecetedEmployee_{{ $index }}"
                                                     wire:click="toggleEmployeeContainer('{{ $index }}')"
-                                                    wire:model="selectedEmployees.{{ $index }}" value="selectedEmployees.{{ $index }}" readonly>
+                                                    wire:model="selectedEmployees.{{ $index }}" value="{{ $selectedEmployees[$index] ?? '' }}" readonly>
                                                 <div class="input-group-append bg-white border" wire:click="toggleEmployeeContainer('{{ $index }}')">
                                                     <span class="input-group-text" style="border:none; background:none;">
                                                         <i class="ph-caret-down-fill"></i>
@@ -162,9 +186,11 @@
                             @else
                             <p>No images extracted from the ZIP file.</p>
                             @endif
-                            <button class="submit-btn" type="button" wire:click="storeImageOfEmployee">Finish</button>
-                        </div>
 
+                            <button class="cancel-btn" type="button" wire:click="gotoBack">Back</button>
+                            <button class="submit-btn" type="button" wire:click="storeImageOfEmployee">Finish</button>
+                            <button class="cancel-btn" type="button" wire:click="cancelUpdating({{ $folderId }})">Cancel</button>
+                        </div>
                         @endif
                     </div>
                 </div>
