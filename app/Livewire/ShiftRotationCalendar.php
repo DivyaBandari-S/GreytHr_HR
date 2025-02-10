@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Helpers\FlashMessageHelper;
 use App\Models\HolidayCalendar;
+use App\Models\ShiftRotation;
 use App\Models\SwipeRecord;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
@@ -15,13 +16,39 @@ class ShiftRotationCalendar extends Component
 
     public $year;
 
+    public $isDropdownVisible = false; // Dropdown visibility state
+    public $selectedDate;
+
+    public $dayType='Regular';
     public $date;
     public $month;
+
+    public $selectedShiftRotationPlan;
+    public $openDatePopUp=false;
+    public $shiftRotationPlan = '';
     public function mount()
     {
         $this->year = now()->year;
         $this->month = now()->month;
         $this->generateCalendar();
+    }
+    public function selectDate($date)
+    {
+       $this->openDatePopUp=true;
+       $this->selectedDate=$date;
+       $this->dayType = 'Regular';
+       $shiftRotation = ShiftRotation::where('shift_rotation_date', $this->selectedDate)->where('shift_type',$this->selectedShiftRotationPlan)->first();
+      
+       if ($shiftRotation) {
+           $this->selectedShiftRotationPlan = $shiftRotation->shift_type;
+           $this->dayType = $shiftRotation->day_type;
+       } 
+
+    }
+    public function updateSelectedDayType($value)
+    {
+       $this->dayType=$value;
+       
     }
     public function beforeMonth()
     {
@@ -39,6 +66,7 @@ class ShiftRotationCalendar extends Component
             // Handle the error as needed, such as displaying a message to the user
         }
     }
+   
     public function nextMonth()
 {
     try {
@@ -128,8 +156,55 @@ class ShiftRotationCalendar extends Component
             }
        
     }
+    
+
+    public function toggleDropdown()
+    {
+        $this->isDropdownVisible = !$this->isDropdownVisible;
+    }
+    public function updateSelectedShiftType($value)
+    {
+        $this->selectedShiftRotationPlan=$value;
+        Log::info("Selected Shift rotation plan selected: " . $value);
+    }
+    public function updatedShiftRotationPlan($value)
+    {
+        // This method is triggered when the dropdown value changes
+        $this->shiftRotationPlan=$value;
+        Log::info("Shift rotation plan selected: " . $value);
+    }
+    public function savePopup()
+    {
+        $existingShiftRotation = ShiftRotation::where('shift_rotation_date', $this->selectedDate)->first();
+        if ($existingShiftRotation) {
+            // Update the existing record
+            Log::info('Updating ShiftRotation dates to database.');
+            $existingShiftRotation->update([
+                'day_type' => $this->dayType,
+            ]);
+            FlashMessageHelper::flashSuccess('Shift Rotation Calendar updated successfully.');
+        } else {
+            Log::info('Saving ShiftRotation dates to database.');
+            ShiftRotation::create([
+                'shift_rotation_date' => $this->selectedDate,
+                'shift_type' => $this->selectedShiftRotationPlan,
+                'day_type' => $this->dayType,
+            ]);
+            FlashMessageHelper::flashSuccess('Shift Rotation Calendar saved successfully.');
+        }
+       
+       
+        
+        Log::info('Shift Rotation Calendar saved successfully.');
+    }
+    public function updateSelected($option)
+    {
+       $this->shiftRotationPlan=$option;
+       $this->dayType = 'Regular';
+    }
     public function render()
     {
+        $this->selectedShiftRotationPlan=$this->shiftRotationPlan;
         return view('livewire.shift-rotation-calendar');
     }
 }

@@ -65,62 +65,63 @@ class HrLogin extends Component
         return redirect()->to('/CreateCV');
     }
     public function empLogin()
-    {
+{
+    Log::info('Employee login attempt', ['emp_id' => $this->form['emp_id']]);
 
-        $this->validate([
-            "form.emp_id" => 'required',
-            "form.password" => "required"
-        ]);
+    $this->validate([
+        "form.emp_id" => 'required',
+        "form.password" => "required"
+    ]);
 
-        try {
+    try {
+        Log::info('Validation passed for emp_id', ['emp_id' => $this->form['emp_id']]);
 
-            // $this->showLoader = true;
-            $user = HR::where('hr_emp_id', $this->form['emp_id'])
-                ->orWhere('email', $this->form['emp_id'])
-                ->first();
-            // Check if user exists and is inactive
-            if ($user && !$user->status) {
+        $user = HR::where('hr_emp_id', $this->form['emp_id'])
+            ->orWhere('email', $this->form['emp_id'])
+            ->first();
 
-                // sweetalert()->addError('Your account is inactive. Please contact support.');
-                // is_active == false
-                ################################### this is also working by using dispatch event call from in the blade using javascript
-                // Dispatch event to trigger a SweetAlert on the frontend
-                $this->dispatch('inactive-user-alert', ['message' => 'Your account is inactive. Please contact support.']);
-                $this->resetForm();
-                $this->reset('form'); // Reset the entire form
-
-            }
-
-
-
-            if (Auth::guard('hr')->attempt(['hr_emp_id' => $this->form['emp_id'], 'password' => $this->form['password'],'status' => 1],)) {
-                session(['post_login' => true]);
-                return redirect()->route('home');
-            } elseif (Auth::guard('hr')->attempt(['email' => $this->form['emp_id'], 'password' => $this->form['password'],'status' => 1])) {
-                session(['post_login' => true]);
-                return redirect()->route('home');
-            } else {
-                $this->error = "Invalid ID or Password. Please try again.";
-            }
-        } catch (ValidationException $e) {
-            // Handle validation errors
-            $this->showLoader = false; // Hide loader if validation fails
-            $this->error = "There was a problem with your input. Please check and try again.";
-        } catch (\Illuminate\Database\QueryException $e) {
-            // Handle database errors
-            $this->showLoader = false;
-            $this->error = "We are experiencing technical difficulties. Please try again later.";
-        } catch (\Symfony\Component\HttpKernel\Exception\HttpException $e) {
-            // Handle server errors
-            $this->showLoader = false;
-            $this->error = "There is a server error. Please try again later.";
-        } catch (\Exception $e) {
-            // Handle general errors
-            $this->showLoader = false;
-            $this->error = "An unexpected error occurred. Please try again.";
+        if ($user) {
+            Log::info('User found', ['emp_id' => $this->form['emp_id'], 'status' => $user->status]);
+        } else {
+            Log::warning('User not found', ['emp_id' => $this->form['emp_id']]);
         }
-    }
 
+        if ($user && !$user->status) {
+            Log::warning('User is inactive', ['emp_id' => $this->form['emp_id']]);
+
+            $this->dispatch('inactive-user-alert', ['message' => 'Your account is inactive. Please contact support.']);
+            $this->resetForm();
+            $this->reset('form');
+
+            return;
+        }
+
+        if (Auth::guard('hr')->attempt(['hr_emp_id' => $this->form['emp_id'], 'password' => $this->form['password'], 'status' => 1])) {
+            Log::info('Login successful via emp_id', ['emp_id' => $this->form['emp_id']]);
+            session(['post_login' => true]);
+            return redirect()->route('home');
+        } elseif (Auth::guard('hr')->attempt(['email' => $this->form['emp_id'], 'password' => $this->form['password'], 'status' => 1])) {
+            Log::info('Login successful via email', ['email' => $this->form['emp_id']]);
+            session(['post_login' => true]);
+            return redirect()->route('home');
+        } else {
+            Log::warning('Invalid login attempt', ['emp_id' => $this->form['emp_id']]);
+            $this->error = "Invalid ID or Password. Please try again.";
+        }
+    } catch (ValidationException $e) {
+        Log::error('Validation error', ['error' => $e->getMessage()]);
+        $this->error = "There was a problem with your input. Please check and try again.";
+    } catch (\Illuminate\Database\QueryException $e) {
+        Log::error('Database error', ['error' => $e->getMessage()]);
+        $this->error = "We are experiencing technical difficulties. Please try again later.";
+    } catch (\Symfony\Component\HttpKernel\Exception\HttpException $e) {
+        Log::error('Server error', ['error' => $e->getMessage()]);
+        $this->error = "There is a server error. Please try again later.";
+    } catch (\Exception $e) {
+        Log::error('Unexpected error', ['error' => $e->getMessage()]);
+        $this->error = "An unexpected error occurred. Please try again.";
+    }
+}
 
     public function resetForm()
     {

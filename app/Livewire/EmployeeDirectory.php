@@ -73,10 +73,7 @@ class EmployeeDirectory extends Component
     public function exportToExcel()
     {
         try {
-            $this->records_excel = EmployeeDetails::select('employee_details.*')
-                ->join('hr', 'employee_details.company_id', '=', 'hr.company_id')
-                ->where('hr.company_id', '=', $this->companyId)
-                ->get();
+            $this->records_excel = EmployeeDetails::get();
     
             $data[] = ['emp_id', 'emp_name', 'join_date', 'status', 'Phone No.', 'Email', 'Extension No.'];
     
@@ -105,33 +102,25 @@ class EmployeeDirectory extends Component
     public function render()
     {
                 try {
-                    $this->companyId = Auth::user()->company_id;
+                   
+                    
 
                     if ($this->employeeFilter == 'past_employees') {
-                        $this->records = EmployeeDetails::select('employee_details.*')
-                            ->join('hr', 'employee_details.company_id', '=', 'hr.company_id')
-                            ->where('employee_details.employee_status', 'resigned')
+                        $this->records = EmployeeDetails::where('employee_details.employee_status', 'resigned')
                             ->orWhere('employee_details.employee_status', 'terminated')
                             ->get();
                     } elseif ($this->employeeFilter == 'current_employees') {
-                        $this->records = EmployeeDetails::select('employee_details.*')
-                            ->join('hr', 'employee_details.company_id', '=', 'hr.company_id')
-                            ->where('hr.company_id', '=', $this->companyId)
-                            ->whereYear('employee_details.hire_date', '>=', 2022)
+                        $this->records = EmployeeDetails::where('employee_details.employee_status', 'active')
                             ->get();
                     } else {
-                        $this->records = EmployeeDetails::select('employee_details.*')
-                            ->join('hr', 'employee_details.company_id', '=', 'hr.company_id')
-                            ->where('hr.company_id', '=', $this->companyId)
-                            ->get();
+                        $this->records = EmployeeDetails::get();
+                        
                     }
 
                     if ($this->employeeStatus == 'consultant') {
-                        $this->records = EmployeeDetails::select('employee_details.*')
-                            ->join('hr', 'employee_details.company_id', '=', 'hr.company_id')
-                            ->where(function ($query) {
-                                $query->where('employee_details.job_title', 'LIKE', '%consultant%')
-                                    ->orWhere('employee_details.job_title', 'LIKE', '%Consultant%');
+                        $this->records = EmployeeDetails::where(function ($query) {
+                                $query->where('employee_details.job_role', 'LIKE', '%consultant%')
+                                    ->orWhere('employee_details.job_role', 'LIKE', '%Consultant%');
                             })
                             ->get();
                     } elseif ($this->employeeStatus == 'resigned') {
@@ -140,9 +129,7 @@ class EmployeeDirectory extends Component
                             ->where('employee_status', 'resigned')
                             ->get();
                     } elseif ($this->employeeStatus == 'active') {
-                        $this->records = EmployeeDetails::select('employee_details.*')
-                            ->join('hr', 'employee_details.company_id', '=', 'hr.company_id')
-                            ->where('employee_status', 'active')
+                        $this->records = EmployeeDetails::where('employee_status', 'active')
                             ->get();
                     } elseif ($this->employeeStatus == 'new_joinee') {
                         $this->records = EmployeeDetails::select('employee_details.*')
@@ -152,10 +139,11 @@ class EmployeeDirectory extends Component
                     } elseif ($this->employeeStatus == 'interns') {
                         $this->records = EmployeeDetails::select('employee_details.*')
                             ->join('hr', 'employee_details.company_id', '=', 'hr.company_id')
-                            ->where('employee_details.job_title', 'intern')
+                            ->where('employee_details.job_role', 'intern')
                             ->get();
                     }
 
+                  
                     return view('livewire.employee-directory');
                 } catch (\Exception $e) {
                     Log::error('Error in render method: ' . $e->getMessage());
