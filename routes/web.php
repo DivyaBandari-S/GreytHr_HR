@@ -47,6 +47,7 @@ use App\Livewire\LeaveSettingPolicy;
 use App\Livewire\LeaveTypeReviewer;
 use App\Livewire\LetterPreparePage;
 use App\Livewire\ParentDetails;
+use App\Livewire\PayrollOverview;
 use App\Livewire\Payslips;
 use App\Livewire\PositionHistory;
 use App\Livewire\PreviousEmployeement;
@@ -135,6 +136,7 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
         Route::get('/emp-document', EmpDocument::class)->name('emp-document');
         Route::get('/previous-employeement', PreviousEmployeement::class)->name('previous-employeement');
         Route::get('/bank-account', BankAccount::class)->name('bank-account');
+        Route::get('/user/payroll-overview', PayrollOverview::class)->name('payroll-overview');
         Route::get('/user/employee-salary', EmployeeSalary::class)->name('employee-salary');
         Route::get('/user/salary-revision-analytics', SalaryRevisionAnalytics::class)->name('salary-revision-analytics');
 
