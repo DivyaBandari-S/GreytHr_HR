@@ -105,7 +105,7 @@
                         </div>
                         <div class="bg-grey py-4 mb-2 ">
                             <div class="form-group px-3 py-4 rounded d-flex gap-2 align-items-center" style="background:#d8d8d8;border:1px solid gray;">
-                                <input type="file" wire:model="zip_file" class="form-control w-25" accept=".zip">
+                                <input type="file" wire:model.lazy.200s="zip_file" class="form-control w-25" accept=".zip" wire:change="validateProperty('zip_file')">
                                 <span class="diffColor">Only ZIP file containing JPG images is allowed. (Max size of .zip file that can be uploaded is 1 MB)</span>
                             </div>
                             @error('zip_file')
@@ -119,24 +119,20 @@
                         </div>
                         @elseif($currentStep == 2)
                         <div>
-
                             <h3>Assign profile photos to employees</h3>
-                            @if($imagePaths && count($imagePaths) > 0)
+
                             @php
                             $imagePaths = session('extracted_images_' . $upload->id, []);
                             @endphp
-                            @php
-                            var_dump($imagePaths);
-                            @endphp
 
+                            @if(count($imagePaths) > 0)
                             <div class="image-gallery">
                                 @foreach($imagePaths as $index => $path)
                                 @php
-                                // Extract the folder ID (33) from the path
-                                $folderId = basename(dirname(dirname($path))); // Extracts the folder ID '33'
-                                // Extract the filename from the path
+                                $folderId = basename(dirname(dirname($path)));
                                 $filename = basename($path);
                                 @endphp
+
                                 <div class="image-item rounded">
                                     <img src="{{ asset($path) }}" alt="Extracted Image" style="max-width: 100px; max-height: 100px;">
                                     <div class="d-flex flex-column">
@@ -145,7 +141,6 @@
                                         </div>
                                         <div class="form-group d-flex align-items-start mb-2 position-relative">
                                             <div class="input-group">
-                                                <!-- Input field bound to the selected employee for this index -->
                                                 <input type="text" class="form-control" id="selecetedEmployee_{{ $index }}"
                                                     wire:click="toggleEmployeeContainer('{{ $index }}')"
                                                     wire:model="selectedEmployees.{{ $index }}" value="{{ $selectedEmployees[$index] ?? '' }}" readonly>
@@ -191,11 +186,11 @@
                             @else
                             <p>No images extracted from the ZIP file.</p>
                             @endif
+
                             <button class="cancel-btn" type="button" wire:click="gotoBack">Back</button>
                             <button class="submit-btn" type="button" wire:click="storeImageOfEmployee">Finish</button>
                             <button class="cancel-btn" type="button" wire:click="cancelUpdating({{ $folderId }})">Cancel</button>
                         </div>
-
                         @endif
                     </div>
                 </div>

@@ -149,7 +149,7 @@ class EmpBulkPhotoUpload extends Component
         // // Reset the error messages array before each validation
         $this->errorMessages = [];
         // Validate that all images are assigned to employees
-        if (count($this->selectedEmployees) < count($this->imagePaths)) {
+        if (is_array($this->imagePaths) && count($this->selectedEmployees) < count($this->imagePaths)) {
             // Flash an error if some images are not assigned
             FlashMessageHelper::flashError('Please assign all images to employees before proceeding.');
             return;
@@ -189,12 +189,10 @@ class EmpBulkPhotoUpload extends Component
                         } catch (\Exception $e) {
                             // Catch any error specific to image processing or saving
                             Log::error('Error processing image for employee ' . $empID . ': ' . $e->getMessage());
-                            dd('Error processing image for employee ' . $empID . ': ' . $e->getMessage());
                         }
                     } else {
                         // Handle case when employee data is not found
                         Log::warning('Employee not found for emp_id: ' . $empID);
-                        dd('Employee not found for emp_id: ' . $empID);
                     }
                 }
                 FlashMessageHelper::flashSuccess('Profile updated');
@@ -204,7 +202,6 @@ class EmpBulkPhotoUpload extends Component
         } catch (\Exception $e) {
             // Catch any unexpected error in the main method
             Log::error('General error: ' . $e->getMessage());
-            dd('General error: ' . $e->getMessage());
         }
     }
 
@@ -262,11 +259,18 @@ class EmpBulkPhotoUpload extends Component
         'zip_file' => 'required|file|mimes:zip|max:10240',
     ];
 
+    public function validateProperty($field){
+        $this->validateOnly($field);
+    }
     public function UploadBulkZipFile()
     {
         // Validate the file based on the rules defined
         $this->validate([
             'zip_file' => 'required|file|mimes:zip|max:10240',
+        ], [
+            'zip_file.required' => 'Please upload a zip file.',
+            'zip_file.mimes' => 'Only zip files are allowed.',
+            'zip_file.max' => 'The file size must be less than 10MB.',
         ]);
         try {
             // Get logged-in employee ID
@@ -281,8 +285,8 @@ class EmpBulkPhotoUpload extends Component
                 // Read the file content and store it as a binary blob
                 $zipFileContent = file_get_contents($this->zip_file->getRealPath());
                 // Create a new record in the database with the binary content, mime_type, and file_name
-                $upload = UploadBulkPhotos::create([
-                    'status' => 'pending',
+                $this->upload = UploadBulkPhotos::create([
+                    'status' => 'Completed',
                     'uploaded_at' => now(),
                     'uploaded_by' => $loggedInEmpId,
                     'zip_file' => $zipFileContent,
@@ -291,7 +295,7 @@ class EmpBulkPhotoUpload extends Component
                     'log' => 'File uploaded successfully',
                 ]);
                 // Call the extractZipFile method after successful file upload
-                $this->extractZipFile($upload);
+                $this->extractZipFile($this->upload);
 
                 FlashMessageHelper::flashSuccess('Zip file uploaded and images extraction started!');
                 $this->zip_file = null;
@@ -307,8 +311,6 @@ class EmpBulkPhotoUpload extends Component
                 'file' => $this->zip_file ?? 'N/A',
             ]);
 
-            // Catch any exceptions and handle accordingly
-            dd('Error: ' . $e->getMessage()); // You can log this error or return a user-friendly message
         }
     }
     public function extractZipFile($upload)
@@ -342,7 +344,6 @@ class EmpBulkPhotoUpload extends Component
             }
             // Pass the image paths to frontend (you can also store them temporarily in a session if needed)
             session()->put('extracted_images_' . $upload->id, $imagePaths);
-            dd(session('extracted_images_' . $upload->id));
             FlashMessageHelper::flashSuccess('Images extracted successfully!');
         } catch (\Exception $e) {
             Log::error('Error extracting ZIP file', [
@@ -429,7 +430,8 @@ class EmpBulkPhotoUpload extends Component
     {
         return view('livewire.emp-bulk-photo-upload', [
             'imagePaths' => $this->imagePaths,
-            'uploadedHistory' => $this->uploadedHistory
+            'uploadedHistory' => $this->uploadedHistory,
+            'upload' => $this->upload,
         ]);
     }
 }

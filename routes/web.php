@@ -151,7 +151,7 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
         //HR Employee-Admin Submodule Routes
         Route::get('/user/generate-letter', GenerateLetters::class)->name('generate-letter');
         Route::get('/letter/prepare', LetterPreparePage::class)->name('letter.prepare');
-        Route::get('/emp/admin/bulkphoto-upload', EmpBulkPhotoUpload::class)->name('bulk-photo-upload');
+        Route::get('/user/emp/admin/bulkphoto-upload', EmpBulkPhotoUpload::class)->name('bulk-photo-upload');
 
         // HR Employee-Setup Submodules
 
