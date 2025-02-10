@@ -66,6 +66,7 @@ use App\Livewire\ShiftRotationCalendar;
 use App\Livewire\SwipeManagementForHr;
 use App\Livewire\Tasks;
 use App\Livewire\WhoIsInChartHr;
+use App\Livewire\YtdReport;
 use App\Models\EmpResignations;
 use App\Models\Task;
 use Illuminate\Support\Facades\Route;
@@ -125,15 +126,20 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
         Route::get('/hrFeeds', Feeds::class)->name('hrfeeds');
         Route::get('/everyone', Everyone::class)->name('everyone');
 
+
+        //HR Payroll Submodule Routes
+        Route::get('/payslips', Payslips::class)->name('payslips');
+        Route::get('/ctcslips', CTCSlips::class)->name('ctcslips');
+        Route::get('/ytdreport', YtdReport::class)->name('ytdreport');
+        Route::get('/pfytdreport', PfYtdReport::class)->name('pfytdreport');
+
         //HR Employee-Main Submodule Routes
         Route::get('/user/main-overview', HrMainOverview::class)->name('main-overview');
         Route::get('/user/analytics-hub', AnalyticsHub::class)->name('analytics-hub');
         Route::get('/user/analytics-hub-viewall', AnalyticsHubViewAll::class)->name('analytics-hub-viewall');
         Route::get('/user/hremployeedirectory', EmployeeDirectory::class)->name('employee-directory');
-        Route::get('/user/create-attendance-exception',CreateAttendanceExceptionPage::class)->name('create-attendance-exception');
-        Route::get('/user/shift-rotation-calendar',ShiftRotationCalendar::class)->name('shift-rotation-calendar');
-        Route::get('/user/attendance-lock-configuration',AttendanceLockConfiguration::class)->name('attendance-lock-configuration');
-        Route::get('/user/create-lock-configuration',action: CreateNewLockConfigurationPage::class)->name('create-new-lock-configuration-page');
+        Route::get('/user/hr-organisation-chart', HrOrganisationChart::class)->name('hr-organisation-chart');
+
         //HR Employee-Information Submodule Routes
         Route::get('/employee-profile', EmployeeProfile::class)->name('employee-profile');
         Route::get('/employee-asset', EmployeeAsset::class)->name('employee-asset');
@@ -141,34 +147,18 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
         Route::get('parent-details', ParentDetails::class)->name('parent-details');
         Route::get('/emp-document', EmpDocument::class)->name('emp-document');
         Route::get('/bank-account', EmpDocument::class)->name('bank-account');
-        Route::get('/user/attendance-process',AttendanceProcess::class)->name('attendance-process');
-        Route::get('/user/swipe-management-for-hr',SwipeManagementForHr::class)->name('swipe-management-for-hr');
-        Route::get('/user/employee-swipes-for-hr',EmployeeSwipesForHr::class)->name('employee-swipes-for-hr');
-        Route::get('/user/hr-manual-override',HrManualOverride::class)->name('hr-manual-override');
-        //HR Leave-Main Submodule Routes
-        Route::get('/user/hr-organisation-chart', HrOrganisationChart::class)->name('hr-organisation-chart');
-        Route::get('/user/employee-weekday-chart', EmployeeWeekDayChart::class)->name('employee-weekday-chart');
-        Route::get('/user/create-employee-weekday-chart', CreateEmployeeWeekDayChart::class)->name('create-employee-weekday-chart');
-        Route::get('/user/hr-attendance-overview', HrAttendanceOverviewNew::class)->name('attendance-overview');
-        Route::get('/user/who-is-in-chart-hr', WhoIsInChartHr::class)->name('who-is-in-chart-hr');
-        Route::get('/user/edit-attendance-exception-page/{id}',EditAttendanceExceptionPage::class)->name('edit-attendance-exception-page');
-        Route::get('/user/edit-shift-override/{id}',EditShiftOverride::class)->name('edit-shift-override');
-        Route::get('/user/shift-override',ShiftOverrideHr::class)->name('shift-override');
-        Route::get('/user/attendance-info', HrAttendanceInfo::class)->name('attendance-info');
-        Route::get('/review-pending-regularisation-for-hr/{id}/{emp_id}', RegularisationPendingForHr::class)->name('review-pending-regularisation-for-hr');
-        //HR Leave-Infomation Submodule Routes
-        Route::get('/user/employee-leave', EmployeeLeave::class)->name('employee-leave');
-      
-        //HR Payroll Submodule Routes
-        Route::get('/payslips', Payslips::class)->name('payslips');
-        Route::get('/ctcslips', CTCSlips::class)->name('ctcslips');
-        Route::get('/ytdreport', YtdReport::class)->name('ytdreport');
-        Route::get('/pfytdreport', PfYtdReport::class)->name('pfytdreport');
+
+        //HR Employee-Admin Submodule Routes
+        Route::get('/user/generate-letter', GenerateLetters::class)->name('generate-letter');
+        Route::get('/letter/prepare', LetterPreparePage::class)->name('letter.prepare');
+        Route::get('/emp/admin/bulkphoto-upload', EmpBulkPhotoUpload::class)->name('bulk-photo-upload');
+
+        // HR Employee-Setup Submodules
 
 
-        //HR Leave Related Routes
-        Route::get('/user/attendance-exception', AttendanceExceptionForDisplay::class)->name(name: 'attendance-exception');
-      
+        //HR Employee-Statutory Submodules
+
+
         //HR Leave-Main Submodule Routes
         Route::get('/user/leave-overview', HrLeaveOverview::class)->name('leave-overview');
         Route::get('/user/leave-overview/{month}/{leaveType?}', HrLeaveOverview::class)->name('leave-overview.month');
@@ -187,12 +177,23 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
 
         //HR Leave-Admin Submodule Routes
         Route::get('/user/grantLeave', GrantLeaveBalance::class)->name('grantLeave');
-        Route::get('/user/grant-summary', EmpLeaveGranterDetails::class)->name( 'grant-summary');
-        Route::get('/user/leavePolicySettings', LeaveSettingPolicy::class)->name( 'leavePolicySettings');
-
+        Route::get('/user/grant-summary', EmpLeaveGranterDetails::class)->name('grant-summary');
+        Route::get('/user/leavePolicySettings', LeaveSettingPolicy::class)->name('leavePolicySettings');
+        Route::get('/user/attendance-process',AttendanceProcess::class)->name('attendance-process');
+        Route::get('/user/swipe-management-for-hr',SwipeManagementForHr::class)->name('swipe-management-for-hr');
+        Route::get('/user/hr-manual-override',HrManualOverride::class)->name('hr-manual-override');
+        Route::get('/user/edit-attendance-exception-page/{id}', EditAttendanceExceptionPage::class)->name('edit-attendance-exception-page');
+        Route::get('/user/edit-shift-override/{id}', EditShiftOverride::class)->name('edit-shift-override');
+        Route::get('/user/shift-override', ShiftOverrideHr::class)->name('shift-override');
+        Route::get('/user/attendance-exception', AttendanceExceptionForDisplay::class)->name(name: 'attendance-exception');
+        Route::get('/user/create-attendance-exception',CreateAttendanceExceptionPage::class)->name('create-attendance-exception');
+        Route::get('/user/attendance-lock-configuration',AttendanceLockConfiguration::class)->name('attendance-lock-configuration');
+        Route::get('/user/create-lock-configuration',action: CreateNewLockConfigurationPage::class)->name('create-new-lock-configuration-page');
 
         //HR Leave-SetUp Submodule Routes
         Route::get('/user/holidayList', HrHolidayList::class)->name('holidayList');
+        Route::get('/user/employee-weekday-chart', EmployeeWeekDayChart::class)->name('employee-weekday-chart');
+        Route::get('/user/create-employee-weekday-chart', CreateEmployeeWeekDayChart::class)->name('create-employee-weekday-chart');
         Route::get('/user/leave/setup/leave-type-reviewer', LeaveTypeReviewer::class)->name('leave-type-reviewer');
         Route::get('/user/employee-weekday-chart', EmployeeWeekDayChart::class)->name('employee-weekday-chart');
         Route::get('/user/shift-rotation-calendar', ShiftRotationCalendar::class)->name('shift-rotation-calendar');
@@ -204,4 +205,3 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
         Route::get('/user/reports/', ReportsManagement::class)->name('reports');
     });
 });
-

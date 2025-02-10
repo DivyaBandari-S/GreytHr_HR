@@ -27,6 +27,7 @@ class EmpBulkPhotoUpload extends Component
 
     public $showUploadContent  = false;
 
+    public $folderId;
     public $employeeIds = [];
 
     public function mount()
@@ -328,30 +329,20 @@ class EmpBulkPhotoUpload extends Component
             } else {
                 throw new \Exception('Failed to extract ZIP file');
             }
-
-            // Scan the extracted folder for images
+            // Recursively scan the extracted folder for images
             $extractedFiles = [];
-
-            $files = scandir($tempExtractPath);
-
-            foreach ($files as $file) {
-                // Add only image files (JPG, PNG, etc.)
-                if (in_array(pathinfo($file, PATHINFO_EXTENSION), ['jpg', 'jpeg', 'png', 'gif'])) {
-                    $extractedFiles[] = $file;
-                }
-            }
+            $this->scanDirectoryForImages($tempExtractPath, $extractedFiles, $upload);
 
             // Instead of storing extracted images in the database, we'll just pass the paths to frontend
             $imagePaths = [];
             foreach ($extractedFiles as $file) {
                 // Add the file paths, pointing to the public directory
                 // Use the public URL for the extracted images (relative path from the public folder)
-                $this->imagePaths[] = asset('extracted_images/' . $upload->id . '/' . $file);
+                $imagePaths[] = asset('extracted_images/' . $upload->id . '/' . $file);
             }
-
             // Pass the image paths to frontend (you can also store them temporarily in a session if needed)
             session()->put('extracted_images_' . $upload->id, $imagePaths);
-
+            dd(session('extracted_images_' . $upload->id));
             FlashMessageHelper::flashSuccess('Images extracted successfully!');
         } catch (\Exception $e) {
             Log::error('Error extracting ZIP file', [
@@ -362,28 +353,52 @@ class EmpBulkPhotoUpload extends Component
         }
     }
 
+    private function scanDirectoryForImages($dir, &$extractedFiles, $upload)
+    {
+        $files = scandir($dir);
+
+        foreach ($files as $file) {
+            $filePath = $dir . '/' . $file;
+
+            // Skip the current and parent directory references
+            if ($file === '.' || $file === '..') {
+                continue;
+            }
+
+            // If it's a directory, recurse into it
+            if (is_dir($filePath)) {
+                $this->scanDirectoryForImages($filePath, $extractedFiles, $upload);
+            } elseif (in_array(pathinfo($file, PATHINFO_EXTENSION), ['jpg', 'jpeg', 'png', 'gif'])) {
+                // If it's an image, add it to the extractedFiles array
+                $relativePath = str_replace(public_path('extracted_images/' . $upload->id . '/'), '', $filePath);
+                $extractedFiles[] = $relativePath;
+            }
+        }
+    }
+
+
     public function downloadZipFile($id)
     {
         try {
             // Retrieve the record by ID
             $downloadData = UploadBulkPhotos::find($id);
-    
+
             // Check if the file exists
             if ($downloadData && $downloadData->zip_file) {
                 // Get the binary content of the zip file
                 $fileContent = $downloadData->zip_file;
                 $fileName = $downloadData->file_name; // You can set a default name if needed
-    
+
                 // Debug: Check if fileContent is non-empty
                 if (empty($fileContent)) {
                     Log::error("Error: File content is empty for file ID: {$id}");
                     FlashMessageHelper::flashError("File content is empty for file ID: {$id}");
                     return;
                 }
-    
+
                 // Debug: Check file name
                 Log::info("Preparing to download file: {$fileName}");
-    
+
                 // Return the response to download the file
                 return response()->stream(function () use ($fileContent) {
                     echo $fileContent;
@@ -401,7 +416,7 @@ class EmpBulkPhotoUpload extends Component
                 'error_message' => $e->getMessage(),
                 'file_id' => $id,
             ]);
-    
+
             // Handle the error (could display a friendly message, etc.)
             FlashMessageHelper::flashError('An error occurred while downloading the file. Please try again later.');
         }

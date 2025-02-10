@@ -53,7 +53,7 @@
                                 @foreach ($uploadedHistory as $history )
                                 <tr>
                                     <td>{{ \Carbon\Carbon::parse($history->created_at)->format('d M, Y') }}</td>
-                                    <td  wire:click="downloadZipFile('{{$history->id}}')"> <span class="anchorLink">{{ $history->file_name }}</span> </td>
+                                    <td wire:click="downloadZipFile('{{$history->id}}')"> <span class="anchorLink">{{ $history->file_name }}</span> </td>
                                     <td style="color: {{$history->status === 'Cancelled'? 'red' : ($history->status == 'Completed' ? 'green' : 'black')}}">{{ (strtoupper($history->status ))}}</td>
                                     <td> {{ $history->log }} </td>
                                 </tr>
@@ -106,7 +106,7 @@
                         <div class="bg-grey py-4 mb-2 ">
                             <div class="form-group px-3 py-4 rounded d-flex gap-2 align-items-center" style="background:#d8d8d8;border:1px solid gray;">
                                 <input type="file" wire:model="zip_file" class="form-control w-25" accept=".zip">
-                                <span class="diffColor">Only ZIP file containing JPG images is allowed. (Max size of .zip file that can be uploaded is 100 MB)</span>
+                                <span class="diffColor">Only ZIP file containing JPG images is allowed. (Max size of .zip file that can be uploaded is 1 MB)</span>
                             </div>
                             @error('zip_file')
                             <span class="mt-1 text-danger">{{ $message }}</span>
@@ -119,14 +119,21 @@
                         </div>
                         @elseif($currentStep == 2)
                         <div>
+
                             <h3>Assign profile photos to employees</h3>
                             @if($imagePaths && count($imagePaths) > 0)
+                            @php
+                            $imagePaths = session('extracted_images_' . $upload->id, []);
+                            @endphp
+                            @php
+                            var_dump($imagePaths);
+                            @endphp
+
                             <div class="image-gallery">
                                 @foreach($imagePaths as $index => $path)
                                 @php
                                 // Extract the folder ID (33) from the path
-                                $folderId = basename(dirname($path)); // Extracts the folder ID '33'
-
+                                $folderId = basename(dirname(dirname($path))); // Extracts the folder ID '33'
                                 // Extract the filename from the path
                                 $filename = basename($path);
                                 @endphp
