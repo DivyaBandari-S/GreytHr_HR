@@ -638,8 +638,6 @@
     <div class="employeMain">
         <div class=" ">
             <div class="col-md-8 bg-white">
-
-
                 <table class="emp-datails-table">
                     <tbody>
                         <tr>
@@ -647,7 +645,7 @@
 
                                 <div class=" detail-items">
                                     <div class=" text-end p-0 label-value"><label for=""> Join Date </label></div>
-                                    <div class=" emp-table-values ">getSelectedEmployees</div>
+                                    <div class=" emp-table-values "> {{ \Carbon\Carbon::parse($empDetails->hire_date)->format('d M, Y') }}</div>
                                 </div>
                             </td>
                             <td style="width: 50%;">

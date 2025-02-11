@@ -123,7 +123,7 @@
                             <li><a href="/user">Income Tax</a></li>
                             <li><a href="/user">Reimbursement</a></li>
                             <li><a href="/user">Employee LOP Days</a></li>
-                            <li><a href="/user">Stop Salary Processing</a></li>
+                            <li><a href="/hr/user/stop-salaries">Stop Salary Processing</a></li>
                             <li><a href="/user">Arrears</a></li>
                             <li><a href="/user">Release Salary</a></li>
                             <li><a href="/user">Final Settlement</a></li>

@@ -393,7 +393,6 @@ class EmployeeSalary extends Component
             ->where('employee_details.emp_id', $this->selectedEmployee)
             ->select('emp_departments.department', 'employee_details.job_role', 'employee_details.hire_date', 'employee_details.emp_id', 'employee_details.job_role')
             ->first();
-        // dd($this->empDetails );
 
     }
     public function getSalaryData()
