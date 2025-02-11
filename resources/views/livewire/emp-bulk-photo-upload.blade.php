@@ -125,9 +125,9 @@
                             $imagePaths = session('extracted_images_' . $upload->id, []);
                             @endphp
 
-                            @if(count($imagePaths) > 0)
+                            @if(count($paginatedImages) > 0)
                             <div class="image-gallery">
-                                @foreach($imagePaths as $index => $path)
+                                @foreach($paginatedImages as $index => $path)
                                 @php
                                 $folderId = basename(dirname(dirname($path)));
                                 $filename = basename($path);
@@ -186,6 +186,46 @@
                             @else
                             <p>No images extracted from the ZIP file.</p>
                             @endif
+                            <!-- Pagination Controls -->
+                            <div class="mt-4 mb-4">
+                                <!-- Pagination Controls -->
+                                <div class="pagination d-flex align-items-center justify-content-center py-4">
+                                    <!-- Previous Button -->
+                                    @if ($currentPage > 1)
+                                    <button wire:click="setPage({{ $currentPage - 1 }})" class="submit-btn">Previous</button>
+                                    @endif
+
+                                    <!-- Page Number Display -->
+                                    <span class="px-2">Page {{ $currentPage }} of {{ $totalPages }}</span>
+
+                                    <!-- Next Button -->
+                                    @if ($currentPage < $totalPages)
+                                        <button wire:click="setPage({{ $currentPage + 1 }})" class="submit-btn">Next</button>
+                                        @endif
+                                </div>
+
+                                <!-- Pagination with Individual Page Buttons (centered) -->
+                                <nav aria-label="Page navigation d-flex justify-content-center" style="display: flex; justify-content: center;">
+                                    <ul class="pagination">
+                                        <!-- Previous Button -->
+                                        <li class="page-item {{ $currentPage === 1 ? 'disabled' : '' }}">
+                                            <button class="page-link" wire:click="setPage({{ $currentPage - 1 }})">Previous</button>
+                                        </li>
+
+                                        <!-- Page Number Buttons (centered) -->
+                                        @for ($i = 1; $i <= $totalPages; $i++)
+                                            <li class="page-item {{ $currentPage === $i ? 'active' : '' }}">
+                                            <button class="page-link" wire:click="setPage({{ $i }})">{{ $i }}</button>
+                                            </li>
+                                            @endfor
+
+                                            <!-- Next Button -->
+                                            <li class="page-item {{ $currentPage === $totalPages ? 'disabled' : '' }}">
+                                                <button class="page-link" wire:click="setPage({{ $currentPage + 1 }})">Next</button>
+                                            </li>
+                                    </ul>
+                                </nav>
+                            </div>
 
                             <button class="cancel-btn" type="button" wire:click="gotoBack">Back</button>
                             <button class="submit-btn" type="button" wire:click="storeImageOfEmployee">Finish</button>

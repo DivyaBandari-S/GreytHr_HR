@@ -23,12 +23,15 @@ class EmpBulkPhotoUpload extends Component
     public $status;
     public $searchTerm;
     public $selecetedEmployee;
-    public $imagePaths;
-
     public $showUploadContent  = false;
 
     public $folderId;
     public $employeeIds = [];
+    public $perPage = 2;  // Define how many images per page
+    public $currentPage = 1; // Default to page 1
+    public $totalImages = 0; // Total images in the array
+    public $totalPages;
+    public $imagePaths;
 
     public function mount()
     {
@@ -227,39 +230,51 @@ class EmpBulkPhotoUpload extends Component
     //cancel updating images
     public function cancelUpdating($index)
     {
-        // Get the corresponding record ID from your source (this might vary based on your logic)
-        $recordId = UploadBulkPhotos::find($index)->first(); // Implement this method to map index to record ID
+        // Get the corresponding record ID from your source
+        $recordId = UploadBulkPhotos::find($index);
+
         if ($recordId) {
             try {
-                if ($recordId) {
-                    // Update the status to 'Cancelled'
-                    $recordId->status = 'Cancelled';
-                    $recordId->log = 'File Association is cancelled.';
-                    $recordId->save();
-                    // Optional: You can flash a message or log the cancellation for debugging purposes
-                    FlashMessageHelper::flashSuccess('Status updated to Cancelled for record ID');
-                    $this->deleteExtractedFiles(public_path('extracted_images'));
-                    $this->toggleUploadBtn();
+                // Update the record using the update() method
+                $updated = $recordId->update([
+                    'status' => 'Cancelled',
+                    'log' => 'File Association is cancelled.',
+                    'updated_at' => now() // Ensure updated_at is also updated
+                ]);
+
+                // Log the success of the update
+                if ($updated) {
+                    Log::debug('Record updated successfully to Cancelled.');
                 } else {
-                    // Handle case if record not found
-                    FlashMessageHelper::flashError('Record not found for the given ID');
+                    Log::debug('Failed to update the record.');
                 }
+
+                // Clear image paths and proceed with other actions
+                $this->imagePaths = [];
+                $this->gotoBack();
+
+                // Flash success message
+                FlashMessageHelper::flashSuccess('Status updated to Cancelled for record ID');
+                $this->deleteExtractedFiles(public_path('extracted_images'));
+                $this->toggleUploadBtn();
             } catch (\Exception $e) {
                 // Log error if there's an issue
                 Log::error('Error updating status to cancelled: ' . $e->getMessage());
                 FlashMessageHelper::flashError('An error occurred while updating the status.');
             }
         } else {
-            FlashMessageHelper::flashError('Invalid index provided.');
+            FlashMessageHelper::flashError('Record not found for the given ID');
         }
     }
+
 
 
     protected $rules = [
         'zip_file' => 'required|file|mimes:zip|max:10240',
     ];
 
-    public function validateProperty($field){
+    public function validateProperty($field)
+    {
         $this->validateOnly($field);
     }
     public function UploadBulkZipFile()
@@ -310,9 +325,10 @@ class EmpBulkPhotoUpload extends Component
                 'emp_id' => auth()->guard('hr')->user()->emp_id ?? 'N/A',
                 'file' => $this->zip_file ?? 'N/A',
             ]);
-
         }
     }
+    public $paginatedImages;
+
     public function extractZipFile($upload)
     {
         try {
@@ -340,10 +356,15 @@ class EmpBulkPhotoUpload extends Component
             foreach ($extractedFiles as $file) {
                 // Add the file paths, pointing to the public directory
                 // Use the public URL for the extracted images (relative path from the public folder)
-                $imagePaths[] = asset('extracted_images/' . $upload->id . '/' . $file);
+                $this->imagePaths[] = asset('extracted_images/' . $upload->id . '/' . $file);
             }
             // Pass the image paths to frontend (you can also store them temporarily in a session if needed)
-            session()->put('extracted_images_' . $upload->id, $imagePaths);
+            session()->put('extracted_images_' . $upload->id, $this->imagePaths);
+            // Set total images count
+            $this->totalImages = count($this->imagePaths);
+            $this->totalPages = $this->totalImages / $this->perPage;
+            $this->paginatedImages = array_slice($this->imagePaths, ($this->currentPage - 1) * $this->perPage, $this->perPage);
+
             FlashMessageHelper::flashSuccess('Images extracted successfully!');
         } catch (\Exception $e) {
             Log::error('Error extracting ZIP file', [
@@ -353,6 +374,23 @@ class EmpBulkPhotoUpload extends Component
             FlashMessageHelper::flashError('Failed to extract images.');
         }
     }
+
+    public function setPage($page)
+    {
+        // Ensure the page number is within valid range
+        $this->currentPage = max(1, min($page, ceil($this->totalImages / $this->perPage)));
+        // Get the paginated image paths
+        $this->getPaginatedImages();
+    }
+
+    public function getPaginatedImages()
+    {
+        // Ensure imagePaths is not null and is an array
+        $imagePaths = $this->imagePaths ?? [];
+        // Use array_slice to paginate the image paths array
+        return array_slice($imagePaths, ($this->currentPage - 1) * $this->perPage, $this->perPage);
+    }
+
 
     private function scanDirectoryForImages($dir, &$extractedFiles, $upload)
     {
@@ -429,9 +467,13 @@ class EmpBulkPhotoUpload extends Component
     public function render()
     {
         return view('livewire.emp-bulk-photo-upload', [
-            'imagePaths' => $this->imagePaths,
+            // 'imagePaths' => $this->imagePaths,
             'uploadedHistory' => $this->uploadedHistory,
             'upload' => $this->upload,
+            'paginatedImages' => $this->paginatedImages,
+            'currentPage' => $this->currentPage,
+            'totalImages' => $this->totalImages,
+            'totalPages' => $this->totalPages
         ]);
     }
 }
