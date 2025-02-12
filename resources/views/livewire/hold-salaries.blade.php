@@ -145,7 +145,7 @@
     </style>
     @if($isShowHelp)
     <div class="help-section d-flex " style="padding: 10px;font-size:13px;background-color:#f5feff">
-        <p>From the <span class="bold-items"> Stop Salary Processing </span> page, you can stop processing the payroll for an employee. Click <span class="bold-items"> Add Stop Salary Processing </span> to stop the payroll processing. This is usually done when an employee is on long leave without pay, absconding, on notice, or pending settlement. When you remove an employee from the list, the previous month's status is not affected and the employee continues to be on the stop-payment list for the previous months.</p>
+        <p>The <span class="bold-items"> Hold Salary Payout </span> page helps hold employees' salaries whose details are yet to be verified or are incomplete in greytHR. It has no impact on the salary processing of concerned employees.</p>
         <span><button style="border: none;color:cornflowerblue;width:max-content;background-color:#f5feff;margin-left:15px;font-weight:bold" wire:click="toogleHelp">Hide Help </button></span>
     </div>
     @else
@@ -163,30 +163,52 @@
             <input type="search" wire:model="searchtable" wire:input="getTableData" placeholder="search....." class="form-control" name="" id="">
         </div>
 
-        <button wire:click="addStopSalaryProcessing" class="btn bg-white text-primary border-primary float-end " style="margin-left: auto;font-size:15px">Add Stop Salary Processing </button>
+        <button wire:click="addHoldSalaryProcessing" class="btn bg-white text-primary border-primary float-end " style="margin-left: auto;font-size:15px">Hold Salary Payout </button>
     </div>
     <div class="table-responsive mt-2" style="width: 80%;">
         <table class="table table-bordered emp-sal1-table">
             <thead>
                 <tr>
                     <th>#</th>
-                    <th>Employee Number</th>
+                    <th>Employee No</th>
                     <th>Name</th>
-                    <th>Payout Month</th>
+                    <th>Hold Salary Payout </th>
+                    <th>Hold Reason </th>
                     <th>Remarks</th>
                     <th></th>
                 </tr>
             </thead>
             <tbody class="bg-white">
-                @if($stoppedPayoutEmployees)
-                @foreach($stoppedPayoutEmployees as $index => $stoppedEmployee)
+                @if($holdedPayoutEmployees)
+                @foreach($holdedPayoutEmployees as $index => $holdedEmployee)
                 <tr>
                     <td>{{ $index+1}}</td>
-                    <td>{{$stoppedEmployee->emp_id}}</td>
-                    <td style="text-transform: capitalize;">{{$stoppedEmployee->first_name}} {{$stoppedEmployee->last_name}} </td>
-                    <td>{{$stoppedEmployee->payout_month}}</td>
-                    <td>{{$stoppedEmployee->reason}}</td>
-                    <td style="text-align: center;" ><i class="fa fa-trash"  wire:click="deleteStoppedEmployee({{$stoppedEmployee->id}})" style="cursor: pointer;"></i></td>
+                    <td>{{$holdedEmployee->emp_id}}</td>
+                    <td style="text-transform: capitalize;">{{$holdedEmployee->first_name}} {{$holdedEmployee->last_name}} </td>
+                    <td> Rs {{number_format($holdedEmployee->payout,2)}}</td>
+                    <td>{{$holdedEmployee->hold_reason}}</td>
+                    <td>{{$holdedEmployee->remarks}}</td>
+                    <td style="text-align: center;"><i class="fa fa-trash" wire:click="deleteHoldedEmployee({{$holdedEmployee->id}})" style="cursor: pointer;"></i></td>
+
+                    @if($isDelete)
+                    <div class="modal" id="logoutModal" tabindex="-1" style="display: block;">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header text-white">
+                                        <h6 class="modal-title " id="logoutModalLabel" style="align-items: center;">Confirmation</h6>
+                                    </div>
+                                    <div class="modal-body text-center" style="font-size: 14px;color:var( --main-heading-color);">
+                                        Are you sure you want to remove the Employee <span style="color: red;"> {{ucwords(strtolower($deleteEmpDetails->first_name))}} {{ ucwords(strtolower($deleteEmpDetails->last_name))}} [{{$deleteEmpDetails->emp_id}}] </span>from hold salary Payout?
+                                    </div>
+                                    <div class="d-flex gap-3 justify-content-center p-3">
+                                        <button type="button" class="submit-btn " wire:click="confirmdeleteHoldedEmployee">Confirm</button>
+                                        <button type="button" class="cancel-btn" wire:click="hideModel">Cancel</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-backdrop fade show"></div>
+                    @endif
                 </tr>
                 @endforeach
                 @endif
@@ -321,67 +343,49 @@
             </div>
         </div>
 
-        @if($selectedEmployee && !$isAlreadyStopped)
-        <div class="mt-3" style="padding-bottom: 10px;">
-            <div class="col-md-6 ">
-                <table class="emp-datails-table ">
-                    <tbody>
-                        <tr>
-                            <td style="width: 50%;">
+        @if($selectedEmployee && !$isAlreadyHolded)
+        <div class="mt-3" style="padding-bottom: 10px; align-items:center">
 
-                                <div class=" detail-items">
-                                    <div class=" text-end p-0 label-value"><label for=""> Join Date </label></div>
-                                    <div class=" emp-table-values "> {{ \Carbon\Carbon::parse($empDetails->hire_date)->format('d M, Y') }}</div>
-                                </div>
-                            </td>
-                            <td style="width: 50%;">
-                                <div class="detail-items">
+            <div class="col-md-6 mt-3 d-flex flex-column align-items-center">
+                <div  style="width: 70%;">
 
-                                    <div class=" text-end p-0 label-value"><label for="">Designation</label> </div>
-                                    <div class="emp-table-values ">{{$empDetails->job_role}} </div>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td style="width: 50%;">
-                                <div class="detail-items">
-                                    <div class="text-end p-0 label-value"><label for="">Payroll Month</label> </div>
-                                    <div class="emp-table-values ">{{$payout_month}}</div>
-                                </div>
-                            </td>
-                            <td style="width: 50%;">
-                                <div class="detail-items">
-                                    <div class="text-end p-0 label-value"><label for="">Location</label> </div>
-                                    <div class="emp-table-values">{{$empDetails->job_location}}</div>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="col-md-6 mt-3">
-                <label for=""> Reason for stopping salary process <span style="color: red;">*</span></label>
-                <br>
-                <textarea wire:model='reason' style="height: 80px;" class="form-control"></textarea>
-                @error('reason')
-                <span class="text-danger onboard-Valid">{{ $message }}</span>
-                @enderror
+                    <label for="hold_reason">Select Hold Reason <span style="color: red;">*</span></label>
+                    <select wire:model="selectedHoldReason" class="form-select">
+                        <option value="">Select Hold Reason</option>
+                        @foreach($holdReasons as $key => $value)
+                        <option value="{{ $key }}">{{ $value }}</option>
+                        @endforeach
+                    </select>
+                    @error('selectedHoldReason')
+                    <span class="text-danger onboard-Valid">{{ $message }}</span>
+                    @enderror
+                </div>
             </div>
 
+            <div class="col-md-6 mt-3 d-flex flex-column align-items-center">
+                <div style="width: 70%;">
+                    <label for="">Remarks </label>
+                    <br>
+                    <textarea wire:model='remarks' style="height: 80px;" class="form-control"></textarea>
+                    @error('remarks')
+                    <span class="text-danger onboard-Valid">{{ $message }}</span>
+                    @enderror
+                </div>
+            </div>
         </div>
         @endif
-        @if($isAlreadyStopped)
+        @if($isAlreadyHolded)
         <div class="col-md-6 mt-2 mb-2" style="background-color: #f2dede;padding:10px 10px;font-size:12px">
             <p class="m-0" style="text-transform: capitalize;">
-                Payment already stopped for {{ ucfirst(strtolower($empDetails->first_name)) }} {{ ucfirst(strtolower($empDetails->last_name)) }} ({{$empDetails->emp_id}}) for the month {{$payout_month}}.
+                Employee {{ ucfirst(strtolower($empDetails->first_name)) }} {{ ucfirst(strtolower($empDetails->last_name)) }} [{{$empDetails->emp_id}}] salary has already in hold!
             </p>
         </div>
         @endif
         <div class="d-flex col-md-6 mt-3" style="justify-content: center;gap:10px ; background-color:#d2e9ef;padding:20px">
-            @if($selectedEmployee  && !$isAlreadyStopped)
-            <button class="btn btn-primary" wire:click="saveStopProcessingSalary">Save</button>
+            @if($selectedEmployee && !$isAlreadyHolded)
+            <button class="btn btn-primary" wire:click="saveHoldProcessingSalary">Save</button>
             @endif
-            <button class="btn bg-white text-primary border-primary" wire:click="addStopSalaryProcessing">Cancel</button>
+            <button class="btn bg-white text-primary border-primary" wire:click="addHoldSalaryProcessing">Cancel</button>
         </div>
     </div>
     @endif

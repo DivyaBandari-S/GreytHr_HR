@@ -4,17 +4,22 @@ namespace App\Livewire;
 
 use App\Helpers\FlashMessageHelper;
 use App\Models\EmployeeDetails;
-use App\Models\StopSalaries as ModelsStopSalaries;
+use App\Models\EmpSalaryRevision;
+use App\Models\HoldSalaries as ModelsHoldSalaries;
+use App\Models\StopSalaries;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Livewire\Component;
 
-class StopSalaries extends Component
+class HoldSalaries extends Component
+
 {
     public $isShowHelp = true;
     public $isPageOne = true;
     public $showContainer = false;
+    public $isDelete = false;
+    public $deleteId;
     public $employees = [];
     public $selectedEmployee = null;
     public $showSearch = true;
@@ -24,22 +29,32 @@ class StopSalaries extends Component
     public $employeeType = 'active';
     public $empDetails;
     public $payout_month;
-    public $reason = '';
-    public $stoppedPayoutEmployees;
-    public $isAlreadyStopped = false;
+    public $remarks = '';
+    public $holdedPayoutEmployees;
+    public $isAlreadyHolded = false;
+    public $selectedHoldReason = '';
+    public $deleteEmpDetails;
 
+    public $holdReasons = [
+        'None' => 'None',
+        'Bank Account No. Not Available' => 'Bank Account No. Not Available',
+        'On Notice Period' => 'On Notice Period',
+        'Others' => 'Others',
+    ];
 
     protected function rules()
     {
         return [
-            'reason' => 'required|min:20',
+
+            'selectedHoldReason' => 'required',
+            'remarks' => 'min:20',
         ];
     }
     protected function messages()
     {
         return [
-            'reason.required' => 'Reason is Required.',
-            'reason.min' => 'Reason should be greater than 20 characters.',
+            'selectedHoldReason.required' => ' Please select Hold Reason.',
+            'remarks.min' => 'Remarks should be greater than 20 characters.',
         ];
     }
 
@@ -50,13 +65,16 @@ class StopSalaries extends Component
         $this->isShowHelp = !$this->isShowHelp;
     }
 
-    public function addStopSalaryProcessing()
+    public function addHoldSalaryProcessing()
     {
         $this->isPageOne = ! $this->isPageOne;
-        $this->isAlreadyStopped = false;
+        $this->isAlreadyHolded = false;
         $this->search = '';
         $this->selectedEmployee = null;
         $this->showSearch = true;
+        if ($this->isPageOne) {
+            $this->getTableData();
+        }
     }
 
     public function filterEmployeeType()
@@ -110,8 +128,10 @@ class StopSalaries extends Component
         Log::info('Selected Employee: ', [$this->selectedEmployee]);
         if (is_null($this->selectedEmployee)) {
             $this->showSearch = true;
-            $this->isAlreadyStopped = false;
+            $this->isAlreadyHolded = false;
             $this->search = '';
+            $this->remarks = '';
+            $this->selectedHoldReason = '';
             // $this->showContainer = true;
             // $this->showSearch = false;
             $this->selectedEmployee = null;
@@ -119,18 +139,18 @@ class StopSalaries extends Component
             $this->showSearch = false;
             $this->showContainer = false;
             $this->getEmpDetails();
-            $this->checkIsAlreadyStopped();
+            $this->checkIsAlreadyHolded();
         }
     }
 
-    public function checkIsAlreadyStopped()
+    public function checkIsAlreadyHolded()
     {
-        $this->isAlreadyStopped = false;
-        $stoppedPayoutEmployee = ModelsStopSalaries::where('emp_id', $this->selectedEmployee)
+        $this->isAlreadyHolded = false;
+        $stoppedPayoutEmployee = ModelsHoldSalaries::where('emp_id', $this->selectedEmployee)
             ->where('payout_month', $this->payout_month)->first();
         // dd( $stoppedPayoutEmployee);
         if ($stoppedPayoutEmployee) {
-            $this->isAlreadyStopped = true;
+            $this->isAlreadyHolded = true;
         }
     }
 
@@ -155,21 +175,38 @@ class StopSalaries extends Component
 
         $this->payout_month = $this->getPayoutMonth(null);
         $this->getTableData();
-        // dd( $this->stoppedPayoutEmployees);
+        // dd( $this->holdedPayoutEmployees);
     }
     public function  getTableData()
     {
 
-        $this->stoppedPayoutEmployees = DB::table('stop_salaries')
-            ->join('employee_details', 'employee_details.emp_id', '=', 'stop_salaries.emp_id')
-            ->select('stop_salaries.*', 'employee_details.first_name', 'employee_details.last_name')
+        $this->holdedPayoutEmployees = DB::table('hold_salaries')
+            ->join('employee_details', 'employee_details.emp_id', '=', 'hold_salaries.emp_id')
+            ->where('hold_salaries.status',1)
+            ->select('hold_salaries.*', 'employee_details.first_name', 'employee_details.last_name')
             ->when($this->searchtable, function ($query) {
-                $query->where('employee_details.first_name', 'LIKE', "%{$this->searchtable}%")
-                    ->orWhere('employee_details.last_name', 'LIKE', "%{$this->searchtable}%")
-                    ->orWhere('stop_salaries.payout_month', 'LIKE', "%{$this->searchtable}%")
-                    ->orWhere('stop_salaries.emp_id', 'LIKE', "%{$this->searchtable}%");
+                $search = $this->searchtable;
+                $query->where('employee_details.first_name', 'LIKE', "%{$search}%")
+                    ->orWhere('employee_details.last_name', 'LIKE', "%{$search}%")
+                    ->orWhere('hold_salaries.payout_month', 'LIKE', "%{$search}%")
+                    ->orWhere('hold_salaries.emp_id', 'LIKE', "%{$search}%")
+                    ->orWhere('hold_salaries.hold_reason', 'LIKE', "%{$search}%");
             })
-            ->get();
+            ->get()
+            ->map(function ($employee) {
+                // Add payout calculation for each employee
+                $employee->payout = $this->getPayoutDetails($employee->emp_id);
+                return $employee;
+            });
+    }
+
+    public function getPayoutDetails($emp_id)
+    {
+        $selectedEmployeesPeers = EmpSalaryRevision::where('emp_id', $emp_id)
+            ->latest('created_at')
+            ->first();
+
+        return $selectedEmployeesPeers ? floor($selectedEmployeesPeers->revised_ctc / 12) : 0;
     }
 
     function getPayoutMonth($date = null)
@@ -185,54 +222,70 @@ class StopSalaries extends Component
     }
 
 
-    public function updatedReason()
+    public function updatedRemarks()
     {
 
         $this->validate();
     }
 
-    public function deleteStoppedEmployee($id)
+
+
+    public function deleteHoldedEmployee($id)
     {
-        $stoppedEmployee = ModelsStopSalaries::findorfail($id);
-
-
-        $deleteEmpDetails = EmployeeDetails::where('emp_id', $stoppedEmployee->emp_id)
+        $this->deleteId = $id;
+        // dd( $this->deleteId);
+        $stoppedEmployee = ModelsHoldSalaries::findorfail($this->deleteId);
+        $this->deleteEmpDetails = EmployeeDetails::where('emp_id', $stoppedEmployee->emp_id)
             ->select('employee_details.emp_id', 'employee_details.first_name', 'employee_details.last_name')
             ->first();
+            // dd(  $this->deleteEmpDetails);
+            $this->isDelete=true;
+
+    }
+    public function confirmdeleteHoldedEmployee()
+    {
+        $stoppedEmployee = ModelsHoldSalaries::findorfail($this->deleteId);
         $stoppedEmployee->delete();
-
         FlashMessageHelper::flashSuccess(
-            ucwords(strtolower($deleteEmpDetails->first_name)) . ' ' .
-                ucwords(strtolower($deleteEmpDetails->last_name)) .
-                ' (' . $deleteEmpDetails->emp_id . ') is successfully deleted from stop salary process list for payroll:' . ' ' . $this->payout_month
+            ucwords(strtolower($this->deleteEmpDetails->first_name)) . ' ' .
+                ucwords(strtolower($this->deleteEmpDetails->last_name)) .
+                ' (' . $this->deleteEmpDetails->emp_id . ') is successfully deleted from hold salary process list for payroll:' . ' ' . $this->payout_month
         );
-
         $this->getTableData();
+
+        $this->isDelete=false;
+    }
+    public function hideModel(){
+        $this->isDelete=false;
     }
 
-    public function saveStopProcessingSalary()
+    public function saveHoldProcessingSalary()
     {
+        //   dd($this->selectedHoldReason);
         $this->validate();
-
         try {
-            ModelsStopSalaries::create([
+            ModelsHoldSalaries::create([
                 'emp_id' => $this->selectedEmployee,
                 'payout_month' => $this->payout_month,
-                'reason' => $this->reason
+                'hold_reason' => $this->selectedHoldReason,
+                'remarks' => $this->remarks
             ]);
 
             FlashMessageHelper::flashSuccess(
-                ucwords(strtolower($this->empDetails->first_name)) . ' ' .
+                'Salary payout put on hold for the Employee:' .
+                    ucwords(strtolower($this->empDetails->first_name)) . ' ' .
                     ucwords(strtolower($this->empDetails->last_name)) .
-                    ' (' . $this->empDetails->emp_id . ') is excluded from payroll:' . ' ' . $this->payout_month
+                    ' (' . $this->empDetails->emp_id . ') for the Payroll:' . ' ' . $this->payout_month
             );
 
-            $this->isPageOne = true;
+            $this->isPageOne = false;
             $this->getTableData();
             $this->selectedEmployee = null;
-            $this->reason = '';
+            $this->remarks = '';
+            $this->selectedHoldReason = '';
             $this->showSearch = true;
             $this->search = '';
+
         } catch (null) {
         }
     }
@@ -242,7 +295,7 @@ class StopSalaries extends Component
         $selectedEmployeesDetails = $this->selectedEmployee ?
             EmployeeDetails::where('emp_id', $this->selectedEmployee)->get() : [];
 
-        return view('livewire.stop-salaries', [
+        return view('livewire.hold-salaries', [
             'selectedEmployeesDetails' => $selectedEmployeesDetails,
         ]);
     }

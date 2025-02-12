@@ -11,9 +11,8 @@
                 <a href="#" class="active"><i class="ph-house-fill"></i></a>
                 <ul class="sidebar__submenu">
                     <li class="title">Home</li>
-                    <li><a href="">Home</a></li>
-                    <li><a href="">Request</a></li>
-                    <li><a href="">HelpDesk</a></li>
+                    <li><a href="{{route('home')}}">Home</a></li>
+
                 </ul>
             </li>
             <li>
@@ -153,7 +152,7 @@
                             <li><a href="/user">Bank Transfer</a></li>
                             <li><a href="/user">Cheque / Cash Statement</a></li>
                             <li><a href="/user">Payslips</a></li>
-                            <li><a href="/user">Hold Salary Payout</a></li>
+                            <li><a href="/hr/user/hold-salaries">Hold Salary Payout</a></li>
                         </ul>
                     </li>
                     <li>
