@@ -47,8 +47,7 @@
                                             <div class="form-check">
                                                 <input class="form-check-input" type="checkbox"
                                                     wire:model="selectAll"
-                                                    wire:click="toggleSelectAll"
-                                                    >
+                                                    wire:click="toggleSelectAll">
                                             </div>
                                         </th>
                                         <th>Manager</th>
@@ -214,7 +213,10 @@
                                         <table class="leave-table">
                                             <thead>
                                                 <tr>
-                                                    <th><input type="checkbox" wire:model="selectAll" /> <!-- Select All Checkbox -->
+                                                    <th>
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox" class="form-control" wire:model="selectAll" /> <!-- Select All Checkbox -->
+                                                        </div>
                                                     </th>
                                                     <th>Leave Name</th>
                                                     <th>Grant Days</th>
@@ -225,7 +227,11 @@
                                                 <tr>
                                                     <!-- Checkbox for each row, bound to the individual leave -->
                                                     <td>
-                                                        <input type="checkbox" wire:click="updateSelectedLeaveTypes({{ $leave['id'] }})" />
+                                                        <div class="form-check">
+                                                            <input class="form-check-input"
+                                                                type="checkbox" wire:click="updateSelectedLeaveTypes({{ $leave['id'] }})" />
+                                                        </div>
+
                                                     </td>
                                                     <td>{{ $leave['leave_name'] ?? $leave->leave_name }}</td>
                                                     <td>

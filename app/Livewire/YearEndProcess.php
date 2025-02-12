@@ -44,7 +44,7 @@ class YearEndProcess extends Component
     public $leaveDetailsWithBalance = [];
     public $showYearEndProcessModal = false;
     public $selectedLeaveNames = [];
-    public $filteredLeaveData = [];
+    public $filteredLeaveData ;
     public function mount()
     {
 
@@ -770,7 +770,7 @@ class YearEndProcess extends Component
                 }
             })
                 ->where('granted_for_year', $this->selectedYear)
-                ->where('is_lapsed', false)
+                ->whereNull('lapsed_date')
                 ->get();
 
             // If no filteredLeaveData is found
@@ -799,7 +799,7 @@ class YearEndProcess extends Component
         // Check if any of the filtered leave data is already lapsed
         $alreadyLapsed = false;
         foreach ($this->filteredLeaveData as $data) {
-            if ($data->is_lapsed && !empty($data->lapsed_date)) {
+            if (!empty($data->lapsed_date)) {
                 $alreadyLapsed = true;
                 break;  // If any leave data is already lapsed, break the loop
             }
@@ -812,7 +812,7 @@ class YearEndProcess extends Component
         }
 
         // Collect employee IDs for batch processing
-        $employeeIds = array_column($this->filteredLeaveData, 'emp_id');
+        $employeeIds = $this->filteredLeaveData->pluck('emp_id')->toArray();
 
         // Set the batch size (e.g., process 100 employees per batch)
         $batchSize = 100;
