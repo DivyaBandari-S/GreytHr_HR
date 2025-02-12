@@ -307,7 +307,7 @@ body {
 	align-items: center;
 }
 #main .main__top .main__top__title .breadcrumbs :is(li, a) {
-	font-size: .875rem;
+	font-size: 12px;
 	color: var(--white);
 }
 #main .main__top .main__top__title .breadcrumbs li a:hover {
@@ -932,3 +932,29 @@ body {
     padding: 15px 15px !important;
     right: 10px !important;
 }
+
+.ribbon {
+	position: relative;
+	background: #3b4f87; /* Dark Blue */
+	color: white;
+	padding: 5px 10px;
+	font-size: 12px;
+	/* font-weight: bold; */
+	display: inline-block;
+	border-radius: 5px 0 0 5px;
+	left: 30px;
+  }
+  
+  .ribbon::after {
+	content: "";
+	position: absolute;
+	right: -10px;
+	top: 0;
+	border-top: 15px solid transparent;
+	border-bottom: 15px solid transparent;
+	border-left: 10px solid #3b4f87;
+  }
+  .menuIcon {
+	cursor: pointer;
+  }
+  

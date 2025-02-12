@@ -30,7 +30,10 @@
                     </div>
                 </div>
                 <div class="row m-0 pt-3 px-4">
-                    <div class="d-flex justify-content-end mb-3 p-0">
+                    <div class="d-flex justify-content-end mb-3 gap-3 p-0">
+                        <div class="search-containers">
+                            <input type="text" class="form-control" wire:model.live="searchQuery" placeholder="Search..." >
+                        </div>
                         <button type="button" class="submit-btn" wire:click="toggleUploadBtn">Upload Zip files</button>
                     </div>
                     <div class="table-responsive p-0">
@@ -42,6 +45,7 @@
                             </thead>
                             <thead>
                                 <tr>
+                                    <th>#</th> <!-- Serial number column -->
                                     <th>Date</th>
                                     <th>File</th>
                                     <th>Status</th>
@@ -49,20 +53,50 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @if($uploadedHistory)
-                                @foreach ($uploadedHistory as $history )
+                                @if($paginatedData) <!-- Check if there are records -->
+                                @foreach ($paginatedData as $history)
                                 <tr>
+                                    <td>{{ $loop->iteration }}</td> <!-- Display serial number -->
                                     <td>{{ \Carbon\Carbon::parse($history->created_at)->format('d M, Y') }}</td>
-                                    <td wire:click="downloadZipFile('{{$history->id}}')"> <span class="anchorLink">{{ $history->file_name }}</span> </td>
-                                    <td style="color: {{$history->status === 'Cancelled'? 'red' : ($history->status == 'Completed' ? 'green' : 'black')}}">{{ (strtoupper($history->status ))}}</td>
+                                    <td wire:click="downloadZipFile('{{$history->id}}')">
+                                        <span class="anchorLink">{{ $history->file_name }}</span>
+                                    </td>
+                                    <td style="color: {{$history->status === 'Cancelled' ? 'red' : ($history->status == 'Completed' ? 'green' : 'black')}}">{{ strtoupper($history->status) }}</td>
                                     <td> {{ $history->log }} </td>
                                 </tr>
                                 @endforeach
                                 @else
-                                <tr colspan="4">No data found</tr>
+                                <tr>
+                                    <td colspan="5">No data found</td> <!-- Updated colspan to match the number of columns -->
+                                </tr>
                                 @endif
                             </tbody>
+
                         </table>
+
+                    </div>
+
+                    <div class="mb-3">
+                        <nav aria-label="Page navigation d-flex justify-content-center" style="display: flex; justify-content: center;">
+                            <ul class="pagination">
+                                <!-- Previous Button -->
+                                <li class="page-item {{ $currentPageUploaded === 1 ? 'disabled' : '' }}">
+                                    <button class="page-link" wire:click="setPageUploaded({{ $currentPageUploaded - 1 }})">Previous</button>
+                                </li>
+
+                                <!-- Page Number Buttons (centered) -->
+                                @for ($i = 1; $i <= $totaluploadedPages; $i++)
+                                    <li class="page-item {{ $currentPageUploaded === $i ? 'active' : '' }}">
+                                    <button class="page-link" wire:click="setPageUploaded({{ $i }})">{{ $i }}</button>
+                                    </li>
+                                    @endfor
+
+                                    <!-- Next Button -->
+                                    <li class="page-item {{ $currentPageUploaded === $totaluploadedPages ? 'disabled' : '' }}">
+                                        <button class="page-link" wire:click="setPageUploaded({{ $currentPageUploaded + 1 }})">Next</button>
+                                    </li>
+                            </ul>
+                        </nav>
                     </div>
                 </div>
                 @endif
@@ -134,7 +168,7 @@
                                 @endphp
 
                                 <div class="image-item rounded">
-                                    <img src="{{ asset($path) }}" alt="Extracted Image" style="max-width: 100px; max-height: 100px;">
+                                    <img src="{{ asset($path) }}" alt="Extracted Image" style="max-width: 50px; max-height: 50px;">
                                     <div class="d-flex flex-column">
                                         <div>
                                             <p class="mb-0 normalTextFile"> File name: {{ $filename }}</p>
@@ -189,21 +223,6 @@
                             <!-- Pagination Controls -->
                             <div class="mt-4 mb-4">
                                 <!-- Pagination Controls -->
-                                <div class="pagination d-flex align-items-center justify-content-center py-4">
-                                    <!-- Previous Button -->
-                                    @if ($currentPage > 1)
-                                    <button wire:click="setPage({{ $currentPage - 1 }})" class="submit-btn">Previous</button>
-                                    @endif
-
-                                    <!-- Page Number Display -->
-                                    <span class="px-2">Page {{ $currentPage }} of {{ $totalPages }}</span>
-
-                                    <!-- Next Button -->
-                                    @if ($currentPage < $totalPages)
-                                        <button wire:click="setPage({{ $currentPage + 1 }})" class="submit-btn">Next</button>
-                                        @endif
-                                </div>
-
                                 <!-- Pagination with Individual Page Buttons (centered) -->
                                 <nav aria-label="Page navigation d-flex justify-content-center" style="display: flex; justify-content: center;">
                                     <ul class="pagination">
@@ -226,10 +245,11 @@
                                     </ul>
                                 </nav>
                             </div>
-
-                            <button class="cancel-btn" type="button" wire:click="gotoBack">Back</button>
-                            <button class="submit-btn" type="button" wire:click="storeImageOfEmployee">Finish</button>
-                            <button class="cancel-btn" type="button" wire:click="cancelUpdating({{ $folderId }})">Cancel</button>
+                            <div class="row">
+                                <button class="cancel-btn" type="button" wire:click="gotoBack">Back</button>
+                                <button class="submit-btn" type="button" wire:click="storeImageOfEmployee">Finish</button>
+                                <button class="cancel-btn" type="button" wire:click="cancelUpdating({{ $folderId }})">Cancel</button>
+                            </div>
                         </div>
                         @endif
                     </div>

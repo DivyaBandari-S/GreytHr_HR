@@ -27,11 +27,18 @@ class EmpBulkPhotoUpload extends Component
 
     public $folderId;
     public $employeeIds = [];
-    public $perPage = 2;  // Define how many images per page
+    public $perPage = 4;  // Define how many images per page
     public $currentPage = 1; // Default to page 1
     public $totalImages = 0; // Total images in the array
     public $totalPages;
     public $imagePaths;
+    public $totalUploaded;
+    public $paginatedData;
+    public $searchQuery = '';
+    public $currentPageUploaded = 1; // Ensure it's initialized properly
+    public $totaluploadedPages;
+
+    public $perpageUploaded = 10;
 
     public function mount()
     {
@@ -77,12 +84,95 @@ class EmpBulkPhotoUpload extends Component
         $this->openEmployeeContainers[$index] = !$this->openEmployeeContainers[$index];
     }
 
+    public function updatedSearchQuery()
+    {
+        // This method will be called whenever $searchQuery is updated (due to wire:model.live)
+        $this->getUploadedZipFiles();
+    }
     public $uploadedHistory;
     //getUp,oaded zip file hostory
     public function getUploadedZipFiles()
     {
-        $this->uploadedHistory = UploadBulkPhotos::all();
+        try {
+            // Build the query to fetch uploaded photos
+            $query = UploadBulkPhotos::query();
+
+            // Apply search filter based on searchEmployee (emp_id, first_name, last_name)
+            if (!empty($this->searchQuery)) {
+                $query
+                      ->Where('status', 'like', "%{$this->searchQuery}%")
+                      ->orWhere('file_name', 'like', "%{$this->searchQuery}%");
+            }
+
+            // Execute the query and get the result
+            $this->uploadedHistory = $query->get();
+    
+            // Ensure that the data exists and calculate pagination
+            $this->totalUploaded = count($this->uploadedHistory);
+            $this->totaluploadedPages = ceil($this->totalUploaded / $this->perpageUploaded);
+    
+            // Pagination logic to fetch the current page's data
+            $start = ($this->currentPageUploaded - 1) * $this->perpageUploaded;
+            $end = $start + $this->perpageUploaded;
+    
+            // Ensure we don't exceed the bounds of the array
+            $this->paginatedData = [];
+            for ($i = $start; $i < $end && $i < $this->totalUploaded; $i++) {
+                $this->paginatedData[] = $this->uploadedHistory[$i];
+            }
+        } catch (\Exception $e) {
+            // Handle any exceptions that occur during the process
+            Log::error('Error in getUploadedZipFiles: ' . $e->getMessage());
+            // Optionally, set a user-friendly message for the user
+            session()->flash('error', 'There was an error retrieving the uploaded zip files.');
+    
+            // Ensure paginated data is set to an empty array in case of an error
+            $this->paginatedData = [];
+        }
     }
+
+
+    public function setPageUploaded($page)
+    {
+        try {
+            // Ensure the page number is within the valid range
+            $this->currentPageUploaded = max(1, min($page, $this->totaluploadedPages));
+
+            // Get the paginated image paths
+            $this->paginatedData = $this->getPaginatedUploads();
+        } catch (\Exception $e) {
+            // Handle any exceptions
+            Log::error('Error in setPageUploaded: ' . $e->getMessage());
+            // Optionally, set a user-friendly message
+            FlashMessageHelper::flashError('There was an error setting the page.');
+        }
+    }
+
+    public function getPaginatedUploads()
+    {
+        try {
+            // Ensure uploadedHistory is an array
+            $this->uploadedHistory = $this->uploadedHistory ?? [];
+
+            // Calculate the starting index based on the current page
+            $start = ($this->currentPageUploaded - 1) * $this->perpageUploaded;
+            $end = $start + $this->perpageUploaded;
+
+            // Ensure we don't exceed the bounds of the array
+            $this->paginatedData = [];
+            for ($i = $start; $i < $end && $i < count($this->uploadedHistory); $i++) {
+                $this->paginatedData[] = $this->uploadedHistory[$i];
+            }
+
+            return $this->paginatedData;
+        } catch (\Exception $e) {
+            // Handle any exceptions
+            Log::error('Error in getPaginatedUploads: ' . $e->getMessage());
+            // Optionally, set a user-friendly message
+            FlashMessageHelper::flashError('There was an error fetching paginated uploads.');
+        }
+    }
+
     public function getEmployeeData($searchTerm = null)
     {
         $searchTerm = $this->searchTerm;
@@ -362,7 +452,7 @@ class EmpBulkPhotoUpload extends Component
             session()->put('extracted_images_' . $upload->id, $this->imagePaths);
             // Set total images count
             $this->totalImages = count($this->imagePaths);
-            $this->totalPages = $this->totalImages / $this->perPage;
+            $this->totalPages = ceil($this->totalImages / $this->perPage);
             $this->paginatedImages = array_slice($this->imagePaths, ($this->currentPage - 1) * $this->perPage, $this->perPage);
 
             FlashMessageHelper::flashSuccess('Images extracted successfully!');
@@ -377,19 +467,23 @@ class EmpBulkPhotoUpload extends Component
 
     public function setPage($page)
     {
-        // Ensure the page number is within valid range
+        // Ensure the page number is within the valid range
         $this->currentPage = max(1, min($page, ceil($this->totalImages / $this->perPage)));
-        // Get the paginated image paths
-        $this->getPaginatedImages();
+
+        // Get the paginated image paths and store them in the component property
+        $this->paginatedImages = $this->getPaginatedImages();
     }
+
 
     public function getPaginatedImages()
     {
         // Ensure imagePaths is not null and is an array
         $imagePaths = $this->imagePaths ?? [];
+
         // Use array_slice to paginate the image paths array
         return array_slice($imagePaths, ($this->currentPage - 1) * $this->perPage, $this->perPage);
     }
+
 
 
     private function scanDirectoryForImages($dir, &$extractedFiles, $upload)
@@ -473,7 +567,13 @@ class EmpBulkPhotoUpload extends Component
             'paginatedImages' => $this->paginatedImages,
             'currentPage' => $this->currentPage,
             'totalImages' => $this->totalImages,
-            'totalPages' => $this->totalPages
+            'totalPages' => $this->totalPages,
+            'perpageUploaded' => $this->perpageUploaded,
+            'currentPageUploaded' => $this->currentPageUploaded,
+            'paginatedData' => $this->paginatedData,
+            'totaluploadedPages' => $this->totaluploadedPages,
+            'totalUploaded' => $this->totalUploaded
+
         ]);
     }
 }

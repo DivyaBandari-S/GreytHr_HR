@@ -1,29 +1,84 @@
 // SIDEBAR: SUBMENU
-const allSidebarSubmenu = document.querySelectorAll('#sidebar .sidebar__submenu')
-const mainSection = document.querySelector('#main')
+// const allSidebarSubmenu = document.querySelectorAll('#sidebar .sidebar__submenu')
+// const mainSection = document.querySelector('#main')
+
+// allSidebarSubmenu.forEach(item => {
+//     const a = item.previousElementSibling
+
+//     a.addEventListener('click', function(e) {
+//         e.preventDefault()
+
+//         if (this.classList.contains('clicked')) {
+//             this.classList.remove('clicked')
+//             item.classList.remove('active')
+//             mainSection.classList.remove('openLeftSubMenu')
+//         } else {
+//             allSidebarSubmenu.forEach(i => {
+//                 i.previousElementSibling.classList.remove('clicked')
+//                 i.classList.remove('active')
+//             })
+
+//             this.classList.add('clicked')
+//             item.classList.add('active')
+//             mainSection.classList.add('openLeftSubMenu')
+//         }
+//     })
+// })
+
+
+const allSidebarSubmenu = document.querySelectorAll('#sidebar .sidebar__submenu');
+const mainSection = document.querySelector('#main');
+const hamburgerMenu = document.querySelector('#hamburgerMenu');
 
 allSidebarSubmenu.forEach(item => {
-    const a = item.previousElementSibling
+    const a = item.previousElementSibling;
 
     a.addEventListener('click', function(e) {
-        e.preventDefault()
+        e.preventDefault();
 
         if (this.classList.contains('clicked')) {
-            this.classList.remove('clicked')
-            item.classList.remove('active')
-            mainSection.classList.remove('openLeftSubMenu')
+            this.classList.remove('clicked');
+            item.classList.remove('active');
+            mainSection.classList.remove('openLeftSubMenu');
         } else {
             allSidebarSubmenu.forEach(i => {
-                i.previousElementSibling.classList.remove('clicked')
-                i.classList.remove('active')
-            })
+                i.previousElementSibling.classList.remove('clicked');
+                i.classList.remove('active');
+            });
 
-            this.classList.add('clicked')
-            item.classList.add('active')
-            mainSection.classList.add('openLeftSubMenu')
+            this.classList.add('clicked');
+            item.classList.add('active');
+            mainSection.classList.add('openLeftSubMenu');
         }
-    })
-})
+    });
+});
+
+const menuIcon = document.querySelector('.menuIcon');
+
+hamburgerMenu.addEventListener('click', function() {
+    const isAnySubmenuActive = [...allSidebarSubmenu].some(item => item.classList.contains('active'));
+
+    if (isAnySubmenuActive) {
+        // Close all submenus
+        allSidebarSubmenu.forEach(item => {
+            item.previousElementSibling.classList.remove('clicked');
+            item.classList.remove('active');
+        });
+        mainSection.classList.remove('openLeftSubMenu');
+        menuIcon.classList.replace('fa-arrow-right', 'fa-bars'); // Change back to hamburger
+    } else {
+        // Open the first submenu if none are active
+        if (allSidebarSubmenu.length > 0) {
+            const firstSubmenu = allSidebarSubmenu[0];
+            firstSubmenu.previousElementSibling.classList.add('clicked');
+            firstSubmenu.classList.add('active');
+            mainSection.classList.add('openLeftSubMenu');
+            menuIcon.classList.replace('fa-bars', 'fa-arrow-right'); // Change to arrow icon
+        }
+    }
+});
+
+
 
 
 
@@ -129,31 +184,31 @@ allMainBodyMenu.forEach(item=> {
 
 
 // DOCUMENT EVENT
-document.addEventListener('click', function(e) {
-    if (!e.target.matches('#sidebar, #sidebar *')) {
-        allSidebarSubmenu.forEach(item => {
-            item.previousElementSibling.classList.remove('clicked')
-            item.classList.remove('active')
-            mainSection.classList.remove('openLeftSubMenu')
-        })
-    }
+// document.addEventListener('click', function(e) {
+//     if (!e.target.matches('#sidebar, #sidebar *')) {
+//         allSidebarSubmenu.forEach(item => {
+//             item.previousElementSibling.classList.remove('clicked')
+//             item.classList.remove('active')
+//             mainSection.classList.remove('openLeftSubMenu')
+//         })
+//     }
 
-    if (!e.target.matches('#sidebar, #sidebar *, #sidebar-mobile .toggle-sidebar')) {
-        sidebar.classList.remove('active')
-    }
+//     if (!e.target.matches('#sidebar, #sidebar *, #sidebar-mobile .toggle-sidebar')) {
+//         sidebar.classList.remove('active')
+//     }
 
-    if (!e.target.matches('#main .main__top .main__top__menu, #main .main__top .main__top__menu *')) {
-        allMainDropdown.forEach(item => {
-            item.classList.remove('active')
-        })
-    }
+//     if (!e.target.matches('#main .main__top .main__top__menu, #main .main__top .main__top__menu *')) {
+//         allMainDropdown.forEach(item => {
+//             item.classList.remove('active')
+//         })
+//     }
 
-    if (!e.target.matches('#main .main__body :is(.members__menu, .sales-summary__menu), #main .main__body :is(.members__menu, .sales-summary__menu) *')) {
-        allMainBodyMenu.forEach(item => {
-            item.classList.remove('active')
-        })
-    }
-})
+//     if (!e.target.matches('#main .main__body :is(.members__menu, .sales-summary__menu), #main .main__body :is(.members__menu, .sales-summary__menu) *')) {
+//         allMainBodyMenu.forEach(item => {
+//             item.classList.remove('active')
+//         })
+//     }
+// })
 
 
 
