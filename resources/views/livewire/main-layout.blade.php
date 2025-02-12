@@ -105,7 +105,7 @@
                     <li>
                         <a href="#">Main<i class="ph-caret-right-fill"></i></a>
                         <ul class="sidebar__dropdown-menu">
-                            <li><a href="">Overview</a></li>
+                            <li><a href="/hr/user/payroll-overview">Overview</a></li>
                         </ul>
                     </li>
                     <li>

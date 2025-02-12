@@ -53,6 +53,7 @@ use App\Livewire\LeaveSettingPolicy;
 use App\Livewire\LeaveTypeReviewer;
 use App\Livewire\LetterPreparePage;
 use App\Livewire\ParentDetails;
+use App\Livewire\PayrollOverview;
 use App\Livewire\Payslips;
 use App\Livewire\PfYtdReport;
 use App\Livewire\PositionHistory;
@@ -148,6 +149,7 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
         Route::get('parent-details', ParentDetails::class)->name('parent-details');
         Route::get('/emp-document', EmpDocument::class)->name('emp-document');
         Route::get('/bank-account', EmpDocument::class)->name('bank-account');
+        Route::get('/user/payroll-overview', PayrollOverview::class)->name('payroll-overview');
 
         //HR Employee-Admin Submodule Routes
         Route::get('/user/generate-letter', GenerateLetters::class)->name('generate-letter');
