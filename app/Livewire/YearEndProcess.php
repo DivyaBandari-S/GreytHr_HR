@@ -811,7 +811,7 @@ class YearEndProcess extends Component
                         // Replicate the existing record to create a new record with the same attributes
                         $newRecord = $data->replicate();
                         // Set the new status to 'opening balance'
-                        $newRecord->status = 'opening balance';
+                        $newRecord->status = 'opening balance'; 
                         $leavePolicyNew = json_decode($newRecord->leave_policy_id, true);
                         // Update the 'grant_days' with the sick leave balance
                         foreach ($leavePolicyNew as &$policy) {

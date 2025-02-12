@@ -11,8 +11,9 @@
                 <a href="#" class="active"><i class="ph-house-fill"></i></a>
                 <ul class="sidebar__submenu">
                     <li class="title">Home</li>
-                    <li><a href="{{route('home')}}">Home</a></li>
-                   
+                    <li><a href="">Home</a></li>
+                    <li><a href="">Request</a></li>
+                    <li><a href="">HelpDesk</a></li>
                 </ul>
             </li>
             <li>
@@ -45,7 +46,7 @@
                             <li><a href="/hr/user/main-overview">Overview</a></li>
                             <li><a href="/hr/user/analytics-hub">Analytics Hub</a></li>
                             <li><a href="/hr/user/hremployeedirectory">Employee Directory</a></li>
-                            <li><a href="/hr/user/hr-organisation-chart">Organization Chart</a></li>
+                            <li><a href="/user">Organization Chart</a></li>
                         </ul>
                     </li>
                     <li>
@@ -158,11 +159,11 @@
                     <li>
                         <a href="#">Published Info <i class="ph-caret-right-fill"></i></a>
                         <ul class="sidebar__dropdown-menu">
-                            <li><a href="/hr/payslips">Payslip</a></li>
-                            <li><a href="/hr/ctcslips">CTC Payslip</a></li>
+                            <li><a href="/home">Payslip</a></li>
+                            <li><a href="/user">CTC Payslip</a></li>
                             <li><a href="/user">Reimbursement Payslip</a></li>
-                            <li><a href="/hr/ytdreport">YTD Summary</a></li>
-                            <li><a href="/hr/pfytdreport">PF YTD Statement</a></li>
+                            <li><a href="/user">YTD Summary</a></li>
+                            <li><a href="/user">PF YTD Statement</a></li>
                             <li><a href="/user">Reimbursement Statement</a></li>
                             <li><a href="/user">IT Statement</a></li>
                             <li><a href="/user">Loan Statement</a></li>
@@ -230,7 +231,7 @@
                         <ul class="sidebar__dropdown-menu">
                             <li><a href="/hr/user/employee-leave">Employee Leave</a></li>
                             <li><a href="/hr/user/shift-roster-hr">Shift Roaster</a></li>
-                            <li><a href="/hr/user/employee-swipes-for-hr">Employee Swipes</a></li>
+                            <li><a href="/user">Employee Swipes</a></li>
                             <li><a href="/hr/user/attendance-muster-hr">Attendance Muster</a></li>
                             <li><a href="/hr/user/attendance-info">Attendance Info</a></li>
                         </ul>
@@ -244,12 +245,11 @@
                             <li><a href="/user">Assign Attendnace Scheme</a></li>
                             <li><a href="/user">Process Attendance</a></li>
                             <li><a href="/home">Attendance Period Finalisation</a></li>
-                            <li><a href="/hr/user/attendance-exception">Attendance Exception</a></li>
-                            <li><a href="/user">Assign Attendnace Scheme</a></li>
-                            <li><a href="/hr/user/attendance-lock-configuration">Lock Configuartion</a></li>
-                            <li><a href="/hr/user/hr-manual-override">Manual Override</a></li>
-                            <li><a href="/hr/user/shift-override">Shift Override</a></li>
-                            <li><a href="/user">Leave Recalculator</a></li>
+                            <li><a href="/user">Attendance Exception</a></li>
+                            <li><a href="/user">Lock Configuartion</a></li>
+                            <li><a href="/user">Manual Override</a></li>
+                            <li><a href="/user">Shift Override</a></li>
+                            <li><a href="/hr/user/leave/admin/leaveRecalculator">Leave Recalculator</a></li>
                         </ul>
                     </li>
                     <li>
@@ -258,9 +258,9 @@
                             <li><a href="/hr/user/holidayList">Holiday List</a></li>
                             <li><a href="/user">weekend Override</a></li>
                             <li><a href="/hr/user">Swipe Managment</a></li>
-                            <li><a href="/hr/user/shift-rotation-calendar">Shift Rotation Calendar</a></li>
-                            <li><a href="/hr/user/employee-weekday-chart">Employee Week Days</a></li>
-                            <li><a href="/user">Leave Type Reviewer</a></li>
+                            <li><a href="/user">Shift Rotation Calendar</a></li>
+                            <li><a href="/home">Employee Week Days</a></li>
+                            <li><a href="/hr/user/leave/setup/leave-type-reviewer">Leave Type Reviewer</a></li>
                             <li><a href="/user">Ip Address Mapping</a></li>
                         </ul>
                     </li>
@@ -301,8 +301,13 @@
         <!-- start: MAIN TOP -->
         <div class="main__top">
             <div class="main__top__title">
-                <h3>Admin Dashboard</h3>
-                <ul class="breadcrumbs">
+
+                <h3><i class="fa-solid fa-bars menuIcon me-3" id="hamburgerMenu"></i> Admin Dashboard</h3>
+                <!-- <div class="ribbon">
+                    <span>Primary</span>
+                </div> -->
+
+                <ul class="breadcrumbs ribbon">
                     <li><a href="{{route('home')}}">Home</a></li>
                     <li class="divider">/</li>
                     <li><a href="#" class="active">Dashboard</a></li>
@@ -469,7 +474,6 @@
             </ul>
         </div>
         <!-- end: MAIN TOP -->
-
 
 
         <!-- Logout Modal -->
