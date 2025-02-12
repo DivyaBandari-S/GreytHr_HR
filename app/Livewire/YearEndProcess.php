@@ -30,6 +30,7 @@ class YearEndProcess extends Component
     public $selectedLeaveId = null;
     public $activeTab = 'nav-home';
     public $leaveData;
+    public $searchQuery = '';
     public $startDate;
 
     public $selectedLeaveRequestIds = [];
@@ -80,10 +81,8 @@ class YearEndProcess extends Component
                 ->pluck('emp_id')
                 ->toArray();
 
-            $this->getAllEmpLeaveReq();
             $this->updateDateRange();
             $this->getLeaveTypes();
-
         } catch (\Illuminate\Database\QueryException $e) {
             // Handle database exceptions
             Log::error("Database query error in mount: " . $e->getMessage());
@@ -111,7 +110,7 @@ class YearEndProcess extends Component
                 $this->endDate = Carbon::createFromDate($this->selectedYear, 12, 31)->format('M Y');
                 // Update period options when the year range is updated
                 $this->getAllEmpLeaveReq();
-                $this->getAvailedLeaves();
+                // $this->getAvailedLeaves();
                 $this->getLeaveTypeToLapse();
                 $this->getEmployeeLeaveDetailsWithBalance();
             }
@@ -452,23 +451,32 @@ class YearEndProcess extends Component
         // Initialize an array to hold leave balances
         $leaveAvailedReq = [];
 
-        // Loop through employee IDs to fetch their leave balances
-        foreach ($this->employeeIds as $employeeId) {
+        // Chunk the employee IDs to avoid overloading the database
+        $chunks = array_chunk($this->employeeIds, 50); // You can adjust the chunk size
+
+        // Iterate over each chunk of employees
+        foreach ($chunks as $chunk) {
             try {
-                // Fetch leave balances using the YearEndProcess method
-                $leaveAvailedReq[$employeeId] = YearEndProcess::getLeaveBalances($employeeId, $this->selectedYear);
+                // Fetch leave balances for the chunk of employee IDs
+                $leaveBalances = YearEndProcess::getLeaveBalances($chunk, $this->selectedYear);
+
+                // Merge the results for the current chunk with the overall leave data
+                $leaveAvailedReq = array_merge($leaveAvailedReq, $leaveBalances);
             } catch (\Exception $e) {
-                // Log the error and provide feedback for the specific employee
-                Log::error("Error fetching leave balances for employee ID {$employeeId}: " . $e->getMessage());
-                // Optionally, you can store a default error message or null value for this employee's data
-                $leaveAvailedReq[$employeeId] = 'Error fetching data';
-                FlashMessageHelper::flashError("An error occurred while fetching leave data for employee ID {$employeeId}. Please try again later.");
+                // Log error and continue with the next chunk
+                Log::error("Error fetching leave balances for employees in chunk: " . $e->getMessage());
+
+                // Optionally, store a default error message or null value for those employees in the chunk
+                foreach ($chunk as $employeeId) {
+                    $leaveAvailedReq[$employeeId] = 'Error fetching data';
+                }
             }
         }
 
         // Return the leave balances array
         return $leaveAvailedReq;
     }
+
 
 
     public $empLeaveAvailedCount = [];
@@ -494,12 +502,19 @@ class YearEndProcess extends Component
                 }
             })
                 ->whereIn('employee_status', ['active', 'on-probation'])
+                ->when(!empty($this->searchQuery), function ($query) {
+                    // Apply the search query (assuming you're searching by employee name)
+                    $query->where(function ($query) {
+                        $query->where('emp_id', 'like', "%{$this->searchQuery}%");
+                    });
+                })
                 ->pluck('emp_id')
                 ->toArray();
 
             // Now fetch the leave balances for these employees from the employee_leavebalance table
             $leaveBalances = EmployeeLeaveBalances::whereIn('emp_id', $this->employeeIds)
                 ->where('is_lapsed', false)
+                ->whereNull('lapsed_date')
                 ->where('granted_for_year', (string) $this->selectedYear) // Use this if granted_for_year is an integer
                 ->get(['emp_id', 'leave_policy_id']);
 
@@ -540,7 +555,7 @@ class YearEndProcess extends Component
         }
     }
 
-    public $leaveType = 'All';
+    public $leaveType = 'Sick Leave';
     //employee details with balance granted leave balance
     public function getEmployeeLeaveDetailsWithBalance()
     {
@@ -550,8 +565,12 @@ class YearEndProcess extends Component
             // Fetch allowed leave policies
             $allowedLeaves = $this->getAllEmpLeaveReq();
 
-            // Group the records by emp_id
+            // Ensure $allowedLeaves is a Laravel Collection
+            $allowedLeaves = collect($allowedLeaves);
+
+            // Now you can use the groupBy method on the collection
             $groupedLeaves = $allowedLeaves->groupBy('emp_id');
+
 
             // Initialize an array to hold the final data
             $leaveDetailsWithBalance = [];
@@ -625,59 +644,68 @@ class YearEndProcess extends Component
 
 
     //we can getting leave baalcne from this method for each leave type
-    public static function getLeaveBalances($employeeId, $selectedYear)
+    public static function getLeaveBalances(array $employeeIds, $selectedYear)
     {
         try {
-            // Fetch employee details
-            $employeeDetails = EmployeeDetails::where('emp_id', $employeeId)->first();
+            // Fetch employee details for the batch of employee IDs
+            $employeeDetails = EmployeeDetails::whereIn('emp_id', $employeeIds)->get();
 
-            if (!$employeeDetails) {
-                FlashMessageHelper::flashWarning('Employee not found.');
-                return null; // If employee does not exist, return null
+            // If no employees found, return an empty array
+            if ($employeeDetails->isEmpty()) {
+                return [];
             }
 
-            // Get leave balances per year
-            $sickLeavePerYear = EmployeeLeaveBalances::getLeaveBalancePerYear($employeeId, 'Sick Leave', $selectedYear);
-            $casualLeavePerYear = EmployeeLeaveBalances::getLeaveBalancePerYear($employeeId, 'Casual Leave', $selectedYear);
-            $casualProbationLeavePerYear = EmployeeLeaveBalances::getLeaveBalancePerYear($employeeId, 'Casual Leave Probation', $selectedYear);
-            $marriageLeaves = EmployeeLeaveBalances::getLeaveBalancePerYear($employeeId, 'Marriage Leave', $selectedYear);
-            $maternityLeaves = EmployeeLeaveBalances::getLeaveBalancePerYear($employeeId, 'Maternity Leave', $selectedYear);
-            $paternityLeaves = EmployeeLeaveBalances::getLeaveBalancePerYear($employeeId, 'Paternity Leave', $selectedYear);
+            // Prepare an array to hold the leave balances for each employee
+            $leaveBalances = [];
 
-            // Get the logged-in employee's approved leave days for the selected year
-            $approvedLeaveDays = LeaveHelper::getApprovedLeaveDays($employeeId, $selectedYear);
+            // Loop through each employee to fetch their leave balances
+            foreach ($employeeDetails as $employee) {
+                // Get leave balances per year for each employee
+                $sickLeavePerYear = EmployeeLeaveBalances::getLeaveBalancePerYear($employee->emp_id, 'Sick Leave', $selectedYear);
+                $casualLeavePerYear = EmployeeLeaveBalances::getLeaveBalancePerYear($employee->emp_id, 'Casual Leave', $selectedYear);
+                $casualProbationLeavePerYear = EmployeeLeaveBalances::getLeaveBalancePerYear($employee->emp_id, 'Casual Leave Probation', $selectedYear);
+                $marriageLeaves = EmployeeLeaveBalances::getLeaveBalancePerYear($employee->emp_id, 'Marriage Leave', $selectedYear);
+                $maternityLeaves = EmployeeLeaveBalances::getLeaveBalancePerYear($employee->emp_id, 'Maternity Leave', $selectedYear);
+                $paternityLeaves = EmployeeLeaveBalances::getLeaveBalancePerYear($employee->emp_id, 'Paternity Leave', $selectedYear);
 
-            // Calculate the remaining balances for each leave type
-            $sickLeaveBalance = $sickLeavePerYear - $approvedLeaveDays['totalSickDays'];
-            $casualLeaveBalance = $casualLeavePerYear - $approvedLeaveDays['totalCasualDays'];
-            $lossOfPayBalance = $approvedLeaveDays['totalLossOfPayDays'];
-            $casualProbationLeaveBalance = $casualProbationLeavePerYear - $approvedLeaveDays['totalCasualLeaveProbationDays'];
-            $marriageLeaveBalance = $marriageLeaves - $approvedLeaveDays['totalMarriageDays'];
-            $maternityLeaveBalance = $maternityLeaves - $approvedLeaveDays['totalMaternityDays'];
-            $paternityLeaveBalance = $paternityLeaves - $approvedLeaveDays['totalPaternityDays'];
+                // Get the logged-in employee's approved leave days for the selected year
+                $approvedLeaveDays = LeaveHelper::getApprovedLeaveDays($employee->emp_id, $selectedYear);
 
-            // Return the leave balances as an array
-            return [
-                'sickLeaveBalance' => $sickLeaveBalance,
-                'casualLeaveBalance' => $casualLeaveBalance,
-                'lossOfPayBalance' => $lossOfPayBalance,
-                'casualProbationLeaveBalance' => $casualProbationLeaveBalance,
-                'marriageLeaveBalance' => $marriageLeaveBalance,
-                'maternityLeaveBalance' => $maternityLeaveBalance,
-                'paternityLeaveBalance' => $paternityLeaveBalance,
-            ];
+                // Calculate the remaining balances for each leave type
+                $sickLeaveBalance = $sickLeavePerYear - $approvedLeaveDays['totalSickDays'];
+                $casualLeaveBalance = $casualLeavePerYear - $approvedLeaveDays['totalCasualDays'];
+                $lossOfPayBalance = $approvedLeaveDays['totalLossOfPayDays'];
+                $casualProbationLeaveBalance = $casualProbationLeavePerYear - $approvedLeaveDays['totalCasualLeaveProbationDays'];
+                $marriageLeaveBalance = $marriageLeaves - $approvedLeaveDays['totalMarriageDays'];
+                $maternityLeaveBalance = $maternityLeaves - $approvedLeaveDays['totalMaternityDays'];
+                $paternityLeaveBalance = $paternityLeaves - $approvedLeaveDays['totalPaternityDays'];
+
+                // Store the leave balances for the employee
+                $leaveBalances[$employee->emp_id] = [
+                    'sickLeaveBalance' => $sickLeaveBalance,
+                    'casualLeaveBalance' => $casualLeaveBalance,
+                    'lossOfPayBalance' => $lossOfPayBalance,
+                    'casualProbationLeaveBalance' => $casualProbationLeaveBalance,
+                    'marriageLeaveBalance' => $marriageLeaveBalance,
+                    'maternityLeaveBalance' => $maternityLeaveBalance,
+                    'paternityLeaveBalance' => $paternityLeaveBalance,
+                ];
+            }
+            // Return the leave balances for the batch of employees
+            return $leaveBalances;
         } catch (\Illuminate\Database\QueryException $e) {
             // Handle database-related errors (e.g., query issues)
             Log::error('Database query exception in getLeaveBalances: ' . $e->getMessage());
             FlashMessageHelper::flashError('Database connection error occurred. Please try again later.');
-            return null;
+            return [];
         } catch (\Exception $e) {
             // Catch any other exceptions
             Log::error('General exception in getLeaveBalances: ' . $e->getMessage());
             FlashMessageHelper::flashError('Failed to retrieve leave balances. Please try again later.');
-            return null;
+            return [];
         }
     }
+
 
 
     public function triggerYearEndProcess()
@@ -771,7 +799,7 @@ class YearEndProcess extends Component
         // Check if any of the filtered leave data is already lapsed
         $alreadyLapsed = false;
         foreach ($this->filteredLeaveData as $data) {
-            if ($data->is_lapsed) {
+            if ($data->is_lapsed && !empty($data->lapsed_date)) {
                 $alreadyLapsed = true;
                 break;  // If any leave data is already lapsed, break the loop
             }
@@ -783,11 +811,48 @@ class YearEndProcess extends Component
             return; // Stop further processing
         }
 
+        // Collect employee IDs for batch processing
+        $employeeIds = array_column($this->filteredLeaveData, 'emp_id');
+
+        // Set the batch size (e.g., process 100 employees per batch)
+        $batchSize = 100;
+        $chunks = array_chunk($employeeIds, $batchSize);
+
         // To track employees we have already created a new record for
         $processedEmployees = [];
 
+        // To hold leave balance data for the chunks
+        $leaveAvailedReq = [];
+
         try {
+            foreach ($chunks as $chunk) {
+                try {
+                    // Fetch leave balances for the chunk of employee IDs
+                    $leaveBalances = YearEndProcess::getLeaveBalances($chunk, $this->selectedYear);
+
+                    // Merge the results for the current chunk with the overall leave data
+                    $leaveAvailedReq = array_merge($leaveAvailedReq, $leaveBalances);
+                } catch (\Exception $e) {
+                    // Log error and continue with the next chunk
+                    Log::error("Error fetching leave balances for employees in chunk: " . $e->getMessage());
+
+                    // Optionally, store a default error message or null value for those employees in the chunk
+                    foreach ($chunk as $employeeId) {
+                        $leaveAvailedReq[$employeeId] = 'Error fetching data';
+                    }
+                }
+            }
+
+            // Now loop through the filtered leave data and process it
             foreach ($this->filteredLeaveData as $data) {
+                // Get leave balance for the employee from the merged leave balances
+                $employeeLeaveBalance = $leaveAvailedReq[$data->emp_id] ?? null;
+
+                // If no leave balance data is found, skip to next iteration
+                if (!$employeeLeaveBalance || $employeeLeaveBalance === 'Error fetching data') {
+                    continue;
+                }
+
                 // Decode the leave_policy_id (JSON string) into an array
                 $leavePolicy = json_decode($data->leave_policy_id, true);
                 // Check if the leave policy contains "Sick Leave"
@@ -801,8 +866,8 @@ class YearEndProcess extends Component
 
                 // If it's a sick leave, update status to 'opening balance' and skip the 'is_lapsed' update
                 if ($isSickLeave) {
-                    $checkData = YearEndProcess::getLeaveBalances($data->emp_id, $this->selectedYear);
-                    $sickLeaveBalance = $checkData['sickLeaveBalance'] ?? 0;
+                    // Check sick leave balance
+                    $sickLeaveBalance = $employeeLeaveBalance['sickLeaveBalance'] ?? 0;
                     $data->lapsed_date = now();
                     $data->save();
 
@@ -811,7 +876,7 @@ class YearEndProcess extends Component
                         // Replicate the existing record to create a new record with the same attributes
                         $newRecord = $data->replicate();
                         // Set the new status to 'opening balance'
-                        $newRecord->status = 'opening balance'; 
+                        $newRecord->status = 'opening balance';
                         $leavePolicyNew = json_decode($newRecord->leave_policy_id, true);
                         // Update the 'grant_days' with the sick leave balance
                         foreach ($leavePolicyNew as &$policy) {
@@ -850,11 +915,38 @@ class YearEndProcess extends Component
         }
     }
 
+
+    public $totalImages;
+    public $totalPages;
+    public $perPage = 10;
+    public $paginatedImages;
+    public $currentPage = 1;
+    public function setPage($page)
+    {
+        // Ensure the page number is within the valid range
+        $this->currentPage = max(1, min($page, ceil($this->totalImages / $this->perPage)));
+
+        // Get the paginated image paths and store them in the component property
+        $this->paginatedImages = $this->getPaginatedImages();
+    }
+
+
+    public function getPaginatedImages()
+    {
+        // Ensure imagePaths is not null and is an array
+        $leaveDetailsWithBalance = $this->leaveDetailsWithBalance ?? [];
+
+        // Use array_slice to paginate the image paths array
+        return array_slice($leaveDetailsWithBalance, ($this->currentPage - 1) * $this->perPage, $this->perPage);
+    }
     public function render()
     {
         $this->getPendingLeaveRequests();
-        $this->leaveData = $this->getAllEmpLeaveReq();
+        // $this->leaveData = $this->getAllEmpLeaveReq();
         $this->leaveDetailsWithBalance = $this->getEmployeeLeaveDetailsWithBalance();
+        $this->totalImages = count($this->leaveDetailsWithBalance);
+        $this->totalPages = ceil($this->totalImages / $this->perPage);
+        $this->paginatedImages = array_slice($this->leaveDetailsWithBalance, ($this->currentPage - 1) * $this->perPage, $this->perPage);
 
         return view('livewire.year-end-process', [
             'employeeIds' => $this->employeeIds,
@@ -864,7 +956,11 @@ class YearEndProcess extends Component
             'employeeReqDetails' => $this->employeeReqDetails,
             'leaveTypeList' => $this->leaveTypeList,
             'leaveData' => $this->leaveData,
-            'leaveDetailsWithBalance' => $this->leaveDetailsWithBalance
+            'leaveDetailsWithBalance' => $this->leaveDetailsWithBalance,
+            'paginatedImages' => $this->paginatedImages,
+            'currentPage' => $this->currentPage,
+            'totalImages' => $this->totalImages,
+            'totalPages' => $this->totalPages,
         ]);
     }
 }
