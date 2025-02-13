@@ -44,7 +44,7 @@ class YearEndProcess extends Component
     public $leaveDetailsWithBalance = [];
     public $showYearEndProcessModal = false;
     public $selectedLeaveNames = [];
-    public $filteredLeaveData ;
+    public $filteredLeaveData;
     public function mount()
     {
 
@@ -62,7 +62,9 @@ class YearEndProcess extends Component
             // Get the logged-in employee's ID
             $loggedInEmpID = auth()->guard('hr')->user()->emp_id;
 
+
             $this->leaveTypeList = LeavePolicySetting::select('leave_name', 'id')->get();
+
             // Fetch the company ID for the logged-in employee
             $companyID = EmployeeDetails::where('emp_id', $loggedInEmpID)
                 ->pluck('company_id')
@@ -80,7 +82,6 @@ class YearEndProcess extends Component
                 ->whereIn('employee_status', ['active', 'on-probation'])
                 ->pluck('emp_id')
                 ->toArray();
-
             $this->updateDateRange();
             $this->getLeaveTypes();
         } catch (\Illuminate\Database\QueryException $e) {
@@ -233,7 +234,7 @@ class YearEndProcess extends Component
             } else {
                 // Remove the ID if it's already in the array (toggle selection)
                 $this->selectedLeaveRequestIds = array_diff($this->selectedLeaveRequestIds, [$id]);
-            }
+            }   
         } catch (\Exception $e) {
             // Catch any exception that occurs and log the error or show a message
             FlashMessageHelper::flashError("An error occurred while selecting the employee: " . $e->getMessage());
