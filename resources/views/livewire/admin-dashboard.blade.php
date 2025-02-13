@@ -1,7 +1,7 @@
 <!-- start: MAIN -->
 <section>
     <!-- start: MAIN BODY -->
-    <div class="main__body" style="overflow: auto; height: calc(100vh - 70px)">
+    <div class="main__body" style="overflow: auto; height: calc(100vh - 84px)">
         <section class="tab-section">
             <div class="container-fluid">
                 <div class="tab-pane">
@@ -60,6 +60,101 @@
                     <div class="row m-0">
 
                         <div class="col-md-8">
+
+                            <div class="container-sec">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h5 class="fw-bold">My Favourites</h5>
+                                    <div class="navigation">
+                                        <button id="prev" disabled>&larr;</button>
+                                        <button id="next">&rarr;</button>
+                                    </div>
+                                </div>
+                                <div class="scroll-container" id="scrollContainer">
+                                    <div data-bs-toggle="modal" data-bs-target="#addFavModal" class="scroll-item blue-bg" style="width: 2em; text-align: center;">
+                                        <i class="fa-solid fa-plus" style="padding-top: 4.5em;"></i>
+                                    </div>
+                                    <div class="scroll-item blue-bg pt-3 ps-3 pe-3">
+                                        <div class="row m-0">
+                                            <div class="col-6 p-0">
+                                                <i class="fa-regular fa-user blue-bg-icon"></i>
+                                            </div>
+                                            <div class="col-6 p-0 text-end">
+                                                <i class="fa-solid fa-xmark closeIconFav"></i>
+                                            </div>
+                                        </div>
+                                        
+                                        <p>Update Employee Data</P>
+                                    </div>
+
+                                    <div class="scroll-item blue-bg pt-3 ps-3 pe-3">
+                                        <div class="row m-0">
+                                            <div class="col-6 p-0">
+                                                <i class="fa-regular fa-user blue-bg-icon"></i>
+                                            </div>
+                                            <div class="col-6 p-0 text-end">
+                                                <i class="fa-solid fa-xmark closeIconFav"></i>
+                                            </div>
+                                        </div>
+                                        <p>Update Employee Data</P>
+                                    </div>
+                                    <div class="scroll-item blue-bg pt-3 ps-3 pe-3">
+                                        <div class="row m-0">
+                                            <div class="col-6 p-0">
+                                                <i class="fa-regular fa-user blue-bg-icon"></i>
+                                            </div>
+                                            <div class="col-6 p-0 text-end">
+                                                <i class="fa-solid fa-xmark closeIconFav"></i>
+                                            </div>
+                                        </div>
+                                        <p>Update Employee Data</P>
+                                    </div>
+
+                                    <div class="scroll-item orag-bg pt-3 ps-3 pe-3">
+                                        <div class="row m-0">
+                                            <div class="col-6 p-0">
+                                                <i class="fa-regular fa-user orag-bg-icon"></i>
+                                            </div>
+                                            <div class="col-6 p-0 text-end">
+                                                <i class="fa-solid fa-xmark closeIconFav"></i>
+                                            </div>
+                                        </div>
+                                        <p>Update Employee Data</P>
+                                    </div>
+                                    <div class="scroll-item orag-bg pt-3 ps-3 pe-3">
+                                        <div class="row m-0">
+                                            <div class="col-6 p-0">
+                                                <i class="fa-regular fa-user orag-bg-icon"></i>
+                                            </div>
+                                            <div class="col-6 p-0 text-end">
+                                                <i class="fa-solid fa-xmark closeIconFav"></i>
+                                            </div>
+                                        </div>
+                                        <p>Update Employee Data</P>
+                                    </div>
+                                    <div class="scroll-item orag-bg pt-3 ps-3 pe-3">
+                                        <div class="row m-0">
+                                            <div class="col-6 p-0">
+                                                <i class="fa-regular fa-user orag-bg-icon"></i>
+                                            </div>
+                                            <div class="col-6 p-0 text-end">
+                                                <i class="fa-solid fa-xmark closeIconFav"></i>
+                                            </div>
+                                        </div>
+                                        <p>Update Employee Data</P>
+                                    </div>
+                                    <div class="scroll-item orag-bg pt-3 ps-3 pe-3">
+                                        <div class="row m-0">
+                                            <div class="col-6 p-0">
+                                                <i class="fa-regular fa-user orag-bg-icon"></i>
+                                            </div>
+                                            <div class="col-6 p-0 text-end">
+                                                <i class="fa-solid fa-xmark closeIconFav"></i>
+                                            </div>
+                                        </div>
+                                        <p>Update Employee Data</P>
+                                    </div>
+                                </div>
+                            </div>
 
                             <div class="row m-0">
 
@@ -287,6 +382,16 @@
 
                         <div class="col-md-4">
 
+                            <div class="m-0 mb-3 row" style="background-color: #fcf2ff; border-radius: 10px;">
+                                <img class="ps-2" style="width: 10em" src="images/onboarding.png"/>
+                                <h4 class="ps-4">Onboarding Session</h4>
+                                <p class="ps-4 pink-color">Worried about setting up your account?</p>
+                                <p class="ps-4 pink-color">Let our product experts help you get started and resolve any of your product-related problems.</p>
+                                <p class="ps-4 pink-color">Hurry Up! Book your free 30-min onboarding call now!</p>
+                                <hr></hr>
+                                <a class="ps-4 text-primary mb-3" href="#">Get Guided By The Best!</a>
+                            </div>
+
                             <div class="row m-0 mb-4 annocmentCard" style="padding: 10px 15px;">
 
                                 <div class="p-0 m-0 d-flex justify-content-between align-items-center mb-4">
@@ -455,6 +560,180 @@
             </div>
         </section>
     </div>
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="addFavModal" tabindex="-1" aria-labelledby="addFavModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="addFavModalLabel">Search</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="input-group flex-nowrap">
+            <span class="input-group-text" id="addon-wrapping"><i class="fa-solid fa-magnifying-glass"></i></span>
+            <input type="text" class="form-control" placeholder="Search here" aria-label="Username" aria-describedby="addon-wrapping">
+        </div>
+        <div class="row m-0">
+            <p class="mt-1x">
+                <span class="chipTextFav">All</span>
+                <span class="chipTextFav">My Favourites</span>
+                <span class="chipTextFav">Employee</span>
+                <span class="chipTextFav">Payroll</span>
+                <span class="chipTextFav">Leave</span>
+                <span class="chipTextFav">Other</span>
+            </p>
+        </div>
+        <div class="row m-0">
+            <div class="col-md-3">
+                <div class="blue-bg pt-3 ps-3 pe-3 rounded-3 mb-3">
+                    <div class="row m-0">
+                        <div class="col-6 p-0">
+                            <i class="fa-regular fa-user blue-bg-icon"></i>
+                        </div>
+                        <div class="col-6 p-0 text-end">
+                            <i class="fa-regular fa-star"></i>
+                        </div>
+                    </div>
+                    <p>Update Employee Data</P>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="blue-bg pt-3 ps-3 pe-3 rounded-3 mb-3">
+                    <div class="row m-0">
+                        <div class="col-6 p-0">
+                            <i class="fa-regular fa-user blue-bg-icon"></i>
+                        </div>
+                        <div class="col-6 p-0 text-end">
+                            <i class="fa-regular fa-star"></i>
+                        </div>
+                    </div>
+                    <p>Update Employee Data</P>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="blue-bg pt-3 ps-3 pe-3 rounded-3 mb-3">
+                    <div class="row m-0">
+                        <div class="col-6 p-0">
+                            <i class="fa-regular fa-user blue-bg-icon"></i>
+                        </div>
+                        <div class="col-6 p-0 text-end">
+                            <i class="fa-regular fa-star"></i>
+                        </div>
+                    </div>
+                    <p>Update Employee Data</P>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="orag-bg pt-3 ps-3 pe-3 rounded-3 mb-3">
+                    <div class="row m-0">
+                        <div class="col-6 p-0">
+                            <i class="fa-regular fa-user orag-bg-icon"></i>
+                        </div>
+                        <div class="col-6 p-0 text-end">
+                            <i class="fa-regular fa-star"></i>
+                        </div>
+                    </div>
+                    <p>Update Employee Data</P>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="orag-bg pt-3 ps-3 pe-3 rounded-3 mb-3">
+                    <div class="row m-0">
+                        <div class="col-6 p-0">
+                            <i class="fa-regular fa-user orag-bg-icon"></i>
+                        </div>
+                        <div class="col-6 p-0 text-end">
+                            <i class="fa-regular fa-star"></i>
+                        </div>
+                    </div>
+                    <p>Update Employee Data</P>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="orag-bg pt-3 ps-3 pe-3 rounded-3 mb-3">
+                    <div class="row m-0">
+                        <div class="col-6 p-0">
+                            <i class="fa-regular fa-user orag-bg-icon"></i>
+                        </div>
+                        <div class="col-6 p-0 text-end">
+                            <i class="fa-regular fa-star"></i>
+                        </div>
+                    </div>
+                    <p>Update Employee Data</P>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="orag-bg pt-3 ps-3 pe-3 rounded-3 mb-3">
+                    <div class="row m-0">
+                        <div class="col-6 p-0">
+                            <i class="fa-regular fa-user orag-bg-icon"></i>
+                        </div>
+                        <div class="col-6 p-0 text-end">
+                            <i class="fa-regular fa-star"></i>
+                        </div>
+                    </div>
+                    <p>Update Employee Data</P>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="orag-bg pt-3 ps-3 pe-3 rounded-3 mb-3">
+                    <div class="row m-0">
+                        <div class="col-6 p-0">
+                            <i class="fa-regular fa-user orag-bg-icon"></i>
+                        </div>
+                        <div class="col-6 p-0 text-end">
+                            <i class="fa-regular fa-star"></i>
+                        </div>
+                    </div>
+                    <p>Update Employee Data</P>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="orag-bg pt-3 ps-3 pe-3 rounded-3 mb-3">
+                    <div class="row m-0">
+                        <div class="col-6 p-0">
+                            <i class="fa-regular fa-user orag-bg-icon"></i>
+                        </div>
+                        <div class="col-6 p-0 text-end">
+                            <i class="fa-regular fa-star"></i>
+                        </div>
+                    </div>
+                    <p>Update Employee Data</P>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="orag-bg pt-3 ps-3 pe-3 rounded-3 mb-3">
+                    <div class="row m-0">
+                        <div class="col-6 p-0">
+                            <i class="fa-regular fa-user orag-bg-icon"></i>
+                        </div>
+                        <div class="col-6 p-0 text-end">
+                            <i class="fa-regular fa-star"></i>
+                        </div>
+                    </div>
+                    <p>Update Employee Data</P>
+                </div>
+            </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
     <!-- end: MAIN BODY -->
 
 </section>
