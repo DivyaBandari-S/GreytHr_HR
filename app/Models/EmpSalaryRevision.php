@@ -260,4 +260,16 @@ class EmpSalaryRevision extends Model
 
         return $percentage_change;
     }
+    static public function changeStatus($id){
+        if($id==1){
+            return 'Approved';
+        }elseif($id==0){
+            return 'Pending';
+        }elseif($id==2){
+            return 'Rejected';
+        }else{
+            return 'Unknown';
+        }
+
+    }
 }

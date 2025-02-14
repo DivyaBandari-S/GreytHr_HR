@@ -62,6 +62,7 @@ use App\Livewire\PreviousEmployeement;
 use App\Livewire\ReportsManagement;
 use App\Livewire\Requests;
 use App\Livewire\SalaryRevisionAnalytics;
+use App\Livewire\SalaryRevisionList;
 use App\Livewire\ShiftOverrideHr;
 use App\Livewire\ShiftRosterHr;
 use App\Livewire\ShiftRotationCalendar;
@@ -214,6 +215,7 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
         Route::get('/user/stop-salaries', StopSalaries::class)->name('stop-salaries');
         Route::get('/user/hold-salaries', HoldSalaries::class)->name('hold-salaries');
         Route::get('/user/employee-salary', EmployeeSalary::class)->name('employee-salary');
+        Route::get('/user/salary-revision-list', SalaryRevisionList::class)->name('salary-revision-list');
         Route::get('/user/salary-revision-analytics', SalaryRevisionAnalytics::class)->name('salary-revision-analytics');
     });
 });
