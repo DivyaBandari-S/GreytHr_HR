@@ -291,3 +291,22 @@ function tabToggle () {
     });
 };
 // end: Tab
+
+const scrollContainer = document.getElementById("scrollContainer");
+    const prevButton = document.getElementById("prev");
+    const nextButton = document.getElementById("next");
+
+    function updateButtons() {
+        prevButton.disabled = scrollContainer.scrollLeft === 0;
+        nextButton.disabled = scrollContainer.scrollLeft + scrollContainer.clientWidth >= scrollContainer.scrollWidth;
+    }
+
+    prevButton.addEventListener("click", () => {
+        scrollContainer.scrollBy({ left: -220, behavior: "smooth" });
+    });
+
+    nextButton.addEventListener("click", () => {
+        scrollContainer.scrollBy({ left: 220, behavior: "smooth" });
+    });
+
+    scrollContainer.addEventListener("scroll", updateButtons);
