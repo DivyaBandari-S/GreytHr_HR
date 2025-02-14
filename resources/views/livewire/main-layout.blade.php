@@ -119,7 +119,7 @@
                         <ul class="sidebar__dropdown-menu">
                             <li><a href="/hr/user/generate-letter">Salary</a></li>
                             <li><a href="/user">Loan</a></li>
-                            <li><a href="/user">Salary Revision</a></li>
+                            <li><a href="/hr/user/salary-revision-list">Salary Revision</a></li>
                             <li><a href="/user">Income Tax</a></li>
                             <li><a href="/user">Reimbursement</a></li>
                             <li><a href="/user">Employee LOP Days</a></li>
