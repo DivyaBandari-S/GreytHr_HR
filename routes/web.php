@@ -40,6 +40,7 @@ use App\Livewire\Everyone;
 use App\Livewire\Feeds;
 use App\Livewire\HelpDesk;
 use App\Livewire\GenerateLetters;
+use App\Livewire\HoldSalaries;
 use App\Livewire\HrAttendanceInfo;
 use App\Livewire\HrAttendanceOverviewNew;
 use App\Livewire\HrHolidayList;
@@ -61,9 +62,11 @@ use App\Livewire\PreviousEmployeement;
 use App\Livewire\ReportsManagement;
 use App\Livewire\Requests;
 use App\Livewire\SalaryRevisionAnalytics;
+use App\Livewire\SalaryRevisionList;
 use App\Livewire\ShiftOverrideHr;
 use App\Livewire\ShiftRosterHr;
 use App\Livewire\ShiftRotationCalendar;
+use App\Livewire\StopSalaries;
 use App\Livewire\SwipeManagementForHr;
 use App\Livewire\Tasks;
 use App\Livewire\WhoIsInChartHr;
@@ -207,5 +210,12 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
 
         //Reports
         Route::get('/user/reports/', ReportsManagement::class)->name('reports');
+
+        //Payroll
+        Route::get('/user/stop-salaries', StopSalaries::class)->name('stop-salaries');
+        Route::get('/user/hold-salaries', HoldSalaries::class)->name('hold-salaries');
+        Route::get('/user/employee-salary', EmployeeSalary::class)->name('employee-salary');
+        Route::get('/user/salary-revision-list', SalaryRevisionList::class)->name('salary-revision-list');
+        Route::get('/user/salary-revision-analytics', SalaryRevisionAnalytics::class)->name('salary-revision-analytics');
     });
 });

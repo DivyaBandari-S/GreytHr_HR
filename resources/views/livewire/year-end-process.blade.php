@@ -47,8 +47,7 @@
                                             <div class="form-check">
                                                 <input class="form-check-input" type="checkbox"
                                                     wire:model="selectAll"
-                                                    wire:click="toggleSelectAll"
-                                                    @if(count($selectedLeaveRequestIds)===$pendingLeaveRequests->count()) checked @endif />
+                                                    wire:click="toggleSelectAll">
                                             </div>
                                         </th>
                                         <th>Manager</th>
@@ -167,8 +166,8 @@
             <div class="tab-pane fade {{ $activeTab === 'nav-contact' ? 'show active' : '' }}" id="nav-contact">
                 <div class="yearEndtable">
                     <div class="row mb-3 mt-2">
-                        <div class="col-md-4 px-2">
-                            <select class="form-select" wire:model="leaveType" wire:change="getEmployeeLeaveDetailsWithBalance">
+                        <div class="col-md-3 px-2">
+                            <select class="form-select" wire:model="leaveType" wire:input="getEmployeeLeaveDetailsWithBalance">
                                 <option value="All">Leave Type: All</option>
                                 <option value="Sick Leave">Sick Leave</option>
                                 <option value="Casual Leave">Casual Leave</option>
@@ -179,7 +178,10 @@
                             </select>
                         </div>
 
-                        <div class="col-md-4 date-picker d-flex justify-content-end">
+                        <div class="col-md-2">
+                            <input type="text" class="form-control" wire:input="getEmployeeLeaveDetailsWithBalance" wire:model="searchQuery" placeholder="Search ID">
+                        </div>
+                        <div class="col-md-3 date-picker d-flex justify-content-end">
                             <select id="selectedYear" wire:model="selectedYear" wire:change="updateDateRange" class="form-control" style="font-size: 14px;">
                                 <option value="" disabled>Select Year</option>
                                 @foreach($yearRange as $year)
@@ -211,7 +213,10 @@
                                         <table class="leave-table">
                                             <thead>
                                                 <tr>
-                                                    <th><input type="checkbox" wire:model="selectAll" /> <!-- Select All Checkbox -->
+                                                    <th>
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox" class="form-control" wire:model="selectAll" /> <!-- Select All Checkbox -->
+                                                        </div>
                                                     </th>
                                                     <th>Leave Name</th>
                                                     <th>Grant Days</th>
@@ -222,7 +227,11 @@
                                                 <tr>
                                                     <!-- Checkbox for each row, bound to the individual leave -->
                                                     <td>
-                                                        <input type="checkbox" wire:click="updateSelectedLeaveTypes({{ $leave['id'] }})" />
+                                                        <div class="form-check">
+                                                            <input class="form-check-input"
+                                                                type="checkbox" wire:click="updateSelectedLeaveTypes({{ $leave['id'] }})" />
+                                                        </div>
+
                                                     </td>
                                                     <td>{{ $leave['leave_name'] ?? $leave->leave_name }}</td>
                                                     <td>
@@ -261,8 +270,8 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @if($leaveDetailsWithBalance && count($leaveDetailsWithBalance) > 0)
-                                @foreach($leaveDetailsWithBalance as $data)
+                                @if($paginatedImages && count($paginatedImages) > 0)
+                                @foreach($paginatedImages as $data)
                                 @foreach($data['leave_details'] as $leave)
                                 <tr>
                                     <td>{{ $data['emp_id'] }}</td>
@@ -288,6 +297,30 @@
                                 @endif
                             </tbody>
                         </table>
+                        <div class="mt-4 mb-4">
+                            <!-- Pagination Controls -->
+                            <!-- Pagination with Individual Page Buttons (centered) -->
+                            <nav aria-label="Page navigation d-flex justify-content-center" style="display: flex; justify-content: center;">
+                                <ul class="pagination">
+                                    <!-- Previous Button -->
+                                    <li class="page-item {{ $currentPage === 1 ? 'disabled' : '' }}">
+                                        <button class="page-link" wire:click="setPage({{ $currentPage - 1 }})">Previous</button>
+                                    </li>
+
+                                    <!-- Page Number Buttons (centered) -->
+                                    @for ($i = 1; $i <= $totalPages; $i++)
+                                        <li class="page-item {{ $currentPage === $i ? 'active' : '' }}">
+                                        <button class="page-link" wire:click="setPage({{ $i }})">{{ $i }}</button>
+                                        </li>
+                                        @endfor
+
+                                        <!-- Next Button -->
+                                        <li class="page-item {{ $currentPage === $totalPages ? 'disabled' : '' }}">
+                                            <button class="page-link" wire:click="setPage({{ $currentPage + 1 }})">Next</button>
+                                        </li>
+                                </ul>
+                            </nav>
+                        </div>
                     </div>
 
                 </div>

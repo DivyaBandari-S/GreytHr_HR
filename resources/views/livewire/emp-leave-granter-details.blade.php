@@ -1,4 +1,4 @@
-<div  r>
+<div r>
 
     <div class="container-fluid px-1  rounded">
 
@@ -51,26 +51,29 @@
                         <div class="col-md-9 py-2 px-0">
                             <div class="filters">
                                 <div class="dropdown">
-                                    <select name="grantType" id="grantType">
-                                        <option value="">Grant Type: All</option>
-                                        <option value="">Grant Type: Monthly</option>
-                                        <option value="">Grant Type: Yearly</option>
+                                    <select name="grantType" id="grantType" wire:model="grantType" wire:change="filterLeaveBalances">
+                                        <option value="All">All</option>
+                                        <option value="Monthly">Monthly</option>
+                                        <option value="Yearly">Yearly</option>
+                                        <option value="Quarterly">Quarterly</option>
+                                        <option value="Half yearly">Half yearly</option>
                                     </select>
                                 </div>
 
                                 <div class="dropdown">
-                                    <select>
-                                        <option value="">Leave Type: All</option>
-                                        <option value="">Leave Type: Sick Leave</option>
-                                        <option value="">Leave Type: Casual Leave</option>
+                                    <select wire:model="leaveType" wire:change="filterLeaveBalances">
+                                        <option value="All">All</option>
+                                        <option value="Sick Leave">Sick Leave</option>
+                                        <option value="Casual Leave">Casual Leave</option>
                                     </select>
                                 </div>
 
                                 <div class="dropdown">
-                                    <select >
-                                        <option value="">Employee: All</option>
-                                        <option value="">Employee: Full Time</option>
-                                        <option value="">Employee: Part Time</option>
+                                    <select wire:model="employmentType" wire:change="filterLeaveBalances">
+                                        <option value="All">All</option>
+                                        <option value="full-time">Full Time</option>
+                                        <option value="part-time">Part Time</option>
+                                        <option value="contract"> Contract</option>
                                     </select>
                                 </div>
                             </div>
@@ -156,7 +159,7 @@
                                                                     <td></td>
                                                                     <td>{{ $loop->iteration }}</td>
                                                                     <td>{{ $balance->emp_id }}</td>
-                                                                    <td> <span class="nameField">{{ ucwords(strtolower($balance->first_name)) }} {{ ucwords(strtolower($balance->first_name)) }}</span> </td>
+                                                                    <td> <span class="nameField">{{ ucwords(strtolower($balance->first_name)) }} {{ ucwords(strtolower($balance->last_name)) }}</span> </td>
                                                                     <td>{{ $balance->status }}</td>
                                                                     <td>{{ \Carbon\Carbon::parse($balance->hire_date)->format('d M, Y') }}</td>
                                                                     <td>
@@ -335,6 +338,19 @@
                             </div>
                             <div class="col-md-10 ">
                                 <div class="d-flex align-items-center gap-4">
+                                    <div class="form-check">
+                                        <div>
+                                            <input
+                                                class="form-check-input"
+                                                type="checkbox"
+                                                id="selectAllNewEmployees"
+                                                wire:model="selectAllNewJoin"
+                                                wire:click="toggleSelectAll">
+                                            <label class="form-check-label" for="selectAllNewEmployees">
+                                                Select Newly Joined Employees
+                                            </label>
+                                        </div>
+                                    </div>
                                     @if($showToSelect)
                                     <div>
                                         <input
@@ -350,7 +366,6 @@
                                         <input
                                             type="text"
                                             class="form-control"
-                                            id="searchEmployee"
                                             wire:click="toggleSearchEmployee"
                                             placeholder="Search Employee"
                                             wire:model="searchTerm"
@@ -368,67 +383,77 @@
 
                                         @if($showEmployeeSearch)
                                         <div class="selectEmp mb-3 bg-white d-flex flex-column position-absolute">
-                                            @if(count($employeeIds) > 0)
-                                            @foreach($employeeIds as $emp_id => $emp_name)
-                                            <div class="form-check">
-                                                <input
-                                                    class="form-check-input"
-                                                    type="checkbox"
-                                                    id="employee_{{ $emp_id }}"
-                                                    wire:model="selectedEmployees"
-                                                    value="{{ $emp_id }}">
-                                                <label class="form-check-label" for="employee_{{ $emp_id }}">
-                                                    {{ ucwords(strtolower($emp_name)) }}
-                                                </label>
+                                            <div class="d-flex justify-content-end">
+                                                <span wire:click="closeContainer"><i class="fa fa-times-circle text-muted" style="color:#ccc;"></i></span>
                                             </div>
-                                            @endforeach
-                                            @else
-                                            <div class="text-center subTextValue py-2">No data found for your search query.</div>
-                                            @endif
+                                            <div>
+                                                @if(count($employeeIds) > 0)
+                                                @foreach($employeeIds as $emp_id => $emp_name)
+                                                <div class="form-check">
+                                                    <input
+                                                        class="form-check-input"
+                                                        type="checkbox"
+                                                        id="employee_{{ $emp_id }}"
+                                                        wire:model="selectedEmployees"
+                                                        value="{{ $emp_id }}">
+                                                    <label class="form-check-label" for="employee_{{ $emp_id }}">
+                                                        {{ ucwords(strtolower($emp_name)) }}
+                                                    </label>
+                                                </div>
+                                                @endforeach
+                                                @else
+                                                <div class="text-center subTextValue py-2">No data found for your search query.</div>
+                                                @endif
+                                            </div>
                                         </div>
+
                                         @endif
                                     </div>
                                     @endif
-                                    <!-- Periodicity and Period -->
-                                    <div class="fieldsWidth d-flex align-items-center gap-2">
-                                        <div class="d-flex gap-2 align-items-center">
-                                            <label for="periodicity">Periodicity</label>
-                                            <select id="periodicity" wire:model="periodicity" wire:change="updatePeriodOptions" class="form-control ">
-                                                <option value="Monthly">Monthly</option>
-                                                <option value="Quarterly">Quarterly</option>
-                                                <option value="Half yearly">Half yearly</option>
-                                                <option value="Yearly">Yearly</option>
-                                            </select>
-                                        </div>
-
-                                        <!-- Period Dropdown -->
-                                        <div class="d-flex gap-2 align-items-center">
-                                            <label for="period">Period</label>
-                                            <select wire:model="period" class="form-control " id="period">
-                                                @if($periodicity == 'Monthly')
-                                                @foreach($months as $month)
-                                                <option value="{{ $month }}">{{ $month }}</option>
-                                                @endforeach
-                                                @elseif($periodicity == 'Quarterly')
-                                                @foreach($quarters as $quarter)
-                                                <option value="{{ $quarter }}">{{ $quarter }}</option>
-                                                @endforeach
-                                                @elseif($periodicity == 'Half yearly')
-                                                @foreach($halfYear as $half)
-                                                <option value="{{ $half }}">{{ $half }}</option>
-                                                @endforeach
-                                                @elseif($periodicity == 'Yearly')
-                                                @foreach($years as $year)
-                                                <option value="{{ $year }}">{{ $year }}</option>
-                                                @endforeach
-                                                @endif
-                                            </select>
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
                         </div>
 
+                        <div class="row m-0 mb-3 p-0">
+                            <!-- Periodicity and Period -->
+                            <div class="col-md-12 p-0">
+                                <div class="fieldsWidth d-flex align-items-center gap-2">
+                                    <div class="d-flex gap-2 align-items-center">
+                                        <label for="periodicity">Periodicity</label>
+                                        <select id="periodicity" wire:model="periodicity" wire:change="updatePeriodOptions" class="form-control ">
+                                            <option value="Monthly">Monthly</option>
+                                            <option value="Quarterly">Quarterly</option>
+                                            <option value="Half yearly">Half yearly</option>
+                                            <option value="Yearly">Yearly</option>
+                                        </select>
+                                    </div>
+
+                                    <!-- Period Dropdown -->
+                                    <div class="d-flex gap-2 align-items-center">
+                                        <label for="period">Period</label>
+                                        <select wire:model="period" class="form-control " id="period">
+                                            @if($periodicity == 'Monthly')
+                                            @foreach($months as $month)
+                                            <option value="{{ $month }}">{{ $month }}</option>
+                                            @endforeach
+                                            @elseif($periodicity == 'Quarterly')
+                                            @foreach($quarters as $quarter)
+                                            <option value="{{ $quarter }}">{{ $quarter }}</option>
+                                            @endforeach
+                                            @elseif($periodicity == 'Half yearly')
+                                            @foreach($halfYear as $half)
+                                            <option value="{{ $half }}">{{ $half }}</option>
+                                            @endforeach
+                                            @elseif($periodicity == 'Yearly')
+                                            @foreach($years as $year)
+                                            <option value="{{ $year }}">{{ $year }}</option>
+                                            @endforeach
+                                            @endif
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         @if($showFromTodates)
                         <div>
                             <label for="from_date">From Date</label>

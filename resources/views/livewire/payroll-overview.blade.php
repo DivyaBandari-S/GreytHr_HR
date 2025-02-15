@@ -88,14 +88,48 @@
             font-size: 18px;
 
         }
-        .card div{
+
+        .card div {
             min-height: 150px;
             display: flex;
             justify-content: center;
             align-items: center;
             font-size: 15px;
-             color:#7f8fa4;
+            color: #7f8fa4;
 
+        }
+
+        .profile-image {
+            height: 25px;
+            width: 25px;
+        }
+
+
+        .employee-name {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: block;
+            color: #171e25;
+            font-size: 13px;
+            /* max-width: 200px; */
+            /* Adjust as needed */
+        }
+
+        .anchor {
+            text-decoration: none;
+            color: inherit;
+            /* Ensures it inherits text color from parent */
+        }
+
+        .anchor:hover {
+            color: #1d6af4;
+            text-decoration: underline;
+        }
+
+        .employee-card {
+            gap: 10px;
+            padding: 10px;
         }
 
         /* Responsive Design */
@@ -203,7 +237,7 @@
                                 <p class="emp_details_label">Settlements</p>
                             </div>
                             <div class="col-6">
-                                <p class="emp_details_count" style="border-left: 3px solid #FFCE56 ;">02</p>
+                                <p class="emp_details_count" style="border-left: 3px solid #FFCE56 ;">{{ str_pad(count($salaryStoppedEmployees), 2, '0', STR_PAD_LEFT) }}</p>
                                 <p class="emp_details_label">Exclusion</p>
                             </div>
                             <div class="col-6">
@@ -287,14 +321,47 @@
             </div>
 
             <div class="card">
-                <h5>Stop Salary Processing (2)</h5>
+                <h5>Stop Salary Processing ({{count($salaryStoppedEmployees)}})</h5>
                 <div>
+                    @if($salaryStoppedEmployees->isNotEmpty())
                     <ul>
-                        <li>Appy Samson (T0044)</li>
-                        <li>Aarav Gandhi (T0010)</li>
-                    </ul>
-                </div>
+                        @foreach($salaryStoppedEmployees->take(2) as $employee)
+                        <li class="d-flex employee-card">
+                            <span style="height: fit-content;">
+                                @if ($employee->image)
+                                <img src="data:image/jpeg;base64,{{ $employee->image }}" alt="base" class="profile-image" />
+                                @else
+                                @if ($employee->gender == 'Male')
+                                <img class="profile-image" src="{{ asset('images/male-default.png') }}" alt="Default Male Image">
+                                @elseif ($employee->gender == 'Female')
+                                <img class="profile-image" src="{{ asset('images/female-default.jpg') }}" alt="Default Female Image">
+                                @else
+                                <img class="profile-image" src="{{ asset('images/user.jpg') }}" alt="Default Image">
+                                @endif
+                                @endif
+                            </span>
+                            <span class="text-truncate employee-name">
+                                <a class="anchor" href="{{ url('/hr/user/stop-salaries') }}">
+                                    {{ ucfirst(strtolower($employee->first_name)) }} {{ ucfirst(strtolower($employee->last_name)) }} ({{ ucfirst(strtolower($employee->emp_id)) }})
+                                </a>
+                            </span>
+                        </li>
+                        @endforeach
 
+                        @if(count($salaryStoppedEmployees) > 2)
+                        <li class="text-center">
+                            <span class="employee-name" style="color:#1d6af4;">
+                                <a href="{{ url('/hr/user/stop-salaries') }}" class="anchor">
+                                    +{{ count($salaryStoppedEmployees) - 2 }} more
+                                </a>
+                            </span>
+                        </li>
+                        @endif
+                    </ul>
+                    @else
+                    <p style="color:#7f8fa4">No Records</p>
+                    @endif
+                </div>
             </div>
 
             <div class="card">
@@ -306,9 +373,51 @@
             </div>
 
             <div class="card">
-                <h5>Hold Salary Payout (1)</h5>
+                <h5>Hold Salary Payout ({{count($salaryHoldedEmployees)}})</h5>
                 <div>
-                    <p>Bharath Solanki (T0030)</p>
+                    @if($salaryStoppedEmployees->isNotEmpty())
+                    <ul>
+                        @foreach($salaryHoldedEmployees->take(2) as $employee)
+                        <li class="d-flex  employee-card">
+                            <span style="height: fit-content;">
+                                @if ($employee->image)
+                                <img src="data:image/jpeg;base64,{{ $employee->image }}"
+                                    alt="base" class="profile-image" />
+                                @else
+                                @if ($employee->gender == 'Male')
+                                <img class="profile-image"
+                                    src="{{ asset('images/male-default.png') }}"
+                                    alt="Default Male Image">
+                                @elseif ($employee->gender == 'Female')
+                                <img class="profile-image"
+                                    src="{{ asset('images/female-default.jpg') }}"
+                                    alt="Default Female Image">
+                                @else
+                                <img class="profile-image"
+                                    src="{{ asset('images/user.jpg') }}" alt="Default Image">
+                                @endif
+                                @endif
+                            </span>
+                            <span class="text-truncate employee-name">
+                                <a class="anchor" href="{{ url('/hr/user/hold-salaries') }}">
+                                    {{ ucfirst(strtolower($employee->first_name)) }} {{ ucfirst(strtolower($employee->last_name)) }} ({{ ucfirst(strtolower($employee->emp_id)) }})
+                                </a>
+                            </span>
+                        </li>
+                        @endforeach
+                        @if(count($salaryHoldedEmployees) > 2)
+                        <li class="text-center">
+                            <span class="employee-name" style="color:#1d6af4;">
+                                <a href="{{ url('/hr/user/hold-salaries') }}" class="anchor">
+                                    +{{ count($salaryHoldedEmployees) - 2 }} more
+                                </a>
+                            </span>
+                        </li>
+                        @endif
+                    </ul>
+                    @else
+                    <p style="color:#7f8fa4">No Records</p>
+                    @endif
                 </div>
 
             </div>
