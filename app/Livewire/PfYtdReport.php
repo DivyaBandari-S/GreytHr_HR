@@ -784,7 +784,13 @@ class PfYtdReport extends Component
             'employeer_pension' => '-',
         ];
     }
-
+    public function clearSelection()
+    {
+        $this->selectedEmployeeId = '';
+        $this->selectedEmployeeFirstName = '';
+        $this->selectedEmployeeLastName = '';
+        $this->searchTerm = '';
+    }
     public function zeroSalaryDetails()
     {
         return [

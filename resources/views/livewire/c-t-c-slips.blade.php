@@ -156,11 +156,18 @@
 
         @endforeach
     </div>
+    <div class="col-md-2 ml-4">
+            <select class="dropdown-salary bg-white px-3 py-1" wire:model="selectedMonth" wire:change="changeMonth">
+                @foreach($options as $value => $label)
+                <option value="{{ $value }}" style="background-color: #fff; color: #333; font-size: 13px;">{{ $label }}</option>
+                @endforeach
+            </select>
+        </div>
 </div>
 
 
     @foreach((array)$selectedEmployeeId as $employeeId)
-                      
+                              @if(!empty($salaryDivisions))
 <!-- Blade Template -->
 <table class="table centered-table custom-table-bg mt-3" style="width:90%; font-size:12px;background:none;border-radius:5px">
 <tbody class="payslip-body" style="border-radius:5px">
@@ -245,7 +252,12 @@ echo "₹" . number_format($annualEarnings);
 
 
 
+@else
+<div class="d-flex justify-content-center align-items-center" style="width: 100%;  margin: auto;margin-top:5px">
+    <div class="alert alert-info text-center" style="width: 80%;">Salary is on hold for this month</div>
 
+</div>
+@endif
 
 
 
