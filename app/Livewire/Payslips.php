@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Helpers\FlashMessageHelper;
+use App\Mail\PayrollProcessedMail;
 use App\Models\EmpBankDetail;
 use App\Models\EmployeeDetails;
 use App\Models\LetterRequest;
@@ -14,24 +15,37 @@ use Illuminate\Http\Request;
 use App\Models\EmployeeDocument;
 use App\Models\EmpPersonalInfo;
 use App\Models\EmpSalary;
+use App\Models\EmpSalaryRevision;
+use App\Models\SalaryRevision;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
+use DateTime;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
+use Vinkla\Hashids\Facades\Hashids;
+use Twilio\Rest\Client;
 
 class Payslips extends Component
 {
     use WithFileUploads;
     public $requests;
+    public $options=[];
     public $salaryRevision;
     public $allSalaryDetails;
+   
     public $empBankDetails;
 
     public $netPay;
+
     public $net_pay;
+    public $email;
     public $showPopup = false;
+    public $selectedMonth, $salaryMonth;
+    public $salary;
     public $pdfUrl;
     public $empSalaryDetails;
     public $salaryDivisions;
+    public $allEmployees=[];
     public $employeePersonalDetails;
     public $pdfPath;
 
@@ -55,6 +69,7 @@ class Payslips extends Component
     public $selectedEmployeeFirstName;
 
     public $selectedEmployeeLastName;
+    public $monthlySalary;
     public $selectedEmployee;
     public $showDocDialog = false;
     public $isNames = false;
@@ -96,6 +111,30 @@ class Payslips extends Component
 
     public $employeeDetails = [];
     public $editingField = false;
+    public $PayrollDialog = false;
+    public $showModal = false;
+    public function PayrollRequest()
+    {
+
+
+
+        $this->PayrollDialog = true;
+        $this->showModal = true;
+     
+        
+    
+    }
+    
+    public function closeModal()
+    {
+        $this->showModal = false;
+        $this->PayrollDialog = false; // If you are using this flag for the modal
+    }
+    
+    public function getFormattedMonthProperty()
+{
+    return Carbon::createFromFormat('Y-m', $this->selectedMonth)->format('F Y');
+}
     protected $rules = [
         'documentName' => 'required|string|max:255',
         'category' => 'required|string',
@@ -272,7 +311,16 @@ class Payslips extends Component
         $employeeId = auth()->user()->emp_id;
 
 
-  
+        $this->allEmployees = EmployeeDetails::select('employee_details.*', 'emp_departments.department')
+        ->leftJoin('emp_departments', 'employee_details.dept_id', '=', 'emp_departments.dept_id')
+        ->leftJoin('emp_personal_infos', 'employee_details.emp_id', '=', 'emp_personal_infos.emp_id')
+        ->get();
+        $this->salaryRevision = EmpSalaryRevision::where('emp_id', $employeeId)->get();
+        $this->empSalaryDetails = EmpSalary::join('salary_revisions', 'emp_salaries.sal_id', '=', 'salary_revisions.id')
+        ->where('salary_revisions.emp_id',$employeeId)
+            ->where('month_of_sal', 'like', $this->selectedMonth . '%')
+            ->get();
+          
 
   
         // Adjust this line based on your actual database column for category
@@ -319,7 +367,8 @@ class Payslips extends Component
 
 
 
-
+        $this->options = []; // Initialize to avoid null
+        $this->generateMonths();
         // Fetch the employee IDs after filtering
 
 
@@ -346,6 +395,9 @@ class Payslips extends Component
             // Handle the case where no employees match the search term
 
         }
+   
+    
+        
 
 
         // Debug output for fetched employees
@@ -660,28 +712,169 @@ class Payslips extends Component
 
         return $totalGrossPay - $totalDeductions;
     }
+    private function encodeCTC($value)
+{
+    $decimalPlaces = strpos($value, '.') !== false ? strlen(substr(strrchr($value, "."), 1)) : 0;
+    $factor = pow(10, $decimalPlaces);
 
+    $integerValue = intval($value * $factor);
+    return Hashids::encode($integerValue, $decimalPlaces);
+}
+
+public function sendTwilioSMS($to, $message)
+{
+    try {
+        $sid = config('services.twilio.sid');
+        $token = config('services.twilio.token');
+        $from = config('services.twilio.from');
+
+        $twilio = new \Twilio\Rest\Client($sid, $token);
+        $response = $twilio->messages->create($to, [
+            'from' => $from,
+            'body' => $message,
+        ]);
+
+        Log::info("SMS sent successfully to {$to}");
+
+        return $response; // ✅ Return the response for debugging
+
+    } catch (\Exception $e) {
+        Log::error("Twilio SMS Error: " . $e->getMessage());
+
+        return "Error: " . $e->getMessage(); // ✅ Return error message
+    }
+}
+
+public  $to;
+public $message;
+
+public function confirmAndPublish()
+{
+    $selectedMonth = $this->selectedMonth;
+    $employeeId = Auth::user()->emp_id;
+
+    // Fetch company ID
+    $company = DB::table('employee_details')
+        ->where('emp_id', $employeeId)
+        ->select('company_id')
+        ->first();
+
+    if (!$company) {
+        return session()->flash('error', "Error: Employee not found.");
+    }
+
+    $companyId = $company->company_id;
+    $currentMonth = Carbon::now()->format('Y-m');
+    $selectedMonthFormatted = Carbon::parse($selectedMonth . '-01')->format('Y-m-d');
+
+    if ($selectedMonth > $currentMonth) {
+        return session()->flash('error', "⚠️ Error: Selected month cannot be greater than the current month.");
+    }
+
+    // Fetch employees with latest salary revisions
+    $eligibleEmployees = DB::table('salary_revisions as sr')
+        ->select('sr.id as sal_id', 'sr.revised_ctc', 'sr.revision_date', 'ed.emp_id', 'ed.email','ed.first_name','ed.last_name')
+        ->join('employee_details as ed', 'sr.emp_id', '=', 'ed.emp_id')
+        ->where('ed.company_id', $companyId)
+        ->whereRaw("sr.revision_date = (SELECT MAX(revision_date) FROM salary_revisions WHERE emp_id = sr.emp_id)")
+        ->get();
+
+    // Fetch bank details
+    $bankDetails = EmpBankDetail::whereIn('emp_id', $eligibleEmployees->pluck('emp_id')->toArray())
+        ->pluck('id', 'emp_id')
+        ->toArray();
+
+    // Merge bank_id into employees
+    $eligibleEmployees = $eligibleEmployees->map(function ($employee) use ($bankDetails) {
+        $employee->bank_id = $bankDetails[$employee->emp_id] ?? null;
+        return $employee;
+    });
+
+    // Filter employees who already have salary records
+    $existingSalaries = EmpSalary::whereIn('sal_id', $eligibleEmployees->pluck('sal_id')->toArray())
+        ->whereDate('month_of_sal', $selectedMonthFormatted)
+        ->pluck('sal_id')
+        ->toArray();
+
+    // Prepare bulk insert data
+    $insertData = $eligibleEmployees->reject(function ($employee) use ($existingSalaries) {
+        return in_array($employee->sal_id, $existingSalaries);
+    })->map(function ($employee) use ($selectedMonthFormatted) {
+        $decodedCTC = Hashids::decode($employee->revised_ctc);
+        $monthlySalary = (!empty($decodedCTC)) ? $decodedCTC[0] / 12 : 0;
+
+        if ($monthlySalary == 0) {
+            Log::error('Hashids decoding failed for emp_id: ' . $employee->emp_id);
+        }
+
+        $encodedSalary = $this->encodeCTC($monthlySalary);
+
+        return [
+            'sal_id' => $employee->sal_id,
+            'bank_id' => $employee->bank_id,
+            'salary' => $encodedSalary,
+            'effective_date' => $selectedMonthFormatted,
+            'month_of_sal' => $selectedMonthFormatted,
+            'remarks' => 'Auto-generated salary record',
+            'created_at' => now(),
+            'updated_at' => now()
+        ];
+    })->toArray();
+
+    // Insert payroll data
+    if (!empty($insertData)) {
+        EmpSalary::insert($insertData);
+        session()->flash('success', "Payroll for {{ \Carbon\Carbon::parse($this->selectedMonth)->translatedFormat('F Y') }} has been created!");
+
+
+        foreach ($eligibleEmployees as $employee) {
+            if (!empty($employee->email)) {
+                Mail::to($employee->email)->send(new PayrollProcessedMail($employee, $selectedMonth));
+            }
+         
+        }
+            
+        
+        
+    } else {
+        session()->flash('warning', "No new salary records needed for {$this->selectedMonth}.");
+    }
+
+    $this->showModal = false;
+}
+
+    
     public function getSalaryDetails()
     {
         // $employeeId = auth()->user()->emp_id;
 
         // Querying the database directly using the DB facade
+        
         $salaryDetails = DB::table('emp_salaries')
         ->join('salary_revisions', 'emp_salaries.sal_id', '=', 'salary_revisions.id')
         ->where('salary_revisions.emp_id', $this->selectedEmployeeId)
-        ->select('emp_salaries.*') 
-       // Ensure distinct months
-        ->orderBy('emp_salaries.month_of_sal', 'desc')
-        ->limit(1) // Get the latest 3 months
-        ->get();
-        
-    
+        ->where('month_of_sal', 'like', $this->selectedMonth . '%')
+        ->select('emp_salaries.*')
+        ->first();
+
 
 
         // Group the results manually by the financial_year_start
 
 
         return  $salaryDetails;
+        if ($salaryDetails) {
+            $this->salaryDivisions = $salaryDetails->calculateSalaryComponents($salaryDetails->salary);
+            $this->empBankDetails = EmpBankDetail::where('emp_id', $this->selectedEmployeeId)
+                ->where('id', $this->empSalaryDetails->bank_id)->first();
+            $this->employeePersonalDetails=EmpPersonalInfo::where('emp_id',$this->selectedEmployeeId)->first();
+
+            // dd( $this->employeePersonalDetails);
+        } else {
+            // Handle the null case (e.g., log an error or set a default value)
+            $this->salaryDivisions = [];
+        }
+
     }
     public function clearSelectedEmployee()
     {
@@ -690,9 +883,41 @@ class Payslips extends Component
         $this->selectedEmployeeLastName = '';
         $this->searchTerm = '';
     }
+    public function changeMonth()
+    {
+        $this->selectedEmployeeId;
+        $this->getSalaryDetails();
+        $this->generateMonths(); // Refresh month options if necessary
+    }
+    
 
+    public function generateMonths()
+    {
+        $this->options = []; // Reset options before generating new ones
+    
+        $currentYear = date('Y');
+        $lastMonth = date('n'); // Current month (1-12)
+    
+        for ($year = $currentYear; $year >= $currentYear - 1; $year--) {
+            $startMonth = ($year == $currentYear) ? $lastMonth : 12;
+            $endMonth = 1; // Always end at January
+    
+            for ($month = $startMonth; $month >= $endMonth; $month--) {
+                $monthPadded = sprintf('%02d', $month);
+                $dateObj = DateTime::createFromFormat('!m', $monthPadded);
+                $monthName = $dateObj->format('F');
+                $this->options["$year-$monthPadded"] = "$monthName $year";
+            }
+        }
+    }
 
-
+    public function clearSelection()
+    {
+        $this->selectedEmployeeId = '';
+        $this->selectedEmployeeFirstName = '';
+        $this->selectedEmployeeLastName = '';
+        $this->searchTerm = '';
+    }
     public function removeSelectedEmployee()
     {
         $this->selectedEmployeeId = null;
@@ -737,15 +962,37 @@ class Payslips extends Component
         // Determine if there are people found
         $peopleFound = $this->employees->count() > 0;
         $this->requests = collect();
+        $options = [];
+        $options = [];
         if (!empty($this->selectedEmployeeId)) {
          
             $this->allSalaryDetails = $this->getSalaryDetails();
-
+            $options = [];
             $this->selectedEmployeeId ;
             $empSalaryDetails = EmpSalary::join('salary_revisions', 'emp_salaries.sal_id', '=', 'salary_revisions.id')
             ->where('salary_revisions.emp_id', $this->selectedEmployeeId)
-           
+            ->where('month_of_sal', 'like', $this->selectedMonth . '%')
             ->first();
+            $currentYear = date('Y');
+
+
+            $lastMonth = date('n');
+    
+     
+          
+            for ($year = $currentYear; $year >= $currentYear - 1; $year--) {
+                $startMonth = ($year == $currentYear) ? $lastMonth : 12; // Start from the current month or December
+                $endMonth = ($year == $currentYear - 1) ? 1 : 1; // End at January
+    
+                for ($month = $startMonth; $month >= $endMonth; $month--) {
+                    // Format the month to always have two digits
+                    $monthPadded = sprintf('%02d', $month); // Adds leading zero to single-digit months
+                    $dateObj = DateTime::createFromFormat('!m', $monthPadded);
+                    $monthName = $dateObj->format('F');
+                    $options["$year-$monthPadded"] = "$monthName $year";
+                }
+            }
+    
          
     if ($empSalaryDetails) {
         $this->salaryDivisions = $empSalaryDetails->calculateSalaryComponents($empSalaryDetails->salary);
@@ -785,9 +1032,11 @@ class Payslips extends Component
         return view('livewire.payslips', [
             'employees' => $this->employees,
             'selectedPeople' => $this->selectedPeople,
+            'salaryRevision' => $this->salaryRevision,
             'peopleFound' => $peopleFound,
             'records' => $this->records,
             'combinedRequests' => $this->combinedRequests,
+            'options' => $options,
             'requests' => $this->requests,
            
         ]);
