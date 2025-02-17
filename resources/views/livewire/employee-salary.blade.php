@@ -125,12 +125,18 @@
         .emp-sal1-table td {
             text-align: center;
             vertical-align: middle;
-            background-color: #EBEFF7;
             color: #3b4452;
+            padding: 3px;
+            font-size: 12px;
+        }
+
+        .emp-sal1-table th {
+            font-size: 13px;
+            background-color: #EBEFF7;
         }
 
         .emp-sal-table th {
-            font-size: 14px;
+            font-size: 13px;
 
         }
 
@@ -294,9 +300,28 @@
 
         textarea::placeholder {
             font-size: 12px;
-            color: #eff5f7  ;
+            color: #eff5f7;
         }
 
+        .Employee_list tr th,
+        .Employee_list tr td {
+            padding: 5px;
+            font-size: 10px;
+            text-align: left;
+        }
+
+        .Employee_list thead tr {
+            background-color: #eff5f7;
+        }
+
+        .Employee_list tbody tr:hover {
+            background-color: #eff5f7;
+        }
+
+        .selected-row {
+            background-color: #cce5ff;
+            /* Light blue background */
+        }
 
 
 
@@ -332,6 +357,7 @@
 
         }
     </style>
+
     @if($showPage1)
     <div class="employeMain">
         <div class="bg-white">
@@ -351,6 +377,7 @@
                         <div wire:click="searchFilter" style="cursor: pointer;">
                             <label>Search Employee</label>
                         </div>
+
                         @if($selectedEmployee)
                         <div class="row" style="margin-top: 10px; margin-bottom: 10px;">
                             <div class="col-md-4 col-6">
@@ -447,6 +474,7 @@
                             <p>No employees found.</p>
                             @endif
                         </div>
+                        @else
                         @endif
                     </div>
                 </div>
@@ -455,6 +483,11 @@
                 </div>
             </div>
         </div>
+        @if($isNoDataFound)
+        <div class="text-center">
+            No Salary Revision Found
+        </div>
+        @endif
 
         @if($decryptedData)
         <div class="row bg-light emp-sal-rev-table p-0">
@@ -504,7 +537,7 @@
                             <tr>
                                 <td>{{ \Carbon\Carbon::parse($revisionData['revision_date'])->format('d M, Y') }}</td>
                                 <td>{{ \Carbon\Carbon::parse($revisionData['revision_date'])->format('M, Y') }}</td>
-                                <td>{{number_format( $revisionData['revised_ctc'],2) }}
+                                <td > <p style="font-weight: bold;margin-bottom:0px">Rs {{number_format( $revisionData['revised_ctc'],2) }}</p>
                                     @if ($loop->last)
                                     <p>0.00% (Rs 0.00)</p>
                                     @else
@@ -512,13 +545,13 @@
                                     <p>
                                         @if($revisionData['percentage_change_diff']>0)
                                         <img class="arrow_icn" src="{{ asset('images/up-arrow-icon.png') }}" alt="">
-                                        <span class="month_ctc">+{{$revisionData['percentage_change_diff']}}   </span>(Rs{{number_format($revisionData['difference_amount'])}})
+                                        <span class="month_ctc">+{{$revisionData['percentage_change_diff']}} </span>(Rs {{number_format($revisionData['difference_amount'])}})
                                         @elseif($revisionData['percentage_change_diff'] < 0)
-                                        <img class="arrow_icn" style="height: 13px; width:13px" src="{{ asset('images/down-arrow-icon.png') }}" alt="">
-                                        <span class="month_ctcup" style="color: red;">{{$revisionData['percentage_change_diff']}}   </span>(Rs{{number_format($revisionData['difference_amount'])}})
-                                        @else
+                                            <img class="arrow_icn" style="height: 13px; width:13px" src="{{ asset('images/down-arrow-icon.png') }}" alt="">
+                                            <span class="month_ctcup" style="color: red;">{{$revisionData['percentage_change_diff']}} </span>(Rs {{number_format($revisionData['difference_amount'])}})
+                                            @else
 
-                                        @endif
+                                            @endif
                                     </p>
                                     @endif
 
@@ -538,11 +571,11 @@
 
             <div class="col-12 col-md-4 ">
                 <div class="chart-container">
-                    <canvas id="salaryChart"></canvas>
-
+                    <canvas class="salary_chart" id="salaryChart"></canvas>
                 </div>
             </div>
         </div>
+
         @if($decryptedData)
         <div class="bg-light emp-sal-table3">
             <div class="row mb-3">
@@ -550,8 +583,8 @@
                     <h5>Peer Comparison</h5>
                 </div>
                 <div class="col-6">
-                    <button class="btn bg-white text-primary border-primary float-end ms-2 mb-1">Export Excel</button>
-                    <button class="btn bg-white text-primary border-primary float-end">Define Peers</button>
+                    <button wire:click="exportToExcel" class="btn bg-white text-primary border-primary float-end ms-2 mb-1">Export Excel</button>
+                    <button wire:click="showPeersModal" class="btn bg-white text-primary border-primary float-end">Define Peers</button>
                 </div>
             </div>
             <div class="table-responsive">
@@ -559,30 +592,52 @@
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>Employee...</th>
+                            <th>Employee Number</th>
                             <th>Employee Name</th>
                             <th>Experience</th>
+                            <th>Designation</th>
                             <th>Last Revision</th>
-                            <th>Monthly Revision</th>
-                            <th>Previous Month Revision</th>
+                            <th>ANNUAL CTC</th>
+                            <th>Prev ANNUAL CTC</th>
                             <th>Difference</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- Content goes here -->
+                        @if($selectedEmployeesPeersData )
+                        @foreach($selectedEmployeesPeersData as $index=> $employeePeer)
+                        <tr>
+                            <td>{{ $index +1}}</td>
+                            <td>{{$employeePeer['emp_id']}}</td>
+                            <td style="text-transform: capitalize;">{{$employeePeer['emp_name']}}</td>
+                            <td>{{$employeePeer['experience']}}</td>
+                            <td>{{$employeePeer['designation']}}</td>
+                            <td>{{ \Carbon\Carbon::parse($employeePeer['revision_date'])->format('d M, Y') }}</td>
+                            <td>Rs {{number_format($employeePeer['revised_ctc'],2)}}</td>
+                            <td>Rs {{number_format($employeePeer['current_ctc'],2)}}</td>
+                            <td>
+                                @if($employeePeer['percentage_change'] >= 0)
+                                + {{$employeePeer['percentage_change']}} (Rs {{number_format($employeePeer['difference_amount'],2)}})
+                                @else
+                                {{$employeePeer['percentage_change']}} (Rs {{number_format($employeePeer['difference_amount'],2)}})
+                                @endif
+                                @if($employeePeer['emp_id'] != $mainEmp_id)
+
+                                <span><img wire:click="removePeersEmployee('{{$employeePeer['emp_id']}}')" style="cursor: pointer;height:15px ;width:15px;" src="{{ asset('images/remove-icon-black&white.png') }}" alt=""></span>
+                                @endif
+                            </td>
+                        </tr>
+                        @endforeach
+                        @endif
                     </tbody>
                 </table>
             </div>
         </div>
         @endif
-
     </div>
     @else
     <div class="employeMain">
         <div class=" ">
             <div class="col-md-8 bg-white">
-
-
                 <table class="emp-datails-table">
                     <tbody>
                         <tr>
@@ -590,7 +645,7 @@
 
                                 <div class=" detail-items">
                                     <div class=" text-end p-0 label-value"><label for=""> Join Date </label></div>
-                                    <div class=" emp-table-values ">{{ \Carbon\Carbon::parse($empDetails->hire_date)->format('d M, Y') }}</div>
+                                    <div class=" emp-table-values "> {{ \Carbon\Carbon::parse($empDetails->hire_date)->format('d M, Y') }}</div>
                                 </div>
                             </td>
                             <td style="width: 50%;">
@@ -708,15 +763,15 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <label for="">Employee Remarks:</label>
-                                        <textarea wire:model="reason" placeholder="This will be  visible to Employee" class="form-control" name="" ></textarea>
+                                        <textarea wire:model="reason" placeholder="This will be  visible to Employee" class="form-control" name=""></textarea>
                                     </div>
                                     <div class="col-md-6">
                                         <label for="">Notes: </label>
-                                        <textarea wire:model="notes" placeholder="This will be not visible to Employee" class="form-control" name="" ></textarea>
+                                        <textarea wire:model="notes" placeholder="This will be not visible to Employee" class="form-control" name=""></textarea>
                                     </div>
                                 </div>
                                 <div class="text-center mt-4">
-                                <button type="button" class="btn btn-primary " wire:click="saveSalaryRevision"  @if(!$isNewRevised) disabled @endif>Save</button>
+                                    <button type="button" class="btn btn-primary " wire:click="saveSalaryRevision" @if(!$isNewRevised) disabled @endif>Save</button>
                                 </div>
                             </div>
                         </div>
@@ -747,7 +802,7 @@
                         <table class="salaryComponents-table">
                             <tr>
                                 <th class="salary-component">Components</th>
-                                <th class="salary-amount">Amount</th>
+                                <th class="salary-amount">Amount (In Rs)</th>
                             </tr>
                             <tr>
                                 <td class="salary-component">FULL BASIC</td>
@@ -755,7 +810,7 @@
                             </tr>
                             <tr>
                                 <td class="salary-component">FULL DA</td>
-                                <td class="salary-amount">0</td>
+                                <td class="salary-amount">0.00</td>
                             </tr>
                             <tr>
                                 <td class="salary-component">FULL HRA</td>
@@ -791,7 +846,62 @@
         </div>
     </div>
     <div class="modal-backdrop fade show"></div>
+    @endif
 
+    @if($isPeersModal)
+    <div class="modal" id="logoutModal" tabindex="-1" style="display: block;">
+        <div class="modal-dialog modal-dialog-centered" style="max-width: 550px;max-height:500px">
+            <div class="modal-content">
+                <div class="modal-header " style=" background-color:white">
+                    <h6 class="modal-title " id="logoutModalLabel" style="align-items: center; color:black">Add Peers
+                    </h6>
+                </div>
+                <div class="modal-body  text-center align-center" style="font-size: 14px;color:black">
+                    <div class="row">
+                        <div class="col-md-6 d-flex" style="gap: 5px;">
+                            <input wire:model="peerSearch" class="form-control" type="text">
+                            <button type="button" class="btn btn-primary " wire:click="getEmployeesList" style="font-size: 10px;">Search</button>
+                        </div>
+                        <div class="col-md-6"></div>
+                    </div>
+                    <div class="mt-2" style="width:100% ; max-height: 300px; overflow-y: auto; border: 1px solid silver;">
+                        <table class="Employee_list" style="width:100%; border-collapse: collapse;">
+                            <thead style="position: sticky; top: 0; background: white; z-index: 2; border-bottom: 2px solid silver;">
+                                <tr>
+                                    <th>Emp Id</th>
+                                    <th>Name</th>
+                                    <th>Email Id</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($allEmployees as $employee)
+                                <tr wire:click="toggleEmployee('{{ $employee['emp_id'] }}')"
+                                    style="cursor: pointer;"
+                                    wire:key="{{ $employee['emp_id'] }}"
+                                    class="{{ in_array($employee['emp_id'], $selectedEmployees) ? 'selected-row' : '' }}">
+                                    <td>{{ $employee['emp_id'] }}</td>
+                                    <td style="text-transform: capitalize;">
+                                        {{ ucfirst(strtolower($employee['first_name'])) }}
+                                        {{ ucfirst(strtolower($employee['last_name'])) }}
+                                    </td>
+                                    <td>{{ $employee['email'] }}</td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+
+
+                        </table>
+                    </div>
+                </div>
+                <div class="d-flex gap-3 justify-content-center p-3">
+                    <button type="button" class="btn btn-primary" style="font-size: 10px;" wire:click="getSelectedEmployees" @if(count($selectedEmployees) <=0) disabled @endif>Add</button>
+
+                    <button type="button" class="cancel-btn" wire:click="hidePeersModal" style="font-size:10px">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-backdrop fade show"></div>
     @endif
 
 </div>
@@ -811,6 +921,11 @@
     document.addEventListener('livewire:init', () => {
         let salaryChart;
         console.log('entering script..');
+
+        const ctx = document.getElementById('salaryChart');
+        if (ctx) {
+            ctx.style.display = 'none';
+        }
         // Listen for the browser event from Livewire
         window.addEventListener('update-chart', (event) => {
             const chartData = event.detail[0].chartData;
@@ -823,6 +938,7 @@
             }
             const context = ctx.getContext('2d');
 
+            ctx.style.display = 'block';
             // Destroy the previous chart instance if it exists
             if (salaryChart) {
                 salaryChart.destroy();

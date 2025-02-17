@@ -286,19 +286,19 @@
       
         <!-- From Date -->
         <div class="form-group">
-            <label for="from_date" class="form-label">From Date</label>
+            <label for="from_date" class="form-label">From Date:</label>
             <input type="date" id="from_date" class="form-control"wire:model="from_date"wire:change="updatefromDate">
         </div>
         @error('from_date') <span class="text-danger">{{ $message }}</span> @enderror
         <!-- To Date -->
         <div class="form-group">
-            <label for="to_date" class="form-label">To Date</label>
+            <label for="to_date" class="form-label">To Date:</label>
             <input type="date" id="to_date" class="form-control"wire:model="to_date"wire:change="updatetoDate">
         </div>
         @error('to_date') <span class="text-danger">{{ $message }}</span> @enderror
         <!-- Status -->
         <div class="form-group">
-             <label for="status" class="form-label">Status</label>
+             <label for="status" class="form-label">Status:</label>
              <select id="status" class="form-control" wire:model="status"wire:change="updateStatus">
                     <option value="">-- Select --</option>
                     <option value="Absent">Absent</option>
@@ -318,7 +318,7 @@
         </div>
         @error('reason') <span class="text-danger">{{ $message }}</span> @enderror
         <!-- Action Buttons -->
-        <div class="form-actions">
+        <div class="C">
             <button type="submit" class="btn btn-primary"wire:click="submitAttendanceException">Save</button>
             <button type="button" class="btn btn-secondary"wire:click="closeAttendanceException">Cancel</button>
         </div>

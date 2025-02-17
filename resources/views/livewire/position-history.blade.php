@@ -12,16 +12,21 @@
 
 <div class="tab-content pt-5" id="tab-content">
   <div class="tab-pane active" id="simple-tabpanel-0" role="tabpanel" aria-labelledby="simple-tab-0" style="overflow-x: hidden;">
-    <div class="row justify-content-center"  >
-                        <div class="col-md-9 custom-container d-flex flex-column">
-                        <div class="d-flex align-items-center mb-2">
-    <p class="main-text mb-0" style="width:88%">
-    The Position History page displays the complete history of all changes and career progression of an employee. You can also Edit various position attributes of an employee, such as Designation, Department, Grade, Location, etc., on this page.
-    </p>
-    <p class="hide-text" style="cursor: pointer;" wire:click="toggleDetails">
-        {{ $showDetails ? 'Hide Details' : 'Info' }}
-    </p>
+  <div class="row justify-content-center"  >
+                        <div class="col-md-11 custom-container d-flex flex-column">
+                        <div class="row d-flex align-items-center mb-2">
+    <div class="col-10">
+        <p class="main-text mb-0">
+        The Position History page displays the complete history of all changes and career progression of an employee. You can also Edit various position attributes of an employee, such as Designation, Department, Grade, Location, etc., on this page.
+        </p>
+    </div>
+    <div class="col-2 text-end">
+        <p class="hide-text mb-0" style="cursor: pointer;" wire:click="toggleDetails">
+            {{ $showDetails ? 'Hide Details' : 'Info' }}
+        </p>
+    </div>
 </div>
+
 
                             @if ($showDetails)
                                 
@@ -36,12 +41,13 @@
 
                         </div>
                     </div>
+
                  
 
                 <div class="row justify-content-center mt-2 "  >
-                <div class="col-md-9 custom-container d-flex flex-column bg-white" >
+                <div class="col-md-11 custom-container d-flex flex-column bg-white" >
     <div class="row justify-content-center mt-3 flex-column m-0 employee-details-main" >
-        <div class="col-md-9">
+        <div class="col-md-10">
             <div class="row " style="display:flex;">
                 <div class="col-md-11 m-0">
                     <p class="emp-heading" >Start searching to see specific employee details here</p>

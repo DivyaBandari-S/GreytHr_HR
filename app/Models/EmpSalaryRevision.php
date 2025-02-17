@@ -66,7 +66,7 @@ class EmpSalaryRevision extends Model
         $factor = pow(10, $decimalPlaces);
 
         $integerValue = intval($value * $factor);
-// dd(Hashids::encode($integerValue, $decimalPlaces));
+        // dd(Hashids::encode($integerValue, $decimalPlaces));
         return Hashids::encode($integerValue, $decimalPlaces);
     }
 
@@ -103,8 +103,8 @@ class EmpSalaryRevision extends Model
         // dd($gross);
         // $gross=20853;
         // Calculate each component
-        $basic = floor($gross * 0.4200); // 41.96%
-        $hra = floor($gross * 0.168); // 16.8%
+        $basic = floor($gross *  0.40); // 41.96%
+        $hra = floor($gross * 0.16); // 16.8%
         $conveyance = floor($gross * 0.076); // 7.67%
         $medicalAllowance = floor($gross * 0.0600); // 5.99%
         $specialAllowance = floor($gross * 0.275); // 27.5%
@@ -145,26 +145,29 @@ class EmpSalaryRevision extends Model
             $joinDate = Carbon::parse($hireDate);
             $currentDate = Carbon::now();
 
-            // Calculate years, months, and days
+            // Calculate years and months difference
             $diff = $currentDate->diff($joinDate);
             $years = $diff->y;
             $months = $diff->m;
-            $days = $diff->d;
 
-            // Determine which part to display
+            // Build the output string
+            $experience = '';
+
             if ($years > 0) {
-                return "{$years} " . ($years > 1 ? "years" : "year");
-            } elseif ($months > 0) {
-                return "{$months} " . ($months > 1 ? "months" : "month");
-            } elseif ($days > 0) {
-                return "{$days} " . ($days > 1 ? "days" : "day");
-            } else {
-                return "Less than a day";
+                $experience .= "{$years}Y"; // Example: "2y"
             }
+
+            if ($months > 0) {
+                $experience .= ($years > 0 ? ', ' : ' ') . "{$months}M"; // Example: "2y, 3m"
+            }
+
+            return $experience ?: "0M"; // If no experience, return "0m"
         }
 
         return "No hire date provided";
     }
+
+
 
     public static function getComparisionData($current_ctc, $revised_ctc)
     {
@@ -256,5 +259,17 @@ class EmpSalaryRevision extends Model
         $percentage_change = (($revised_ctc - $current_ctc) / $current_ctc) * 100;
 
         return $percentage_change;
+    }
+    static public function changeStatus($id){
+        if($id==1){
+            return 'Approved';
+        }elseif($id==0){
+            return 'Pending';
+        }elseif($id==2){
+            return 'Rejected';
+        }else{
+            return 'Unknown';
+        }
+
     }
 }

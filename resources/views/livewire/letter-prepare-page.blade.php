@@ -1,6 +1,4 @@
 <div class="container mt-4">
-
-
     <!-- Progress Bar -->
     <style>
         .progress-container {
@@ -22,8 +20,6 @@
             z-index: 0;
             transform: translateY(-50%);
         }
-
-
 
         .progress-step {
             position: relative;

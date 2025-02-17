@@ -37,8 +37,7 @@ class EmployeeAsset extends Component
     public $Jobmode;
     public $Designation;
     public $selected_equipment;
-    public $BloodGroup;
-    public $MaritalStatus;
+
     public $ItRequestaceessDialog = false;
     public $closeItRequestaccess = false;
     public $openItRequestaccess = false;

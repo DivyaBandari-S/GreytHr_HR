@@ -1,4 +1,4 @@
-<div>
+<div class="main__body bg-white" style="overflow: auto; height: calc(100vh - 70px)">
     <div class="nav-buttons mt-2 d-flex justify-content-center">
         <ul class="nav custom-nav-tabs border">
             <li class="custom-item m-0 p-0 flex-grow-1 mbl-dev-active">
@@ -11,7 +11,7 @@
     </div>
 
     <!-- Content Tabs -->
-    <div class="tab-content mt-3">
+    <div class="tab-content mt-3" style="overflow: auto; max-height: 70vh;">
         <!-- all Tab -->
         <div class="tab-pane {{ $activeSection === 'All' ? 'active' : '' }}" id="apply-section">
             <div class="row m-0 px-2">

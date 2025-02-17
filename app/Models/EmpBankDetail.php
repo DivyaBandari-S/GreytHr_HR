@@ -9,6 +9,7 @@ class EmpBankDetail extends Model
 {
     use HasFactory;
     protected $fillable = [
+        'id',
         'emp_id',
         'bank_name',
         'bank_branch',

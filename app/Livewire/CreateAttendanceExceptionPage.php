@@ -138,6 +138,8 @@ class CreateAttendanceExceptionPage extends Component
        
        
     }
+
+    
     public function updatesearchTerm()
     {
         $this->searchTerm=$this->searchTerm;

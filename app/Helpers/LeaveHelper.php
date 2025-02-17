@@ -129,7 +129,7 @@ class LeaveHelper
                         $totalSickDays += $days;
                         break;
                     case 'Loss Of Pay':
-                        $totalLossOfPayDays += $days;
+                        $totalLossOfPayDays += (int) $days;
                         break;
                     case 'Casual Leave Probation':
                         $totalCasualLeaveProbationDays += $days;
