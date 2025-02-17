@@ -245,7 +245,7 @@ class AdminDashboard extends Component
     
                     case 'other':
                         $bgClass = 'orag-bg'; // Orange background for other
-                        $iconClass = 'fa-solid fa-cogs'; // Cogs icon for other
+                        $iconClass = 'fa-regular fa-folder'; // Cogs icon for other
                         break;
     
                     default:
@@ -278,7 +278,7 @@ class AdminDashboard extends Component
     
             // Pass this data to the view
             $this->overviewItems = $overviewItems;
-    
+
         } catch (Exception $e) {
             // Log the error or handle the exception accordingly
             error_log('Error in getContainerData: ' . $e->getMessage());
