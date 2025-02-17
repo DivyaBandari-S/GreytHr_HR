@@ -32,7 +32,8 @@ class PayrollProcessedMail extends Mailable
      */
     public function build()
     {
-        return $this->subject("Payslip released for {{ \Carbon\Carbon::parse($this->selectedMonth)->translatedFormat('F Y') }}")
+        return $this->subject("Payslip released for " . \Carbon\Carbon::parse($this->selectedMonth . '-01')->translatedFormat('F Y'))
+
             ->view('emails.payroll_processed');
     }
 }

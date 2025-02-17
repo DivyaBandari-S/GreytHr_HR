@@ -127,15 +127,10 @@ class Payslips extends Component
     
     public function closeModal()
     {
-dd();
-
-
-     
         $this->showModal = false;
-     
-        
-    
+        $this->PayrollDialog = false; // If you are using this flag for the modal
     }
+    
     public function getFormattedMonthProperty()
 {
     return Carbon::createFromFormat('Y-m', $this->selectedMonth)->format('F Y');
@@ -829,7 +824,7 @@ public function confirmAndPublish()
     // Insert payroll data
     if (!empty($insertData)) {
         EmpSalary::insert($insertData);
-        session()->flash('success', "Payroll for {$this->selectedMonth} has been created!");
+        session()->flash('success', "Payroll for {{ \Carbon\Carbon::parse($this->selectedMonth)->translatedFormat('F Y') }} has been created!");
 
 
         foreach ($eligibleEmployees as $employee) {

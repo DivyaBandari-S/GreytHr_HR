@@ -253,7 +253,7 @@
             </div>
         @else
         <div class="d-flex justify-content-center align-items-center" style="width: 100%;  margin: auto;margin-top:5px">
-    <div class="alert alert-info text-center" style="width: 80%;">Salary is on hold for this month     <button class="btn btn-primary" wire:click="PayrollRequest">
+    <div class="alert alert-info text-start mt-2" style="width: 80%;font-size:12px;margin-left:50px">Salary is on hold for this month  {{ \Carbon\Carbon::parse($selectedMonth . '-01')->format('F Y') }}     <br> <button class="btn btn-primary" style="font-size:12px" wire:click="PayrollRequest">
  Lock & Release
 </button></div>
 
@@ -281,7 +281,7 @@
 
     <div class="form-check w-100 mt-2">
         <input class="form-check-input" type="checkbox" id="sendPayslipNotification">
-        <label class="form-check-label mt-5" for="sendPayslipNotification">
+        <label class="form-check-label mt-4" for="sendPayslipNotification">
         Lock & Publish {{ \Carbon\Carbon::parse($selectedMonth . '-01')->format('F Y') }} payroll <strong>with</strong> payslip release notification for all employees
         </label>
     </div>
