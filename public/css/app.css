@@ -318,6 +318,57 @@ ul {
     margin-top: 8px;
 }
 /* admin dashboard */
+.green-bg {
+	background-color: #dbffdf;
+    border: 1px solid #b4f7a6;
+}
+.green-bg-icon {
+	background-color: #b4f7a6;
+    padding: 10px;
+    border-radius: 6px;
+    margin-bottom: 3em;
+}
+.yellow-bg {
+	background-color: #ffdef5;
+    border: 1px solid #fc9af7;
+}
+.yellow-bg-icon {
+	background-color: #fc9af7;
+    padding: 10px;
+    border-radius: 6px;
+    margin-bottom: 3em;
+}
+.purple-bg{
+    background-color: #f7deff;
+    border: 1px solid #dd9afc;
+}
+.purple-bg-icon {
+	background-color: #dd9afc;
+    padding: 10px;
+    border-radius: 6px;
+    margin-bottom: 3em;
+}
+.scroll-item{
+    font-size: var(--sub-headings-font-size);
+    font-weight: 500;
+}
+.scroll-item p{
+    margin-bottom: 0;
+    margin-top: 30px;
+}
+.homeContainers {
+    display: flex;
+    flex-direction: column;
+    min-height: 150px; /* Set a height that works for your design */
+}
+.homeContainers p {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.homeContainers .row{
+    flex-grow: 1;
+}
 .a {
     background: #fcfcfc;
     border: 1px solid #ccc;
@@ -1377,7 +1428,6 @@ button.nav-link.active {
     transition: color 0.3s ease, background-color 0.3s ease;
     border: 1px solid transparent;
     box-sizing: border-box;
-
 }
 
 /* Hover state for tabs */
@@ -3210,8 +3260,8 @@ input[type="date"]::before {
 .custom-info-item:hover {
     margin: 0;
 
-    background-color: #d9e2f4 ; /* Change to your desired hover background color */
-    color:#3b4452; /* Change text color on hover if needed */
+    background-color: #d9e2f4; /* Change to your desired hover background color */
+    color: #3b4452; /* Change text color on hover if needed */
 }
 
 .dropdown-menu .updated-drodown a.dropdown-item:hover {
@@ -6283,14 +6333,15 @@ select:focus {
 /* task module styles ended */
 
 /* start of bulk photos upload page */
-.active>.page-link, .page-link.active{
+.active > .page-link,
+.page-link.active {
     background-color: var(--main-button-color);
 }
-.page-link{
+.page-link {
     font-size: var(--normal-font-size);
     font-weight: 500;
 }
-.image-item{
+.image-item {
     display: flex;
     gap: 10px;
     background: #fff;
@@ -6298,12 +6349,12 @@ select:focus {
     width: 45%;
     margin-bottom: 20px;
 }
-.image-gallery{
+.image-gallery {
     background-color: #ccc;
     padding: 30px;
     border: 1px dashed #555;
 }
-.anchorLink{
+.anchorLink {
     color: var(--main-button-color) !important;
     cursor: pointer;
     text-decoration: underline;
@@ -6368,7 +6419,7 @@ select:focus {
     background-color: lightgreen;
     border-color: lightgreen;
 }
-.label{
+.label {
     text-transform: uppercase;
     font-size: var(--sub-headings-font-size) !important;
     color: var(--main-button-color);
@@ -6392,10 +6443,10 @@ select:focus {
 
 /* Payslips started */
 .dropdown-toggle.payroll {
-    background: transparent;  /* Remove background */
-    border: none;             /* Remove border */
+    background: transparent; /* Remove background */
+    border: none; /* Remove border */
 
-    color:white            /* Optional: Adjust padding if needed */
+    color: white; /* Optional: Adjust padding if needed */
 }
 .es-autocomplete {
     width: 200px;
