@@ -1020,6 +1020,9 @@ body {
 	cursor: not-allowed;
 }
 .blue-bg {
+	flex-grow: 1;
+	display: flex;
+	flex-direction: column;
 	background-color: #dbe3ff;
     border: 1px solid #a6b7f7;
 }
@@ -1030,6 +1033,9 @@ body {
     margin-bottom: 3em;
 }
 .orag-bg {
+	flex-grow: 1;
+	display: flex;
+	flex-direction: column;
 	background-color: #fff0de;
     border: 1px solid #fcca9a;
 }

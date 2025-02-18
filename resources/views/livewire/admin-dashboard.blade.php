@@ -73,45 +73,50 @@
                                     <div wire:click="toggleContent" class="scroll-item blue-bg" style="width: 2em; text-align: center;">
                                         <i class="fa-solid fa-plus" style="padding-top: 4.5em;"></i>
                                     </div>
-
                                     <?php
                                     // Initialize a counter to track the order of items
                                     $counter = 0;
                                     $maxItemsToShow = 10; // Number of items to show in the main container
 
-                                    // Loop through your overview content list
-                                    foreach ($this->overviewContentList as $category => $contentList) {
-                                        // Loop through each content within the category
-                                        foreach ($contentList as $route => $content) {
+                                    // Check if $overviewItems is an array
+                                    if (is_array($overviewItems)) {
+                                        // Loop through your overview content list
+                                        foreach ($overviewItems as $contentList) {
+                                            // Ensure that the necessary keys exist
+                                            if (!isset($contentList['content']) || !isset($contentList['bgClass']) || !isset($contentList['iconClass'])) {
+                                                continue; // Skip if any of the required fields are missing
+                                            }
+
+                                            // Stop after 10 items across all categories (breaking both loops)
                                             if ($counter >= $maxItemsToShow) {
-                                                break 2; // Stop after 10 items across all categories (breaking both loops)
+                                                break; // Exit the loop when the maximum number of items is reached
                                             }
 
                                             // Ensure content is a string (in case it's an array)
-                                            $content = is_array($content) ? implode(' ', $content) : $content;
+                                            $content = is_array($contentList['content']) ? implode(' ', $contentList['content']) : $contentList['content'];
+                                            $route = ($contentList['route']); // Make sure route is properly escaped
 
-                                            // Define background and icon classes
-                                            $bgClass = ($counter % 2 == 0) ? 'blue-bg' : 'orag-bg';
-                                            $iconClass = ($counter % 2 == 0) ? 'blue-bg-icon' : 'orag-bg-icon';
                                     ?>
-                                            <a href="<?php echo $route; ?>" class="scroll-item <?php echo $bgClass; ?> pt-3 ps-3 pe-3">
+                                            <a href="<?php echo $route; ?>" class="scroll-item <?php echo ($contentList['bgClass']); ?> pt-3 ps-3 pe-3">
                                                 <div class="row m-0">
                                                     <div class="col-6 p-0">
-                                                        <i class="fa-regular fa-user <?php echo $iconClass; ?>"></i>
+                                                        <i class=" <?php echo ($contentList['iconClass']) ; ?> <?php echo ($contentList['bgClass']); ?>-icon"></i>
                                                     </div>
                                                     <div class="col-6 p-0 text-end">
                                                         <i class="fa-solid fa-xmark closeIconFav"></i>
                                                     </div>
                                                 </div>
-                                                <p><?php echo htmlspecialchars($content); ?></p>
+                                                <p ><?php echo ($content); ?></p>
                                             </a>
                                     <?php
                                             // Increment counter for the next item
                                             $counter++;
                                         }
+                                    } else {
+                                        // Handle case if $overviewItems is not an array (error or unexpected data)
+                                        echo 'No overview items available.';
                                     }
                                     ?>
-
                                 </div>
                             </div>
 
@@ -598,10 +603,10 @@
                                     <div class="row m-0">
                                         <div class="col-6 p-0">
                                             <!-- Display the dynamic icon for each item -->
-                                            <i class="<?php echo $item['iconClass']; ?>"></i>
+                                            <i class="<?php echo $item['iconClass']; ?> <?php echo $item['bgClass']; ?>-icon"></i>
                                         </div>
                                         <div class="col-6 p-0 text-end">
-                                            <i class="fa-regular fa-star"></i>
+                                            <i class="fa-regular fa-star "></i>
                                         </div>
                                     </div>
                                     <p title="<?php echo htmlspecialchars(is_array($item['content']) ? implode(' ', $item['content']) : $item['content']); ?>">

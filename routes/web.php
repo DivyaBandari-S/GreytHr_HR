@@ -13,6 +13,7 @@ use App\Livewire\AttendanceExceptionForDisplay;
 use App\Livewire\AttendanceMusterHr;
 use App\Livewire\AttendanceProcess;
 use App\Livewire\BankAccount;
+use App\Livewire\LetterPreview;
 use App\Livewire\CreateAttendanceExceptionPage;
 use App\Livewire\CreateEmployeeWeekDayChart;
 use App\Livewire\CreateLockConfiguration;
@@ -69,6 +70,8 @@ use App\Livewire\ShiftRosterHr;
 use App\Livewire\ShiftRotationCalendar;
 use App\Livewire\StopSalaries;
 use App\Livewire\SwipeManagementForHr;
+use App\Livewire\AuthorizeSignatory;
+use App\Livewire\CreateSignatory;
 use App\Livewire\Tasks;
 use App\Livewire\WhoIsInChartHr;
 use App\Livewire\YearEndProcess;
@@ -161,6 +164,11 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
         //HR Employee-Admin Submodule Routes
         Route::get('/user/generate-letter', GenerateLetters::class)->name('generate-letter');
         Route::get('/letter/prepare', LetterPreparePage::class)->name('letter.prepare');
+        Route::get('/letter-preview', LetterPreview::class);
+        Route::get('/authorize-signatory', AuthorizeSignatory::class)->name('authorize-signatory.page');
+        Route::get('/signatories/create', CreateSignatory::class)->name('signatory.create');
+
+
         Route::get('/user/emp/admin/bulkphoto-upload', EmpBulkPhotoUpload::class)->name('bulk-photo-upload');
 
         // HR Employee-Setup Submodules
