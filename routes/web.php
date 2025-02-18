@@ -59,6 +59,7 @@ use App\Livewire\Payslips;
 use App\Livewire\PfYtdReport;
 use App\Livewire\PositionHistory;
 use App\Livewire\PreviousEmployeement;
+use App\Livewire\ReimbursementStatement;
 use App\Livewire\ReportsManagement;
 use App\Livewire\Requests;
 use App\Livewire\SalaryRevisionAnalytics;
@@ -137,6 +138,8 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
         Route::get('/ctcslips', CTCSlips::class)->name('ctcslips');
         Route::get('/ytdreport', YtdReport::class)->name('ytdreport');
         Route::get('/pfytdreport', PfYtdReport::class)->name('pfytdreport');
+        Route::get('/reimbursement', ReimbursementStatement::class)->name('reimbursement');
+
 
         //HR Employee-Main Submodule Routes
         Route::get('/user/main-overview', HrMainOverview::class)->name('main-overview');
@@ -152,6 +155,7 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
         Route::get('parent-details', ParentDetails::class)->name('parent-details');
         Route::get('/emp-document', EmpDocument::class)->name('emp-document');
         Route::get('/bank-account', EmpDocument::class)->name('bank-account');
+        Route::get('/previous-employeement', PreviousEmployeement::class)->name('previous-employeement');
         Route::get('/user/payroll-overview', PayrollOverview::class)->name('payroll-overview');
 
         //HR Employee-Admin Submodule Routes
