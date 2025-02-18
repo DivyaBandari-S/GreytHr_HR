@@ -22,6 +22,7 @@ class EmpSalaryRevision extends Model
         'revision_type',
         'reason',
         'status',
+        'payout_month'
     ];
 
     /**
@@ -29,7 +30,8 @@ class EmpSalaryRevision extends Model
      */
     public function setCurrentCtcAttribute($value)
     {
-        $this->attributes['current_ctc'] = $value ? $this->encodeCTC($value) : null;
+        $this->attributes['current_ctc'] = isset($value) ? $this->encodeCTC($value) : null;
+        // dd( $this->attributes['current_ctc']);
     }
 
     /**
@@ -37,7 +39,6 @@ class EmpSalaryRevision extends Model
      */
     public function getCurrentCtcAttribute($value)
     {
-
         return $value ? intval($this->decodeCTC($value)) : 0;
     }
 

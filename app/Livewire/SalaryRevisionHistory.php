@@ -2,20 +2,21 @@
 
 namespace App\Livewire;
 
-use Livewire\Component;
 use App\Exports\EmployeePeersExport;
 use App\Helpers\FlashMessageHelper;
 use App\Models\EmployeeDetails;
 use App\Models\EmpSalaryRevision;
-use Carbon\Carbon;
-use Illuminate\Support\Facades\DB;
+use App\Models\SalaryRevision;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Session;
+use Livewire\Component;
+use Carbon\Carbon;
+use Illuminate\Queue\Listener;
+use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Session;
 
-class EmployeeSalary extends Component
+class SalaryRevisionHistory extends Component
 {
-
     public $search = '';
     public $peerSearch = '';
 
@@ -220,12 +221,41 @@ class EmployeeSalary extends Component
             $this->getSalaryData();
         };
     }
+
+
+
+  
     public function showRevisedSalary()
     {
-        return redirect('/hr/user/employee-salary-component');
+        return redirect('/hr/user/salary-revision');
     }
+    // {
+    //     $this->showPage1 = !$this->showPage1;
+    //     if ($this->showPage1) {
+    //         $this->dispatch('getChartData');
+    //         $this->isNewRevised = false;
+    //         $this->getSalaryData();
+    //     } else {
+    //         $this->selectedDate = $this->decryptedData[0]['revision_date'];
+    //         $this->selected_current_ctc = $this->decryptedData[0]['current_ctc'];
+    //         $this->selected_revised_ctc = $this->decryptedData[0]['revised_ctc'];
+    //         $this->last_revised_ctc = $this->decryptedData[0]['revised_ctc'];
+    //         $this->effectiveDate = Carbon::parse($this->decryptedData[0]['revision_date'])->format('Y-m-d');
+
+    //         if ($this->selected_revised_ctc == 0) {
+    //             $this->new_revised_ctc = '';
+    //         } else {
+    //             $this->new_revised_ctc = $this->selected_revised_ctc;
+    //         }
+    //         $this->comparisionData = EmpSalaryRevision::getComparisionData($this->selected_current_ctc, $this->selected_revised_ctc);
+    //         $this->ctc_percentage = $this->comparisionData['percentage_change'];
+
+    //     }
+
+    // }
     public function showModal($sal, $payoutmonth, $remarks)
     {
+
         $this->effectiveDate = $payoutmonth;
         $this->remarks = $remarks;
         $this->salaryComponentDetails = EmpSalaryRevision::calculateSalaryComponents($sal);
@@ -315,7 +345,6 @@ class EmployeeSalary extends Component
 
             $this->getSalaryData();
             $this->getEmpDetails();
-
         }
     }
     public function getEmpDetails()
@@ -325,7 +354,6 @@ class EmployeeSalary extends Component
             ->where('employee_details.emp_id', $this->selectedEmployee)
             ->select('emp_departments.department', 'employee_details.job_role', 'employee_details.hire_date', 'employee_details.emp_id', 'employee_details.job_role')
             ->first();
-
     }
     public function getSalaryData()
     {
@@ -429,7 +457,6 @@ class EmployeeSalary extends Component
         return implode(', ', $duration);
     }
 
-
     public function getChartData()
     {
 
@@ -458,9 +485,8 @@ class EmployeeSalary extends Component
 
 
         // dd("ok", $this->empDetails);
-        return view('livewire.employee-salary', [
+        return view('livewire.salary-revision-history', [
             'selectedEmployeesDetails' => $selectedEmployeesDetails,
         ]);
     }
-
 }
