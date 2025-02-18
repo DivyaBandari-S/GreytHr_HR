@@ -262,9 +262,11 @@
             </div>
         @endforeach
     </div>
+    
 </div>
 
 @foreach((array)$selectedEmployeeId as $employeeId)
+
                       
                       <!-- Blade Template -->
                       <table class="table centered-table custom-table-bg mt-3" style="width:90%; font-size:12px;background:none;border-radius:5px; border: 1px solid #ddd;">
@@ -570,7 +572,7 @@
             </tbody>
         </table>
     </div>
-                      
+     
 @endforeach                      
 @endif
 </div>

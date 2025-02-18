@@ -750,7 +750,13 @@ class YtdReport extends Component
         // dd($this->salaryData, $this->totals);
 
     }
-
+    public function clearSelection()
+    {
+        $this->selectedEmployeeId = '';
+        $this->selectedEmployeeFirstName = '';
+        $this->selectedEmployeeLastName = '';
+        $this->searchTerm = '';
+    }
 
     public function SelectedFinancialYear()
     {

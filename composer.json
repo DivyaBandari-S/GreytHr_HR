@@ -19,6 +19,7 @@
         "phpoffice/phpspreadsheet": "^1.29",
         "spatie/simple-excel": "*",
         "torann/geoip": "^3.0",
+        "twilio/sdk": "^8.3",
         "vinkla/hashids": "^11.0"
     },
     "require-dev": {
