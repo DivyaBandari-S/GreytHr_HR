@@ -1,9 +1,8 @@
 <div>
     <style>
-        .bold-items {
+        .bold-items{
             font-weight: bold;
         }
-
         .employeMain {
             padding: 20px;
         }
@@ -211,7 +210,6 @@
 
         }
 
-
         .Employee_list tr th,
         .Employee_list tr td {
             padding: 5px;
@@ -267,21 +265,21 @@
         }
     </style>
     <div class="employeMain">
-        @if($isShowHelp)
-        <div class="help-section d-flex" style="padding: 10px;font-size:13px;background-color:#f5feff">
-            <div>
-                <p class="m-0">The <span class="bold-items"> Employee Salary </span> page allows you to filter employees and view their <span class="bold-items"> Salary Revision History</span>. Select the employee and click <span class="bold-items"> Revise Salary</span> to revise the salary of employees.</p>
-                <p  class="m-0">You can also <span class="bold-items">Compare the Salary</span> of an employee against their peers. Specify who the peers of an employee are by clicking on <span class="bold-items">Define Peers</span>. Click on <span class="bold-items"> Export Excel</span> to download the data in an Excel file. </p>
-
-            </div>
-            <span><button style="border: none;color:cornflowerblue;width:max-content;background-color:#f5feff;margin-left:15px;font-weight:bold" wire:click="toogleHelp">Hide Help </button></span>
-        </div>
-        @else
-        <div style="padding:10px;background-color:var(--light);text-align:end">
-            <span style="margin-left: auto;"><button style="background-color:white;padding:5px;border:none;font-size:11px;font-weight:bold;color:cornflowerblue;border-radius:5px" wire:click="toogleHelp">Show Help</button></span>
-        </div>
-        @endif
+    @if($isShowHelp)
+    <div class="help-section d-flex" style="padding: 10px;font-size:13px;background-color:#f5feff">
+        <p>The <span class="bold-items"> Salary Revision History </span> page allows you to filter your employees and view their salary revision history. Click  <span class="bold-items">Revise Salary </span> to revise the salary of your employees. You can also compare the salary of an employee against their peers. To compare, specify who the peers of an employee are, by clicking <span class="bold-items"> Define Peers </span>. Click <span class="bold-items"> Export Excel</span> to download the data in an Excel file.</p>
+        <span><button style="border: none;color:cornflowerblue;width:max-content;background-color:#f5feff;margin-left:15px;font-weight:bold" wire:click="toogleHelp">Hide Help </button></span>
     </div>
+    @else
+    <div  style="padding:10px;background-color:var(--light);text-align:end">
+        <span style="margin-left: auto;"><button style="background-color:white;padding:5px;border:none;font-size:11px;font-weight:bold;color:cornflowerblue;border-radius:5px" wire:click="toogleHelp">Show Help</button></span>
+    </div>
+    @endif
+
+
+    </div>
+
+
     @if($showPage1)
     <div class="employeMain">
         <div class="bg-white">
@@ -461,8 +459,7 @@
                             <tr>
                                 <td>{{ \Carbon\Carbon::parse($revisionData['revision_date'])->format('d M, Y') }}</td>
                                 <td>{{ \Carbon\Carbon::parse($revisionData['revision_date'])->format('M, Y') }}</td>
-                                <td>
-                                    <p style="font-weight: bold;margin-bottom:0px">Rs {{number_format( $revisionData['revised_ctc'],2) }}</p>
+                                <td > <p style="font-weight: bold;margin-bottom:0px">Rs {{number_format( $revisionData['revised_ctc'],2) }}</p>
                                     @if ($loop->last)
                                     <p>0.00% (Rs 0.00)</p>
                                     @else

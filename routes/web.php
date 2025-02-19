@@ -6,6 +6,7 @@ use App\Livewire\Dashboard;
 use App\Livewire\HrLogin;
 use App\Livewire\HomeDashboard;
 use App\Livewire\AddEmployeeDetails;
+use App\Livewire\AddOrViewSalaryRevision;
 use App\Livewire\AnalyticsHub;
 use App\Livewire\AnalyticsHubViewAll;
 use App\Livewire\AttendanceException;
@@ -37,6 +38,7 @@ use App\Livewire\EmployeeProfile;
 use App\Livewire\EmployeeSwipesForHr;
 use App\Livewire\EmployeeWeekDayChart;
 use App\Livewire\EmployeeSalary;
+use App\Livewire\EmployeeSalaryCommonComponent;
 use App\Livewire\Everyone;
 use App\Livewire\Feeds;
 use App\Livewire\HelpDesk;
@@ -63,7 +65,9 @@ use App\Livewire\PreviousEmployeement;
 use App\Livewire\ReimbursementStatement;
 use App\Livewire\ReportsManagement;
 use App\Livewire\Requests;
+use App\Livewire\SalaryRevision;
 use App\Livewire\SalaryRevisionAnalytics;
+use App\Livewire\SalaryRevisionHistory;
 use App\Livewire\SalaryRevisionList;
 use App\Livewire\ShiftOverrideHr;
 use App\Livewire\ShiftRosterHr;
@@ -72,6 +76,7 @@ use App\Livewire\StopSalaries;
 use App\Livewire\SwipeManagementForHr;
 use App\Livewire\AuthorizeSignatory;
 use App\Livewire\CreateSignatory;
+use App\Livewire\EmployeeDataUpdate;
 use App\Livewire\Tasks;
 use App\Livewire\WhoIsInChartHr;
 use App\Livewire\YearEndProcess;
@@ -219,15 +224,20 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
 
         //extra routes
         Route::get('/review-pending-regularisation-for-hr/{id}/{emp_id}', RegularisationPendingForHr::class)->name('review-pending-regularisation-for-hr');
+        Route::get('/employee-data-update/{action}', EmployeeDataUpdate::class)->name('employee.data.update');
 
         //Reports
         Route::get('/user/reports/', ReportsManagement::class)->name('reports');
 
         //Payroll
+        Route::get('/user/salary-revision', SalaryRevision::class)->name('salary-revision');
+        Route::get('/user/employee-salary', EmployeeSalary::class)->name('employee-salary');
+        Route::get('/user/employee-salary-component', EmployeeSalaryCommonComponent::class)->name('employee-salary-component');
         Route::get('/user/stop-salaries', StopSalaries::class)->name('stop-salaries');
         Route::get('/user/hold-salaries', HoldSalaries::class)->name('hold-salaries');
-        Route::get('/user/employee-salary', EmployeeSalary::class)->name('employee-salary');
+        Route::get('/user/employee-salary-history', SalaryRevisionHistory::class)->name('employee-salary-history');
         Route::get('/user/salary-revision-list', SalaryRevisionList::class)->name('salary-revision-list');
         Route::get('/user/salary-revision-analytics', SalaryRevisionAnalytics::class)->name('salary-revision-analytics');
+        Route::get('/user/addorview-salary-revision', AddOrViewSalaryRevision::class)->name('addorview-salary-revision');
     });
 });

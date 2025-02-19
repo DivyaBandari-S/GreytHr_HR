@@ -110,7 +110,7 @@
                     <li>
                         <a href="#">Information <i class="ph-caret-right-fill"></i></a>
                         <ul class="sidebar__dropdown-menu">
-                            <li><a href="/hr/user/employee-salary">Salary Revision History</a></li>
+                            <li><a href="/hr/user/employee-salary-history">Salary Revision History</a></li>
                             <li><a href="/hr/user/salary-revision-analytics">Salary Revision Analytics</a></li>
                         </ul>
                     </li>
