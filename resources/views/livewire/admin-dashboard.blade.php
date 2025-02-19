@@ -82,8 +82,7 @@
                                                 <i class="fa-solid fa-xmark closeIconFav"></i>
                                             </div>
                                         </div>
-
-                                        <p>Update Employee Data</P>
+                                        <p wire:click="setAction('disable')">Update Employee Data</P>
                                     </div>
 
                                     <div class="scroll-item blue-bg pt-3 ps-3 pe-3">
@@ -424,7 +423,7 @@
                         <div class="col-md-4">
 
                             <div class="m-0 mb-3 row" style="background-color: #fcf2ff; border-radius: 10px;">
-                                <img class="ps-2" style="width: 10em" src="images/onboarding.png" />
+                                <img class="ps-2" style="width: 10em" src="" />
                                 <h4 class="ps-4">Onboarding Session</h4>
                                 <p class="ps-4 pink-color">Worried about setting up your account?</p>
                                 <p class="ps-4 pink-color">Let our product experts help you get started and resolve any of your product-related problems.</p>

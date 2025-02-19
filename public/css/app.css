@@ -6697,9 +6697,16 @@ select:focus {
     font-size: var(--normal-font-size);
 }
 .confirmInput{
-    width: 25%;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
 }
 .confirmed-emp{
     background-color: #f9f9f9;
     padding: 10px 20px;
+}
+.main-title{
+    font-size: var(--sub-headings-font-size);
+    font-weight: 600;
+    color: #2c3e50;
 }
