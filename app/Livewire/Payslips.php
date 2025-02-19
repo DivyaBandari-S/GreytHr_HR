@@ -754,7 +754,7 @@ public $sendPayslipNotification = false; // Track checkbox state
 public function validateAndPublish()
 {
     if (!$this->sendPayslipNotification) {
-        session()->flash('warning', '⚠️ Please check the box to proceed with payslips');
+        FlashMessageHelper::flashWarning( '⚠️ Please check the box to proceed with payslips');
         return;
     }
 
@@ -803,7 +803,7 @@ $eligibleEmployees = DB::table('salary_revisions as sr')
     
     if ($eligibleEmployees->isEmpty()) {
       
-        session()->flash('warning', "⚠️ Warning: No employees have salary revisions before or on " . 
+        FlashMessageHelper::flashWarning( "⚠️ Warning: No employees have salary revisions before or on " . 
         Carbon::parse($selectedMonthFormatted)->format('F Y') . 
         ". Payroll will not be processed.");
         return;
