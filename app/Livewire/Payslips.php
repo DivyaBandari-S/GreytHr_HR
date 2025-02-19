@@ -19,6 +19,7 @@ use App\Models\EmpSalaryRevision;
 use App\Models\SalaryRevision;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
+
 use DateTime;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
@@ -588,7 +589,7 @@ class Payslips extends Component
 
             $this->selectedEmployeeId ;
            
-
+          
 
             $this->employeeDetails = EmployeeDetails::select('employee_details.*', 'emp_departments.department')
                 ->leftJoin('emp_departments', 'employee_details.dept_id', '=', 'emp_departments.dept_id')
@@ -748,6 +749,18 @@ public function sendTwilioSMS($to, $message)
 public  $to;
 public $message;
 public $bank_id;
+public $sendPayslipNotification = false; // Track checkbox state
+
+public function validateAndPublish()
+{
+    if (!$this->sendPayslipNotification) {
+        session()->flash('warning', '⚠️ Please check the box to proceed with payslips');
+        return;
+    }
+
+    $this->confirmAndPublish();
+}
+
 public function confirmAndPublish()
 {
     $selectedMonth = $this->selectedMonth;
@@ -787,8 +800,14 @@ $eligibleEmployees = DB::table('salary_revisions as sr')
     )
     ->where('ed.company_id', $companyId)
     ->get();
-
-
+    
+    if ($eligibleEmployees->isEmpty()) {
+      
+        session()->flash('warning', "⚠️ Warning: No employees have salary revisions before or on " . 
+        Carbon::parse($selectedMonthFormatted)->format('F Y') . 
+        ". Payroll will not be processed.");
+        return;
+    }
     // Fetch bank details
     $bankDetails = EmpBankDetail::whereIn('emp_id', $eligibleEmployees->pluck('emp_id')->toArray())
         ->pluck('id', 'emp_id')
@@ -799,20 +818,10 @@ $eligibleEmployees = DB::table('salary_revisions as sr')
         $employee->bank_id = $bankDetails[$employee->emp_id] ?? null;
         return $employee;
     });
-    $employeesWithoutRevisions = DB::table('employee_details as ed')
-    ->where('ed.company_id', $companyId)
-    ->whereNotExists(function ($query) use ($selectedMonthFormatted) {
-        $query->select(DB::raw(1))
-            ->from('salary_revisions as sr')
-            ->whereRaw('sr.emp_id = ed.emp_id')
-            ->where('sr.revision_date', '<=', $selectedMonthFormatted);
-    })
-    ->get();
-    if ($employeesWithoutRevisions->isNotEmpty()) {
-        session()->flash('warning', "⚠️ Warning:  employee do not have salary revisions before or on " . \Carbon\Carbon::parse($selectedMonthFormatted)->format('F Y') . ". Payroll will not be processed for them.");
-    }
 
+    
 
+// dd($eligibleEmployees);
     // Filter employees who already have salary records
     $existingSalaries = EmpSalary::whereIn('sal_id', $eligibleEmployees->pluck('sal_id')->toArray())
         ->whereDate('month_of_sal', $selectedMonthFormatted)
@@ -824,9 +833,10 @@ $eligibleEmployees = DB::table('salary_revisions as sr')
 $insertData = $eligibleEmployees->reject(function ($employee) use ($existingSalaries) {
     return in_array($employee->sal_id, $existingSalaries) || is_null($employee->bank_id);
 })->map(function ($employee) use ($selectedMonthFormatted) {
-    $decodedCTC = Hashids::decode($employee->revised_ctc);
-    $monthlySalary = (!empty($decodedCTC)) ? $decodedCTC[0] / 12 : 0;
+    $decodedCTC = EmpSalaryRevision::decodeCTC($employee->revised_ctc);
 
+    $monthlySalary =  $decodedCTC  / 12 ;
+   
     if ($monthlySalary == 0) {
         Log::error('Hashids decoding failed for emp_id: ' . $employee->emp_id);
     }
@@ -868,6 +878,7 @@ $insertData = $eligibleEmployees->reject(function ($employee) use ($existingSala
     }
 
     $this->showModal = false;
+  
 }
 
     
