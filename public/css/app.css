@@ -6621,3 +6621,8 @@ select:focus {
 }
 
 /*payslips ended*/
+
+/* Payroll module styles  */
+.bold-items{
+    font-weight: bold;
+}

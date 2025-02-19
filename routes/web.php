@@ -75,6 +75,7 @@ use App\Livewire\StopSalaries;
 use App\Livewire\SwipeManagementForHr;
 use App\Livewire\AuthorizeSignatory;
 use App\Livewire\CreateSignatory;
+use App\Livewire\Loans;
 use App\Livewire\Tasks;
 use App\Livewire\WhoIsInChartHr;
 use App\Livewire\YearEndProcess;
@@ -233,5 +234,6 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
         Route::get('/user/salary-revision-list', SalaryRevisionList::class)->name('salary-revision-list');
         Route::get('/user/salary-revision-analytics', SalaryRevisionAnalytics::class)->name('salary-revision-analytics');
         Route::get('/user/addorview-salary-revision', AddOrViewSalaryRevision::class)->name('addorview-salary-revision');
+        Route::get('/user/loans', Loans::class)->name('loans');
     });
 });
