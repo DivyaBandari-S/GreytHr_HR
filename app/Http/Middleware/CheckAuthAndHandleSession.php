@@ -121,6 +121,9 @@ class CheckAuthAndHandleSession
         $agent = new Agent();
         $deviceType = $agent->isMobile() ? 'Mobile' : ($agent->isTablet() ? 'Tablet' : 'Desktop');
 
+        if ( session('previous_url')!==$request->url()) {
+            Session::put('previous_url', $request->url());
+        }
         // Update last activity time and store user details in the session
         Session::put('last_activity_time', time());
         Session::put('user', $user);
