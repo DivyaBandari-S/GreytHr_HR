@@ -10,18 +10,24 @@
             overflow: hidden;
             box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
         }
-
-        .table-header {
+.accordion-content{
+    margin-left:40px;
+}
+        .reimbursement-table-header {
             background: #98cae0; /* Updated header background */
-            color: white;
+            color: black;
             width:auto;
+            height:25px;
             border-bottom: 2px solid #ddd;
         }
 
-        .table-container th, .table-container td {
+        .reimbursement-table th, .reimbursement-table td {
             padding: 12px;
             border: 1px solid #ddd;
+            font-size: 12px;
             text-align: center;
+            color: #333;
+            height:25px;
         }
 
         .table-container th {
@@ -346,328 +352,511 @@ h5 {
                 
         </div>
     </div>
-    <div class="container">
+    @if(!empty($selectedPeople))
+    <div class="row mt-3 p-0 justify-content-center"></div>
+
+    @foreach($selectedPeople as $index => $emp_id)
+        @php
+            $employee = $employees->firstWhere('emp_id', $emp_id);
+            $accordionId1 = "accordion1-" . $index; // Unique ID for each employee
+            $accordionId2 = "accordion2-" . $index;
+            $accordionId3 = "accordion3-" . $index;
+            $accordionId4 = "accordion4-" . $index;
+            $accordionId5 = "accordion5-" . $index;
+        @endphp
+@if($employee)
+    <div class="container " style="margin-left:10px">
     <!-- Accordion 1 -->
-    <div class="reimbursement" style="display: flex; justify-content: space-between; align-items: center; width: 80%;">
-        <h5>MEDICAL REIMBURSEMENT</h5>
+    <div class="reimbursement" style="display: flex; justify-content: space-between; align-items: center; width: 80%;margin-left:40px">
+        <h6><strong>MEDICAL REIMBURSEMENT</strong></h6>
         <div class="balance-container" style="display: flex; align-items: center;">
             <div class="balance-info" style="display: flex; flex-direction: column;">
                 <button class="Balance-btn">Balance</button><br>
-                <p style="margin-top: -10px;">11250</p>
+                <p style="margin-top: -10px;">5000</p>
             </div>
-            <button class="cancel-btn pdf-download details-btn" data-target="#accordion-content-1" style="display: inline-block; margin-top: 5px;">
+            <button class="cancel-btn pdf-download details-btn" wire:ignore.self onclick="toggleAccordion(this)" data-target="{{ $accordionId1 }}" style="display: inline-block; margin-top: 5px;">
                 Details <i class="fas fa-caret-down chevron-icon"></i>
             </button>
         </div>
     </div>
 
-    <div id="accordion-content-1" class="accordion-content" style="display: none;">
-        <div class="tab-container">
-            <ul class="nav nav-tabs">
-                <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#claims1"  style="font-size: 12px;">Claims</a></li>
-                <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#payouts1"  style="font-size: 12px;">Payouts</a></li>
-            </ul>
+    <div id="{{ $accordionId1 }}" class="accordion-content" style="display: none;">
+  
+    <table class="reimbursement-table" style="width: 80%; margin-left: 0 table-layout: fixed; border-collapse: collapse;">
+        <thead class="reimbursement-table-header">
+            <tr class="reimbursement-table-row">
+                <th class="reimbursement-table-cell" style="width: 16.66%;">Opening Balance</th>
+                <th class="reimbursement-table-cell" style="width: 16.66%;">Entitlement</th>
+                <th class="reimbursement-table-cell" style="width: 16.66%;">Claims Paid</th>
+                <th class="reimbursement-table-cell" style="width: 16.66%;">Claims Pending</th>
+                <th class="reimbursement-table-cell" style="width: 16.66%;">Claims Approved</th>
+                <th class="reimbursement-table-cell" style="width: 16.66%;">Closing Balance</th>
+            </tr>
+        </thead>
+        <tbody class="reimbursement-table-body">
+            <tr class="reimbursement-no-data-row">
+                <td class="reimbursement-no-data-cell" style="text-align: center;">-</td>
+                <td class="reimbursement-no-data-cell" style="text-align: center;">5000</td>
+                <td class="reimbursement-no-data-cell" style="text-align: center;">0.00</td>
+                <td class="reimbursement-no-data-cell" style="text-align: center;">0.00</td>
+                <td class="reimbursement-no-data-cell" style="text-align: center;">0.00</td>
+                <td class="reimbursement-no-data-cell" style="text-align: center;">5000</td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="tab-container">
+        <ul class="nav nav-tabs">
+            <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#claims1" style="font-size: 12px;">Claims</a></li>
+            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#payouts1" style="font-size: 12px;">Payouts</a></li>
+        </ul>
+    </div>
+
+    <div class="tab-content">
+        <div id="claims1" class="tab-pane fade show active">
+            <table class="reimbursement-table" style="width: 80%; margin-left: 0; table-layout: fixed; border-collapse: collapse;">
+                <thead class="reimbursement-table-header">
+                    <tr class="reimbursement-table-row">
+                        <th class="reimbursement-table-cell" style="width: 20%;">Claim No</th>
+                        <th class="reimbursement-table-cell" style="width: 20%;">Claim Date</th>
+                        <th class="reimbursement-table-cell" style="width: 20%;">Claim Amount</th>
+                        <th class="reimbursement-table-cell" style="width: 20%;">Proof Status</th>
+                        <th class="reimbursement-table-cell" style="width: 20%;">Remarks</th>
+                    </tr>
+                </thead>
+                <tbody class="reimbursement-table-body">
+                    <tr class="reimbursement-no-data-row">
+                        <td class="reimbursement-no-data-cell" colspan="5" style="text-align: center;">No transactions found...</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
-        <div class="tab-content">
-            <div id="claims1" class="tab-pane fade show active">
-                <table class="table-container" style="width: 90%;">
-                    <thead class="table-header">
-                        <tr>
-                            <th style="width: 15%">Claim No</th>
-                            <th style="width: 15%">Claim Date</th>
-                            <th style="width: 15%">Claim Amount</th>
-                            <th style="width: 20%">Proof Status</th>
-                            <th style="width: 30%">Remarks</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr class="no-data-row">
-                            <td colspan="5" style="font-size: 12px;">No transactions found...</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div id="payouts1" class="tab-pane fade">
-                <table class="table-container" >
-                    <thead class="table-header">
-                        <tr>
-                            <th style="width: 15%">Sl No</th>
-                            <th style="width: 20%">Date</th>
-                            <th style="width: 20%">Amount</th>
-                            <th style="width: 30%">Remarks</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr class="no-data-row">
-                            <td colspan="4" style="font-size: 12px;">No transactions found...</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+
+        <div id="payouts1" class="tab-pane fade">
+            <table class="reimbursement-table" style="width: 80%; margin-left: 0; table-layout: fixed; border-collapse: collapse;">
+                <thead class="reimbursement-table-header">
+                    <tr class="reimbursement-table-row">
+                        <th class="reimbursement-table-cell" style="width: 25%;">Sl No</th>
+                        <th class="reimbursement-table-cell" style="width: 25%;">Date</th>
+                        <th class="reimbursement-table-cell" style="width: 25%;">Amount</th>
+                        <th class="reimbursement-table-cell" style="width: 25%;">Remarks</th>
+                    </tr>
+                </thead>
+                <tbody class="reimbursement-table-body">
+                    <tr class="reimbursement-no-data-row">
+                        <td class="reimbursement-no-data-cell" colspan="4" style="text-align: center;">No transactions found...</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
-    <hr>
+</div>
 
+<hr>
     <!-- Accordion 2 -->
-    <div class="reimbursement" style="display: flex; justify-content: space-between; align-items: center; width: 80%;margin-top:10px">
-        <h5>TRAVEL REIMBURSEMENT</h5>
+    <div class="reimbursement" style="display: flex; justify-content: space-between; align-items: center; width: 80%;margin-top:5px;margin-left:40px">
+        <h6><strong>LTA REIMBURSEMENT</strong></h6>
         <div class="balance-container" style="display: flex; align-items: center;">
             <div class="balance-info" style="display: flex; flex-direction: column;">
                 <button class="Balance-btn">Balance</button><br>
-                <p style="margin-top: -10px;">11250</p>
+                <p style="margin-top: -10px;">25000</p>
             </div>
-            <button class="cancel-btn pdf-download details-btn" data-target="#accordion-content-2" style="display: inline-block; margin-top: 5px;">
+            <button class="cancel-btn pdf-download details-btn" wire:ignore.self onclick="toggleAccordion(this)" data-target="{{ $accordionId2 }}" style="display: inline-block; margin-top: 5px;">
                 Details <i class="fas fa-caret-down chevron-icon"></i>
             </button>
         </div>
-
+ 
     </div>
-    <div id="accordion-content-2" class="accordion-content" style="display: none;">
-        <div class="tab-container">
-            <ul class="nav nav-tabs">
-                <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#claims2"  style="font-size: 12px;">Claims</a></li>
-                <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#payouts2"  style="font-size: 12px;">Payouts</a></li>
-            </ul>
+    <div id="{{ $accordionId2 }}" class="accordion-content" style="display: none;">
+    <table class="reimbursement-table" style="width: 80%; margin-left: 0 table-layout: fixed; border-collapse: collapse;">
+        <thead class="reimbursement-table-header">
+            <tr class="reimbursement-table-row">
+                <th class="reimbursement-table-cell" style="width: 16.66%;">Opening Balance</th>
+                <th class="reimbursement-table-cell" style="width: 16.66%;">Entitlement</th>
+                <th class="reimbursement-table-cell" style="width: 16.66%;">Claims Paid</th>
+                <th class="reimbursement-table-cell" style="width: 16.66%;">Claims Pending</th>
+                <th class="reimbursement-table-cell" style="width: 16.66%;">Claims Approved</th>
+                <th class="reimbursement-table-cell" style="width: 16.66%;">Closing Balance</th>
+            </tr>
+        </thead>
+        <tbody class="reimbursement-table-body">
+            <tr class="reimbursement-no-data-row">
+                <td class="reimbursement-no-data-cell" style="text-align: center;">-</td>
+                <td class="reimbursement-no-data-cell" style="text-align: center;">25000</td>
+                <td class="reimbursement-no-data-cell" style="text-align: center;">0.00</td>
+                <td class="reimbursement-no-data-cell" style="text-align: center;">0.00</td>
+                <td class="reimbursement-no-data-cell" style="text-align: center;">0.00</td>
+                <td class="reimbursement-no-data-cell" style="text-align: center;">25000</td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="tab-container">
+        <ul class="nav nav-tabs">
+            <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#claims2" style="font-size: 12px;">Claims</a></li>
+            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#payouts2" style="font-size: 12px;">Payouts</a></li>
+        </ul>
+    </div>
+
+    <div class="tab-content">
+        <div id="claims2" class="tab-pane fade show active">
+            <table class="reimbursement-table" style="width: 80%; margin-left: 0; table-layout: fixed; border-collapse: collapse;">
+                <thead class="reimbursement-table-header">
+                    <tr class="reimbursement-table-row">
+                        <th class="reimbursement-table-cell" style="width: 20%;">Claim No</th>
+                        <th class="reimbursement-table-cell" style="width: 20%;">Claim Date</th>
+                        <th class="reimbursement-table-cell" style="width: 20%;">Claim Amount</th>
+                        <th class="reimbursement-table-cell" style="width: 20%;">Proof Status</th>
+                        <th class="reimbursement-table-cell" style="width: 20%;">Remarks</th>
+                    </tr>
+                </thead>
+                <tbody class="reimbursement-table-body">
+                    <tr class="reimbursement-no-data-row">
+                        <td class="reimbursement-no-data-cell" colspan="5" style="text-align: center;">No transactions found...</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
-        <div class="tab-content">
-            <div id="claims2" class="tab-pane fade show active">
-                <table class="table-container" >
-                    <thead class="table-header">
-                        <tr>
-                            <th style="width: 15%">Claim No</th>
-                            <th style="width: 15%">Claim Date</th>
-                            <th style="width: 15%">Claim Amount</th>
-                            <th style="width: 20%">Proof Status</th>
-                            <th style="width: 30%">Remarks</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr class="no-data-row">
-                            <td colspan="5" style="font-size: 12px;">No transactions found...</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div id="payouts2" class="tab-pane fade">
-                <table class="table-container" >
-                    <thead class="table-header">
-                        <tr>
-                            <th style="width: 15%">Sl No</th>
-                            <th style="width: 20%">Date</th>
-                            <th style="width: 20%">Amount</th>
-                            <th style="width: 30%">Remarks</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr class="no-data-row">
-                            <td colspan="4" style="font-size: 12px;">No transactions found...</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+
+        <div id="payouts2" class="tab-pane fade">
+            <table class="reimbursement-table" style="width: 80%; margin-left: 0; table-layout: fixed; border-collapse: collapse;">
+                <thead class="reimbursement-table-header">
+                    <tr class="reimbursement-table-row">
+                        <th class="reimbursement-table-cell" style="width: 25%;">Sl No</th>
+                        <th class="reimbursement-table-cell" style="width: 25%;">Date</th>
+                        <th class="reimbursement-table-cell" style="width: 25%;">Amount</th>
+                        <th class="reimbursement-table-cell" style="width: 25%;">Remarks</th>
+                    </tr>
+                </thead>
+                <tbody class="reimbursement-table-body">
+                    <tr class="reimbursement-no-data-row">
+                        <td class="reimbursement-no-data-cell" colspan="4" style="text-align: center;">No transactions found...</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
+    </div>
     </div>
 <hr>
     <!-- Accordion 3 -->
-    <div class="reimbursement" style="display: flex; justify-content: space-between; align-items: center; width: 80%;margin-top:10px">
-        <h5>FOOD ALLOWANCE</h5>
+    <div class="reimbursement" style="display: flex; justify-content: space-between; align-items: center; width: 80%;margin-top:5px;margin-left:40px">
+        <h6><strong>FUEL MAINTENANCE A1600cc REIMBURSEMENT</strong></h6>
         <div class="balance-container" style="display: flex; align-items: center;">
             <div class="balance-info" style="display: flex; flex-direction: column;">
                 <button class="Balance-btn">Balance</button><br>
-                <p style="margin-top: -10px;">11250</p>
+                <p style="margin-top: -10px;">28800</p>
             </div>
-            <button class="cancel-btn pdf-download details-btn" data-target="#accordion-content-3" style="display: inline-block; margin-top: 5px;">
+            <button class="cancel-btn pdf-download details-btn" wire:ignore.self onclick="toggleAccordion(this)" data-target="{{ $accordionId3 }}" style="display: inline-block; margin-top: 5px;">
                 Details <i class="fas fa-caret-down chevron-icon"></i>
             </button>
         </div>
-    
+   
     </div>
-    <div id="accordion-content-3" class="accordion-content" style="display: none;">
-        <div class="tab-container">
-            <ul class="nav nav-tabs">
-                <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#claims3" style="font-size: 12px;">Claims</a></li>
-                <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#payouts3"  style="font-size: 12px;">Payouts</a></li>
-            </ul>
+    <div id="{{ $accordionId3 }}" class="accordion-content" style="display: none;">
+    <table class="reimbursement-table" style="width: 80%; margin-left: 0 table-layout: fixed; border-collapse: collapse;">
+        <thead class="reimbursement-table-header">
+            <tr class="reimbursement-table-row">
+                <th class="reimbursement-table-cell" style="width: 16.66%;">Opening Balance</th>
+                <th class="reimbursement-table-cell" style="width: 16.66%;">Entitlement</th>
+                <th class="reimbursement-table-cell" style="width: 16.66%;">Claims Paid</th>
+                <th class="reimbursement-table-cell" style="width: 16.66%;">Claims Pending</th>
+                <th class="reimbursement-table-cell" style="width: 16.66%;">Claims Approved</th>
+                <th class="reimbursement-table-cell" style="width: 16.66%;">Closing Balance</th>
+            </tr>
+        </thead>
+        <tbody class="reimbursement-table-body">
+            <tr class="reimbursement-no-data-row">
+                <td class="reimbursement-no-data-cell" style="text-align: center;">-</td>
+                <td class="reimbursement-no-data-cell" style="text-align: center;">21800</td>
+                <td class="reimbursement-no-data-cell" style="text-align: center;">0.00</td>
+                <td class="reimbursement-no-data-cell" style="text-align: center;">0.00</td>
+                <td class="reimbursement-no-data-cell" style="text-align: center;">0.00</td>
+                <td class="reimbursement-no-data-cell" style="text-align: center;">21800</td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="tab-container">
+        <ul class="nav nav-tabs">
+            <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#claims3" style="font-size: 12px;">Claims</a></li>
+            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#payouts3" style="font-size: 12px;">Payouts</a></li>
+        </ul>
+    </div>
+
+    <div class="tab-content">
+        <div id="claims3" class="tab-pane fade show active">
+            <table class="reimbursement-table" style="width: 80%; margin-left: 0; table-layout: fixed; border-collapse: collapse;">
+                <thead class="reimbursement-table-header">
+                    <tr class="reimbursement-table-row">
+                        <th class="reimbursement-table-cell" style="width: 20%;">Claim No</th>
+                        <th class="reimbursement-table-cell" style="width: 20%;">Claim Date</th>
+                        <th class="reimbursement-table-cell" style="width: 20%;">Claim Amount</th>
+                        <th class="reimbursement-table-cell" style="width: 20%;">Proof Status</th>
+                        <th class="reimbursement-table-cell" style="width: 20%;">Remarks</th>
+                    </tr>
+                </thead>
+                <tbody class="reimbursement-table-body">
+                    <tr class="reimbursement-no-data-row">
+                        <td class="reimbursement-no-data-cell" colspan="5" style="text-align: center;">No transactions found...</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
-        <div class="tab-content">
-            <div id="claims3" class="tab-pane fade show active">
-                <table class="table-container" >
-                    <thead class="table-header">
-                        <tr>
-                            <th style="width: 15%">Claim No</th>
-                            <th style="width: 15%">Claim Date</th>
-                            <th style="width: 15%">Claim Amount</th>
-                            <th style="width: 20%">Proof Status</th>
-                            <th style="width: 30%">Remarks</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr class="no-data-row">
-                            <td colspan="5" style="font-size: 12px;">No transactions found...</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div id="payouts3" class="tab-pane fade">
-                <table class="table-container" >
-                    <thead class="table-header">
-                        <tr>
-                            <th style="width: 15%">Sl No</th>
-                            <th style="width: 20%">Date</th>
-                            <th style="width: 20%">Amount</th>
-                            <th style="width: 30%">Remarks</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr class="no-data-row">
-                            <td colspan="4" style="font-size: 12px;">No transactions found...</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+
+        <div id="payouts3" class="tab-pane fade">
+            <table class="reimbursement-table" style="width: 80%; margin-left: 0; table-layout: fixed; border-collapse: collapse;">
+                <thead class="reimbursement-table-header">
+                    <tr class="reimbursement-table-row">
+                        <th class="reimbursement-table-cell" style="width: 25%;">Sl No</th>
+                        <th class="reimbursement-table-cell" style="width: 25%;">Date</th>
+                        <th class="reimbursement-table-cell" style="width: 25%;">Amount</th>
+                        <th class="reimbursement-table-cell" style="width: 25%;">Remarks</th>
+                    </tr>
+                </thead>
+                <tbody class="reimbursement-table-body">
+                    <tr class="reimbursement-no-data-row">
+                        <td class="reimbursement-no-data-cell" colspan="4" style="text-align: center;">No transactions found...</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
+    </div>
     </div>
 <hr>
     <!-- Accordion 4 -->
-    <div class="reimbursement" style="display: flex; justify-content: space-between; align-items: center; width: 80%;margin-top:10px">
-        <h5>CAR ALLOWANCE</h5>
+    <div class="reimbursement" style="display: flex; justify-content: space-between; align-items: center; width: 80%;margin-top:5px;margin-left:40px">
+        <h6><strong> MAINTENANCE B1600cc REIMBURSEMENT</strong></h6>
+
         <div class="balance-container" style="display: flex; align-items: center;">
             <div class="balance-info" style="display: flex; flex-direction: column;">
                 <button class="Balance-btn">Balance</button><br>
-                <p style="margin-top: -10px;">11250</p>
+                <p style="margin-top: -10px;">21600</p>
             </div>
-            <button class="cancel-btn pdf-download details-btn" data-target="#accordion-content-4" style="display: inline-block; margin-top: 5px;">
+            <button class="cancel-btn pdf-download details-btn" wire:ignore.self onclick="toggleAccordion(this)" data-target="{{ $accordionId4 }}" style="display: inline-block; margin-top: 5px;">
                 Details <i class="fas fa-caret-down chevron-icon"></i>
             </button>
         </div>
-     
     </div>
-    <div id="accordion-content-4" class="accordion-content" style="display: none;">
-        <div class="tab-container">
-            <ul class="nav nav-tabs">
-                <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#claims4"  style="font-size: 12px;">Claims</a></li>
-                <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#payouts4"  style="font-size: 12px;">Payouts</a></li>
-            </ul>
+    <div id="{{ $accordionId4 }}" class="accordion-content" style="display: none;">
+    <table class="reimbursement-table" style="width: 80%; margin-left: 0; table-layout: fixed; border-collapse: collapse;">
+        <thead class="reimbursement-table-header">
+            <tr class="reimbursement-table-row">
+                <th class="reimbursement-table-cell" style="width: 16.66%;">Opening Balance</th>
+                <th class="reimbursement-table-cell" style="width: 16.66%;">Entitlement</th>
+                <th class="reimbursement-table-cell" style="width: 16.66%;">Claims Paid</th>
+                <th class="reimbursement-table-cell" style="width: 16.66%;">Claims Pending</th>
+                <th class="reimbursement-table-cell" style="width: 16.66%;">Claims Approved</th>
+                <th class="reimbursement-table-cell" style="width: 16.66%;">Closing Balance</th>
+            </tr>
+        </thead>
+        <tbody class="reimbursement-table-body">
+            <tr class="reimbursement-no-data-row">
+                <td class="reimbursement-no-data-cell" style="text-align: center;">-</td>
+                <td class="reimbursement-no-data-cell" style="text-align: center;">21600</td>
+                <td class="reimbursement-no-data-cell" style="text-align: center;">0.00</td>
+                <td class="reimbursement-no-data-cell" style="text-align: center;">0.00</td>
+                <td class="reimbursement-no-data-cell" style="text-align: center;">0.00</td>
+                <td class="reimbursement-no-data-cell" style="text-align: center;">21600</td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="tab-container">
+        <ul class="nav nav-tabs">
+            <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#claims4" style="font-size: 12px;">Claims</a></li>
+            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#payouts4" style="font-size: 12px;">Payouts</a></li>
+        </ul>
+    </div>
+
+    <div class="tab-content">
+        <div id="claims4" class="tab-pane fade show active">
+            <table class="reimbursement-table" style="width: 80%; margin-left: 0; table-layout: fixed; border-collapse: collapse;">
+                <thead class="reimbursement-table-header">
+                    <tr class="reimbursement-table-row">
+                        <th class="reimbursement-table-cell" style="width: 20%;">Claim No</th>
+                        <th class="reimbursement-table-cell" style="width: 20%;">Claim Date</th>
+                        <th class="reimbursement-table-cell" style="width: 20%;">Claim Amount</th>
+                        <th class="reimbursement-table-cell" style="width: 20%;">Proof Status</th>
+                        <th class="reimbursement-table-cell" style="width: 20%;">Remarks</th>
+                    </tr>
+                </thead>
+                <tbody class="reimbursement-table-body">
+                    <tr class="reimbursement-no-data-row">
+                        <td class="reimbursement-no-data-cell" colspan="5" style="text-align: center;">No transactions found...</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
-        <div class="tab-content">
-            <div id="claims4" class="tab-pane fade show active">
-                <table class="table-container" >
-                    <thead class="table-header">
-                        <tr>
-                            <th style="width: 15%">Claim No</th>
-                            <th style="width: 15%">Claim Date</th>
-                            <th style="width: 15%">Claim Amount</th>
-                            <th style="width: 20%">Proof Status</th>
-                            <th style="width: 30%">Remarks</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr class="no-data-row">
-                            <td colspan="5" style="font-size: 12px;">No transactions found...</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div id="payouts4" class="tab-pane fade">
-                <table class="table-container" >
-                    <thead class="table-header">
-                        <tr>
-                            <th style="width: 15%">Sl No</th>
-                            <th style="width: 20%">Date</th>
-                            <th style="width: 20%">Amount</th>
-                            <th style="width: 30%">Remarks</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr class="no-data-row">
-                            <td colspan="4" style="font-size: 12px;">No transactions found...</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+
+        <div id="payouts4" class="tab-pane fade">
+            <table class="reimbursement-table" style="width: 80%; margin-left: 0; table-layout: fixed; border-collapse: collapse;">
+                <thead class="reimbursement-table-header">
+                    <tr class="reimbursement-table-row">
+                        <th class="reimbursement-table-cell" style="width: 25%;">Sl No</th>
+                        <th class="reimbursement-table-cell" style="width: 25%;">Date</th>
+                        <th class="reimbursement-table-cell" style="width: 25%;">Amount</th>
+                        <th class="reimbursement-table-cell" style="width: 25%;">Remarks</th>
+                    </tr>
+                </thead>
+                <tbody class="reimbursement-table-body">
+                    <tr class="reimbursement-no-data-row">
+                        <td class="reimbursement-no-data-cell" colspan="4" style="text-align: center;">No transactions found...</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
+    </div>
     </div>
 <hr>
     <!-- Accordion 5 -->
-    <div class="reimbursement" style="display: flex; justify-content: space-between; align-items: center; width: 80%;margin-top:10px">
-        <h5>LEAVE ALLOWANCE</h5>
+    <div class="reimbursement" style="display: flex; justify-content: space-between; align-items: center; width: 80%;margin-top:5px;margin-left:40px">
+    <h6><strong>CHAUFFERS SALARY REIMBURSEMENT</strong></h6>
+
         <div class="balance-container" style="display: flex; align-items: center;">
             <div class="balance-info" style="display: flex; flex-direction: column;">
                 <button class="Balance-btn">Balance</button><br>
-                <p style="margin-top: -10px;">11250</p>
+                <p style="margin-top: -10px;">10800</p>
             </div>
-            <button class="cancel-btn pdf-download details-btn" data-target="#accordion-content-5" style="display: inline-block; margin-top: 5px;">
+            <button class="cancel-btn pdf-download details-btn" wire:ignore.self onclick="toggleAccordion(this)" data-target="{{ $accordionId5 }}" style="display: inline-block; margin-top: 5px;">
                 Details <i class="fas fa-caret-down chevron-icon"></i>
             </button>
         </div>
 
     </div>
-    <div id="accordion-content-5" class="accordion-content" style="display: none;">
-        <div class="tab-container">
-            <ul class="nav nav-tabs">
-                <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#claims5"  style="font-size: 12px;">Claims</a></li>
-                <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#payouts5"  style="font-size: 12px;">Payouts</a></li>
-            </ul>
-        </div>
-        <div class="tab-content">
-            <div id="claims5" class="tab-pane fade show active">
-                <table class="table-container" >
-                    <thead class="table-header">
-                        <tr>
-                            <th style="width: 15%">Claim No</th>
-                            <th style="width: 15%">Claim Date</th>
-                            <th style="width: 15%">Claim Amount</th>
-                            <th style="width: 20%">Proof Status</th>
-                            <th style="width: 30%">Remarks</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr class="no-data-row">
-                            <td colspan="5" style="font-size: 12px;">No transactions found...</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div id="payouts5" class="tab-pane fade">
-                <table class="table-container" style="width: 90%;">
-                    <thead class="table-header">
-                        <tr>
-                            <th style="width: 15%">Sl No</th>
-                            <th style="width: 20%">Date</th>
-                            <th style="width: 20%">Amount</th>
-                            <th style="width: 30%">Remarks</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr class="no-data-row">
-                            <td colspan="4" style="font-size: 12px;">No transactions found...</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
+    <div id="{{ $accordionId5 }}" class="accordion-content" style="display: none;">
+    <table class="reimbursement-table" style="width: 80%; margin-left: 0; table-layout: fixed; border-collapse: collapse;">
+        <thead class="reimbursement-table-header">
+            <tr class="reimbursement-table-row">
+                <th class="reimbursement-table-cell" style="width: 16.66%;">Opening Balance</th>
+                <th class="reimbursement-table-cell" style="width: 16.66%;">Entitlement</th>
+                <th class="reimbursement-table-cell" style="width: 16.66%;">Claims Paid</th>
+                <th class="reimbursement-table-cell" style="width: 16.66%;">Claims Pending</th>
+                <th class="reimbursement-table-cell" style="width: 16.66%;">Claims Approved</th>
+                <th class="reimbursement-table-cell" style="width: 16.66%;">Closing Balance</th>
+            </tr>
+        </thead>
+        <tbody class="reimbursement-table-body">
+            <tr class="reimbursement-no-data-row">
+                <td class="reimbursement-no-data-cell" style="text-align: center;">-</td>
+                <td class="reimbursement-no-data-cell" style="text-align: center;">10800</td>
+                <td class="reimbursement-no-data-cell" style="text-align: center;">0.00</td>
+                <td class="reimbursement-no-data-cell" style="text-align: center;">0.00</td>
+                <td class="reimbursement-no-data-cell" style="text-align: center;">0.00</td>
+                <td class="reimbursement-no-data-cell" style="text-align: center;">10800</td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="tab-container">
+        <ul class="nav nav-tabs">
+            <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#claims5" style="font-size: 12px;">Claims</a></li>
+            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#payouts5" style="font-size: 12px;">Payouts</a></li>
+        </ul>
     </div>
 
-</div>
+    <div class="tab-content">
+        <div id="claims5" class="tab-pane fade show active">
+            <table class="reimbursement-table" style="width: 80%; margin-left: 0; table-layout: fixed; border-collapse: collapse;">
+                <thead class="reimbursement-table-header">
+                    <tr class="reimbursement-table-row">
+                        <th class="reimbursement-table-cell" style="width: 20%;">Claim No</th>
+                        <th class="reimbursement-table-cell" style="width: 20%;">Claim Date</th>
+                        <th class="reimbursement-table-cell" style="width: 20%;">Claim Amount</th>
+                        <th class="reimbursement-table-cell" style="width: 20%;">Proof Status</th>
+                        <th class="reimbursement-table-cell" style="width: 20%;">Remarks</th>
+                    </tr>
+                </thead>
+                <tbody class="reimbursement-table-body">
+                    <tr class="reimbursement-no-data-row">
+                        <td class="reimbursement-no-data-cell" colspan="5" style="text-align: center;">No transactions found...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
+        <div id="payouts5" class="tab-pane fade">
+            <table class="reimbursement-table" style="width: 80%; margin-left: 0; table-layout: fixed; border-collapse: collapse;">
+                <thead class="reimbursement-table-header">
+                    <tr class="reimbursement-table-row">
+                        <th class="reimbursement-table-cell" style="width: 25%;">Sl No</th>
+                        <th class="reimbursement-table-cell" style="width: 25%;">Date</th>
+                        <th class="reimbursement-table-cell" style="width: 25%;">Amount</th>
+                        <th class="reimbursement-table-cell" style="width: 25%;">Remarks</th>
+                    </tr>
+                </thead>
+                <tbody class="reimbursement-table-body">
+                    <tr class="reimbursement-no-data-row">
+                        <td class="reimbursement-no-data-cell" colspan="4" style="text-align: center;">No transactions found...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    </div>
+</div>
+@endif
+@endforeach
+@endif
+<!-- Include jQuery (for Bootstrap 4) -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<!-- Include Bootstrap JS -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        let tabLinks = document.querySelectorAll('.nav-tabs .nav-link');
+        tabLinks.forEach(tab => {
+            tab.addEventListener('click', function(event) {
+                event.preventDefault();
+                let targetTab = this.getAttribute('href');
+
+                document.querySelectorAll('.tab-pane').forEach(pane => {
+                    pane.classList.remove('show', 'active');
+                });
+
+                document.querySelector(targetTab).classList.add('show', 'active');
+
+                tabLinks.forEach(link => link.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+    });
+</script>
 
 <script>
-$(document).ready(function () {
-    $(".details-btn").click(function () {
-        var target = $(this).attr("data-target");
-        var chevron = $(this).find(".chevron-icon");
+    function toggleAccordion(btn) {
+        console.log("Button Clicked:", btn);
+        let targetId = btn.getAttribute("data-target");
+        let target = document.getElementById(targetId);
+        let icon = btn.querySelector(".chevron-icon");
 
-        if ($(target).is(":visible")) {
-            $(target).slideUp();
-            chevron.removeClass("fa-caret-up").addClass("fa-caret-down");
+        console.log("Target Found:", target);
+
+        if (target) {
+            if (target.style.display === "none" || target.style.display === "") {
+                target.style.display = "block"; 
+                icon.classList.remove("fa-caret-down");
+                icon.classList.add("fa-caret-up");
+            } else {
+                target.style.display = "none"; 
+                icon.classList.remove("fa-caret-up");
+                icon.classList.add("fa-caret-down");
+            }
         } else {
-            $(target).slideDown();
-            chevron.removeClass("fa-caret-down").addClass("fa-caret-up");
+            console.error("Target not found:", targetId);
         }
+    }
+
+    document.addEventListener("livewire:load", function() {
+        console.log("Livewire Loaded - Attaching Events");
     });
-});
+
+    document.addEventListener("livewire:update", function() {
+        console.log("Livewire Updated - Re-attaching Events");
+        attachAccordionEvents();
+    });
+
+    function attachAccordionEvents() {
+        document.querySelectorAll(".details-btn").forEach(button => {
+            button.addEventListener("click", function() {
+                toggleAccordion(this);
+            });
+        });
+    }
 </script>
 </div>
 </div>

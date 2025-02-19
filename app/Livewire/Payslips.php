@@ -747,7 +747,7 @@ public function sendTwilioSMS($to, $message)
 
 public  $to;
 public $message;
-
+public $bank_id;
 public function confirmAndPublish()
 {
     $selectedMonth = $this->selectedMonth;
@@ -772,12 +772,22 @@ public function confirmAndPublish()
     }
 
     // Fetch employees with latest salary revisions
-    $eligibleEmployees = DB::table('salary_revisions as sr')
-        ->select('sr.id as sal_id', 'sr.revised_ctc', 'sr.revision_date', 'ed.emp_id', 'ed.email','ed.first_name','ed.last_name')
-        ->join('employee_details as ed', 'sr.emp_id', '=', 'ed.emp_id')
-        ->where('ed.company_id', $companyId)
-        ->whereRaw("sr.revision_date = (SELECT MAX(revision_date) FROM salary_revisions WHERE emp_id = sr.emp_id)")
-        ->get();
+$eligibleEmployees = DB::table('salary_revisions as sr')
+    ->select('sr.id as sal_id', 'sr.revised_ctc', 'sr.revision_date', 'ed.emp_id', 'ed.email', 'ed.first_name', 'ed.last_name')
+    ->join('employee_details as ed', 'sr.emp_id', '=', 'ed.emp_id')
+    ->join(
+        DB::raw("(SELECT emp_id, MAX(revision_date) as final_revision_date 
+                  FROM salary_revisions 
+                  WHERE revision_date <= '$selectedMonthFormatted'
+                  GROUP BY emp_id) as latest_sr"),
+        function ($join) {
+            $join->on('sr.emp_id', '=', 'latest_sr.emp_id')
+                 ->on('sr.revision_date', '=', 'latest_sr.final_revision_date');
+        }
+    )
+    ->where('ed.company_id', $companyId)
+    ->get();
+
 
     // Fetch bank details
     $bankDetails = EmpBankDetail::whereIn('emp_id', $eligibleEmployees->pluck('emp_id')->toArray())
@@ -789,6 +799,19 @@ public function confirmAndPublish()
         $employee->bank_id = $bankDetails[$employee->emp_id] ?? null;
         return $employee;
     });
+    $employeesWithoutRevisions = DB::table('employee_details as ed')
+    ->where('ed.company_id', $companyId)
+    ->whereNotExists(function ($query) use ($selectedMonthFormatted) {
+        $query->select(DB::raw(1))
+            ->from('salary_revisions as sr')
+            ->whereRaw('sr.emp_id = ed.emp_id')
+            ->where('sr.revision_date', '<=', $selectedMonthFormatted);
+    })
+    ->get();
+    if ($employeesWithoutRevisions->isNotEmpty()) {
+        session()->flash('warning', "⚠️ Warning:  employee do not have salary revisions before or on " . \Carbon\Carbon::parse($selectedMonthFormatted)->format('F Y') . ". Payroll will not be processed for them.");
+    }
+
 
     // Filter employees who already have salary records
     $existingSalaries = EmpSalary::whereIn('sal_id', $eligibleEmployees->pluck('sal_id')->toArray())
@@ -797,46 +820,50 @@ public function confirmAndPublish()
         ->toArray();
 
     // Prepare bulk insert data
-    $insertData = $eligibleEmployees->reject(function ($employee) use ($existingSalaries) {
-        return in_array($employee->sal_id, $existingSalaries);
-    })->map(function ($employee) use ($selectedMonthFormatted) {
-        $decodedCTC = Hashids::decode($employee->revised_ctc);
-        $monthlySalary = (!empty($decodedCTC)) ? $decodedCTC[0] / 12 : 0;
+// Prepare bulk insert data
+$insertData = $eligibleEmployees->reject(function ($employee) use ($existingSalaries) {
+    return in_array($employee->sal_id, $existingSalaries) || is_null($employee->bank_id);
+})->map(function ($employee) use ($selectedMonthFormatted) {
+    $decodedCTC = Hashids::decode($employee->revised_ctc);
+    $monthlySalary = (!empty($decodedCTC)) ? $decodedCTC[0] / 12 : 0;
 
-        if ($monthlySalary == 0) {
-            Log::error('Hashids decoding failed for emp_id: ' . $employee->emp_id);
-        }
+    if ($monthlySalary == 0) {
+        Log::error('Hashids decoding failed for emp_id: ' . $employee->emp_id);
+    }
 
-        $encodedSalary = $this->encodeCTC($monthlySalary);
+    $encodedSalary = $this->encodeCTC($monthlySalary);
 
-        return [
-            'sal_id' => $employee->sal_id,
-            'bank_id' => $employee->bank_id,
-            'salary' => $encodedSalary,
-            'effective_date' => $selectedMonthFormatted,
-            'month_of_sal' => $selectedMonthFormatted,
-            'remarks' => 'Auto-generated salary record',
-            'created_at' => now(),
-            'updated_at' => now()
-        ];
-    })->toArray();
+    return [
+        'sal_id' => $employee->sal_id,
+        'bank_id' => $employee->bank_id,
+        'salary' => $encodedSalary,
+        'effective_date' => $selectedMonthFormatted,
+        'month_of_sal' => $selectedMonthFormatted,
+        'remarks' => 'Auto-generated salary record',
+        'created_at' => now(),
+        'updated_at' => now()
+    ];
+})->toArray();
+
+  
 
     // Insert payroll data
     if (!empty($insertData)) {
         EmpSalary::insert($insertData);
-        session()->flash('success', "Payroll for {{ \Carbon\Carbon::parse($this->selectedMonth)->translatedFormat('F Y') }} has been created!");
-
-
-        foreach ($eligibleEmployees as $employee) {
+        session()->flash('success', "Payroll for " . Carbon::parse($this->selectedMonth)->translatedFormat('F Y') . " has been created!");
+    
+        // Get employees who had new payroll records created
+        $newPayrollEmployees = $eligibleEmployees->reject(function ($employee) use ($existingSalaries) {
+            return in_array($employee->sal_id, $existingSalaries); // Exclude already existing salary records
+        });
+    
+        // Send emails only to employees whose payroll was newly created
+        foreach ($newPayrollEmployees as $employee) {
             if (!empty($employee->email)) {
                 Mail::to($employee->email)->send(new PayrollProcessedMail($employee, $selectedMonth));
             }
-         
         }
-            
-        
-        
-    } else {
+    }else {
         session()->flash('warning', "No new salary records needed for {$this->selectedMonth}.");
     }
 
