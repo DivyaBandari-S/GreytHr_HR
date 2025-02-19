@@ -51,4 +51,8 @@ class Hr extends Authenticatable
     {
         return $this->role == $role;
     }
+
+    public function getAdminFavModules(){
+        return $this->hasMany(AdminFavoriteModule::class, 'hr_emp_id','hr_emp_id');
+    }
 }

@@ -1,4 +1,4 @@
-<div r>
+<div >
 
     <div class="container-fluid px-1  rounded">
 
@@ -509,7 +509,6 @@
                 </div>
 
                 @endif
-
 
             </div>
 
