@@ -62,6 +62,7 @@ use App\Livewire\Payslips;
 use App\Livewire\PfYtdReport;
 use App\Livewire\PositionHistory;
 use App\Livewire\PreviousEmployeement;
+use App\Livewire\ReimbursementStatement;
 use App\Livewire\ReportsManagement;
 use App\Livewire\Requests;
 use App\Livewire\SalaryRevision;
@@ -75,6 +76,7 @@ use App\Livewire\StopSalaries;
 use App\Livewire\SwipeManagementForHr;
 use App\Livewire\AuthorizeSignatory;
 use App\Livewire\CreateSignatory;
+use App\Livewire\EmployeeDataUpdate;
 use App\Livewire\Loans;
 use App\Livewire\Tasks;
 use App\Livewire\WhoIsInChartHr;
@@ -145,6 +147,8 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
         Route::get('/ctcslips', CTCSlips::class)->name('ctcslips');
         Route::get('/ytdreport', YtdReport::class)->name('ytdreport');
         Route::get('/pfytdreport', PfYtdReport::class)->name('pfytdreport');
+        Route::get('/reimbursement', ReimbursementStatement::class)->name('reimbursement');
+
 
         //HR Employee-Main Submodule Routes
         Route::get('/user/main-overview', HrMainOverview::class)->name('main-overview');
@@ -160,6 +164,7 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
         Route::get('parent-details', ParentDetails::class)->name('parent-details');
         Route::get('/emp-document', EmpDocument::class)->name('emp-document');
         Route::get('/bank-account', EmpDocument::class)->name('bank-account');
+        Route::get('/previous-employeement', PreviousEmployeement::class)->name('previous-employeement');
         Route::get('/user/payroll-overview', PayrollOverview::class)->name('payroll-overview');
 
         //HR Employee-Admin Submodule Routes
@@ -220,6 +225,7 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
 
         //extra routes
         Route::get('/review-pending-regularisation-for-hr/{id}/{emp_id}', RegularisationPendingForHr::class)->name('review-pending-regularisation-for-hr');
+        Route::get('/employee-data-update/{action}', EmployeeDataUpdate::class)->name('employee.data.update');
 
         //Reports
         Route::get('/user/reports/', ReportsManagement::class)->name('reports');
