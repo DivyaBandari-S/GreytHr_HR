@@ -319,6 +319,8 @@ ul {
 }
 /* admin dashboard */
 .green-bg {
+    display: flex;
+	flex-direction: column;
 	background-color: #dbffdf;
     border: 1px solid #b4f7a6;
 }
@@ -329,6 +331,8 @@ ul {
     margin-bottom: 3em;
 }
 .yellow-bg {
+    display: flex;
+	flex-direction: column;
 	background-color: #ffdef5;
     border: 1px solid #fc9af7;
 }
@@ -339,6 +343,8 @@ ul {
     margin-bottom: 3em;
 }
 .purple-bg{
+    display: flex;
+	flex-direction: column;
     background-color: #f7deff;
     border: 1px solid #dd9afc;
 }
@@ -356,20 +362,47 @@ ul {
     margin-bottom: 0;
     margin-top: 30px;
 }
+.chipTextFav.active {
+    background-color: #fbf0ea; /* Active background color */
+    border-color: #DF6D2D;
+    font-weight: 500;
+    color: #DF6D2D; /* Active text color */
+}
+/* Regular icon style */
+.fa-solid {
+    cursor: pointer;
+    transition: color 0.3s ease, text-shadow 0.3s ease; /* Smooth transition */
+}
+
+/* Active state for the icon */
+.fa-solid.active {
+    color: #f1c232;
+    text-shadow: 0 0 0px #f1c232, 0 0 0px #f1c232, 0 0 20px #f1c232; /* Glowing effect */
+}
+
 .homeContainers {
     display: flex;
     flex-direction: column;
-    min-height: 150px; /* Set a height that works for your design */
+    justify-content: space-between;
 }
-.homeContainers p {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-.homeContainers .row{
+
+.homeContainers .rounded-3 {
     flex-grow: 1;
 }
-.a {
+
+.homeContainers p {
+    font-weight: 500;
+    white-space: normal; /* Ensure the text is not truncated */
+    overflow-wrap: break-word; /* Prevent long words from breaking the layout */
+}
+
+.text-truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap; /* Use this if you still want the text to be truncated on overflow */
+}
+
+.homeContainers .a {
     background: #fcfcfc;
     border: 1px solid #ccc;
     color: rgb(2, 17, 79);
@@ -3501,7 +3534,6 @@ input[type="date"]::before {
 .search-container {
     max-height: 250px; /* Set maximum height */
     overflow-y: auto; /* Enable vertical scrolling */
-
     padding: 10px; /* Optional: Add some padding */
     cursor: pointer;
     margin-top: 5px;
@@ -4248,8 +4280,8 @@ input[type="date"]::before {
     width: 50%;
 }
 .selectEmp {
-    width: 250px;
-    height: 200px;
+    width: 25%;
+    height: auto;
     margin-top: 3px;
     overflow-y: auto;
     border: 1px solid #ccc;
@@ -6610,3 +6642,144 @@ select:focus {
 }
 
 /*payslips ended*/
+
+/* Payroll module styles  */
+.bold-items{
+    font-weight: bold;
+}
+
+/* //Employee data upddate styles */
+.displayContnet{
+    padding: 20px;
+}
+.empDelContent{
+    padding: 10px 20px;
+}
+/* .selEmpData{
+    background-color: #f9f9f9;
+} */
+.searchEmp{
+    width: 25%;
+}
+.profileCon{
+    border-radius: 10px;
+    background-color: white;
+    padding: 10px;
+}
+.emp-content{
+    padding: 20px;
+    background-color: #f9f9f9;
+    box-shadow: 2px 1px 2px rgba(0, 0, 0, 0.1);
+}
+.profileCon:hover{
+    background:  #e0effa;
+}
+.selecetdEmpDet .more-info{
+    padding: 30px;
+}
+.more-info{
+    background: #f9f9f9;
+    box-shadow: 2px 1px 2px rgba(0, 0, 0, 0.1);
+}
+.normalTextValue{
+    font-size: var(--normal-font-size);
+    color: var(--label-color);
+}
+.custom-table {
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+.custom-table td{
+    padding: 10px 50px;
+}
+.custom-table td strong{
+    font-weight: 500;
+    font-size: 11px;
+}
+.custom-cell {
+    border: 1px solid #ccc;
+    padding: 8px;
+    font-size: var(--normal-font-size);
+}
+.confirmInput{
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+}
+.confirmed-emp{
+    background-color: #f9f9f9;
+    padding: 10px 20px;
+}
+.main-title{
+    font-size: var(--sub-headings-font-size);
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+/* //Employee data upddate styles */
+.displayContnet{
+    padding: 20px;
+}
+.empDelContent{
+    padding: 10px 20px;
+}
+/* .selEmpData{
+    background-color: #f9f9f9;
+} */
+.searchEmp{
+    width: 25%;
+}
+.profileCon{
+    border-radius: 10px;
+    background-color: white;
+    padding: 10px;
+}
+.emp-content{
+    padding: 20px;
+    background-color: #f9f9f9;
+    box-shadow: 2px 1px 2px rgba(0, 0, 0, 0.1);
+}
+.profileCon:hover{
+    background:  #e0effa;
+}
+.selecetdEmpDet .more-info{
+    padding: 30px;
+}
+.more-info{
+    background: #f9f9f9;
+    box-shadow: 2px 1px 2px rgba(0, 0, 0, 0.1);
+}
+.normalTextValue{
+    font-size: var(--normal-font-size);
+    color: var(--label-color);
+}
+.custom-table {
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+.custom-table td{
+    padding: 10px 50px;
+}
+.custom-table td strong{
+    font-weight: 500;
+    font-size: 11px;
+}
+.custom-cell {
+    border: 1px solid #ccc;
+    padding: 8px;
+    font-size: var(--normal-font-size);
+}
+.confirmInput{
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+}
+.confirmed-emp{
+    background-color: #f9f9f9;
+    padding: 10px 20px;
+}
+.main-title{
+    font-size: var(--sub-headings-font-size);
+    font-weight: 600;
+    color: #2c3e50;
+}

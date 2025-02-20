@@ -110,7 +110,7 @@
                     <li>
                         <a href="#">Information <i class="ph-caret-right-fill"></i></a>
                         <ul class="sidebar__dropdown-menu">
-                            <li><a href="/hr/user/employee-salary">Salary Revision History</a></li>
+                            <li><a href="/hr/user/employee-salary-history">Salary Revision History</a></li>
                             <li><a href="/hr/user/salary-revision-analytics">Salary Revision Analytics</a></li>
                         </ul>
                     </li>
@@ -118,7 +118,7 @@
                         <a href="#">Payroll Inputs <i class="ph-caret-right-fill"></i></a>
                         <ul class="sidebar__dropdown-menu">
                             <li><a href="/hr/user/generate-letter">Salary</a></li>
-                            <li><a href="/user">Loan</a></li>
+                            <li><a href="/hr/user/loans">Loan</a></li>
                             <li><a href="/hr/user/salary-revision-list">Salary Revision</a></li>
                             <li><a href="/user">Income Tax</a></li>
                             <li><a href="/user">Reimbursement</a></li>
@@ -163,7 +163,7 @@
                             <li><a href="/user">Reimbursement Payslip</a></li>
                             <li><a href="/hr/ytdreport">YTD Summary</a></li>
                             <li><a href="/hr/pfytdreport">PF YTD Statement</a></li>
-                            <li><a href="/user">Reimbursement Statement</a></li>
+                            <li><a href="/hr/reimbursement">Reimbursement Statement</a></li>
                             <li><a href="/user">IT Statement</a></li>
                             <li><a href="/user">Loan Statement</a></li>
                             <li><a href="/user">IT Declaration</a></li>

@@ -70,48 +70,88 @@
                                     </div>
                                 </div>
                                 <div class="scroll-container" id="scrollContainer">
-                                    <div wire:click="toggleContent" class="scroll-item blue-bg" style="width: 2em; text-align: center;">
+                                    <div data-bs-toggle="modal" data-bs-target="#addFavModal" class="scroll-item blue-bg" style="width: 2em; text-align: center;">
                                         <i class="fa-solid fa-plus" style="padding-top: 4.5em;"></i>
                                     </div>
+                                    <div class="scroll-item blue-bg pt-3 ps-3 pe-3">
+                                        <div class="row m-0">
+                                            <div class="col-6 p-0">
+                                                <i class="fa-regular fa-user blue-bg-icon"></i>
+                                            </div>
+                                            <div class="col-6 p-0 text-end">
+                                                <i class="fa-solid fa-xmark closeIconFav"></i>
+                                            </div>
+                                        </div>
+                                        <p wire:click="setAction('disable')">Update Employee Data</P>
+                                    </div>
 
-                                    <?php
-                                    // Initialize a counter to track the order of items
-                                    $counter = 0;
-                                    $maxItemsToShow = 10; // Number of items to show in the main container
+                                    <div class="scroll-item blue-bg pt-3 ps-3 pe-3">
+                                        <div class="row m-0">
+                                            <div class="col-6 p-0">
+                                                <i class="fa-regular fa-user blue-bg-icon"></i>
+                                            </div>
+                                            <div class="col-6 p-0 text-end">
+                                                <i class="fa-solid fa-xmark closeIconFav"></i>
+                                            </div>
+                                        </div>
+                                        <p>Update Employee Data</P>
+                                    </div>
+                                    <div class="scroll-item blue-bg pt-3 ps-3 pe-3">
+                                        <div class="row m-0">
+                                            <div class="col-6 p-0">
+                                                <i class="fa-regular fa-user blue-bg-icon"></i>
+                                            </div>
+                                            <div class="col-6 p-0 text-end">
+                                                <i class="fa-solid fa-xmark closeIconFav"></i>
+                                            </div>
+                                        </div>
+                                        <p>Update Employee Data</P>
+                                    </div>
 
-                                    // Loop through your overview content list
-                                    foreach ($this->overviewContentList as $category => $contentList) {
-                                        // Loop through each content within the category
-                                        foreach ($contentList as $route => $content) {
-                                            if ($counter >= $maxItemsToShow) {
-                                                break 2; // Stop after 10 items across all categories (breaking both loops)
-                                            }
-
-                                            // Ensure content is a string (in case it's an array)
-                                            $content = is_array($content) ? implode(' ', $content) : $content;
-
-                                            // Define background and icon classes
-                                            $bgClass = ($counter % 2 == 0) ? 'blue-bg' : 'orag-bg';
-                                            $iconClass = ($counter % 2 == 0) ? 'blue-bg-icon' : 'orag-bg-icon';
-                                    ?>
-                                            <a href="<?php echo $route; ?>" class="scroll-item <?php echo $bgClass; ?> pt-3 ps-3 pe-3">
-                                                <div class="row m-0">
-                                                    <div class="col-6 p-0">
-                                                        <i class="fa-regular fa-user <?php echo $iconClass; ?>"></i>
-                                                    </div>
-                                                    <div class="col-6 p-0 text-end">
-                                                        <i class="fa-solid fa-xmark closeIconFav"></i>
-                                                    </div>
-                                                </div>
-                                                <p><?php echo htmlspecialchars($content); ?></p>
-                                            </a>
-                                    <?php
-                                            // Increment counter for the next item
-                                            $counter++;
-                                        }
-                                    }
-                                    ?>
-
+                                    <div class="scroll-item orag-bg pt-3 ps-3 pe-3">
+                                        <div class="row m-0">
+                                            <div class="col-6 p-0">
+                                                <i class="fa-regular fa-user orag-bg-icon"></i>
+                                            </div>
+                                            <div class="col-6 p-0 text-end">
+                                                <i class="fa-solid fa-xmark closeIconFav"></i>
+                                            </div>
+                                        </div>
+                                        <p>Update Employee Data</P>
+                                    </div>
+                                    <div class="scroll-item orag-bg pt-3 ps-3 pe-3">
+                                        <div class="row m-0">
+                                            <div class="col-6 p-0">
+                                                <i class="fa-regular fa-user orag-bg-icon"></i>
+                                            </div>
+                                            <div class="col-6 p-0 text-end">
+                                                <i class="fa-solid fa-xmark closeIconFav"></i>
+                                            </div>
+                                        </div>
+                                        <p>Update Employee Data</P>
+                                    </div>
+                                    <div class="scroll-item orag-bg pt-3 ps-3 pe-3">
+                                        <div class="row m-0">
+                                            <div class="col-6 p-0">
+                                                <i class="fa-regular fa-user orag-bg-icon"></i>
+                                            </div>
+                                            <div class="col-6 p-0 text-end">
+                                                <i class="fa-solid fa-xmark closeIconFav"></i>
+                                            </div>
+                                        </div>
+                                        <p>Update Employee Data</P>
+                                    </div>
+                                    <div class="scroll-item orag-bg pt-3 ps-3 pe-3">
+                                        <div class="row m-0">
+                                            <div class="col-6 p-0">
+                                                <i class="fa-regular fa-user orag-bg-icon"></i>
+                                            </div>
+                                            <div class="col-6 p-0 text-end">
+                                                <i class="fa-solid fa-xmark closeIconFav"></i>
+                                            </div>
+                                        </div>
+                                        <p>Update Employee Data</P>
+                                    </div>
                                 </div>
                             </div>
 
@@ -383,7 +423,7 @@
                         <div class="col-md-4">
 
                             <div class="m-0 mb-3 row" style="background-color: #fcf2ff; border-radius: 10px;">
-                                <img class="ps-2" style="width: 10em" src="images/onboarding.png" />
+                                <img class="ps-2" style="width: 10em" src="" />
                                 <h4 class="ps-4">Onboarding Session</h4>
                                 <p class="ps-4 pink-color">Worried about setting up your account?</p>
                                 <p class="ps-4 pink-color">Let our product experts help you get started and resolve any of your product-related problems.</p>
@@ -492,6 +532,276 @@
                         </div>
 
                     </div>
+
+                    <div class="border m-0 rounded row">
+                        <div class="border-bottom m-0 mt-3 row">
+                            <div class="col-md-6">
+                                <p class="fw-bold">Employee Status</p>
+                            </div>
+                            <div class="col-md-6 text-end">
+                                <button class="btn btn-outline-primary btn-sm"><i class="fa-regular fa-calendar"></i> This Week</button>
+                            </div>
+                        </div>
+                        <div class="m-0 mt-3 row">
+                            <div class="col-md-6">
+                                <p>Total Employee</p>
+                            </div>
+                            <div class="col-md-6 text-end">
+                                <p>154</p>
+                            </div>
+                        </div>
+                        <div class="m-0 px-4 row">
+                            <div class="p-0 progress-stacked">
+                                <div class="progress" role="progressbar" aria-label="Segment one" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100" style="width: 15%">
+                                    <div class="progress-bar"></div>
+                                </div>
+                                <div class="progress" role="progressbar" aria-label="Segment two" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" style="width: 30%">
+                                    <div class="progress-bar bg-success"></div>
+                                </div>
+                                <div class="progress" role="progressbar" aria-label="Segment three" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 20%">
+                                    <div class="progress-bar bg-info"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="m-0 mt-3 px-4 row">
+                            <div class="border col-md-6 pt-3">
+                                <p class="mb-0">Fulltime (48%)</p>
+                                <p class="fs-1 fw-bold mb-1">112</p>
+                            </div>
+                            <div class="border-bottom border-end border-top col-md-6 pt-3 text-end">
+                                <p class="mb-0">Contract (20%)</p>
+                                <p class="fs-1 fw-bold mb-1">112</p>
+                            </div>
+                        </div>
+
+                        <div class="m-0 px-4 row">
+                            <div class="border-bottom border-end border-start col-md-6 pt-3">
+                                <p class="mb-0">Probation (22%)</p>
+                                <p class="fs-1 fw-bold mb-1">112</p>
+                            </div>
+                            <div class="border-bottom border-end col-md-6 pt-3 text-end">
+                                <p class="mb-0">WFH (20%)</p>
+                                <p class="fs-1 fw-bold mb-1">112</p>
+                            </div>
+                        </div>
+
+                        <div class="row m-0 mt-3">
+                            <p class="mb-1">Top Performer</p>
+                            <div class="row m-0">
+                                <div class="row m-0 p-2 rounded-2 performerDiv">
+                                    <div class="col-md-1 p-0 m-auto">
+                                        <p class="mb-0">
+                                            <i class="fa-solid fa-award fs-3 me-3 perfColor" style="vertical-align: middle;"></i>
+                                            <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-24.jpg" style="width: 2em; border-radius: 50%;" />
+                                        </p>
+                                    </div>
+                                    <div class="col-md-11 p-0">
+                                        <div class="m-0 row">
+                                            <div class="col-md-6 p-0">
+                                                <p class="fw-bold mb-0 fs14">Daniel Esbella</p>
+                                                <p class="fs12 mb-0">IOS Developer</p>
+                                            </div>
+                                            <div class="col-md-6 text-end p-0">
+                                                <p class="mb-0 fs14">Performance</p>
+                                                <p class="fs12 fw-bold mb-0 perfColor">99%</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row m-0 my-3">
+                            <div class="d-grid gap-2">
+                                <button class="btn btn-outline-secondary btn-sm" type="button">View All</button>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row m-0 mt-3">
+                        <div class="col-md-6 ps-0">
+                            <div class="border m-0 rounded row">
+                                <div class="border-bottom m-0 mt-3 row">
+                                    <div class="col-md-6">
+                                        <p class="fw-bold">Attendance Overview</p>
+                                    </div>
+                                    <div class="col-md-6 text-end">
+                                        <button class="btn btn-outline-primary btn-sm"><i class="fa-regular fa-calendar"></i> This Week</button>
+                                    </div>
+                                </div>
+                                <div id="attendanceDiv"></div>
+                                <div class="row m-0">
+                                    <p class="mb-1 fw-bold">Status</p>
+                                    <div class="col-md-6">
+                                        <p class="mb-1"><i class="fa-solid fa-circle" style="color: #008ffb"></i> Present</p>
+                                        <p class="mb-1"><i class="fa-solid fa-circle" style="color: #00e396"></i> Late</p>
+                                        <p class="mb-1"><i class="fa-solid fa-circle" style="color: #feb019"></i> Permission</p>
+                                        <p class="mb-1"><i class="fa-solid fa-circle" style="color: #ff4560"></i> Absent</p>
+                                    </div>
+                                    <div class="col-md-6 text-end">
+                                        <p class="mb-1 fw-bold">59%</p>
+                                        <p class="mb-1 fw-bold">21%</p>
+                                        <p class="mb-1 fw-bold">2%</p>
+                                        <p class="mb-1 fw-bold">15%</p>
+                                    </div>
+                                </div>
+                                <div class="m-0 mb-3 mt-3 px-4 row">
+                                    <div class="bg-light m-0 p-0 py-2 rounded row">
+                                        <div class="col-md-8 d-flex align-items-center">
+                                            <p class="mb-0 me-2">Total Absenties</p>
+                                            <div class="avatar-list-stacked avatar-group-sm">
+                                                <span class="avatar avatar-rounded">
+                                                    <img class="border border-white" src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-27.jpg" alt="img">
+                                                </span>
+                                                <span class="avatar avatar-rounded">
+                                                    <img class="border border-white" src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-30.jpg" alt="img">
+                                                </span>
+                                                <span class="avatar avatar-rounded">
+                                                    <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-14.jpg" alt="img">
+                                                </span>
+                                                <span class="avatar avatar-rounded">
+                                                    <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-29.jpg" alt="img">
+                                                </span>
+                                                <a class="avatar bg-primary avatar-rounded text-fixed-white fs10" href="/react/template/index" data-discover="true">+1</a>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 text-end">
+                                            <a href="#" class="perfColor" style="text-decoration: underline;">View Details</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 pe-0">
+                            <div class="border m-0 rounded row">
+                                <div class="border-bottom m-0 mt-3 row">
+                                    <div class="col-md-6">
+                                        <p class="fw-bold">Clock-In/Out</p>
+                                    </div>
+                                    <div class="col-md-6 text-end">
+                                        <button class="btn btn-outline-primary btn-sm"><i class="fa-regular fa-calendar"></i> This Week</button>
+                                    </div>
+                                </div>
+
+                                <div class="row m-0 mt-3">
+                                    <div class="border m-0 mb-3 p-2 rounded-2 row">
+                                        <div class="col-md-1 p-0 m-auto">
+                                            <p class="mb-0">
+                                                <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-24.jpg" style="width: 2em; border-radius: 50%;" />
+                                            </p>
+                                        </div>
+                                        <div class="col-md-11 p-0">
+                                            <div class="m-0 row">
+                                                <div class="col-md-6 p-0">
+                                                    <p class="fw-bold mb-0 fs14">Daniel Esbella</p>
+                                                    <p class="fs12 mb-0">UI/UX Designer</p>
+                                                </div>
+                                                <div class="col-md-6 text-end p-0 m-auto">
+                                                    <p class="mb-0 fs14"><i class="fa-regular fa-clock me-2" style="vertical-align: middle;"></i> <span class="badge text-bg-success">09 : 06</span></p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="border m-0 mb-3 p-2 rounded-2 row">
+                                        <div class="col-md-1 p-0 m-auto">
+                                            <p class="mb-0">
+                                                <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-24.jpg" style="width: 2em; border-radius: 50%;" />
+                                            </p>
+                                        </div>
+                                        <div class="col-md-11 p-0">
+                                            <div class="m-0 row">
+                                                <div class="col-md-6 p-0">
+                                                    <p class="fw-bold mb-0 fs14">Daniel Esbella</p>
+                                                    <p class="fs12 mb-0">UI/UX Designer</p>
+                                                </div>
+                                                <div class="col-md-6 text-end p-0 m-auto">
+                                                    <p class="mb-0 fs14"><i class="fa-regular fa-clock me-2" style="vertical-align: middle;"></i> <span class="badge text-bg-success">09 : 06</span></p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="border m-0 mb-3 p-2 rounded-2 row">
+                                        <div class="col-md-1 p-0 m-auto">
+                                            <p class="mb-0">
+                                                <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-24.jpg" style="width: 2em; border-radius: 50%;" />
+                                            </p>
+                                        </div>
+                                        <div class="col-md-11 p-0">
+                                            <div class="m-0 row">
+                                                <div class="col-md-6 p-0">
+                                                    <p class="fw-bold mb-0 fs14">Daniel Esbella</p>
+                                                    <p class="fs12 mb-0">UI/UX Designer</p>
+                                                </div>
+                                                <div class="col-md-6 text-end p-0 m-auto">
+                                                    <p class="mb-0 fs14"><i class="fa-regular fa-clock me-2" style="vertical-align: middle;"></i> <span class="badge text-bg-success">09 : 06</span></p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="border m-0 mb-3 p-2 rounded-2 row">
+                                        <div class="col-md-1 p-0 m-auto">
+                                            <p class="mb-0">
+                                                <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-24.jpg" style="width: 2em; border-radius: 50%;" />
+                                            </p>
+                                        </div>
+                                        <div class="col-md-11 p-0">
+                                            <div class="m-0 row">
+                                                <div class="col-md-6 p-0">
+                                                    <p class="fw-bold mb-0 fs14">Daniel Esbella</p>
+                                                    <p class="fs12 mb-0">UI/UX Designer</p>
+                                                </div>
+                                                <div class="col-md-6 text-end p-0 m-auto">
+                                                    <p class="mb-0 fs14"><i class="fa-regular fa-clock me-2" style="vertical-align: middle;"></i> <span class="badge text-bg-success">09 : 06</span></p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="border m-0 mt-2 py-3 rounded row">
+                                            <div class="col-md-4">
+                                                <p class="fs12 text-secondary mb-0">Clock in</p>
+                                                <p class="fs12 mb-0">10:30 AM</p>
+                                            </div>
+                                            <div class="col-md-4 text-center">
+                                                <p class="fs12 text-secondary mb-0">Clock out</p>
+                                                <p class="fs12 mb-0">10:30 AM</p>
+                                            </div>
+                                            <div class="col-md-4 text-end">
+                                                <p class="fs12 text-secondary mb-0">Production</p>
+                                                <p class="fs12 mb-0">10:30 Hrs</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <p class="fw-bold fs14 p-0">Late</p>
+                                    <div class="border m-0 mb-3 p-2 rounded-2 row">
+                                        <div class="col-md-1 p-0 m-auto">
+                                            <p class="mb-0">
+                                                <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-24.jpg" style="width: 2em; border-radius: 50%;" />
+                                            </p>
+                                        </div>
+                                        <div class="col-md-11 p-0">
+                                            <div class="m-0 row">
+                                                <div class="col-md-6 p-0">
+                                                    <p class="fw-bold mb-0 fs14">Daniel Esbella</p>
+                                                    <p class="fs12 mb-0">UI/UX Designer</p>
+                                                </div>
+                                                <div class="col-md-6 text-end p-0 m-auto">
+                                                    <p class="mb-0 fs14"><i class="fa-regular fa-clock me-2" style="vertical-align: middle;"></i> <span class="badge text-bg-danger">09 : 06</span></p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row m-0 my-3">
+                                    <div class="d-grid gap-2 p-0">
+                                        <button class="btn btn-outline-secondary btn-sm" type="button">View All Attendance</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
                 <div class="tab-page" data-tab-page="in-review">
                     <h1 class="tab-page-title">In Review</h1>
@@ -565,18 +875,17 @@
 
 
     <!-- Modal -->
-    @if($showDynamicContent)
-    <div class="modal" id="logoutModal" tabindex="-1" style="display: block;">
+    <div class="modal fade" id="addFavModal" tabindex="-1" aria-labelledby="addFavModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-scrollable">
             <div class="modal-content">
-                <div class="modal-header text-white">
-                    <h6 class="modal-title " id="logoutModalLabel" style="align-items: center;">Search</h6>
-                    <button type="button" class="btn-close" wire:click="toggleContent" style="cursor: pointer;"></button>
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="addFavModalLabel">Search</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="input-group flex-nowrap">
-                        <span class="input-group-text"><i class="fa-solid fa-magnifying-glass"></i></span>
-                        <input type="text" class="form-control" wire:model.live="searchContent" placeholder="Search here">
+                        <span class="input-group-text" id="addon-wrapping"><i class="fa-solid fa-magnifying-glass"></i></span>
+                        <input type="text" class="form-control" placeholder="Search here" aria-label="Username" aria-describedby="addon-wrapping">
                     </div>
                     <div class="row m-0">
                         <p class="mt-1x">
@@ -588,41 +897,154 @@
                             <span class="chipTextFav">Other</span>
                         </p>
                     </div>
-
                     <div class="row m-0">
-                        <?php
-                        foreach ($this->overviewItems as $item) {
-                        ?>
-                            <div class="col-md-3 homeContainers">
-                                <div class="<?php echo $item['bgClass']; ?> pt-3 ps-3 pe-3 rounded-3 mb-3">
-                                    <div class="row m-0">
-                                        <div class="col-6 p-0">
-                                            <!-- Display the dynamic icon for each item -->
-                                            <i class="<?php echo $item['iconClass']; ?>"></i>
-                                        </div>
-                                        <div class="col-6 p-0 text-end">
-                                            <i class="fa-regular fa-star"></i>
-                                        </div>
+                        <div class="col-md-3">
+                            <div class="blue-bg pt-3 ps-3 pe-3 rounded-3 mb-3">
+                                <div class="row m-0">
+                                    <div class="col-6 p-0">
+                                        <i class="fa-regular fa-user blue-bg-icon"></i>
                                     </div>
-                                    <p title="<?php echo htmlspecialchars(is_array($item['content']) ? implode(' ', $item['content']) : $item['content']); ?>">
-                                        <?php echo htmlspecialchars(is_array($item['content']) ? implode(' ', $item['content']) : $item['content']); ?>
-                                    </p>
+                                    <div class="col-6 p-0 text-end">
+                                        <i class="fa-regular fa-star"></i>
+                                    </div>
                                 </div>
+                                <p>Update Employee Data</P>
                             </div>
-                        <?php
-                        }
-                        ?>
-                    </div>
+                        </div>
 
+                        <div class="col-md-3">
+                            <div class="blue-bg pt-3 ps-3 pe-3 rounded-3 mb-3">
+                                <div class="row m-0">
+                                    <div class="col-6 p-0">
+                                        <i class="fa-regular fa-user blue-bg-icon"></i>
+                                    </div>
+                                    <div class="col-6 p-0 text-end">
+                                        <i class="fa-regular fa-star"></i>
+                                    </div>
+                                </div>
+                                <p>Update Employee Data</P>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="blue-bg pt-3 ps-3 pe-3 rounded-3 mb-3">
+                                <div class="row m-0">
+                                    <div class="col-6 p-0">
+                                        <i class="fa-regular fa-user blue-bg-icon"></i>
+                                    </div>
+                                    <div class="col-6 p-0 text-end">
+                                        <i class="fa-regular fa-star"></i>
+                                    </div>
+                                </div>
+                                <p>Update Employee Data</P>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="orag-bg pt-3 ps-3 pe-3 rounded-3 mb-3">
+                                <div class="row m-0">
+                                    <div class="col-6 p-0">
+                                        <i class="fa-regular fa-user orag-bg-icon"></i>
+                                    </div>
+                                    <div class="col-6 p-0 text-end">
+                                        <i class="fa-regular fa-star"></i>
+                                    </div>
+                                </div>
+                                <p>Update Employee Data</P>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="orag-bg pt-3 ps-3 pe-3 rounded-3 mb-3">
+                                <div class="row m-0">
+                                    <div class="col-6 p-0">
+                                        <i class="fa-regular fa-user orag-bg-icon"></i>
+                                    </div>
+                                    <div class="col-6 p-0 text-end">
+                                        <i class="fa-regular fa-star"></i>
+                                    </div>
+                                </div>
+                                <p>Update Employee Data</P>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="orag-bg pt-3 ps-3 pe-3 rounded-3 mb-3">
+                                <div class="row m-0">
+                                    <div class="col-6 p-0">
+                                        <i class="fa-regular fa-user orag-bg-icon"></i>
+                                    </div>
+                                    <div class="col-6 p-0 text-end">
+                                        <i class="fa-regular fa-star"></i>
+                                    </div>
+                                </div>
+                                <p>Update Employee Data</P>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="orag-bg pt-3 ps-3 pe-3 rounded-3 mb-3">
+                                <div class="row m-0">
+                                    <div class="col-6 p-0">
+                                        <i class="fa-regular fa-user orag-bg-icon"></i>
+                                    </div>
+                                    <div class="col-6 p-0 text-end">
+                                        <i class="fa-regular fa-star"></i>
+                                    </div>
+                                </div>
+                                <p>Update Employee Data</P>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="orag-bg pt-3 ps-3 pe-3 rounded-3 mb-3">
+                                <div class="row m-0">
+                                    <div class="col-6 p-0">
+                                        <i class="fa-regular fa-user orag-bg-icon"></i>
+                                    </div>
+                                    <div class="col-6 p-0 text-end">
+                                        <i class="fa-regular fa-star"></i>
+                                    </div>
+                                </div>
+                                <p>Update Employee Data</P>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="orag-bg pt-3 ps-3 pe-3 rounded-3 mb-3">
+                                <div class="row m-0">
+                                    <div class="col-6 p-0">
+                                        <i class="fa-regular fa-user orag-bg-icon"></i>
+                                    </div>
+                                    <div class="col-6 p-0 text-end">
+                                        <i class="fa-regular fa-star"></i>
+                                    </div>
+                                </div>
+                                <p>Update Employee Data</P>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="orag-bg pt-3 ps-3 pe-3 rounded-3 mb-3">
+                                <div class="row m-0">
+                                    <div class="col-6 p-0">
+                                        <i class="fa-regular fa-user orag-bg-icon"></i>
+                                    </div>
+                                    <div class="col-6 p-0 text-end">
+                                        <i class="fa-regular fa-star"></i>
+                                    </div>
+                                </div>
+                                <p>Update Employee Data</P>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="cancel-btn" wire:click="toggleContent">Close</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
                 </div>
             </div>
         </div>
     </div>
-    <div class="modal-backdrop fade show"></div>
-    @endif
     <!-- end: MAIN BODY -->
 
 </section>
