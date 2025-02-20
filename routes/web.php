@@ -78,6 +78,7 @@ use App\Livewire\AuthorizeSignatory;
 use App\Livewire\CreateSignatory;
 use App\Livewire\EmployeeDataUpdate;
 use App\Livewire\Loans;
+use App\Livewire\EmployeeSeparation;
 use App\Livewire\EditSignatory;
 use App\Livewire\Tasks;
 use App\Livewire\WhoIsInChartHr;
@@ -228,6 +229,7 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
         //extra routes
         Route::get('/review-pending-regularisation-for-hr/{id}/{emp_id}', RegularisationPendingForHr::class)->name('review-pending-regularisation-for-hr');
         Route::get('/employee-data-update/{action}', EmployeeDataUpdate::class)->name('employee.data.update');
+        Route::get('/user/employee-separation', EmployeeSeparation::class)->name('employee-separation');
 
         //Reports
         Route::get('/user/reports/', ReportsManagement::class)->name('reports');

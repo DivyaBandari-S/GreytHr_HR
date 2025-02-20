@@ -344,5 +344,8 @@ const scrollContainer = document.getElementById("scrollContainer");
     
         var chart = new ApexCharts(document.querySelector("#attendanceDiv"), options);
         chart.render();
+
+        var chart1 = new ApexCharts(document.querySelector("#taskDiv"), options);
+        chart1.render();
     };
     
