@@ -1,4 +1,4 @@
-<div>
+<div class="main__body" style="overflow: auto; height: calc(100vh - 84px)">
     <div class="container-fluid px-1  rounded">
         <ul class="nav leave-grant-nav-tabs d-flex gap-3 py-1" id="myTab" role="tablist">
 
@@ -15,7 +15,7 @@
             </li>
 
         </ul>
-        <div class="tab-content " id="myTabContent" style="background:#fcfcfc;">
+        <div class="tab-content " id="myTabContent" >
             <div class="tab-pane show active" id="summary-tab-pane" role="tabpanel" aria-labelledby="summary-tab" tabindex="0">
                 @if($showHistory)
                 <div class="row m-0 px-4 ">

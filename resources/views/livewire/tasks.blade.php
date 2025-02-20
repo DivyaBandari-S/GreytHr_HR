@@ -1,4 +1,4 @@
-<div class="main__body " style="overflow: auto; height: calc(100vh - 70px);background:#f9f9f9;">
+<div class="main__body" style="overflow: auto; height: calc(100vh - 84px)">
     <div class="position-relative"  >
         <div class="position-absolute" wire:loading
             wire:target="setActiveTab,show,toggleAccordion,openAddCommentModal,openForTasks,showViewFile,close,forAssignee,closeAssignee,selectPerson,forFollowers,closeFollowers,togglePersonSelection,submit,downloadImage,closeViewFile,closeModal,openEditCommentModal,deleteComment,updateComment,cancelEdit,addComment,updateFilterDropdown,closeForTasks">

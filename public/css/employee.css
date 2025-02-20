@@ -517,6 +517,7 @@ body {
 	/* padding: 1.25rem; */
 	/* box-shadow: inset 0 8rem 0 var(--dark-l-1); */
 	margin-top: -5.8em;
+	background-color: #f3f3f3;
 }
 #main .main__body .main__body__box-info {
 	display: flex;
@@ -1321,4 +1322,3 @@ body {
 .fs10 {
 	font-size: 10px;
 }
-  a
