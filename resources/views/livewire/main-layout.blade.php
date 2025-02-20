@@ -2,7 +2,7 @@
     <!-- start: SIDEBAR -->
     <section id="sidebar">
         <a href="#" class="brand">
-            <!-- <i class="ph-flame-fill"></i> -->
+            <!-- <i class="ph-flame-fill"></ia> -->
             <!-- <img src="{{ asset('images/user-group.png') }}" alt="" style="width: 1.3em;"> -->
         </a>
 

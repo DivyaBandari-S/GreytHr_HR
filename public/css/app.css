@@ -320,53 +320,53 @@ ul {
 /* admin dashboard */
 .green-bg {
     display: flex;
-	flex-direction: column;
-	background-color: #dbffdf;
+    flex-direction: column;
+    background-color: #dbffdf;
     border: 1px solid #b4f7a6;
 }
 .green-bg-icon {
-	background-color: #b4f7a6;
+    background-color: #b4f7a6;
     padding: 10px;
     border-radius: 6px;
     margin-bottom: 3em;
 }
 .yellow-bg {
     display: flex;
-	flex-direction: column;
-	background-color: #ffdef5;
+    flex-direction: column;
+    background-color: #ffdef5;
     border: 1px solid #fc9af7;
 }
 .yellow-bg-icon {
-	background-color: #fc9af7;
+    background-color: #fc9af7;
     padding: 10px;
     border-radius: 6px;
     margin-bottom: 3em;
 }
-.purple-bg{
+.purple-bg {
     display: flex;
-	flex-direction: column;
+    flex-direction: column;
     background-color: #f7deff;
     border: 1px solid #dd9afc;
 }
 .purple-bg-icon {
-	background-color: #dd9afc;
+    background-color: #dd9afc;
     padding: 10px;
     border-radius: 6px;
     margin-bottom: 3em;
 }
-.scroll-item{
+.scroll-item {
     font-size: var(--sub-headings-font-size);
     font-weight: 500;
 }
-.scroll-item p{
+.scroll-item p {
     margin-bottom: 0;
     margin-top: 30px;
 }
 .chipTextFav.active {
     background-color: #fbf0ea; /* Active background color */
-    border-color: #DF6D2D;
+    border-color: #df6d2d;
     font-weight: 500;
-    color: #DF6D2D; /* Active text color */
+    color: #df6d2d; /* Active text color */
 }
 /* Regular icon style */
 .fa-solid {
@@ -3373,6 +3373,12 @@ input[type="date"]::before {
 }
 
 @media (max-width: 576px) {
+    .searchEmp input.form-control.rounded-pill {
+        width: 100%;
+    }
+    select#employee_type.form-control {
+        width: 100%;
+    }
     .card-profile {
         width: 95%; /* For very small screens */
     }
@@ -3784,7 +3790,6 @@ input[type="date"]::before {
     .hide-main-overview-help {
         white-space: normal;
     }
-
     .image-item {
         width: 100%;
         display: flex;
@@ -6644,39 +6649,40 @@ select:focus {
 /*payslips ended*/
 
 /* //Employee data upddate styles */
-.displayContnet{
+.displayContnet {
     padding: 20px;
 }
-.empDelContent{
+.empDelContent {
     padding: 10px 20px;
 }
 /* .selEmpData{
     background-color: #f9f9f9;
 } */
-.searchEmp{
-    width: 25%;
+.searchEmp input {
+    padding: 12px;
+    width: 45%;
 }
-.profileCon{
+.profileCon {
     border-radius: 10px;
     background-color: white;
     padding: 10px;
 }
-.emp-content{
+.emp-content {
     padding: 20px;
     background-color: #f9f9f9;
     box-shadow: 2px 1px 2px rgba(0, 0, 0, 0.1);
 }
-.profileCon:hover{
-    background:  #e0effa;
+.profileCon:hover {
+    background: #e0effa;
 }
-.selecetdEmpDet .more-info{
+.selecetdEmpDet .more-info {
     padding: 30px;
 }
-.more-info{
+.more-info {
     background: #f9f9f9;
     box-shadow: 2px 1px 2px rgba(0, 0, 0, 0.1);
 }
-.normalTextValue{
+.normalTextValue {
     font-size: var(--normal-font-size);
     color: var(--label-color);
 }
@@ -6684,10 +6690,10 @@ select:focus {
     border: 1px solid black;
     border-collapse: collapse;
 }
-.custom-table td{
+.custom-table td {
     padding: 10px 50px;
 }
-.custom-table td strong{
+.custom-table td strong {
     font-weight: 500;
     font-size: 11px;
 }
@@ -6696,17 +6702,40 @@ select:focus {
     padding: 8px;
     font-size: var(--normal-font-size);
 }
-.confirmInput{
+.confirmInput {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 10px;
 }
-.confirmed-emp{
+.confirmed-emp {
     background-color: #f9f9f9;
     padding: 10px 20px;
 }
-.main-title{
+.main-title {
     font-size: var(--sub-headings-font-size);
     font-weight: 600;
     color: #2c3e50;
+}
+
+/* //employee separation styles */
+.emp-search-div {
+    padding: 15px 20px;
+}
+.emp-type {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.emp-type select {
+    width: 30%;
+}
+.resign-status
+{
+    padding: 15px 20px;
+}
+.right-border{
+    display: flex;
+    align-items: center;
+    padding: 3px 7px;
+    border-left: 0.15rem solid #d9534f;
 }
