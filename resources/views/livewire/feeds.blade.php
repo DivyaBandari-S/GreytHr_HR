@@ -1,6 +1,4 @@
 <div>
-
-
     <div wire:loading
         wire:target="addFeeds,submit,file_path,openEmojiDialog,openDialog,closeEmojiDialog,handleRadioChange,updateSortType,closeFeeds,removeReaction,removeEmojiReaction,addEmoji,selectEmoji">
         <div class="loader-overlay">

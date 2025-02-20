@@ -55,7 +55,6 @@ class EmployeeDetails extends Authenticatable
         'probation_Period',
         'service_age',
         'confirmation_date',
-
     ];
     protected $casts = [
         'company_id' => 'array',

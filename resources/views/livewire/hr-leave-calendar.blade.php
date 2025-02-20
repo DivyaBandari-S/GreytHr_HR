@@ -1,12 +1,4 @@
-<div class="position-relative">
-    <div class="position-absolute" wire:loading
-        wire:target="previousMonth,nextMonth,dateClicked,downloadexcelforLeave,searchData">
-        <div class="loader-overlay">
-            <div class="loader">
-                <div></div>
-            </div>
-        </div>
-    </div>
+<div class=" position-relative" >
     <style>
         .table thead {
             border: none;

@@ -1,4 +1,4 @@
-<div class="leaveSettings">
+<div>
     <div class="row m-0  leaveGranter-container">
         <div class="col-md-8">
             <div class="leaveGranter-header mb-2">
