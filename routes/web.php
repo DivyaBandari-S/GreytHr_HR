@@ -77,6 +77,8 @@ use App\Livewire\SwipeManagementForHr;
 use App\Livewire\AuthorizeSignatory;
 use App\Livewire\CreateSignatory;
 use App\Livewire\EmployeeDataUpdate;
+use App\Livewire\Loans;
+use App\Livewire\EmployeeSeparation;
 use App\Livewire\ItStatement;
 use App\Livewire\Tasks;
 use App\Livewire\WhoIsInChartHr;
@@ -214,7 +216,7 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
         Route::get('/user/attendance-exception', AttendanceExceptionForDisplay::class)->name(name: 'attendance-exception');
         Route::get('/user/create-attendance-exception',CreateAttendanceExceptionPage::class)->name('create-attendance-exception');
         Route::get('/user/attendance-lock-configuration',AttendanceLockConfiguration::class)->name('attendance-lock-configuration');
-        Route::get('/user/create-lock-configuration',action: CreateNewLockConfigurationPage::class)->name('create-new-lock-configuration-page');
+        Route::get('/user/create-lock-configuration', CreateNewLockConfigurationPage::class)->name('create-new-lock-configuration-page');
 
         //HR Leave-SetUp Submodule Routes
         Route::get('/user/holidayList', HrHolidayList::class)->name('holidayList');
@@ -227,6 +229,7 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
         //extra routes
         Route::get('/review-pending-regularisation-for-hr/{id}/{emp_id}', RegularisationPendingForHr::class)->name('review-pending-regularisation-for-hr');
         Route::get('/employee-data-update/{action}', EmployeeDataUpdate::class)->name('employee.data.update');
+        Route::get('/user/employee-separation', EmployeeSeparation::class)->name('employee-separation');
 
         //Reports
         Route::get('/user/reports/', ReportsManagement::class)->name('reports');
@@ -241,5 +244,6 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
         Route::get('/user/salary-revision-list', SalaryRevisionList::class)->name('salary-revision-list');
         Route::get('/user/salary-revision-analytics', SalaryRevisionAnalytics::class)->name('salary-revision-analytics');
         Route::get('/user/addorview-salary-revision', AddOrViewSalaryRevision::class)->name('addorview-salary-revision');
+        Route::get('/user/loans', Loans::class)->name('loans');
     });
 });

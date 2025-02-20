@@ -1,4 +1,4 @@
-<div class="main__body bg-white" style="overflow: auto; height: calc(100vh - 70px)">
+<div >
     <div class="nav-buttons mt-2 d-flex justify-content-center">
         <ul class="nav custom-nav-tabs border">
             <li class="custom-item m-0 p-0 flex-grow-1 mbl-dev-active">

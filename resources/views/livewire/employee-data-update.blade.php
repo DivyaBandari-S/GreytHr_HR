@@ -31,10 +31,10 @@
                         <div>
                             <div class="d-flex flex-column position-relative">
                                 <label for="search" class="mb-2"><strong class="main-title">Search An Employee</strong></label>
-                                <div class="searchEmp position-relative">
+                                <div class="searchEmp col-5 col-5position-relative">
                                     <input
                                         type="text"
-                                        class="form-control rounded-pill py-3 "
+                                        class="form-control rounded-pill "
                                         wire:click="toggleSearchEmployee"
                                         placeholder="Search Employee"
                                         wire:model.live="searchTerm"
@@ -45,7 +45,7 @@
                                         type="button"
                                         class="position-absolute top-50 end-0 translate-middle-y border-0 bg-transparent"
                                         wire:click="closeSearchContainer"
-                                        aria-label="Clear Search" style="width:30px;color:#ccc;">
+                                        aria-label="Clear Search" style="width:30px;color:#ccc;left:38%;">
                                         <i class="fa fa-times-circle text-muted" style="color:#ccc;"></i>
                                     </button>
                                     @endif
@@ -186,10 +186,10 @@
                         </div>
                         <div class="d-flex flex-column position-relative">
                             <label for="search" class="mb-2"><strong class="main-title">Search An Employee</strong></label>
-                            <div class="searchEmp position-relative">
+                            <div class="searchEmp col-5 position-relative">
                                 <input
                                     type="text"
-                                    class="form-control rounded-pill py-3 "
+                                    class="form-control rounded-pill "
                                     wire:click="toggleSearchEmployee"
                                     placeholder="Search Employee"
                                     wire:model.live="searchTerm"
@@ -200,7 +200,7 @@
                                     type="button"
                                     class="position-absolute top-50 end-0 translate-middle-y border-0 bg-transparent"
                                     wire:click="closeSearchContainer"
-                                    aria-label="Clear Search" style="width:30px;color:#ccc;">
+                                    aria-label="Clear Search" style="width:30px;color:#ccc;left:38%;">
                                     <i class="fa fa-times-circle text-muted" style="color:#ccc;"></i>
                                 </button>
                                 @endif
@@ -317,10 +317,10 @@
                         </div>
                         <div class="d-flex flex-column position-relative">
                             <label for="search" class="mb-2"><strong class="main-title">Search An Employee</strong></label>
-                            <div class="searchEmp position-relative">
+                            <div class="searchEmp col-5 position-relative">
                                 <input
                                     type="text"
-                                    class="form-control rounded-pill py-3 "
+                                    class="form-control rounded-pill  "
                                     wire:click="toggleSearchEmployee"
                                     placeholder="Search Employee"
                                     wire:model.live="searchTerm"
@@ -331,7 +331,7 @@
                                     type="button"
                                     class="position-absolute top-50 end-0 translate-middle-y border-0 bg-transparent"
                                     wire:click="closeSearchContainer"
-                                    aria-label="Clear Search" style="width:30px;color:#ccc;">
+                                    aria-label="Clear Search" style="width:30px;color:#ccc;left:38%;">
                                     <i class="fa fa-times-circle text-muted" style="color:#ccc;"></i>
                                 </button>
                                 @endif
@@ -472,10 +472,10 @@
                         </div>
                         <div class="d-flex flex-column position-relative">
                             <label for="search" class="mb-2"><strong class="main-title">Search An Employee</strong></label>
-                            <div class="searchEmp position-relative">
+                            <div class="searchEmp col-5 position-relative">
                                 <input
                                     type="text"
-                                    class="form-control rounded-pill py-3 "
+                                    class="form-control rounded-pill "
                                     wire:click="toggleSearchEmployee"
                                     placeholder="Search Employee"
                                     wire:model.live="searchTerm"
@@ -486,7 +486,7 @@
                                     type="button"
                                     class="position-absolute top-50 end-0 translate-middle-y border-0 bg-transparent"
                                     wire:click="closeSearchContainer"
-                                    aria-label="Clear Search" style="width:30px;color:#ccc;">
+                                    aria-label="Clear Search" style="width:30px;color:#ccc;left:38%;">
                                     <i class="fa fa-times-circle text-muted" style="color:#ccc;"></i>
                                 </button>
                                 @endif
@@ -589,10 +589,10 @@
                         </div>
                         <div class="d-flex flex-column position-relative">
                             <label for="search" class="mb-2"><strong class="main-title">Search An Employee</strong></label>
-                            <div class="searchEmp position-relative">
+                            <div class="searchEmp col-5 position-relative">
                                 <input
                                     type="text"
-                                    class="form-control rounded-pill py-3 "
+                                    class="form-control rounded-pill"
                                     wire:click="toggleSearchEmployee"
                                     placeholder="Search Employee"
                                     wire:model.live="searchTerm"
@@ -603,7 +603,7 @@
                                     type="button"
                                     class="position-absolute top-50 end-0 translate-middle-y border-0 bg-transparent"
                                     wire:click="closeSearchContainer"
-                                    aria-label="Clear Search" style="width:30px;color:#ccc;">
+                                    aria-label="Clear Search" style="width:30px;color:#ccc;left:38%;">
                                     <i class="fa fa-times-circle text-muted" style="color:#ccc;"></i>
                                 </button>
                                 @endif
