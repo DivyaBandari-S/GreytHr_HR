@@ -4312,9 +4312,6 @@ input[type="date"]::before {
     color: var(--label-color);
 }
 
-.leaveSettings {
-    padding: 20px;
-}
 .accordion-button:focus {
     z-index: 3;
     outline: 0;

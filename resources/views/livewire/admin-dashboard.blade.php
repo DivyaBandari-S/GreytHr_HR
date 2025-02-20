@@ -1,7 +1,7 @@
 <!-- start: MAIN -->
 <section>
     <!-- start: MAIN BODY -->
-    <div class="main__body" style="overflow: auto; height: calc(100vh - 84px)">
+    <div>
         <section class="tab-section">
             <div class="container-fluid">
                 <div class="tab-pane">
