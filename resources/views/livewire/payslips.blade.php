@@ -262,6 +262,12 @@
 @if($showModal)
     <div class="modal fade show d-block" tabindex="-1" style="background: rgba(0, 0, 0, 0.5)">
         <div class="modal-dialog">
+        @if (session('warning'))
+    <div class="alert alert-warning">
+        {{ session('warning') }}
+    </div>
+@endif
+
             <div class="modal-content">
            
       
@@ -280,11 +286,11 @@
 
 
     <div class="form-check w-100 mt-2">
-        <input class="form-check-input" type="checkbox" id="sendPayslipNotification">
-        <label class="form-check-label mt-4" for="sendPayslipNotification">
+    <input class="form-check-input" type="checkbox" id="sendPayslipNotification" wire:model.defer="sendPayslipNotification">
+    <label class="form-check-label mt-4" for="sendPayslipNotification">
         Lock & Publish {{ \Carbon\Carbon::parse($selectedMonth . '-01')->format('F Y') }} payroll <strong>with</strong> payslip release notification for all employees
-        </label>
-    </div>
+    </label>
+</div>
 
 
 
@@ -295,7 +301,7 @@
 
                 <div class="modal-footer">
                     <button class="btn submit-btn" wire:click="closeModal">Cancel</button>
-                    <button class="btn cancel-btn" wire:click="confirmAndPublish">Confirm & Publish</button>
+                    <button class="btn cancel-btn" wire:click="validateAndPublish">Confirm & Publish</button>
                 </div>
             </div>
         </div>
@@ -316,5 +322,11 @@
 
 </div>
 </div>
+<script>
+    Livewire.on('refreshComponent', () => {
+        location.reload(); // Refresh without full page reload
+    });
+</script>
+
 </div>
 

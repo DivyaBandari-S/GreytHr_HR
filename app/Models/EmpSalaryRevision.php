@@ -74,7 +74,7 @@ class EmpSalaryRevision extends Model
     /**
      * Decode CTC values with decimal handling.
      */
-    private function decodeCTC($value)
+    public static function decodeCTC($value)
     {
         Log::info('Decoding CTC: ' . $value);
         $decoded = Hashids::decode($value);

@@ -376,7 +376,7 @@
                     @if(count($salaryRevisions) != 0)
                     <button wire:click="selectRevision (null,{{$selected_revised_ctc}},0,null,null,'{{$currentPayoutMonth}}')" class="btn bg-primary text-white mb-2">Add New Revision</button>
                     @endif
-                    <button wire:click="goBack" class="btn bg-white text-primary mb-2" style="border: 1px solid cornflowerblue ;">Back</button>
+                    <button onclick="window.history.back()" class="btn bg-white text-primary mb-2" style="border: 1px solid cornflowerblue ;">Back</button>
                 </div>
                 <div>
                     <div class="row">
