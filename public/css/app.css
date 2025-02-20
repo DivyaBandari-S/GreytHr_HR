@@ -6660,9 +6660,9 @@ select:focus {
 /* .selEmpData{
     background-color: #f9f9f9;
 } */
-.searchEmp input {
-    padding: 12px;
-    width: 45%;
+input.form-control.rounded-pill{
+    padding: 10px;
+    width: 48%;
 }
 .profileCon {
     border-radius: 10px;
