@@ -1,3 +1,4 @@
+<div class="main__body " style="overflow: auto; height: calc(100vh - 70px);background:#f9f9f9;">
 <div>
     <div class="analytic-main-container">
         <div class="analytic-header">
@@ -379,4 +380,5 @@
             @endif
         </div>
     </div>
+</div>
 </div>

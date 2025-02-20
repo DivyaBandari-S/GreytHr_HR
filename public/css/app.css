@@ -4360,7 +4360,7 @@ input[type="date"]::before {
     border: none;
     padding: 12px;
     display: flex;
-    justify-content: space-between;
+    /* justify-content: space-between; */
     align-items: center;
 }
 
