@@ -71,6 +71,7 @@ use App\Livewire\StopSalaries;
 use App\Livewire\SwipeManagementForHr;
 use App\Livewire\AuthorizeSignatory;
 use App\Livewire\CreateSignatory;
+use App\Livewire\EditSignatory;
 use App\Livewire\Tasks;
 use App\Livewire\WhoIsInChartHr;
 use App\Livewire\YearEndProcess;
@@ -163,6 +164,7 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
         Route::get('/letter-preview', LetterPreview::class);
         Route::get('/authorize-signatory', AuthorizeSignatory::class)->name('authorize-signatory.page');
         Route::get('/signatories/create', CreateSignatory::class)->name('signatory.create');
+        Route::get('/signatory/edit/{id}', EditSignatory::class)->name('signatory.edit');
 
 
         Route::get('/user/emp/admin/bulkphoto-upload', EmpBulkPhotoUpload::class)->name('bulk-photo-upload');

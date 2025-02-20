@@ -12,20 +12,26 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('tasks', function (Blueprint $table) {
-            $table->id();
-            $table->string('emp_id');
-            $table->string('task_name');
+            $table->smallInteger('id')->autoIncrement();
+            $table->string('emp_id', 10);
+            $table->string('task_name',100)->nullable();
             $table->string('assignee');
-            $table->enum('priority', ['High', 'Medium', 'Low']); 
-            $table->string('due_date');
-            $table->string('tags'); 
-            $table->string('followers');
-            $table->string('subject');
-            $table->text('description');
-            $table->string('file_path')->nullable();
-            $table->string('status')->default('Open'); // CC to field (nullable)
+            $table->enum('priority', ['High', 'Medium', 'Low']);
+            $table->date('due_date');
+            $table->date('reopened_date')->nullable();
+            $table->string('tags', 100)->nullable();
+            $table->string('client_id', 20)->nullable();
+            $table->string('project_name', 100)->nullable();
+            $table->string('followers')->nullable();
+            $table->string('subject',100)->nullable();
+            $table->text('description')->nullable();
+            // $table->binary('file_path')->nullable();
+            // $table->string('file_name')->nullable();
+            // $table->string('mime_type')->nullable();
+            $table->json('file_paths')->nullable();
+            $table->boolean('reminder_sent')->default(false);
+            $table->smallInteger('status')->default(1); // CC to field (nullable)
             $table->timestamps();
-
             $table->foreign('emp_id')
                 ->references('emp_id')
                 ->on('employee_details')

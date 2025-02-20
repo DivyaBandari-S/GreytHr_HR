@@ -7,24 +7,33 @@ use App\Models\GenerateLetter;
 use Illuminate\Support\Facades\Log;
 use App\Models\EmployeeDetails;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\LettersExport;
 
 class GenerateLetters extends Component
 {
     public $showHelp = false;
     public $letters;
-    public $template_name; // 🔹 Add this to avoid "Property not found" error
+    public $template_name; 
     public $selectedTemplate = 'all';
     public $selectedPublishStatus = 'all';
+    public $searchTerm = ''; 
 
-//     public function mount()
-// {
-//     $this->loadLetters();
-// }
+    public function mount()
+{
+    $this->loadLetters();
+}
+public function downloadExcel()
+{
+    return Excel::download(new LettersExport, 'letters.xlsx');
+}
 public function onChange($propertyName)
 {
+   
   
    
-    if (in_array($propertyName, ['selectedTemplate', 'selectedPublishStatus'])) {
+    if (in_array($propertyName, ['selectedTemplate', 'selectedPublishStatus', 'searchTerm'])) {
         $this->loadLetters();
     }
 }
@@ -32,29 +41,40 @@ public function onChange($propertyName)
 
 public function loadLetters()
 {
-   
-   
-    $query = GenerateLetter::orderBy('serial_no', 'desc')->get();
-    
+    $this->letters = GenerateLetter::when($this->selectedTemplate != 'all', function ($query) {
+            $query->where('template_name', $this->selectedTemplate);
+        })
+        ->when($this->selectedPublishStatus != 'all', function ($query) {
+            $query->where('status', $this->selectedPublishStatus);
+        })
+        ->orderBy('serial_no', 'desc')
+        ->get();
 
-  
+    // Filter letters based on the search term (after fetching from DB)
+    if (!empty($this->searchTerm)) {
+     
+        $this->letters = $this->letters->filter(function ($letter) {
+            // Decode employees JSON field into an array
+            $employees = json_decode($letter->employees, true);
 
-    // Apply filters
-    if ($this->selectedTemplate !== 'all') {
-        $query->where('template_name', $this->selectedTemplate);
+            // Extract employee names
+            $employeeNames = array_map(function ($employee) {
+                return strtolower($employee['name']);
+            }, $employees);
+
+            // Get the 'prepared_by' dynamically from the authenticated user's emp_id
+            $preparedBy = Auth::user()->emp_id;
+            $name = EmployeeDetails::where('emp_id', $preparedBy)->first();
+            $preparedByName = $name ? $name->first_name . ' ' . $name->last_name : 'Unknown';
+
+            // Perform search on employee names and prepared_by
+            $searchTerm = strtolower($this->searchTerm);
+            return collect($employeeNames)->contains(fn($name) => strpos($name, $searchTerm) !== false) ||
+                   strpos(strtolower($preparedByName), $searchTerm) !== false;
+        });
     }
-
-
-    if ($this->selectedPublishStatus !== 'all') {
-        $query->where('status', $this->selectedPublishStatus);
-    }
-
-
-
-
-    $this->letters = $query;
-   
 }
+
 
     public function hideHelp()
     {
@@ -334,6 +354,7 @@ private function generateLetterContent($employee,$letter)
 
 
 
+
     public function showhelp()
     {
         $this->showHelp = false;
@@ -342,10 +363,12 @@ private function generateLetterContent($employee,$letter)
         return redirect()->route('letter.prepare');
     }
     public function render()
-    {
-     
+    {  
+
+
+      
         return view('livewire.generate-letters', [
-            'letter' => $this->letter,
+            'letter' => $this->letters,
             'employeeName' => $this->employeeName,
             'employeeAddress' => $this->employeeAddress,
             'employeeId' => $this->employeeId,
