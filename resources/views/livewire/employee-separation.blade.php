@@ -1,4 +1,4 @@
-<div >
+<div class="position-relative">
     <div class="container-fluid px-1 rounded">
         <ul class="nav bg-white leave-grant-nav-tabs d-flex gap-3 py-1" id="myTab" role="tablist">
             <li class="leave-grant-nav-item" role="presentation">
@@ -9,7 +9,6 @@
                 <button class="leave-grant-nav-link" id="dashboard-tab" data-bs-toggle="tab" data-bs-target="#dashboard-tab-pane" type="button" role="tab" aria-controls="dashboard-tab-pane" aria-selected="false">Activity</button>
             </li>
         </ul>
-
         <div class="tab-content" id="myTabContent">
             <div class="tab-pane show active" id="summary-tab-pane" role="tabpanel" aria-labelledby="summary-tab" tabindex="0">
                 <div class="px-4 py-2">
@@ -22,7 +21,7 @@
                         </div>
                     </div>
                     <!-- //second row contnet -->
-                    <div class="row mb-4 p-0 bg-white rounded">
+                    <div class="row mx-0 mb-4 p-0 bg-white rounded">
                         <div class="col-md-7">
                             <div class="emp-search-div">
                                 <h6> <strong class="main-title">Start searching to see specific employee details here</strong> </h6>
@@ -37,7 +36,7 @@
                                     </div>
                                     <div class="d-flex flex-column position-relative">
                                         <label for="search" class="mb-2">Search An Employee</label>
-                                        <div class="searchEmp position-relative">
+                                        <div >
                                             <input
                                                 type="text"
                                                 class="form-control rounded-pill"
@@ -49,9 +48,9 @@
                                             @if($searchTerm)
                                             <button
                                                 type="button"
-                                                class="position-absolute top-50 end-0 translate-middle-y border-0 bg-transparent"
+                                                class="position-absolute end-0 translate-middle-y border-0 bg-transparent"
                                                 wire:click="closeSearchContainer"
-                                                aria-label="Clear Search" style="width:30px;color:#ccc;left:38%;">
+                                                aria-label="Clear Search" style="width:30px;color:#ccc;left:42%;top:72%;">
                                                 <i class="fa fa-times-circle text-muted" style="color:#ccc;"></i>
                                             </button>
                                             @endif
@@ -103,7 +102,7 @@
                         </div>
                     </div>
                     <!-- //third row contnet -->
-                     <div class="row mt-4 mb-3 bg-white rounded p-0">
+                     <div class="row mx-0 mt-4 mb-3 bg-white rounded p-0">
                         <div class="col-md-7">
                             <div class="resign-status">
                                 <div class="right-border">
