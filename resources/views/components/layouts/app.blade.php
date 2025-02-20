@@ -28,7 +28,7 @@
     <body>
         <section id="main">
             @livewire('main-layout')
-            <div> {{ $slot }} </div>
+            <div class="main__body " style="overflow: auto; height: calc(100vh - 84px);background-color: #f3f3f3;"> {{ $slot }} </div>
         </section>
 
 

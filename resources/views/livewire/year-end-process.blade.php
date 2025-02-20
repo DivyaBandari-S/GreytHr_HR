@@ -1,4 +1,4 @@
-<div class="main__body" style="overflow: auto; height: calc(100vh - 84px)">
+<div l>
     <div>
         <nav>
             <div class="nav nav-tabs" id="nav-tab" role="tablist">

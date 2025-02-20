@@ -1,4 +1,4 @@
-<div class="main__body" style="overflow: auto; height: calc(100vh - 84px)">
+<div >
 
     <div class="container-fluid px-1  rounded">
 

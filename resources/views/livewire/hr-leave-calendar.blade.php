@@ -1,4 +1,4 @@
-<div class="main__body position-relative" style="overflow: auto; height: calc(100vh - 84px)">
+<div class=" position-relative" >
     <style>
         .table thead {
             border: none;
