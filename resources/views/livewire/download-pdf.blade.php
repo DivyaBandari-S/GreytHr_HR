@@ -17,7 +17,10 @@
             @foreach($empBankDetails as  $employee)
                 <div class="m-0 pb-2 pt-2 row"  style="border: 1px solid #000;">
                     <div class="col-3">
-                        @livewire('company-logo')
+                    <div style="position: absolute; left: 1%; top: 3%; transform: translateY(-50%);">
+            <img src="data:image/jpeg;base64,{{ $empCompanyLogoUrl }}"
+            alt="Company Logo" style="width:120px">
+            </div>
                     </div>
                     <div class="col-9 m-auto" style="text-align: center">
                         <p class="mb-3" style="font-size:20px;font-weight:800">{{ $employeeData->company_name }}</p>
