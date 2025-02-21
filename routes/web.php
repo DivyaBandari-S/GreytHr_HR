@@ -2,6 +2,7 @@
 
 use App\Livewire\AdminDashboard;
 use App\Livewire\AttendanceLockConfiguration;
+use App\Livewire\CompanyInfo;
 use App\Livewire\Dashboard;
 use App\Livewire\HrLogin;
 use App\Livewire\HomeDashboard;
@@ -139,7 +140,8 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
             ]);
         })->name('files.showTask');
 
-
+       //company info
+       Route::get('company-info',CompanyInfo::class)->name('company_info');
         //feeds
         Route::get('/hrFeeds', Feeds::class)->name('hrfeeds');
         Route::get('/everyone', Everyone::class)->name('everyone');

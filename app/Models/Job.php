@@ -8,7 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class Job extends Model
 {
     use HasFactory;
-    protected $primaryKey = 'job_id'; 
+    protected $table='jobs_lists';
+    protected $primaryKey = 'job_id';
     public $incrementing = false;
     protected $fillable = [
         'job_id',
