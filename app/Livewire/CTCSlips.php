@@ -818,22 +818,9 @@ class CTCSlips extends Component
                 ->where('employee_details.emp_id', $this->selectedEmployeeId)
                 ->first();
 
-            // Debugging output
-            Log::info('Fetched Letter Requests: ' . $this->requests->toJson());
+          
         } 
 
-        // Initialize the requests collection to prevent undefined errors
-        $this->requests = LetterRequest::all();
-
-
-
-        $query = EmployeeDocument::whereIn('employee_id', (array)$this->selectedEmployeeId)->orderBy('created_at', 'desc');
-
-
-      
-
-
-        $this->documents = $query->get();
 
 
         return view('livewire.c-t-c-slips', [
