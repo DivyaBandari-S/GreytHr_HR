@@ -12,7 +12,7 @@
                         onclick="tabToggle()">
                         <span class="tab-pane-item-title">01</span>
                         <span class="tab-pane-item-subtitle">Active</span>
-                    </button>w
+                    </button>
                     <button
                         type="button"
                         data-tab-pane="in-review"
