@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('swipe_records', function (Blueprint $table) {
-            $table->id();
+            $table->mediumIncrements('id');
             $table->string('emp_id');
             $table->string('swipe_time');
             $table->string('in_or_out');

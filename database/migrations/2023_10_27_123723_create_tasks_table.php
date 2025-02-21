@@ -12,13 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('tasks', function (Blueprint $table) {
-            $table->id();
+            $table->mediumIncrements('id');
             $table->string('emp_id');
             $table->string('task_name');
             $table->string('assignee');
-            $table->enum('priority', ['High', 'Medium', 'Low']); 
+            $table->enum('priority', ['High', 'Medium', 'Low']);
             $table->string('due_date');
-            $table->string('tags'); 
+            $table->string('tags');
             $table->string('followers');
             $table->string('subject');
             $table->text('description');

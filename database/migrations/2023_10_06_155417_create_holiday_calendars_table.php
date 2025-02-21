@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('holiday_calendars', function (Blueprint $table) {
-            $table->smallInteger('id')->autoIncrement();
+            $table->mediumIncrements('id');
             $table->string('day',10);
             $table->date('date');
             $table->string('month',10);

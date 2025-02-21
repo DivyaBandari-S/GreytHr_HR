@@ -11,10 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('status_types', function (Blueprint $table) {
+        Schema::create('industry_types', function (Blueprint $table) {
             $table->mediumIncrements('id');
-            $table->string('status_name', 20)->unique();
-            $table->tinyInteger('status_code')->unique();
+            $table->string('name',100)->unique();
             $table->timestamps();
         });
     }
@@ -24,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('status_types');
+        Schema::dropIfExists('industry_types');
     }
 };

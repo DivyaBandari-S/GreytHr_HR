@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('emp_bank_details', function (Blueprint $table) {
-            $table->id();
+            $table->mediumIncrements('id');
             $table->string('emp_id');
             $table->string('bank_name');
             $table->string('bank_branch');
