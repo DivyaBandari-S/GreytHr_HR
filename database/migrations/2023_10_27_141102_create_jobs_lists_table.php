@@ -12,7 +12,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('jobs', function (Blueprint $table) {
+        Schema::create('jobs_lists', function (Blueprint $table) {
             $table->string('job_id')->primary();
             $table->string('contact_email');
             $table->string('title');
@@ -38,7 +38,7 @@ return new class extends Migration
 
             $table->text('responsibilities')->nullable(); // Job responsibilities
             $table->text('benefits')->nullable(); // Job benefits
-            $table->text('application_instructions')->nullable(); 
+            $table->text('application_instructions')->nullable();
             $table->foreign('company_id')
             ->references('company_id')
             ->on('companies')
@@ -48,13 +48,13 @@ return new class extends Migration
         });
 
         $triggerSQL = <<<SQL
-        CREATE TRIGGER generate_job_id BEFORE INSERT ON jobs FOR EACH ROW
+        CREATE TRIGGER generate_job_id BEFORE INSERT ON jobs_lists FOR EACH ROW
         BEGIN
             DECLARE max_id INT;
-        
-            -- Find the maximum job_id value in the jobs table
-            SELECT IFNULL(MAX(CAST(SUBSTRING(job_id, 4) AS UNSIGNED)) + 1, 1) INTO max_id FROM jobs;
-        
+
+            -- Find the maximum job_id value in the jobs_lists table
+            SELECT IFNULL(MAX(CAST(SUBSTRING(job_id, 4) AS UNSIGNED)) + 1, 1) INTO max_id FROM jobs_lists;
+
             -- Increment the max_id and assign it to the new job_id
             SET NEW.job_id = CONCAT("JOB", LPAD(max_id, 4, "0"));
         END;
@@ -68,6 +68,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('jobs');
+        Schema::dropIfExists('jobs_lists');
     }
 };

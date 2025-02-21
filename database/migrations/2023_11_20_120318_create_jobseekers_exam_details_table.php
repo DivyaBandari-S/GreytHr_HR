@@ -23,12 +23,12 @@ return new class extends Migration
             $table->string('exam_link')->nullable();
             $table->foreign('user_id')
                 ->references('user_id') // Assuming the primary key of the companies table is 'id'
-                ->on('users')
+                ->on('jobs_users')
                 ->onDelete('restrict')
                 ->onUpdate('cascade');
             $table->foreign('job_id')
                 ->references('job_id') // Assuming the primary key of the companies table is 'id'
-                ->on('jobs')
+                ->on('jobs_lists')
                 ->onDelete('restrict')
                 ->onUpdate('cascade');
             $table->unique(['user_id', 'job_id']);
