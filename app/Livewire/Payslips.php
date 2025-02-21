@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Helpers\FlashMessageHelper;
 use App\Mail\PayrollProcessedMail;
+use App\Models\Company;
 use App\Models\EmpBankDetail;
 use App\Models\EmployeeDetails;
 use App\Models\LetterRequest;
@@ -56,6 +57,7 @@ class Payslips extends Component
     public $searchTerm = '';
     public $peopleData = [];
     public $empId;
+    public $empCompanyLogoUrl;
 
     public $selectedEmployeeId = '';
 
@@ -366,7 +368,7 @@ class Payslips extends Component
         // Fetch all emp_id values where company_id matches the logged-in user's company_id
         $this->employeeIds = EmployeeDetails::whereJsonContains('company_id', $firstCompanyID)->pluck('emp_id')->toArray();
 
-
+        $this->empCompanyLogoUrl = $this->getEmpCompanyLogoUrl();
 
         $this->options = []; // Initialize to avoid null
         $this->generateMonths();
@@ -610,12 +612,44 @@ class Payslips extends Component
     {
         $this->searchEmployee;
     }
+    private function getEmpCompanyLogoUrl()
+    {
+        // Get the current authenticated employee's company ID
+        if (auth()->check()) {
+            // Get the current authenticated employee's company ID
+            $empCompanyId = auth()->user()->company_id;
+            $employeeId = auth()->user()->emp_id;
+            $employeeDetails = DB::table('employee_details')
+                ->where('emp_id', $employeeId)
+                ->select('company_id') // Select only the company_id
+                ->first();
+
+            // Assuming you have a Company model with a 'company_logo' attribute
+            $companyIds = json_decode($employeeDetails->company_id);
+       
+            $company = DB::table('companies')
+                ->where('company_id', $companyIds)
+                ->where('is_parent', 'yes')
+                ->first();
+
+            // Return the company logo URL, or a default if company not found
+            return $company ? $company->company_logo : asset('user.jpg');
+        } elseif (auth()->guard('hr')->check()) {
+            $empCompanyId = auth()->guard('hr')->user()->company_id;
+
+            // Assuming you have a Company model with a 'company_logo' attribute
+            $company = Company::where('company_id', $empCompanyId)->first();
+            return $company ? $company->company_logo : asset('user.jpg');
+        }
+    }
     public function downloadPdf($month)
     {
+        
         
         if (!$this->selectedEmployeeId) {
             return response()->json(['error' => 'No Employee Selected'], 400);
         }
+       
     
         // Fetch employee salary details
         $empSalaryDetails = EmpSalary::join('salary_revisions', 'emp_salaries.sal_id', '=', 'salary_revisions.id')
@@ -643,16 +677,17 @@ class Payslips extends Component
             'Salary Details' => $salaryDivisions,
             'Bank Details' => $empBankDetails
         ]);
-    
+        $this->empCompanyLogoUrl = $this->getEmpCompanyLogoUrl(); 
         // Pass data to PDF view
         $pdf = Pdf::loadView('download-pdf', [
             'employeeDetails' => $employeeDetails, // Pass employee details
             'salaryRevision' => $salaryDivisions,  // Pass salary breakdown
             'empBankDetails' => $empBankDetails,   // Pass bank details
             'rupeesInText' => $this->convertNumberToWords($salaryDivisions['net_pay']), // Pass net pay in words
-            'salMonth' => Carbon::parse($month)->format('F Y') // Pass month formatted
+            'salMonth' => Carbon::parse($month)->format('F Y') ,// Pass month formatted
+            'empCompanyLogoUrl' => $this->empCompanyLogoUrl,
         ]);
-    
+
         $name = Carbon::parse($month)->format('MY');
     
         // Return PDF as download
@@ -803,7 +838,7 @@ $eligibleEmployees = DB::table('salary_revisions as sr')
     
     if ($eligibleEmployees->isEmpty()) {
       
-        FlashMessageHelper::flashWarning( "⚠️ Warning: No employees have salary revisions before or on " . 
+        FlashMessageHelper::flashWarning( "⚠️   Annual CTC not added before or on " . 
         Carbon::parse($selectedMonthFormatted)->format('F Y') . 
         ". Payroll will not be processed.");
         return;
@@ -1030,7 +1065,7 @@ $insertData = $eligibleEmployees->reject(function ($employee) use ($existingSala
                     $options["$year-$monthPadded"] = "$monthName $year";
                 }
             }
-    
+            $this->empCompanyLogoUrl = $this->getEmpCompanyLogoUrl();
          
     if ($empSalaryDetails) {
         $this->salaryDivisions = $empSalaryDetails->calculateSalaryComponents($empSalaryDetails->salary);
@@ -1053,19 +1088,6 @@ $insertData = $eligibleEmployees->reject(function ($employee) use ($existingSala
             Log::info('Fetched Letter Requests: ' . $this->requests->toJson());
         } 
 
-        // Initialize the requests collection to prevent undefined errors
-        $this->requests = LetterRequest::all();
-
-
-
-        $query = EmployeeDocument::whereIn('employee_id', (array)$this->selectedEmployeeId)->orderBy('created_at', 'desc');
-
-
-      
-
-
-        $this->documents = $query->get();
-
 
         return view('livewire.payslips', [
             'employees' => $this->employees,
@@ -1076,6 +1098,7 @@ $insertData = $eligibleEmployees->reject(function ($employee) use ($existingSala
             'combinedRequests' => $this->combinedRequests,
             'options' => $options,
             'requests' => $this->requests,
+            'empCompanyLogoUrl' => $this->empCompanyLogoUrl,
            
         ]);
     }

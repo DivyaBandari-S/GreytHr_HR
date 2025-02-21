@@ -82,6 +82,16 @@ class EmployeeSeparation extends Component
             FlashMessageHelper::flashError('An unexpected error occurred while loading the employee list.');
         }
     }
+    public $showResignSection = false;
+    //get selected employee
+    public function getSelectedEmp($empId){
+        $this->showResignSection = true;
+        $this->showEmployeeSearch=false;
+    }
+    //open resingation type section
+    public function openResignSec(){
+        $this->showResignSection = true;
+    }
     public function render()
     {
         return view(

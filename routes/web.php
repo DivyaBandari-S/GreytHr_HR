@@ -80,6 +80,7 @@ use App\Livewire\CreateSignatory;
 use App\Livewire\EmployeeDataUpdate;
 use App\Livewire\Loans;
 use App\Livewire\EmployeeSeparation;
+use App\Livewire\ItStatement;
 use App\Livewire\Tasks;
 use App\Livewire\WhoIsInChartHr;
 use App\Livewire\YearEndProcess;
@@ -128,6 +129,7 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
         Route::get('/update-employee-details', UpdateEmployeeDetails::class)->name('update-employee-details');
         Route::get('/resig-requests', Resignationrequests::class)->name('resig-requests');
         Route::get('/HelpDesk', HelpDesk::class)->name('HelpDesk');
+        Route::get('/request', Requests::class)->name('request');
         Route::get('/user/tasks', Tasks::class)->name('tasks');
         Route::get('/taskfile/{id}', function ($id) {
             $file = Task::findOrFail($id);
@@ -151,7 +153,7 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
         Route::get('/ytdreport', YtdReport::class)->name('ytdreport');
         Route::get('/pfytdreport', PfYtdReport::class)->name('pfytdreport');
         Route::get('/reimbursement', ReimbursementStatement::class)->name('reimbursement');
-
+        Route::get('/itstatement', ItStatement::class)->name('itstatement');
 
         //HR Employee-Main Submodule Routes
         Route::get('/user/main-overview', HrMainOverview::class)->name('main-overview');

@@ -21,7 +21,7 @@
                         </div>
                     </div>
                     <!-- //second row contnet -->
-                    <div class="row mx-0 mb-4 p-0 bg-white rounded">
+                    <div class="row d-flex align-items-center mx-0 mb-4 p-0 bg-white rounded">
                         <div class="col-md-7">
                             <div class="emp-search-div">
                                 <h6> <strong class="main-title">Start searching to see specific employee details here</strong> </h6>
@@ -36,7 +36,7 @@
                                     </div>
                                     <div class="d-flex flex-column position-relative">
                                         <label for="search" class="mb-2">Search An Employee</label>
-                                        <div >
+                                        <div class="rounded-pill">
                                             <input
                                                 type="text"
                                                 class="form-control rounded-pill"
@@ -102,6 +102,7 @@
                         </div>
                     </div>
                     <!-- //third row contnet -->
+                     @if($showResignSection)
                      <div class="row mx-0 mt-4 mb-3 bg-white rounded p-0">
                         <div class="col-md-7">
                             <div class="resign-status">
@@ -124,6 +125,7 @@
                         </div>
                         <div class="col-md-5"></div>
                      </div>
+                     @endif
                 </div>
             </div>
             <div class="tab-pane" id="dashboard-tab-pane" role="tabpanel" aria-labelledby="dashboard-tab" tabindex="0">

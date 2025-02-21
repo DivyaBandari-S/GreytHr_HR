@@ -29,6 +29,7 @@ class PfYtdReport extends Component
     public $netPay;
     public $net_pay;
     public $showPopup = false;
+    public $empCompanyLogoUrl ; 
     public $pdfUrl;
     public $empSalaryDetails;
     public $salaryDivisions;
@@ -277,7 +278,7 @@ class PfYtdReport extends Component
         } else {
             return;
         }
-
+        $this->empCompanyLogoUrl = $this->getEmpCompanyLogoUrl(); 
 
         $employeeId = auth()->user()->emp_id;
 
@@ -819,7 +820,7 @@ class PfYtdReport extends Component
             $width = 840;
             $height = 1100;
 
-      
+            $this->empCompanyLogoUrl = $this->getEmpCompanyLogoUrl(); 
 
             $pdf = Pdf::loadView('download-pfytd-pdf', [
                 'employees' => $this->employeeDetails,
@@ -828,6 +829,7 @@ class PfYtdReport extends Component
                 'pfTotals' => $this->pftotals,
                 'startDate' => $this->start_date,
                 'endDate' => $this->end_date,
+                'empCompanyLogoUrl' => $this->empCompanyLogoUrl,
             ]);
             return response()->streamDownload(function () use ($pdf) {
                 echo $pdf->stream();
@@ -940,7 +942,7 @@ class PfYtdReport extends Component
             'combinedRequests' => $this->combinedRequests,
             'requests' => $this->requests,
             'salaryData' => $this->salaryData,
-           
+           'empCompanyLogoUrl' => $this->empCompanyLogoUrl,
         ]);
     }
 }

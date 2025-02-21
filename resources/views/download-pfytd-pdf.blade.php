@@ -82,7 +82,8 @@
         <div style="position: relative; width: 100%; margin-bottom: 15px;">
             <!-- Company Logo -->
             <div style="position: absolute; left: 1%; top: 3%; transform: translateY(-50%);">
-                <img src="https://media.licdn.com/dms/image/C4D0BAQHZsEJO8wdHKg/company-logo_200_200/0/1677514035093/xsilica_software_solutions_logo?e=2147483647&v=beta&t=rFgO4i60YIbR5hKJQUL87_VV9lk3hLqilBebF2_JqJg" alt="Company Logo" style="width: 120px;">
+            <img src="data:image/jpeg;base64,{{ $empCompanyLogoUrl }}"
+            alt="Company Logo" style="width:120px">
             </div>
 
             <!-- Company Details -->
