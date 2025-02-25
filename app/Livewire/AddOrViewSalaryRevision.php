@@ -255,6 +255,8 @@ class AddOrViewSalaryRevision extends Component
             return;
         }
 
+        $this->payout_month=Carbon::parse($this->payout_month)->format('Y-m');
+        // dd( $this->payout_month);
         if ($this->selectedEmployee) {
             $revision = EmpSalaryRevision::create([
                 'emp_id' => $this->selectedEmployee,
@@ -358,10 +360,10 @@ class AddOrViewSalaryRevision extends Component
             $this->selected_current_ctc = $this->decryptedData[0]['current_ctc'];
             $this->selected_revised_ctc = $this->decryptedData[0]['revised_ctc'];
             $this->last_revised_ctc = $this->decryptedData[0]['revised_ctc'];
-            $this->payout_month = $this->decryptedData[0]['payout_month'];
-            $this->end_payout_month = end($this->decryptedData)['payout_month'];
+            $this->payout_month = Carbon::parse($this->decryptedData[0]['payout_month'])->format('M Y');
+            $this->end_payout_month =Carbon::parse(end($this->decryptedData)['payout_month'])->format('M Y');
             // dd(  $this->payout_month);
-            $this->last_payout_month = $this->decryptedData[0]['payout_month'];
+            $this->last_payout_month = Carbon::parse($this->decryptedData[0]['payout_month'])->format('M Y');
             $this->effectiveDate = Carbon::parse($this->decryptedData[0]['revision_date'])->format('Y-m-d');
 
             if ($this->selected_revised_ctc == 0) {

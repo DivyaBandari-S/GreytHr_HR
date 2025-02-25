@@ -146,6 +146,7 @@ class HoldSalaries extends Component
     public function checkIsAlreadyHolded()
     {
         $this->isAlreadyHolded = false;
+        // dd($this->payout_month);
         $stoppedPayoutEmployee = ModelsHoldSalaries::where('emp_id', $this->selectedEmployee)
             ->where('payout_month', $this->payout_month)->first();
         // dd( $stoppedPayoutEmployee);
@@ -172,8 +173,8 @@ class HoldSalaries extends Component
     public function mount()
     {
 
-
         $this->payout_month = $this->getPayoutMonth(null);
+        // dd( $this->payout_month);
         $this->getTableData();
         // dd( $this->holdedPayoutEmployees);
     }
@@ -182,7 +183,7 @@ class HoldSalaries extends Component
 
         $this->holdedPayoutEmployees = DB::table('hold_salaries')
             ->join('employee_details', 'employee_details.emp_id', '=', 'hold_salaries.emp_id')
-            ->where('hold_salaries.status',1)
+            ->where('hold_salaries.status', 1)
             ->select('hold_salaries.*', 'employee_details.first_name', 'employee_details.last_name')
             ->when($this->searchtable, function ($query) {
                 $search = $this->searchtable;
@@ -195,18 +196,19 @@ class HoldSalaries extends Component
             ->get()
             ->map(function ($employee) {
                 // Add payout calculation for each employee
-                $employee->payout = $this->getPayoutDetails($employee->emp_id);
+                $employee->payout = $this->getPayoutDetails($employee->emp_id, $employee->payout_month);
                 return $employee;
             });
     }
 
-    public function getPayoutDetails($emp_id)
+    public function getPayoutDetails($emp_id, $payoutMonth)
     {
-        $selectedEmployeesPeers = EmpSalaryRevision::where('emp_id', $emp_id)
-            ->latest('created_at')
+        $salaryRevision = EmpSalaryRevision::where('emp_id', $emp_id)
+            ->where('status', 1)
+            ->where('payout_month', '<=', $payoutMonth)
+            ->orderBy('payout_month', 'desc') // Get the latest payout month
             ->first();
-
-        return $selectedEmployeesPeers ? floor($selectedEmployeesPeers->revised_ctc / 12) : 0;
+        return $salaryRevision ? floor($salaryRevision->revised_ctc / 12) : 0;
     }
 
     function getPayoutMonth($date = null)
@@ -215,10 +217,10 @@ class HoldSalaries extends Component
 
         // If today is on or after the 26th, payout is for the next month
         if ($date->day >= 26) {
-            return $date->addMonth()->format('M Y'); // Next month
+            return $date->addMonth()->format('Y-m'); // Next month in YYYY-MM format
         }
 
-        return $date->format('M Y'); // Current month
+        return $date->format('Y-m'); // Current month in YYYY-MM format
     }
 
 
@@ -234,14 +236,21 @@ class HoldSalaries extends Component
     {
         $this->deleteId = $id;
         // dd( $this->deleteId);
-        $stoppedEmployee = ModelsHoldSalaries::findorfail($this->deleteId);
-        $this->deleteEmpDetails = EmployeeDetails::where('emp_id', $stoppedEmployee->emp_id)
-            ->select('employee_details.emp_id', 'employee_details.first_name', 'employee_details.last_name')
-            ->first();
-            // dd(  $this->deleteEmpDetails);
-            $this->isDelete=true;
 
+        $stoppedEmployee = ModelsHoldSalaries::findorfail($this->deleteId);
+        if ($stoppedEmployee->payout_month == $this->payout_month && Carbon::now()->day < 25) {
+
+            $this->deleteEmpDetails = EmployeeDetails::where('emp_id', $stoppedEmployee->emp_id)
+                ->select('employee_details.emp_id', 'employee_details.first_name', 'employee_details.last_name')
+                ->first();
+            // dd(  $this->deleteEmpDetails);
+            $this->isDelete = true;
+            $this->getTableData();
+        }else{
+            FlashMessageHelper::flashError("Previous Month Salary Payout's Cannot Be Deleted.");
+        }
     }
+
     public function confirmdeleteHoldedEmployee()
     {
         $stoppedEmployee = ModelsHoldSalaries::findorfail($this->deleteId);
@@ -249,14 +258,15 @@ class HoldSalaries extends Component
         FlashMessageHelper::flashSuccess(
             ucwords(strtolower($this->deleteEmpDetails->first_name)) . ' ' .
                 ucwords(strtolower($this->deleteEmpDetails->last_name)) .
-                ' (' . $this->deleteEmpDetails->emp_id . ') is successfully deleted from hold salary process list for payroll:' . ' ' . $this->payout_month
+                ' (' . $this->deleteEmpDetails->emp_id . ') is successfully deleted from hold salary process list for payroll:' . ' ' . Carbon::parse($this->payout_month)->format('M Y')
         );
         $this->getTableData();
 
-        $this->isDelete=false;
+        $this->isDelete = false;
     }
-    public function hideModel(){
-        $this->isDelete=false;
+    public function hideModel()
+    {
+        $this->isDelete = false;
     }
 
     public function saveHoldProcessingSalary()
@@ -264,6 +274,7 @@ class HoldSalaries extends Component
         //   dd($this->selectedHoldReason);
         $this->validate();
         try {
+            $this->payout_month = Carbon::parse($this->payout_month)->format('Y-m');
             ModelsHoldSalaries::create([
                 'emp_id' => $this->selectedEmployee,
                 'payout_month' => $this->payout_month,
@@ -275,7 +286,7 @@ class HoldSalaries extends Component
                 'Salary payout put on hold for the Employee:' .
                     ucwords(strtolower($this->empDetails->first_name)) . ' ' .
                     ucwords(strtolower($this->empDetails->last_name)) .
-                    ' (' . $this->empDetails->emp_id . ') for the Payroll:' . ' ' . $this->payout_month
+                    ' (' . $this->empDetails->emp_id . ') for the Payroll:' . ' ' . Carbon::parse($this->payout_month)->format('M Y')
             );
 
             $this->isPageOne = false;
@@ -285,7 +296,6 @@ class HoldSalaries extends Component
             $this->selectedHoldReason = '';
             $this->showSearch = true;
             $this->search = '';
-
         } catch (null) {
         }
     }

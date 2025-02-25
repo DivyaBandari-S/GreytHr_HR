@@ -122,10 +122,10 @@
                             <li><a href="/hr/user/salary-revision-list">Salary Revision</a></li>
                             <li><a href="/user">Income Tax</a></li>
                             <li><a href="/user">Reimbursement</a></li>
-                            <li><a href="/user">Employee LOP Days</a></li>
+                            <li><a href="/hr/user/employee-lop-days">Employee LOP Days</a></li>
                             <li><a href="/hr/user/stop-salaries">Stop Salary Processing</a></li>
                             <li><a href="/user">Arrears</a></li>
-                            <li><a href="/user">Release Salary</a></li>
+                            <li><a href="/hr/user/release-salary">Release Salary</a></li>
                             <li><a href="/user">Final Settlement</a></li>
                             <li><a href="/user">Resettlement</a></li>
                             <li><a href="/user">Overtime Register</a></li>
