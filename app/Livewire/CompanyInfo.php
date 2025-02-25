@@ -12,7 +12,7 @@ class CompanyInfo extends Component
     public $company_name, $company_address, $country, $state, $industry, $time_zone, $currency;
     public $pf_no, $tan_no, $pan_no, $esi_no, $lin_no, $gst_no, $registration_no, $twitter_handle;
     public $company_logo;
-
+    public $companies = []; 
     protected $rules = [
         'company_name' => 'required|string|max:255',
         'company_address' => 'nullable|string',
