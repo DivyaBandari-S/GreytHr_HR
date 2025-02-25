@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('account_number',20);
             $table->string('ifsc_code',15);
             $table->string('bank_address');
+            $table->tinyInteger('status')->default(1);
             $table->foreign('emp_id')->references('emp_id')->on('employee_details')->onDelete('cascade');
             $table->timestamps();
         });
