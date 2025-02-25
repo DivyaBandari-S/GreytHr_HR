@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Helpers\FlashMessageHelper;
+use App\Models\Company;
 use App\Models\EmpBankDetail;
 use App\Models\EmployeeDetails;
 use App\Models\LetterRequest;
@@ -24,6 +25,7 @@ class YtdReport extends Component
     public $requests;
     public $salaryRevision;
     public $allSalaryDetails;
+    public $empCompanyLogoUrl;
     public $empBankDetails;
 
     public $netPay;
@@ -302,6 +304,7 @@ class YtdReport extends Component
                 'end_date' => ($year + 1) . "-03-31",
             ];
         }
+        $this->empCompanyLogoUrl = $this->getEmpCompanyLogoUrl();
 
         // Reverse financial years for descending order
         $this->financialYears = array_reverse($this->financialYears);
@@ -498,6 +501,36 @@ class YtdReport extends Component
 
 
     public $selectedEmployeeImage;
+    private function getEmpCompanyLogoUrl()
+    {
+        // Get the current authenticated employee's company ID
+        if (auth()->check()) {
+            // Get the current authenticated employee's company ID
+            $empCompanyId = auth()->user()->company_id;
+            $employeeId = auth()->user()->emp_id;
+            $employeeDetails = DB::table('employee_details')
+                ->where('emp_id', $employeeId)
+                ->select('company_id') // Select only the company_id
+                ->first();
+
+            // Assuming you have a Company model with a 'company_logo' attribute
+            $companyIds = json_decode($employeeDetails->company_id);
+       
+            $company = DB::table('companies')
+                ->where('company_id', $companyIds)
+                ->where('is_parent', 'yes')
+                ->first();
+
+            // Return the company logo URL, or a default if company not found
+            return $company ? $company->company_logo : asset('user.jpg');
+        } elseif (auth()->guard('hr')->check()) {
+            $empCompanyId = auth()->guard('hr')->user()->company_id;
+
+            // Assuming you have a Company model with a 'company_logo' attribute
+            $company = Company::where('company_id', $empCompanyId)->first();
+            return $company ? $company->company_logo : asset('user.jpg');
+        }
+    }
     public function selectEmployee($empId)
     {
 
@@ -828,6 +861,7 @@ class YtdReport extends Component
                     'salaryTotals' => $this->totals,
                     'startDate' => $this->start_date,
                     'endDate' => $this->end_date,
+                    'empCompanyLogoUrl' => $this->empCompanyLogoUrl,
                 ],)
                 
                 
@@ -917,22 +951,16 @@ class YtdReport extends Component
                 ->where('employee_details.emp_id', $this->selectedEmployeeId)
                 ->first();
 
-            // Debugging output
-            Log::info('Fetched Letter Requests: ' . $this->requests->toJson());
+          
         } 
 
-        // Initialize the requests collection to prevent undefined errors
-        $this->requests = LetterRequest::all();
 
 
-
-        $query = EmployeeDocument::whereIn('employee_id', (array)$this->selectedEmployeeId)->orderBy('created_at', 'desc');
 
 
       
 
 
-        $this->documents = $query->get();
 
 
         return view('livewire.ytd-report', [
@@ -943,6 +971,7 @@ class YtdReport extends Component
             'combinedRequests' => $this->combinedRequests,
             'requests' => $this->requests,
             'salaryData' => $this->salaryData,
+            'empCompanyLogoUrl' => $this->empCompanyLogoUrl,
            
         ]);
     }

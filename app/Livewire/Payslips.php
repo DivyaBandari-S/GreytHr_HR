@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Helpers\FlashMessageHelper;
 use App\Mail\PayrollProcessedMail;
+use App\Models\Company;
 use App\Models\EmpBankDetail;
 use App\Models\EmployeeDetails;
 use App\Models\LetterRequest;
@@ -19,6 +20,7 @@ use App\Models\EmpSalaryRevision;
 use App\Models\SalaryRevision;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
+
 use DateTime;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
@@ -55,6 +57,7 @@ class Payslips extends Component
     public $searchTerm = '';
     public $peopleData = [];
     public $empId;
+    public $empCompanyLogoUrl;
 
     public $selectedEmployeeId = '';
 
@@ -365,7 +368,7 @@ class Payslips extends Component
         // Fetch all emp_id values where company_id matches the logged-in user's company_id
         $this->employeeIds = EmployeeDetails::whereJsonContains('company_id', $firstCompanyID)->pluck('emp_id')->toArray();
 
-
+        $this->empCompanyLogoUrl = $this->getEmpCompanyLogoUrl();
 
         $this->options = []; // Initialize to avoid null
         $this->generateMonths();
@@ -588,7 +591,7 @@ class Payslips extends Component
 
             $this->selectedEmployeeId ;
            
-
+          
 
             $this->employeeDetails = EmployeeDetails::select('employee_details.*', 'emp_departments.department')
                 ->leftJoin('emp_departments', 'employee_details.dept_id', '=', 'emp_departments.dept_id')
@@ -609,12 +612,44 @@ class Payslips extends Component
     {
         $this->searchEmployee;
     }
+    private function getEmpCompanyLogoUrl()
+    {
+        // Get the current authenticated employee's company ID
+        if (auth()->check()) {
+            // Get the current authenticated employee's company ID
+            $empCompanyId = auth()->user()->company_id;
+            $employeeId = auth()->user()->emp_id;
+            $employeeDetails = DB::table('employee_details')
+                ->where('emp_id', $employeeId)
+                ->select('company_id') // Select only the company_id
+                ->first();
+
+            // Assuming you have a Company model with a 'company_logo' attribute
+            $companyIds = json_decode($employeeDetails->company_id);
+       
+            $company = DB::table('companies')
+                ->where('company_id', $companyIds)
+                ->where('is_parent', 'yes')
+                ->first();
+
+            // Return the company logo URL, or a default if company not found
+            return $company ? $company->company_logo : asset('user.jpg');
+        } elseif (auth()->guard('hr')->check()) {
+            $empCompanyId = auth()->guard('hr')->user()->company_id;
+
+            // Assuming you have a Company model with a 'company_logo' attribute
+            $company = Company::where('company_id', $empCompanyId)->first();
+            return $company ? $company->company_logo : asset('user.jpg');
+        }
+    }
     public function downloadPdf($month)
     {
+        
         
         if (!$this->selectedEmployeeId) {
             return response()->json(['error' => 'No Employee Selected'], 400);
         }
+       
     
         // Fetch employee salary details
         $empSalaryDetails = EmpSalary::join('salary_revisions', 'emp_salaries.sal_id', '=', 'salary_revisions.id')
@@ -642,16 +677,17 @@ class Payslips extends Component
             'Salary Details' => $salaryDivisions,
             'Bank Details' => $empBankDetails
         ]);
-    
+        $this->empCompanyLogoUrl = $this->getEmpCompanyLogoUrl(); 
         // Pass data to PDF view
         $pdf = Pdf::loadView('download-pdf', [
             'employeeDetails' => $employeeDetails, // Pass employee details
             'salaryRevision' => $salaryDivisions,  // Pass salary breakdown
             'empBankDetails' => $empBankDetails,   // Pass bank details
             'rupeesInText' => $this->convertNumberToWords($salaryDivisions['net_pay']), // Pass net pay in words
-            'salMonth' => Carbon::parse($month)->format('F Y') // Pass month formatted
+            'salMonth' => Carbon::parse($month)->format('F Y') ,// Pass month formatted
+            'empCompanyLogoUrl' => $this->empCompanyLogoUrl,
         ]);
-    
+
         $name = Carbon::parse($month)->format('MY');
     
         // Return PDF as download
@@ -747,6 +783,18 @@ public function sendTwilioSMS($to, $message)
 
 public  $to;
 public $message;
+public $bank_id;
+public $sendPayslipNotification = false; // Track checkbox state
+
+public function validateAndPublish()
+{
+    if (!$this->sendPayslipNotification) {
+        FlashMessageHelper::flashWarning( '⚠️ Please check the box to proceed with payslips');
+        return;
+    }
+
+    $this->confirmAndPublish();
+}
 
 public function confirmAndPublish()
 {
@@ -772,13 +820,29 @@ public function confirmAndPublish()
     }
 
     // Fetch employees with latest salary revisions
-    $eligibleEmployees = DB::table('salary_revisions as sr')
-        ->select('sr.id as sal_id', 'sr.revised_ctc', 'sr.revision_date', 'ed.emp_id', 'ed.email','ed.first_name','ed.last_name')
-        ->join('employee_details as ed', 'sr.emp_id', '=', 'ed.emp_id')
-        ->where('ed.company_id', $companyId)
-        ->whereRaw("sr.revision_date = (SELECT MAX(revision_date) FROM salary_revisions WHERE emp_id = sr.emp_id)")
-        ->get();
-
+$eligibleEmployees = DB::table('salary_revisions as sr')
+    ->select('sr.id as sal_id', 'sr.revised_ctc', 'sr.revision_date', 'ed.emp_id', 'ed.email', 'ed.first_name', 'ed.last_name')
+    ->join('employee_details as ed', 'sr.emp_id', '=', 'ed.emp_id')
+    ->join(
+        DB::raw("(SELECT emp_id, MAX(revision_date) as final_revision_date 
+                  FROM salary_revisions 
+                  WHERE revision_date <= '$selectedMonthFormatted'
+                  GROUP BY emp_id) as latest_sr"),
+        function ($join) {
+            $join->on('sr.emp_id', '=', 'latest_sr.emp_id')
+                 ->on('sr.revision_date', '=', 'latest_sr.final_revision_date');
+        }
+    )
+    ->where('ed.company_id', $companyId)
+    ->get();
+    
+    if ($eligibleEmployees->isEmpty()) {
+      
+        FlashMessageHelper::flashWarning( "⚠️   Annual CTC not added before or on " . 
+        Carbon::parse($selectedMonthFormatted)->format('F Y') . 
+        ". Payroll will not be processed.");
+        return;
+    }
     // Fetch bank details
     $bankDetails = EmpBankDetail::whereIn('emp_id', $eligibleEmployees->pluck('emp_id')->toArray())
         ->pluck('id', 'emp_id')
@@ -790,6 +854,9 @@ public function confirmAndPublish()
         return $employee;
     });
 
+    
+
+// dd($eligibleEmployees);
     // Filter employees who already have salary records
     $existingSalaries = EmpSalary::whereIn('sal_id', $eligibleEmployees->pluck('sal_id')->toArray())
         ->whereDate('month_of_sal', $selectedMonthFormatted)
@@ -797,50 +864,56 @@ public function confirmAndPublish()
         ->toArray();
 
     // Prepare bulk insert data
-    $insertData = $eligibleEmployees->reject(function ($employee) use ($existingSalaries) {
-        return in_array($employee->sal_id, $existingSalaries);
-    })->map(function ($employee) use ($selectedMonthFormatted) {
-        $decodedCTC = Hashids::decode($employee->revised_ctc);
-        $monthlySalary = (!empty($decodedCTC)) ? $decodedCTC[0] / 12 : 0;
+// Prepare bulk insert data
+$insertData = $eligibleEmployees->reject(function ($employee) use ($existingSalaries) {
+    return in_array($employee->sal_id, $existingSalaries) || is_null($employee->bank_id);
+})->map(function ($employee) use ($selectedMonthFormatted) {
+    $decodedCTC = EmpSalaryRevision::decodeCTC($employee->revised_ctc);
 
-        if ($monthlySalary == 0) {
-            Log::error('Hashids decoding failed for emp_id: ' . $employee->emp_id);
-        }
+    $monthlySalary =  $decodedCTC  / 12 ;
+   
+    if ($monthlySalary == 0) {
+        Log::error('Hashids decoding failed for emp_id: ' . $employee->emp_id);
+    }
 
-        $encodedSalary = $this->encodeCTC($monthlySalary);
+    $encodedSalary = $this->encodeCTC($monthlySalary);
 
-        return [
-            'sal_id' => $employee->sal_id,
-            'bank_id' => $employee->bank_id,
-            'salary' => $encodedSalary,
-            'effective_date' => $selectedMonthFormatted,
-            'month_of_sal' => $selectedMonthFormatted,
-            'remarks' => 'Auto-generated salary record',
-            'created_at' => now(),
-            'updated_at' => now()
-        ];
-    })->toArray();
+    return [
+        'sal_id' => $employee->sal_id,
+        'bank_id' => $employee->bank_id,
+        'salary' => $encodedSalary,
+        'effective_date' => $selectedMonthFormatted,
+        'month_of_sal' => $selectedMonthFormatted,
+        'remarks' => 'Auto-generated salary record',
+        'created_at' => now(),
+        'updated_at' => now()
+    ];
+})->toArray();
+
+  
 
     // Insert payroll data
     if (!empty($insertData)) {
         EmpSalary::insert($insertData);
-        session()->flash('success', "Payroll for {{ \Carbon\Carbon::parse($this->selectedMonth)->translatedFormat('F Y') }} has been created!");
-
-
-        foreach ($eligibleEmployees as $employee) {
+        session()->flash('success', "Payroll for " . Carbon::parse($this->selectedMonth)->translatedFormat('F Y') . " has been created!");
+    
+        // Get employees who had new payroll records created
+        $newPayrollEmployees = $eligibleEmployees->reject(function ($employee) use ($existingSalaries) {
+            return in_array($employee->sal_id, $existingSalaries); // Exclude already existing salary records
+        });
+    
+        // Send emails only to employees whose payroll was newly created
+        foreach ($newPayrollEmployees as $employee) {
             if (!empty($employee->email)) {
                 Mail::to($employee->email)->send(new PayrollProcessedMail($employee, $selectedMonth));
             }
-         
         }
-            
-        
-        
-    } else {
+    }else {
         session()->flash('warning', "No new salary records needed for {$this->selectedMonth}.");
     }
 
     $this->showModal = false;
+  
 }
 
     
@@ -992,7 +1065,7 @@ public function confirmAndPublish()
                     $options["$year-$monthPadded"] = "$monthName $year";
                 }
             }
-    
+            $this->empCompanyLogoUrl = $this->getEmpCompanyLogoUrl();
          
     if ($empSalaryDetails) {
         $this->salaryDivisions = $empSalaryDetails->calculateSalaryComponents($empSalaryDetails->salary);
@@ -1015,19 +1088,6 @@ public function confirmAndPublish()
             Log::info('Fetched Letter Requests: ' . $this->requests->toJson());
         } 
 
-        // Initialize the requests collection to prevent undefined errors
-        $this->requests = LetterRequest::all();
-
-
-
-        $query = EmployeeDocument::whereIn('employee_id', (array)$this->selectedEmployeeId)->orderBy('created_at', 'desc');
-
-
-      
-
-
-        $this->documents = $query->get();
-
 
         return view('livewire.payslips', [
             'employees' => $this->employees,
@@ -1038,6 +1098,7 @@ public function confirmAndPublish()
             'combinedRequests' => $this->combinedRequests,
             'options' => $options,
             'requests' => $this->requests,
+            'empCompanyLogoUrl' => $this->empCompanyLogoUrl,
            
         ]);
     }

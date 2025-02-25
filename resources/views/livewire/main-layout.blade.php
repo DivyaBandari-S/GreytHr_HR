@@ -2,7 +2,7 @@
     <!-- start: SIDEBAR -->
     <section id="sidebar">
         <a href="#" class="brand">
-            <!-- <i class="ph-flame-fill"></i> -->
+            <!-- <i class="ph-flame-fill"></ia> -->
             <!-- <img src="{{ asset('images/user-group.png') }}" alt="" style="width: 1.3em;"> -->
         </a>
 
@@ -12,7 +12,8 @@
                 <ul class="sidebar__submenu">
                     <li class="title">Home</li>
                     <li><a href="{{route('home')}}">Home</a></li>
-
+                    <li><a href="/hr/HelpDesk">HelpDesk</a></li>
+                    <li><a href="/hr/request">Request</a></li>
                 </ul>
             </li>
             <li>
@@ -164,7 +165,7 @@
                             <li><a href="/hr/ytdreport">YTD Summary</a></li>
                             <li><a href="/hr/pfytdreport">PF YTD Statement</a></li>
                             <li><a href="/hr/reimbursement">Reimbursement Statement</a></li>
-                            <li><a href="/user">IT Statement</a></li>
+                            <li><a href="/hr/itstatement">IT Statement</a></li>
                             <li><a href="/user">Loan Statement</a></li>
                             <li><a href="/user">IT Declaration</a></li>
                             <li><a href="/user">FBP Declaration</a></li>
