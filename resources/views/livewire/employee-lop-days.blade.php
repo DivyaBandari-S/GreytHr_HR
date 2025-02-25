@@ -1,10 +1,6 @@
 <div class="main " style="margin: 10px;background-color:var(--light); height:100%">
 
     <style>
-        .bold-items {
-            font-weight: bold;
-        }
-
         .emp-sal1-table th {
             text-align: center;
             vertical-align: middle;
@@ -20,17 +16,6 @@
             color: #394657;
 
         }
-
-        .emp-sal1-table tbody tr:nth-child(odd) {
-            background-color: rgb(228, 223, 223) !important;
-            /* Light gray background for odd rows */
-        }
-
-        .emp-sal1-table tbody tr:nth-child(even) {
-            background-color: #f2f2f2;
-            /* Light gray background for odd rows */
-        }
-
 
         .Employee-select-leave {
             font-weight: 500;
@@ -111,41 +96,35 @@
             margin-left: 5px;
         }
 
-        .emp-datails-table {
-            border-collapse: collapse;
-            width: 100%;
-            border-radius: 5px;
-        }
-
-        .emp-datails-table td {
-
-            border: 1px solid silver;
-            padding: 5px;
-            /* text-align: left;     */
-            font-size: 13px;
-            width: 50%;
-
-        }
-
-        .emp-table-values {
-            font-weight: bold;
-            width: 50%;
-            color: #3b4452;
-
-        }
-
-        .detail-items {
-            display: flex;
-        }
-
         .label-value {
             width: 50%;
             margin-right: 10px;
         }
+
+        .release-labels {
+            text-align: end;
+
+        }
+
+        .release-input-rows {
+            margin-bottom: 20px;
+        }
+
+        .form-select {
+            color: #3b4452;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .form-control {
+            color: #3b4452;
+            font-size: 13px;
+            font-weight: 500;
+        }
     </style>
     @if($isShowHelp)
     <div class="help-section d-flex " style="padding: 10px;font-size:13px;background-color:#f5feff">
-        <p>The <span class="bold-items"> Hold Salary Payout </span> page helps hold employees' salaries whose details are yet to be verified or are incomplete in greytHR. It has no impact on the salary processing of concerned employees.</p>
+        <p>The <span class="bold-items"> Employee LOP Days </span> page allows you to list employees with LOP days and ensure that the data is automatically processed for Payroll. The LOP values are always for the current month, and the full salary is paid on the next month unless fresh LOP entries are made for the same employee.</p>
         <span><button style="border: none;color:cornflowerblue;width:max-content;background-color:#f5feff;margin-left:15px;font-weight:bold" wire:click="toogleHelp">Hide Help </button></span>
     </div>
     @else
@@ -155,43 +134,42 @@
     @endif
 
     @if($isPageOne)
-
-
-
-
-
-    <div class=" d-flex  mt-4" style="width: 80%; ">
+    <div class=" d-flex  mt-4" style="width: 100%; ">
         <div>
-            <input type="search" wire:model="searchtable" wire:input="getTableData" placeholder="search....." class="form-control" name="" id="">
+            <input type="search" wire:model="searchtable" placeholder="search....." class="form-control" name="" id="">
         </div>
 
-        <button wire:click="addHoldSalaryProcessing" class="btn bg-white text-primary border-primary float-end " style="margin-left: auto;font-size:15px">Hold Salary Payout </button>
+        <button wire:click="addLopDays" class="btn bg-white text-primary border-primary float-end " style="margin-left: auto;font-size:15px">Add LOP Days </button>
     </div>
-    <div class="table-responsive mt-2" style="width: 80%;">
+    <div class="table-responsive mt-2" style="width: 100%;">
         <table class="table table-bordered emp-sal1-table">
             <thead>
                 <tr>
                     <th>#</th>
                     <th>Employee No</th>
                     <th>Name</th>
-                    <th>Hold Salary Payout </th>
-                    <th>Hold Reason </th>
+                    <th>Join Date</th>
+                    <th>Work Days</th>
+                    <th>LOP (in days)</th>
                     <th>Remarks</th>
                     <th></th>
                 </tr>
             </thead>
             <tbody class="bg-white">
-                @if($holdedPayoutEmployees)
-                @foreach($holdedPayoutEmployees as $index => $holdedEmployee)
+                @if($lopEmployees)
+                @foreach($lopEmployees as $index => $lopEmployee)
                 <tr>
                     <td>{{ $index+1}}</td>
-                    <td>{{$holdedEmployee->emp_id}}</td>
-                    <td style="text-transform: capitalize;">{{$holdedEmployee->first_name}} {{$holdedEmployee->last_name}} </td>
-                    <td> Rs {{number_format($holdedEmployee->payout,2)}}</td>
-                    <td>{{$holdedEmployee->hold_reason}}</td>
-                    <td>{{$holdedEmployee->remarks}}</td>
-                    <td style="text-align: center;"><i class="fa fa-trash" wire:click="deleteHoldedEmployee({{$holdedEmployee->id}})" style="cursor: pointer;"></i></td>
-
+                    <td>{{$lopEmployee->emp_id}}</td>
+                    <td style="text-transform: capitalize;">{{$lopEmployee->first_name}} {{$lopEmployee->last_name}} </td>
+                    <td>{{\Carbon\Carbon::parse($lopEmployee->hire_date)->format('d M, Y')}}</td>
+                    @php
+                    $daysInMonth = \Carbon\Carbon::parse($lopEmployee->payout_month . '-01')->daysInMonth;
+                    @endphp
+                    <td>{{$daysInMonth}}</td>
+                    <td>{{$lopEmployee->lop_days}}</td>
+                    <td>{{$lopEmployee->remarks}}</td>
+                    <td style="text-align: center;"><i class="fa fa-trash" wire:click="deleteLopDays({{$lopEmployee->id}})" style="cursor: pointer;"></i></td>
                     @if($isDelete)
                     <div class="modal" id="logoutModal" tabindex="-1" style="display: block;">
                             <div class="modal-dialog modal-dialog-centered">
@@ -217,8 +195,10 @@
 
             </tbody>
 
+
         </table>
     </div>
+
     @else
     <div style="padding-bottom: 30px;">
         <div class="bg-white">
@@ -345,51 +325,54 @@
             </div>
         </div>
 
-        @if($selectedEmployee && !$isAlreadyHolded)
+        @if($selectedEmployee && !$isAlreadyLopAdded)
         <div class="mt-3" style="padding-bottom: 10px; align-items:center">
 
-            <div class="col-md-6 mt-3 d-flex flex-column align-items-center">
-                <div  style="width: 70%;">
-
-                    <label for="hold_reason">Select Hold Reason <span style="color: red;">*</span></label>
-                    <select wire:model="selectedHoldReason" class="form-select">
-                        <option value="">Select Hold Reason</option>
-                        @foreach($holdReasons as $key => $value)
-                        <option value="{{ $key }}">{{ $value }}</option>
-                        @endforeach
-                    </select>
-                    @error('selectedHoldReason')
-                    <span class="text-danger onboard-Valid">{{ $message }}</span>
-                    @enderror
+            <div class="col-md-6 mt-3 ">
+                <div class="row release-input-rows">
+                    <div class="col-md-6 release-labels">
+                        <label for="hold_reason">LOP Days</label>
+                    </div>
+                    <div class="col-md-6">
+                        <input style="width: 50%;" class="form-control" type="number" wire:model="lopDays">
+                        @error('lopDays')
+                        <span class="text-danger ">{{ $message }}</span>
+                        @enderror
+                    </div>
                 </div>
             </div>
-
-            <div class="col-md-6 mt-3 d-flex flex-column align-items-center">
-                <div style="width: 70%;">
-                    <label for="">Remarks </label>
-                    <br>
-                    <textarea wire:model='remarks' style="height: 80px;" class="form-control"></textarea>
-                    @error('remarks')
-                    <span class="text-danger onboard-Valid">{{ $message }}</span>
-                    @enderror
+            <div class="col-md-6 mt-3 ">
+                <div class="row release-input-rows">
+                    <div class="col-md-6 release-labels">
+                        <label for="hold_reason">Remarks</label>
+                    </div>
+                    <div class="col-md-6">
+                        <textarea wire:model='remarks' style="height: 80px;" class="form-control"></textarea>
+                        @error('remarks')
+                        <span class="text-danger ">{{ $message }}</span>
+                        @enderror
+                    </div>
                 </div>
             </div>
-        </div>
-        @endif
-        @if($isAlreadyHolded)
-        <div class="col-md-6 mt-2 mb-2" style="background-color: #f2dede;padding:10px 10px;font-size:12px">
-            <p class="m-0" style="text-transform: capitalize;">
-                Employee {{ ucfirst(strtolower($empDetails->first_name)) }} {{ ucfirst(strtolower($empDetails->last_name)) }} [{{$empDetails->emp_id}}] salary has already in hold for {{\Carbon\Carbon::parse($payout_month)->format('M Y')}}!
-            </p>
-        </div>
-        @endif
-        <div class="d-flex col-md-6 mt-3" style="justify-content: center;gap:10px ; background-color:#d2e9ef;padding:20px">
-            @if($selectedEmployee && !$isAlreadyHolded)
-            <button class="btn btn-primary" wire:click="saveHoldProcessingSalary">Save</button>
-            @endif
-            <button class="btn bg-white text-primary border-primary" wire:click="addHoldSalaryProcessing">Cancel</button>
         </div>
     </div>
     @endif
+    @if($isAlreadyLopAdded)
+    <div class="col-md-6  mb-2" style="background-color: #f2dede;padding:10px 10px;font-size:12px">
+        <p class="m-0" style="text-transform: capitalize;">
+        LOP days already set for {{ ucfirst(strtolower($empDetails->first_name)) }} {{ ucfirst(strtolower($empDetails->last_name)) }} for the month {{\Carbon\Carbon::parse($payout_month)->format('M Y')}}.
+        </p>
+    </div>
+    @endif
+    <div class="d-flex col-md-6 mb-3" style="justify-content: center;gap:10px ; background-color:#d2e9ef;padding:20px">
+        @if($selectedEmployee && !$isAlreadyLopAdded)
+        <button class="btn btn-primary" wire:click="saveLopDays">Save</button>
+        @endif
+        <button class="btn bg-white text-primary border-primary" wire:click="addLopDays">Cancel</button>
+    </div>
+</div>
+@endif
+
+
 
 </div>

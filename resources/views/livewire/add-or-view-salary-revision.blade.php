@@ -386,7 +386,7 @@
                                 @foreach($decryptedData as $revision)
                                 <div wire:click="selectRevision('{{ $revision['revision_date']}}',{{addslashes( $revision['current_ctc'])}},{{ addslashes($revision['revised_ctc'])}},'{{ $revision['reason']}}','{{ $revision['revision_type']}}','{{addslashes( $revision['payout_month'])}}')"
                                     class=" revision-items {{ $selectedDate == $revision['revision_date'] ? 'active' : '' }}">
-                                    <p class="m-0" style="font-size: 12px;font-weight:500">{{$revision['payout_month']}}</p>
+                                    <p class="m-0" style="font-size: 12px;font-weight:500">{{ \Carbon\Carbon::parse($revision['payout_month'])->format('M Y')}}</p>
                                     <p class="m-0" style="font-size: 9px;">Effective: {{ \Carbon\Carbon::parse($revision['revision_date'])->format('d M Y') }}</p>
                                 </div>
                                 @endforeach

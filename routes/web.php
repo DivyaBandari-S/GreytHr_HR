@@ -78,7 +78,9 @@ use App\Livewire\SwipeManagementForHr;
 use App\Livewire\AuthorizeSignatory;
 use App\Livewire\CreateSignatory;
 use App\Livewire\EmployeeDataUpdate;
+use App\Livewire\EmployeeLopDays;
 use App\Livewire\Loans;
+use App\Livewire\ReleaseSalary;
 use App\Livewire\EmployeeSeparation;
 use App\Livewire\ItStatement;
 use App\Livewire\Tasks;
@@ -247,5 +249,7 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
         Route::get('/user/salary-revision-analytics', SalaryRevisionAnalytics::class)->name('salary-revision-analytics');
         Route::get('/user/addorview-salary-revision', AddOrViewSalaryRevision::class)->name('addorview-salary-revision');
         Route::get('/user/loans', Loans::class)->name('loans');
+        Route::get('/user/release-salary', ReleaseSalary::class)->name('release-salary');
+        Route::get('/user/employee-lop-days', EmployeeLopDays::class)->name('employee-lop-days');
     });
 });
