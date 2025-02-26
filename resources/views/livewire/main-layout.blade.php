@@ -149,7 +149,7 @@
                     <li>
                         <a href="#">Payout <i class="ph-caret-right-fill"></i></a>
                         <ul class="sidebar__dropdown-menu">
-                            <li><a href="/home">Accounts JV</a></li>
+                            <li><a href="/hr/accountsjv">Accounts JV</a></li>
                             <li><a href="/user">Bank Transfer</a></li>
                             <li><a href="/user">Cheque / Cash Statement</a></li>
                             <li><a href="/user">Payslips</a></li>

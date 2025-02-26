@@ -298,6 +298,7 @@ class Payslips extends Component
    
  
 
+    
 
     public function mount()
     {
@@ -322,6 +323,7 @@ class Payslips extends Component
         $this->empSalaryDetails = EmpSalary::join('salary_revisions', 'emp_salaries.sal_id', '=', 'salary_revisions.id')
         ->where('salary_revisions.emp_id',$employeeId)
             ->where('month_of_sal', 'like', $this->selectedMonth . '%')
+            ->where('emp_salaries.is_payslip', 1) 
             ->get();
           
 
@@ -371,7 +373,9 @@ class Payslips extends Component
         $this->empCompanyLogoUrl = $this->getEmpCompanyLogoUrl();
 
         $this->options = []; // Initialize to avoid null
+        $this->selectedMonth = $this->selectedMonth ?? date('Y-m');
         $this->generateMonths();
+        
         // Fetch the employee IDs after filtering
 
 
@@ -655,6 +659,7 @@ class Payslips extends Component
         $empSalaryDetails = EmpSalary::join('salary_revisions', 'emp_salaries.sal_id', '=', 'salary_revisions.id')
             ->where('salary_revisions.emp_id', $this->selectedEmployeeId)
             ->where('month_of_sal', 'like',  $month . '%')
+            ->where('emp_salaries.is_payslip', 1) 
             ->first();
     
         if (!$empSalaryDetails) {
@@ -813,108 +818,49 @@ public function confirmAndPublish()
 
     $companyId = $company->company_id;
     $currentMonth = Carbon::now()->format('Y-m');
-    $selectedMonthFormatted = Carbon::parse($selectedMonth . '-01')->format('Y-m-d');
+    $selectedMonthFormatted = Carbon::parse($selectedMonth . '-01')->format('Y-m');
 
     if ($selectedMonth > $currentMonth) {
         return session()->flash('error', "⚠️ Error: Selected month cannot be greater than the current month.");
     }
 
-    // Fetch employees with latest salary revisions
-$eligibleEmployees = DB::table('salary_revisions as sr')
-    ->select('sr.id as sal_id', 'sr.revised_ctc', 'sr.revision_date', 'ed.emp_id', 'ed.email', 'ed.first_name', 'ed.last_name')
-    ->join('employee_details as ed', 'sr.emp_id', '=', 'ed.emp_id')
-    ->join(
-        DB::raw("(SELECT emp_id, MAX(revision_date) as final_revision_date 
-                  FROM salary_revisions 
-                  WHERE revision_date <= '$selectedMonthFormatted'
-                  GROUP BY emp_id) as latest_sr"),
-        function ($join) {
-            $join->on('sr.emp_id', '=', 'latest_sr.emp_id')
-                 ->on('sr.revision_date', '=', 'latest_sr.final_revision_date');
-        }
-    )
-    ->where('ed.company_id', $companyId)
-    ->get();
-    
-    if ($eligibleEmployees->isEmpty()) {
-      
-        FlashMessageHelper::flashWarning( "⚠️   Annual CTC not added before or on " . 
-        Carbon::parse($selectedMonthFormatted)->format('F Y') . 
-        ". Payroll will not be processed.");
-        return;
-    }
-    // Fetch bank details
-    $bankDetails = EmpBankDetail::whereIn('emp_id', $eligibleEmployees->pluck('emp_id')->toArray())
-        ->pluck('id', 'emp_id')
-        ->toArray();
+    // Fetch only records where is_payslip = 0 for the selected month
+    $existingSalaries = EmpSalary::where('is_payslip', 0)
+        ->where('month_of_sal', 'like', $selectedMonthFormatted . '%')
+        ->get();
 
-    // Merge bank_id into employees
-    $eligibleEmployees = $eligibleEmployees->map(function ($employee) use ($bankDetails) {
-        $employee->bank_id = $bankDetails[$employee->emp_id] ?? null;
-        return $employee;
-    });
+    if ($existingSalaries->isNotEmpty()) {
+        // Extract salary IDs for update
+        $existingSalaryIds = $existingSalaries->pluck('sal_id')->toArray();
 
-    
+        // Update `is_payslip` to 1 for existing records
+        EmpSalary::whereIn('sal_id', $existingSalaryIds)
+            ->update(['is_payslip' => 1]);
 
-// dd($eligibleEmployees);
-    // Filter employees who already have salary records
-    $existingSalaries = EmpSalary::whereIn('sal_id', $eligibleEmployees->pluck('sal_id')->toArray())
-        ->whereDate('month_of_sal', $selectedMonthFormatted)
-        ->pluck('sal_id')
-        ->toArray();
+        FlashMessageHelper::flashSuccess("Payslip Released for " . Carbon::parse($this->selectedMonth)->translatedFormat('F Y') . "!");
 
-    // Prepare bulk insert data
-// Prepare bulk insert data
-$insertData = $eligibleEmployees->reject(function ($employee) use ($existingSalaries) {
-    return in_array($employee->sal_id, $existingSalaries) || is_null($employee->bank_id);
-})->map(function ($employee) use ($selectedMonthFormatted) {
-    $decodedCTC = EmpSalaryRevision::decodeCTC($employee->revised_ctc);
+        // Fetch employee details for sending emails
+        $employees = DB::table('employee_details as ed')
+            ->join('salary_revisions as sr', 'ed.emp_id', '=', 'sr.emp_id')
+            ->join('emp_salaries as es', 'sr.id', '=', 'es.sal_id')
+            ->whereIn('es.sal_id', $existingSalaryIds)
+            ->select('ed.email', 'ed.emp_id', 'ed.first_name', 'ed.last_name')
+            ->get();
 
-    $monthlySalary =  $decodedCTC  / 12 ;
-   
-    if ($monthlySalary == 0) {
-        Log::error('Hashids decoding failed for emp_id: ' . $employee->emp_id);
-    }
-
-    $encodedSalary = $this->encodeCTC($monthlySalary);
-
-    return [
-        'sal_id' => $employee->sal_id,
-        'bank_id' => $employee->bank_id,
-        'salary' => $encodedSalary,
-        'effective_date' => $selectedMonthFormatted,
-        'month_of_sal' => $selectedMonthFormatted,
-        'remarks' => 'Auto-generated salary record',
-        'created_at' => now(),
-        'updated_at' => now()
-    ];
-})->toArray();
-
-  
-
-    // Insert payroll data
-    if (!empty($insertData)) {
-        EmpSalary::insert($insertData);
-        session()->flash('success', "Payroll for " . Carbon::parse($this->selectedMonth)->translatedFormat('F Y') . " has been created!");
-    
-        // Get employees who had new payroll records created
-        $newPayrollEmployees = $eligibleEmployees->reject(function ($employee) use ($existingSalaries) {
-            return in_array($employee->sal_id, $existingSalaries); // Exclude already existing salary records
-        });
-    
-        // Send emails only to employees whose payroll was newly created
-        foreach ($newPayrollEmployees as $employee) {
+        // Send emails to employees
+        foreach ($employees as $employee) {
             if (!empty($employee->email)) {
                 Mail::to($employee->email)->send(new PayrollProcessedMail($employee, $selectedMonth));
             }
         }
-    }else {
-        session()->flash('warning', "No new salary records needed for {$this->selectedMonth}.");
+    } else {
+        FlashMessageHelper::flashError("No existing salary records found for {$this->selectedMonth}.");
     }
 
     $this->showModal = false;
-  
 }
+
+
 
     
     public function getSalaryDetails()
@@ -927,7 +873,7 @@ $insertData = $eligibleEmployees->reject(function ($employee) use ($existingSala
         ->join('salary_revisions', 'emp_salaries.sal_id', '=', 'salary_revisions.id')
         ->where('salary_revisions.emp_id', $this->selectedEmployeeId)
         ->where('month_of_sal', 'like', $this->selectedMonth . '%')
-        ->select('emp_salaries.*')
+        ->select('emp_salaries.*')->where('is_payslip', 1)
         ->first();
 
 
@@ -959,7 +905,9 @@ $insertData = $eligibleEmployees->reject(function ($employee) use ($existingSala
     public function changeMonth()
     {
         $this->selectedEmployeeId;
-        $this->getSalaryDetails();
+       
+      $this->getSalaryDetails();
+     
         $this->generateMonths(); // Refresh month options if necessary
     }
     
@@ -1045,7 +993,9 @@ $insertData = $eligibleEmployees->reject(function ($employee) use ($existingSala
             $empSalaryDetails = EmpSalary::join('salary_revisions', 'emp_salaries.sal_id', '=', 'salary_revisions.id')
             ->where('salary_revisions.emp_id', $this->selectedEmployeeId)
             ->where('month_of_sal', 'like', $this->selectedMonth . '%')
+            ->where('emp_salaries.is_payslip', 1) 
             ->first();
+           
             $currentYear = date('Y');
 
 
