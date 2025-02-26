@@ -158,6 +158,8 @@
 
 
 
+
+
     <div class=" d-flex  mt-4" style="width: 80%; ">
         <div>
             <input type="search" wire:model="searchtable" wire:input="getTableData" placeholder="search....." class="form-control" name="" id="">
@@ -377,7 +379,7 @@
         @if($isAlreadyHolded)
         <div class="col-md-6 mt-2 mb-2" style="background-color: #f2dede;padding:10px 10px;font-size:12px">
             <p class="m-0" style="text-transform: capitalize;">
-                Employee {{ ucfirst(strtolower($empDetails->first_name)) }} {{ ucfirst(strtolower($empDetails->last_name)) }} [{{$empDetails->emp_id}}] salary has already in hold!
+                Employee {{ ucfirst(strtolower($empDetails->first_name)) }} {{ ucfirst(strtolower($empDetails->last_name)) }} [{{$empDetails->emp_id}}] salary has already in hold for {{\Carbon\Carbon::parse($payout_month)->format('M Y')}}!
             </p>
         </div>
         @endif

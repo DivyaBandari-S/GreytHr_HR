@@ -3,6 +3,7 @@
 use App\Livewire\AccountsJv;
 use App\Livewire\AdminDashboard;
 use App\Livewire\AttendanceLockConfiguration;
+use App\Livewire\CompanyInfo;
 use App\Livewire\Dashboard;
 use App\Livewire\HrLogin;
 use App\Livewire\HomeDashboard;
@@ -78,7 +79,9 @@ use App\Livewire\SwipeManagementForHr;
 use App\Livewire\AuthorizeSignatory;
 use App\Livewire\CreateSignatory;
 use App\Livewire\EmployeeDataUpdate;
+use App\Livewire\EmployeeLopDays;
 use App\Livewire\Loans;
+use App\Livewire\ReleaseSalary;
 use App\Livewire\EmployeeSeparation;
 use App\Livewire\ItStatement;
 use App\Livewire\Tasks;
@@ -140,7 +143,8 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
             ]);
         })->name('files.showTask');
 
-
+       //company info
+       Route::get('company-info',CompanyInfo::class)->name('company_info');
         //feeds
         Route::get('/hrFeeds', Feeds::class)->name('hrfeeds');
         Route::get('/everyone', Everyone::class)->name('everyone');
@@ -250,5 +254,7 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
         Route::get('/user/salary-revision-analytics', SalaryRevisionAnalytics::class)->name('salary-revision-analytics');
         Route::get('/user/addorview-salary-revision', AddOrViewSalaryRevision::class)->name('addorview-salary-revision');
         Route::get('/user/loans', Loans::class)->name('loans');
+        Route::get('/user/release-salary', ReleaseSalary::class)->name('release-salary');
+        Route::get('/user/employee-lop-days', EmployeeLopDays::class)->name('employee-lop-days');
     });
 });

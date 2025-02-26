@@ -9,7 +9,7 @@ class HoldSalaries extends Model
 {
     use HasFactory;
     protected $table = 'hold_salaries';
-    protected $fillable = ['emp_id', 'payout_month', 'hold_reason','remarks','status'];
+    protected $fillable = ['emp_id', 'payout_month', 'hold_reason','remarks','status','release_month','release_reason','release_remarks','is_released'];
 
 
 }

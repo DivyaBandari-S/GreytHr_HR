@@ -24,7 +24,6 @@ class CheckAuthAndHandleSession
     public function handle(Request $request, Closure $next): Response
     {
         $guards = ['hr'];
-
         foreach ($guards as $guard) {
             if (Auth::guard($guard)->check()) {
                 $user = Auth::guard($guard)->user();
@@ -120,10 +119,6 @@ class CheckAuthAndHandleSession
         // Get device type using Jenssegers\Agent
         $agent = new Agent();
         $deviceType = $agent->isMobile() ? 'Mobile' : ($agent->isTablet() ? 'Tablet' : 'Desktop');
-
-        if ( session('previous_url')!==$request->url()) {
-            Session::put('previous_url', $request->url());
-        }
         // Update last activity time and store user details in the session
         Session::put('last_activity_time', time());
         Session::put('user', $user);
@@ -133,7 +128,6 @@ class CheckAuthAndHandleSession
         Session::put('user_type', $guard);
         Session::put($guard . '_id', $this->getUserIdByGuard($guard, $user));
         Session::put($guard . '_first_name', $user->first_name);
-
         Log::info('Session updated', [
             'user_id' => $this->getUserIdByGuard($guard, $user),
             'session_id' => Session::getId(),

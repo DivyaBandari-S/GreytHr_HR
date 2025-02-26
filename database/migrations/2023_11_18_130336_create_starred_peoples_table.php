@@ -12,28 +12,21 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('starred_peoples', function (Blueprint $table) {
-            $table->id();
-            $table->string('emp_id');
-            $table->string('company_id');
-            $table->string('name');
-            $table->string('people_id');
-            $table->string('profile');
-            $table->string('contact_details');
-            $table->string('category');
-            $table->string('location');
-            $table->string('joining_date');
-            $table->string('date_of_birth');
+            $table->smallInteger('id')->autoIncrement();
+            $table->string('emp_id', 10);
+            $table->json('company_id');
+            $table->string('name', 100)->nullable();
+            $table->string('people_id', 10);
+            $table->binary('profile')->nullable();
+            $table->string('contact_details', 20)->nullable();
+            $table->string('category', 50)->nullable();
+            $table->string('location', 50)->nullable();
+            $table->date('joining_date')->nullable();
+            $table->date('date_of_birth')->nullable();
             $table->string('starred_status')->default('starred');
-            $table->unique(['emp_id', 'people_id']);
-
             $table->foreign('emp_id')
                 ->references('emp_id') // Assuming the primary key of the companies table is 'id'
                 ->on('employee_details')
-                ->onDelete('restrict')
-                ->onUpdate('cascade');
-            $table->foreign('company_id')
-                ->references('company_id') // Assuming the primary key of the companies table is 'id'
-                ->on('companies')
                 ->onDelete('restrict')
                 ->onUpdate('cascade');
             $table->timestamps();
