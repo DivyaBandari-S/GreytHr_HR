@@ -102,16 +102,16 @@
                         </div>
                     </div>
                     <!-- //third row contnet -->
-                     @if($showResignSection)
-                     <div class="row mx-0 mt-4 mb-3 bg-white rounded p-0">
+                    @if($showResignSection)
+                    <div class="row mx-0 mt-4 mb-3 bg-white rounded p-0">
                         <div class="col-md-7">
                             <div class="resign-status">
                                 <div class="right-border">
-                                    <h6 class="main-title mb-0">Resignation Status  </h6>
+                                    <h6 class="main-title mb-0">Resignation Status </h6>
                                 </div>
                                 <div class="form-group emp-type py-3 flex-column align-items-start">
                                     <label for="separation_mode">Separation Mode</label>
-                                    <select name="separation_mode" id="separation_mode">
+                                    <select name="separation_mode" id="separation_mode" wire:change="toggleContent">
                                         <option value="resigned">Resigned</option>
                                         <option value="terminated">Terminated</option>
                                         <option value="other">other</option>
@@ -124,8 +124,34 @@
                             </div>
                         </div>
                         <div class="col-md-5"></div>
-                     </div>
-                     @endif
+                    </div>
+                    @endif
+
+                    <!-- //fourth row contnet -->
+                    @if($showOtherDetails)
+                    <div class="row mx-0 mt-4 mb-3 bg-white rounded p-0">
+                        <div class="col-md-7">
+                            <div class="resign-status">
+                                <div class="left-border">
+                                    <h6 class="main-title mb-0">Other Details </h6>
+                                </div>
+                                <div class="form-group emp-type py-3 flex-column align-items-start">
+                                    <label for="separation_mode">Separation Mode</label>
+                                    <select name="separation_mode" id="separation_mode" wire:change="toggleContent">
+                                        <option value="resigned">Resigned</option>
+                                        <option value="terminated">Terminated</option>
+                                        <option value="other">other</option>
+                                        <option value="expired">Expired</option>
+                                        <option value="sick">Sick</option>
+                                        <option value="retired">Retired</option>
+                                        <option value="transferred">Transferred</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-5"></div>
+                    </div>
+                    @endif
                 </div>
             </div>
             <div class="tab-pane" id="dashboard-tab-pane" role="tabpanel" aria-labelledby="dashboard-tab" tabindex="0">

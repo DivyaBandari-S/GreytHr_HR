@@ -92,6 +92,11 @@ class EmployeeSeparation extends Component
     public function openResignSec(){
         $this->showResignSection = true;
     }
+
+    public $showOtherDetails = false;
+    public function toggleContent(){
+        $this->showOtherDetails = true;
+    }
     public function render()
     {
         return view(
