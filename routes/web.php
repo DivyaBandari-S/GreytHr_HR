@@ -1,5 +1,6 @@
 <?php
 
+use App\Livewire\AccountsJv;
 use App\Livewire\AdminDashboard;
 use App\Livewire\AttendanceLockConfiguration;
 use App\Livewire\CompanyInfo;
@@ -149,13 +150,17 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
         Route::get('/everyone', Everyone::class)->name('everyone');
 
 
-        //HR Payroll Submodule Routes
+        //HR Payroll Submodule Routes->Published Info
         Route::get('/payslips', Payslips::class)->name('payslips');
         Route::get('/ctcslips', CTCSlips::class)->name('ctcslips');
         Route::get('/ytdreport', YtdReport::class)->name('ytdreport');
         Route::get('/pfytdreport', PfYtdReport::class)->name('pfytdreport');
         Route::get('/reimbursement', ReimbursementStatement::class)->name('reimbursement');
         Route::get('/itstatement', ItStatement::class)->name('itstatement');
+
+        //HR Payroll Submodule Routes->Payouts
+        Route::get('/accountsjv', AccountsJv::class)->name('accountsjv');
+
 
         //HR Employee-Main Submodule Routes
         Route::get('/user/main-overview', HrMainOverview::class)->name('main-overview');

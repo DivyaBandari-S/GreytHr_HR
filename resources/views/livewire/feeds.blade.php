@@ -457,7 +457,7 @@
 
                 <!-- Additional row -->
                 <div class="row mt-2 d-flex">
-                    <div class="col-md-3 feeds-custom-menu bg-white p-3 mb-2" style="width:25%">
+                    <div class="col-md-3 feeds-custom-menu bg-white p-3 mb-2" style="  position: relative;">
                         <p class="feeds-left-menu">Filters</p>
                         <hr style="width: 100%;border-bottom: 1px solid grey;">
                         <p class="feeds-left-menu">Activities</p>
@@ -2241,25 +2241,16 @@ $allEmojis = $currentCardEmojis->reverse(); // This will get all emojis in rever
 $uniqueNames = [];
 $nameList = [];
 @endphp
-@foreach ($lastTwoEmojis as $emoji)
-@php
-    $fullName =
-        ucwords(strtolower($emoji->first_name)) .
-        ' ' .
-        ucwords(strtolower($emoji->last_name));
-@endphp
-@if (!in_array($fullName, $uniqueNames))
-    @if (!$loop->first)
-        <span>,</span>
-    @endif
-    <span style="font-size: 10px;color: blue;margin-left:10px">{{ $fullName }}</span>
-    @php
-        $uniqueNames[] = $fullName;
-        $nameList[] = $fullName;
-    @endphp
-@endif
-@endforeach
+                          @php
+                            $lastEmoji = $lastTwoEmojis->last(); // Get the last reacted emoji
+                            @endphp
 
+                            @if ($lastEmoji)
+                            @php
+                            $fullName = ucwords(strtolower($lastEmoji->first_name)) . ' ' . ucwords(strtolower($lastEmoji->last_name));
+                            @endphp
+                            <span style="font-size: 10px; color: blue; margin-left: 10px;">{{ $fullName }}</span>
+                            @endif
 
 
 {{-- Show +more if there are more than 2 emojis --}}
@@ -2895,7 +2886,7 @@ $uniqueNames = [];
 
 {{-- Show +more if there are more than 2 emojis --}}
 @if ($emojisCount > 1)
-    <span style="cursor: pointer; color: blue; font-size: 10px;nargin-left:5px"
+    <span style="cursor: pointer; color: blue; font-size: 10px;margin-left:5px"
         wire:click="openDialog('{{ $data['employee']->emp_id }}')">
         and {{ $emojisCount - 1 }} others reacted 
     </span>
