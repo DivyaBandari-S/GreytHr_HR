@@ -6810,3 +6810,20 @@ input.form-control.rounded-pill{
     padding: 3px 7px;
     border-left: 0.15rem solid #d9534f;
 }
+
+.company-table {
+    font-size: 12px; /* Smaller font for table */
+}
+
+.company-table .btn-xs {
+    padding: 0.25rem 0.5rem; /* Smaller padding */
+    font-size: 0.75rem; /* Smaller font size */
+    line-height: 1;
+}
+
+.company-table th, .company-table td {
+    white-space: nowrap; /* Prevents text from wrapping */
+    overflow: hidden;
+    text-overflow: ellipsis; /* Show "..." for very long text */
+    max-width: 200px; /* Adjust max width dynamically */
+}
