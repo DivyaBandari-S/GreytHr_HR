@@ -6688,6 +6688,10 @@ input.form-control.rounded-pill{
     font-size: var(--normal-font-size);
     color: var(--label-color);
 }
+.normalTextSmall {
+    font-size: var(--normal-font-size);
+    color: #555;
+}
 .custom-table {
     border: 1px solid black;
     border-collapse: collapse;
@@ -6752,10 +6756,7 @@ input.form-control.rounded-pill{
     background: #f9f9f9;
     box-shadow: 2px 1px 2px rgba(0, 0, 0, 0.1);
 }
-.normalTextValue{
-    font-size: var(--normal-font-size);
-    color: var(--label-color);
-}
+
 .custom-table {
     border: 1px solid black;
     border-collapse: collapse;
@@ -6813,8 +6814,46 @@ input.form-control.rounded-pill{
 .left-border{
     display: flex;
     align-items: center;
-    padding: 3px 7px;
-    border-left: 0.15rem solid #d9534f;
+    padding: 2px 7px;
+    border-left: 0.15rem solid #059212;
+    margin-bottom: 20px;
 }
 
-
+.emp-data-resign label{
+    color: #778899;
+}
+.emp-data-resign span{
+    color: #778899;
+}
+.emp-data-resign{
+    display: flex;
+    flex-direction: column;
+}
+.coulumn-grid{
+    display: grid;
+    grid-template-columns: repeat(3, 4fr);
+    margin: 10px 0px;
+    gap: 20px;
+}
+.coulumn-resign-grid{
+    display: grid;
+    gap: 20px;
+    grid-template-columns: repeat(4, 4fr);
+    margin: 10px 0px;
+}
+.coulumn-grid .form-group input.form-control{
+    width: 70%;
+}
+.emp-data-resign span{
+    font-size: 14px;
+    color: #555;
+    font-weight: 500;
+    text-transform: capitalize;
+}
+button.btn.btn-link.edit-icon{
+    padding: 0;
+    margin: 0;
+    color: var(--main-button-color);
+    font-size: var(--sub-headings-font-size);
+    cursor: pointer;
+}
