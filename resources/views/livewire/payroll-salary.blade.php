@@ -1,20 +1,8 @@
-<div class="main " style="margin: 10px;background-color:var(--light); height:100%">
+<div class=" " style="margin: 20px;background-color:var(--light); height:100%">
 
     <style>
-        .emp-sal1-table th {
-            text-align: center;
-            vertical-align: middle;
-            color: #3b4452;
-            padding: 3px;
-            font-size: 12px;
-            background-color: #EBEFF7;
-        }
-
-        .emp-sal1-table td {
-            border-style: none;
-            font-size: 12px;
-            color: #394657;
-
+        .bold-items {
+            font-weight: bold;
         }
 
         .Employee-select-leave {
@@ -96,35 +84,47 @@
             margin-left: 5px;
         }
 
+        .emp-datails-table {
+            border-collapse: collapse;
+            width: 100%;
+            border-radius: 5px;
+        }
+
+        .emp-datails-table td {
+
+            border: 1px solid silver;
+            padding: 5px;
+            /* text-align: left;     */
+            font-size: 13px;
+            width: 50%;
+
+        }
+
+        .emp-table-values {
+            font-weight: bold;
+            width: 50%;
+            color: #3b4452;
+
+        }
+
+        .detail-items {
+            display: flex;
+        }
+
         .label-value {
             width: 50%;
             margin-right: 10px;
         }
 
-        .release-labels {
-            text-align: end;
-
-        }
-
-        .release-input-rows {
-            margin-bottom: 20px;
-        }
-
-        .form-select {
-            color: #3b4452;
-            font-size: 13px;
-            font-weight: 500;
-        }
-
-        .form-control {
-            color: #3b4452;
-            font-size: 13px;
-            font-weight: 500;
+        .parent:hover,
+        .parent:hover .child {
+            background-color: #f3f4f6;
+            /* Light gray */
         }
     </style>
     @if($isShowHelp)
     <div class="help-section d-flex " style="padding: 10px;font-size:13px;background-color:#f5feff">
-        <p>The <span class="bold-items"> Employee LOP Days </span> page allows you to list employees with LOP days and ensure that the data is automatically processed for Payroll. The LOP values are always for the current month, and the full salary is paid on the next month unless fresh LOP entries are made for the same employee.</p>
+        <p>The <span class="bold-items"> Salary page </span> provides information on an employee's salary such as Net pay, Gross, Total deduction, and Loss of pay for the selected payroll month. The page enables you to add/revise an employee's salary, edit the values of salary components, and process the revised salary.</p>
         <span><button style="border: none;color:cornflowerblue;width:max-content;background-color:#f5feff;margin-left:15px;font-weight:bold" wire:click="toogleHelp">Hide Help </button></span>
     </div>
     @else
@@ -133,74 +133,7 @@
     </div>
     @endif
 
-    @if($isPageOne)
-    <div class=" d-flex  mt-4" style="width: 100%; ">
-        <div>
-            <input type="search" wire:model="searchtable" wire:input="getTableData" placeholder="search....." class="form-control" name="" id="">
-        </div>
-
-        <button wire:click="addLopDays" class="btn bg-white text-primary border-primary float-end " style="margin-left: auto;font-size:15px">Add LOP Days </button>
-    </div>
-    <div class="table-responsive mt-2" style="width: 100%;">
-        <table class="table table-bordered emp-sal1-table">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Employee No</th>
-                    <th>Name</th>
-                    <th>Join Date</th>
-                    <th>Work Days</th>
-                    <th>LOP (in days)</th>
-                    <th>Remarks</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody class="bg-white">
-                @if($lopEmployees)
-                @foreach($lopEmployees as $index => $lopEmployee)
-                <tr>
-                    <td>{{ $index+1}}</td>
-                    <td>{{$lopEmployee->emp_id}}</td>
-                    <td style="text-transform: capitalize;">{{$lopEmployee->first_name}} {{$lopEmployee->last_name}} </td>
-                    <td>{{\Carbon\Carbon::parse($lopEmployee->hire_date)->format('d M, Y')}}</td>
-                    @php
-                    $daysInMonth = \Carbon\Carbon::parse($lopEmployee->payout_month . '-01')->daysInMonth;
-                    @endphp
-                    <td>{{$daysInMonth}}</td>
-                    <td>{{$lopEmployee->lop_days}}</td>
-                    <td>{{$lopEmployee->remarks}}</td>
-                    <td style="text-align: center;"><i class="fa fa-trash" wire:click="deleteLopDays({{$lopEmployee->id}})" style="cursor: pointer;"></i></td>
-                    @if($isDelete)
-                    <div class="modal" id="logoutModal" tabindex="-1" style="display: block;">
-                            <div class="modal-dialog modal-dialog-centered">
-                                <div class="modal-content">
-                                    <div class="modal-header text-white">
-                                        <h6 class="modal-title " id="logoutModalLabel" style="align-items: center;">Confirmation</h6>
-                                    </div>
-                                    <div class="modal-body text-center" style="font-size: 14px;color:var( --main-heading-color);">
-                                        Are you sure you want to remove the Employee <span style="color: red;"> {{ucwords(strtolower($deleteEmpDetails->first_name))}} {{ ucwords(strtolower($deleteEmpDetails->last_name))}} [{{$deleteEmpDetails->emp_id}}] </span>from hold salary Payout?
-                                    </div>
-                                    <div class="d-flex gap-3 justify-content-center p-3">
-                                        <button type="button" class="submit-btn " wire:click="confirmdeleteHoldedEmployee">Confirm</button>
-                                        <button type="button" class="cancel-btn" wire:click="hideModel">Cancel</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-backdrop fade show"></div>
-                    @endif
-                </tr>
-                @endforeach
-                @endif
-
-            </tbody>
-
-
-        </table>
-    </div>
-
-    @else
-    <div style="padding-bottom: 30px;">
+    <div class="mt-4" style="padding-bottom: 30px;">
         <div class="bg-white">
             <div class="row" style="padding: 10px;">
                 <div class="col-md-8 col-12">
@@ -324,55 +257,112 @@
                 </div>
             </div>
         </div>
+    </div>
 
-        @if($selectedEmployee && !$isAlreadyLopAdded)
-        <div class="mt-3" style="padding-bottom: 10px; align-items:center">
-
-            <div class="col-md-6 mt-3 ">
-                <div class="row release-input-rows">
-                    <div class="col-md-6 release-labels">
-                        <label for="hold_reason">LOP Days</label>
-                    </div>
-                    <div class="col-md-6">
-                        <input style="width: 50%;" class="form-control" type="number" wire:model="lopDays">
-                        @error('lopDays')
-                        <span class="text-danger ">{{ $message }}</span>
-                        @enderror
+    @if($selectedEmployee)
+    <div class=" d-flex" style="width: 100%;gap:10px;justify-content:end;">
+        <button wire:click="" class="btn btn-primary " style="font-size: 12px;padding:5px">Preview Payslip</button>
+        <button wire:click="showRevisedSalary" class="btn bg-white text-primary border-primary float-end " style="font-size: 12px;padding:5px">Update Salary</button>
+        <button wire:click="" class="btn btn-primary" style="font-size: 12px;padding:5px">Process Payroll</button>
+    </div>
+    <div class="row g-4 mt-1">
+        <div class="col-md-7">
+            <div class=" bg-white rounded shadow-md">
+                <!-- Header -->
+                <div class="flex justify-between items-center">
+                    <div class="flex items-center space-x-2">
+                        <input
+                            type="text"
+                            wire:model="searchComponent"
+                            wire:input="getFilteredComponentsProperty"
+                            placeholder="Search by component..."
+                            class="border p-2 rounded w-64 m-2" />
+                        <button wire:click="toggleExpandAll" class="text-primary" style="border:none;background-color:white">
+                            {{ $expandAll ? 'Collapse All' : 'Expand All' }}
+                        </button>
                     </div>
                 </div>
-            </div>
-            <div class="col-md-6 mt-3 ">
-                <div class="row release-input-rows">
-                    <div class="col-md-6 release-labels">
-                        <label for="hold_reason">Remarks</label>
+
+                <!-- Components List -->
+                <div class="border " style="height: 500px;overflow-x:auto">
+
+                    @foreach ($filteredcomponents as $component)
+                    @if (stripos($component['name'], $searchComponent) !== false)
+                    <div class="border-b ">
+                        <div class="parent flex justify-between items-center cursor-pointer bg-gray-100 hover:bg-gray-200 border"
+                            style="font-size: 13px;height: 35px;padding:0px 10px 0px 10px">
+                            <span>
+                                @if (!empty($component['children']))
+                                <span wire:click="toggleExpand('{{ $component['name'] }}')" style="margin-right:5px">
+                                    @if ($expanded[$component['name']])
+                                    <img style="height: 10px;" src="{{asset('images/minuss.png')}}" alt="">
+                                    @else
+                                    <img style="height: 10px;" src="{{asset('images/plus.png')}}" alt="">
+                                    @endif
+                                </span>
+                                @endif
+                                <span>{{ $component['name'] }}</span>
+                            </span>
+                            <span style="margin-left: auto;">{{ number_format((float) $component['amount'], 2) }}</span>
+                        </div>
+                        @if (!empty($component['children']) && $expanded[$component['name']])
+                        <div class="pl-4">
+                            @foreach ($component['children'] as $child)
+                            @include('livewire.salary-component-item', ['component' => $child,'level' => 0])
+                            @endforeach
+                        </div>
+                        @endif
                     </div>
-                    <div class="col-md-6">
-                        <textarea wire:model='remarks' style="height: 80px;" class="form-control"></textarea>
-                        @error('remarks')
-                        <span class="text-danger ">{{ $message }}</span>
-                        @enderror
-                    </div>
+                    @else
+                    <!-- <div>om</div> -->
+                    @endif
+                    @endforeach
                 </div>
             </div>
         </div>
-    </div>
-    @endif
-    @if($isAlreadyLopAdded)
-    <div class="col-md-6  mb-2" style="background-color: #f2dede;padding:10px 10px;font-size:12px">
-        <p class="m-0" style="text-transform: capitalize;">
-        LOP days already set for {{ ucfirst(strtolower($empDetails->first_name)) }} {{ ucfirst(strtolower($empDetails->last_name)) }} for the month {{\Carbon\Carbon::parse($payout_month)->format('M Y')}}.
-        </p>
-    </div>
-    @endif
-    <div class="d-flex col-md-6 mb-3" style="justify-content: center;gap:10px ; background-color:#d2e9ef;padding:20px">
-        @if($selectedEmployee && !$isAlreadyLopAdded)
-        <button class="btn btn-primary" wire:click="saveLopDays">Save</button>
-        @endif
-        <button class="btn bg-white text-primary border-primary" wire:click="addLopDays">Cancel</button>
-    </div>
-</div>
-@endif
+        <div class="col-md-5">
+            <div class=" p-4" style="background-color: #edf3ff;">
+                <p class="m-0" style="font-size: 1.05rem;font-weight:bold;color:#4d4d4d">CALCULATION FIELDS</p>
+                <div class="mt-3 bg-white" style="padding:10px 0px 10px 10px;border-radius:5px">
+                    <Span style="font-size: .875rem;">Actions</Span>
+                    <hr>
+                    <div class="d-flex" style=" align-items: center; gap: 10px; font-size: .875rem;">
+                        <i class="fa fa-history text-primary"></i>
+                        <div class="text-primary">
+                            History
+                        </div>
+                    </div>
+                </div>
 
+                <div class="mt-3 bg-white" style="padding:10px 0px 10px 10px;border-radius:5px">
+                    <Span style="font-size: .875rem;">Details</Span>
+                    <hr>
+                    <div class="d-flex ">
+                        <span class="text-gray-600 font-medium" style="color: #A3B3C8;    font-size: 85%;">Employee</span>
+                        <hr class="flex-grow-1 border-gray-300 ms-2" style="margin-right: 20px;">
+                    </div>
 
+                    <div>
+                        <label for="">Join Date</label>
+                        <p style="color:#394657;font-size: .875rem; margin:0px">{{\Carbon\Carbon::parse($empDetails->hire_date)->format('d M, Y')}}</p>
+                    </div>
+                    <div class="mt-1">
+                        <label for="">Date Of Birth</label>
+                        @php
+                        $date_of_birth_words = $empDetails ? \App\Models\EmpSalaryRevision::calculateExperience($empDetails->date_of_birth) : 'N/A';
+                        @endphp
+                        <p style="color:#394657;font-size: .875rem; margin:0px"> @if($empDetails->date_of_birth) {{$empDetails->date_of_birth}} ({{ $date_of_birth_words}}) @else - @endif</p>
+                    </div>
+                    <div class="mt-1">
+                        <label for="">Location</label>
+                        <p style="color:#394657;font-size: .875rem; margin:0px">{{$empDetails->job_location}}</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    @else
+    @endif
 
 </div>
