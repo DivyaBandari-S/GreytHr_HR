@@ -92,7 +92,7 @@
                     <li>
                         <a href="#">Statutory <i class="ph-caret-right-fill"></i></a>
                         <ul class="sidebar__dropdown-menu">
-                            <li><a href="/home">Fines/Damages</a></li>
+                            <li><a href="/hr/user/fine-and-damage">Fines/Damages</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -256,7 +256,7 @@
                         <a href="#">Setup <i class="ph-caret-right-fill"></i></a>
                         <ul class="sidebar__dropdown-menu">
                             <li><a href="/hr/user/holidayList">Holiday List</a></li>
-                            <li><a href="/user">weekend Override</a></li>
+                            <li><a href="/hr/user/weekend-override">weekend Override</a></li>
                             <li><a href="/hr/user">Swipe Managment</a></li>
                             <li><a href="/hr/user/shift-rotation-calendar">Shift Rotation Calendar</a></li>
                             <li><a href="/hr/user/employee-weekday-chart">Employee Week Days</a></li>

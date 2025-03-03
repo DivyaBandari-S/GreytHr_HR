@@ -4,7 +4,6 @@ namespace App\Livewire;
 
 use App\Helpers\FlashMessageHelper;
 use App\Models\EmployeeDetails;
-use App\Models\HolidayCalendar;
 use App\Models\LeaveRequest;
 use App\Models\SwipeRecord;
 use Carbon\Carbon;
@@ -13,7 +12,7 @@ use Illuminate\Support\Facades\Log;
 use Livewire\Component;
 use Torann\GeoIP\Facades\GeoIP;
 
-class HrAttendanceTable extends Component
+class AttendanceTable extends Component
 {
     public $distinctDates;
 
@@ -63,7 +62,6 @@ class HrAttendanceTable extends Component
     public $dateforpopup;
     public $fromDate;
 
-    public $selectedEmployeeId;
     public $toDate;
     public $city='-';
 
@@ -82,18 +80,17 @@ class HrAttendanceTable extends Component
         'fromDate' => 'required|date',
         'toDate' => 'required|date|after_or_equal:fromDate', // Ensuring toDate is after or equal to fromDate
     ];
-    public function mount($startDateForInsights, $toDate,$selectedEmployeeId)
+    public function mount($startDateForInsights, $toDate)
     {
         // First initialize
         $this->year = Carbon::now()->format('Y');
-        $this->selectedEmployeeId=$selectedEmployeeId;
         // $this->start = Carbon::now()->year($this->year)->firstOfMonth()->format('Y-m-d');
          $this->start=$startDateForInsights;
         // $this->end = Carbon::now()->year($this->year)->lastOfMonth()->format('Y-m-d');
         $this->end=$toDate;
         $this->fromDate=$this->start;
         $this->toDate=$this->end;
-        $this->employeeDetails=EmployeeDetails::where('emp_id',$this->selectedEmployeeId)->first();
+        $this->employeeDetails=EmployeeDetails::where('emp_id',auth()->guard('emp')->user()->emp_id)->first();
         $this->employeeHireDate=$this->employeeDetails->hire_date;
         $ip = request()->ip();
         $location = GeoIP::getLocation($ip);
@@ -107,7 +104,7 @@ class HrAttendanceTable extends Component
         $join->on(DB::raw("JSON_UNQUOTE(JSON_EXTRACT(employee_details.company_id, '$[0]'))"), '=', 'company_shifts.company_id')
              ->on('employee_details.shift_type', '=', 'company_shifts.shift_name');
     })
-    ->where('employee_details.emp_id', $this->selectedEmployeeId)
+    ->where('employee_details.emp_id', auth()->guard('emp')->user()->emp_id)
     ->select('company_shifts.shift_start_time','company_shifts.shift_end_time','company_shifts.shift_name', 'employee_details.*')
     ->first();
     }
@@ -151,7 +148,7 @@ class HrAttendanceTable extends Component
     private function isEmployeeFullDayLeaveOnDate($date, $employeeId)
 {
     try {
-        $employeeId = $this->selectedEmployeeId;
+        $employeeId = auth()->guard('emp')->user()->emp_id;
       
         $sessionCheck = LeaveRequest::where('emp_id', $employeeId)
                 ->where('leave_applications.leave_status', 2)
@@ -226,7 +223,7 @@ class HrAttendanceTable extends Component
     private function isEmployeeHalfDayLeaveOnDate($date, $employeeId)
     {
         try {
-            $employeeId = $this->selectedEmployeeId;
+            $employeeId = auth()->guard('emp')->user()->emp_id;
             $sessionArray=[];
             $leaveRecord=null;
             $isBeforeToDate = $this->isEmployeeFullDayLeaveOnDate($date, $employeeId);
@@ -360,7 +357,7 @@ class HrAttendanceTable extends Component
     private function isEmployeeLeaveOnDate($date, $employeeId)
     {
         try {
-            $employeeId = $this->selectedEmployeeId;
+            $employeeId = auth()->guard('emp')->user()->emp_id;
 
 
             return LeaveRequest::where('emp_id', $employeeId)
@@ -383,7 +380,7 @@ class HrAttendanceTable extends Component
     private function detectEmployeeLeaveType($date, $employeeId)
     {
         try {
-            $employeeId = $this->selectedEmployeeId;
+            $employeeId = auth()->guard('emp')->user()->emp_id;
 
 
             if($this->isEmployeeLeaveOnDate($date,$employeeId))
@@ -436,10 +433,10 @@ class HrAttendanceTable extends Component
     {
         $this->showAlertDialog = true;
         $this->dateforpopup = $i;
-        $this->viewDetailsswiperecord = SwipeRecord::where('emp_id', $this->selectedEmployeeId)->whereDate('created_at', $this->dateforpopup)->get();
-        $this->viewDetailsInswiperecord = SwipeRecord::where('emp_id', $this->selectedEmployeeId)->where('in_or_out', 'IN')->whereDate('created_at', $this->dateforpopup)->first();
+        $this->viewDetailsswiperecord = SwipeRecord::where('emp_id', auth()->guard('emp')->user()->emp_id)->whereDate('created_at', $this->dateforpopup)->get();
+        $this->viewDetailsInswiperecord = SwipeRecord::where('emp_id', auth()->guard('emp')->user()->emp_id)->where('in_or_out', 'IN')->whereDate('created_at', $this->dateforpopup)->first();
        
-        $this->viewDetailsOutswiperecord = SwipeRecord::where('emp_id', $this->selectedEmployeeId)->where('in_or_out', 'OUT')->whereDate('created_at', $this->dateforpopup)->first();
+        $this->viewDetailsOutswiperecord = SwipeRecord::where('emp_id', auth()->guard('emp')->user()->emp_id)->where('in_or_out', 'OUT')->whereDate('created_at', $this->dateforpopup)->first();
         
     }
     public function close()
@@ -455,7 +452,7 @@ class HrAttendanceTable extends Component
     private function isEmployeePresentOnDate($date)
     {
         try {
-            $employeeId = $this->selectedEmployeeId;
+            $employeeId = auth()->guard('emp')->user()->emp_id;
             $intime=SwipeRecord::where('emp_id', $employeeId)->where('in_or_out','IN')->whereDate('created_at', $date)->exists();    
 
 
@@ -469,7 +466,7 @@ class HrAttendanceTable extends Component
     private function isEmployeeRegularisedOnDate($date)
     {
         try {
-            $employeeId = $this->selectedEmployeeId;
+            $employeeId = auth()->guard('emp')->user()->emp_id;
             return SwipeRecord::where('emp_id', $employeeId)->whereDate('created_at', $date)->where('is_regularized', 1)->exists();
         } catch (\Exception $e) {
             Log::error('Error in isEmployeePresentOnDate method: ' . $e->getMessage());
@@ -479,33 +476,6 @@ class HrAttendanceTable extends Component
     }
     public function render()
     {
-        $this->todaysDate = date('Y-m-d');
-        $employeeId = $this->selectedEmployeeId;
-        $this->employeeIdForTable = $this->selectedEmployeeId;
-        $this->swiperecord = SwipeRecord::where('emp_id', $employeeId)->where('is_regularized', 1)->get();
-        $currentMonth = date('F');
-        $currentYear = date('Y');
-        $this->holiday = HolidayCalendar::pluck('date')
-            ->toArray();
-        
-        $swipeRecords = SwipeRecord::where('emp_id', $this->selectedEmployeeId)->get();
-        $groupedDates = $swipeRecords->groupBy(function ($record) {
-            return Carbon::parse($record->created_at)->format('Y-m-d');
-        });
-       
-        $this->distinctDates = $groupedDates->mapWithKeys(function ($records, $key) {
-            $inRecord = $records->where('in_or_out', 'IN')->first();
-            $outRecord = $records->where('in_or_out', 'OUT')->last();
-
-            return [
-                $key => [
-                    'in' => "IN",
-                    'first_in_time' => optional($inRecord)->swipe_time,
-                    'last_out_time' => optional($outRecord)->swipe_time,
-                    'out' => "OUT",
-                ]
-            ];
-        });
-        return view('livewire.hr-attendance-table');
+        return view('livewire.attendance-table');
     }
 }

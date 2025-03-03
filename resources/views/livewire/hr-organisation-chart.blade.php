@@ -129,12 +129,12 @@
     font-size: 12px;
     margin: 5px 0;
 }
-.higher-authorities,
-.lower-authorities {
+.higher-authorities, .lower-authorities {
     display: flex;
     justify-content: center;
     gap: 20px; /* Adjust the spacing between nodes */
 }
+
 .emp-id {
             white-space: nowrap;
             font-size: 10px; /* Adjust font size as needed */
@@ -236,14 +236,16 @@
 }
 
 .flowchart {
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     width: 100%;
     transition: transform 0.3s ease;
-        }
-        .node {
+}
+
+.node {
     background-color: #f2f2f2;
     padding: 10px;
     border-radius: 8px;
@@ -254,32 +256,48 @@
     justify-content: center;
     align-items: center;
 }
-        .superadmin {
-            border:2px solid #D397F8;
-            background-color: #E6E6FA;
-            border-left:10px solid #D397F8;
-        }
+.superadmin {
+    border: 2px solid #D397F8;
+    background-color: #E6E6FA;
+    border-left: 10px solid #D397F8;
+}
+
+
         .authorities-container {
             display: flex;
             flex-wrap: nowrap;
             overflow-x: auto;
         }
+        .node.superadmin
+        {
+            padding-bottom: -10px;
+       
+        }
         .node.employee {
     margin-left: 5px; /* Adjust as needed */
     flex: 0 0 auto; /* Ensure elements don't shrink and maintain their width */
 }
-        .employee {
-           
-            border:2px solid #48D1CC;
-            background-color: #F0F8FF;
-            border-left:10px solid #48D1CC;
-        }
-        .line {
-            width: 1px;
-            height: 10px;
-            background:#ccc;
-           
-        }
+.employee {
+    border: 2px solid #48D1CC;
+    background-color: #F0F8FF;
+    border-left: 10px solid #48D1CC;
+}
+.lines {
+    position: absolute;
+    top: 60%;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background-color: pink;
+}
+
+.line {
+    position: absolute;
+    top: -50%; /* Adjust to center the line vertically */
+    width: 1px;
+    height: 100px; /* Adjust as needed */
+    background: #ccc;
+}
         .horizontal-line {
             width: 50px;
             height: 2px;
@@ -303,6 +321,15 @@
             white-space: nowrap;
             z-index: 1000;
         }
+        .line-for-higher-authority {
+    position: absolute;
+    left: 50%; /* Center the line */
+    transform: translateX(-50%); /* Adjust to center the line */
+    width: 2px; /* Thickness of the line */
+    height: 50px; /* Length of the line */
+    background: #ccc; /* Color of the line */
+    top: 90px; /* Position the line below the node */
+}
 
         .profile-name:hover .tooltip {
             display: block;
@@ -341,6 +368,7 @@
           <button type="button"class="cancel-btn1"wire:click="masstransfer">Mass&nbsp;&nbsp;Transfer</button>
           <button class="submit-btn"wire:click="openAssignManagerPopup">Assign&nbsp;&nbsp;Manager</button>
         </div>
+   
         @if($massTransferDialog==true)
         <div class="modal" tabindex="-1" role="dialog" style="display: block;">
                     <div class="modal-dialog modal-dialog-centered" role="document">
@@ -501,105 +529,79 @@
                             <span class="vertical-arrow"style="color:white;">&#x21d5;</span> <!-- Vertical double-sided arrow -->
                             <span class="horizontal-arrow">&#x21d4;</span> <!-- Horizontal double-sided arrow -->
                         </label>
-                        <div id="contentToExport" style="padding: 20px; border: 1px solid #ddd; width: 300px;">
-                            <h2>HR Organisation Chart</h2>
-                            <p>This content will be exported as PNG when the button is clicked.</p>
-                            <!-- You can add more content here, like a chart or other data -->
-                        </div>
+                       
                         
                         <button class="submit-btn" wire:click="exportContent">Export</button>
                         <i class="fa fa-filter"></i>
                 </div>        
         </div>
-        @if($selected_higher_authorities1)
-        @foreach ($selected_higher_authorities1 as $ha)
-                       <div class="node superadmin">
-                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR1YjmQy7iBycLxXrdwvrl38TG9G_LxSHC1eg&s" alt="Profile Picture" class="profile-picture">
-                            <div style="display:flex;flex-direction:column;">
-                                <span class="profile-name">{{ucwords(strtolower($ha->first_name))}}&nbsp;{{ucwords(strtolower($ha->last_name))}}
-                                      <span class="tooltip">{{ ucwords(strtolower($ha->first_name)) }} {{ ucwords(strtolower($ha->last_name)) }}</span>
-                                </span>
-                                  
-                                <span class="profile-job-title">{{$ha->job_title}}</span>
-                                <span class="profile-job-title"><div class="emp-id">Emp ID-{{$ha->emp_id}}</div></span>
-                           </div> 
-                        </div>
-                    @endforeach
-        @endif            
+                    
         <div class="large-container"style="display:flex;flex-direction:row;">
             <!-- Content inside the large container -->
             <div class="zoom-controls">
                  <button wire:click="zoomIn" class="zoom-btn zoom-in-btn">+</button>
                  <button wire:click="zoomOut" class="zoom-btn zoom-out-btn">-</button>
             </div>        
-            <div class="flowchart"style="transform: scale({{ $scale }});">
-                <div class="higher-authorities">
-                    @foreach ($HigherAuthorities as $ha)
-                        <div class="node superadmin">
-                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR1YjmQy7iBycLxXrdwvrl38TG9G_LxSHC1eg&s" alt="Profile Picture" class="profile-picture">
-                            <div style="display:flex;flex-direction:column;">
-                                <span class="profile-name">{{ ucwords(strtolower($ha->first_name)) }}&nbsp;{{ ucwords(strtolower($ha->last_name)) }}
-                                    <span class="tooltip">{{ ucwords(strtolower($ha->first_name)) }} {{ ucwords(strtolower($ha->last_name)) }}</span>
-                                </span>
-                                <span class="profile-job-title">{{$ha->job_title}}</span>
-                                <span class="profile-job-title"><div class="emp-id">Emp ID-{{$ha->emp_id}}</div></span>
-                            </div> 
-                        </div>
-                    @endforeach
-                </div>
-                
-                <div class="line"></div>
-                
-                <div class="lower-authorities">
-                    @foreach ($lower_authorities as $la)
-                        <div class="node employee">
-                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR1YjmQy7iBycLxXrdwvrl38TG9G_LxSHC1eg&s" alt="Profile Picture" class="profile-picture">
-                            <div style="display:flex;flex-direction:column;">
-                                <span class="profile-name">{{ ucwords(strtolower($la->first_name)) }}&nbsp;{{ ucwords(strtolower($la->last_name)) }}
-                                    <span class="tooltip">{{ ucwords(strtolower($la->first_name)) }} {{ ucwords(strtolower($la->last_name)) }}</span>
-                                </span>
-                                <span class="profile-job-title">{{$la->job_title}}</span>
-                                <span class="profile-job-title"><div class="emp-id">Emp ID-{{$la->emp_id}}</div></span>
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
+            <div class="flowchart" style="transform: scale({{ $scale }});">
+            <div class="higher-authorities">
+        <div class="node superadmin">
+            <img src="path/to/profile-picture.jpg" alt="Profile Picture" class="profile-picture">
+            <div style="display: flex; flex-direction: column; align-items: center;">
+                <span class="profile-name">Kamal Manohar Rao J</span>
+                <span class="profile-job-title">Emp ID: XSS-0001</span>
+            </div> 
+        </div>
+        <!-- Vertical line below the higher authority -->
+        <div class="line-for-higher-authority"></div>
+    </div>
+    
+    <!-- Connecting lines -->
+    <div class="lines">
+        <div class="line" style="left: 16%;"></div>
+        <div class="line" style="left: 30%;"></div>
+        <div class="line" style="left: 50%;"></div>
+        <div class="line" style="left: 68%;"></div>
+        <div class="line" style="left: 85%;"></div>
+    </div>
+    
+    <div class="lower-authorities"style="margin-bottom:-70px;">
+        <div class="node employee">
+            <img src="path/to/profile-picture.jpg" alt="Profile Picture" class="profile-picture">
+            <div style="display: flex; flex-direction: column; align-items: center;">
+                <span class="profile-name">Ch Pavan Kumar</span>
+                <span class="profile-job-title">Emp ID: XSS-0232</span>
             </div>
-                <div class="flowchart-left"style="margin-left:70px;">
-                @if($selected_higher_authorities)
-                    @foreach ($selected_higher_authorities as $ha)
-                       <div class="node superadmin">
-                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR1YjmQy7iBycLxXrdwvrl38TG9G_LxSHC1eg&s" alt="Profile Picture" class="profile-picture">
-                            <div style="display:flex;flex-direction:column;">
-                                <span class="profile-name">{{ucwords(strtolower($ha->first_name))}}&nbsp;{{ucwords(strtolower($ha->last_name))}}
-                                    <span class="tooltip">{{ ucwords(strtolower($ha->first_name)) }} {{ ucwords(strtolower($ha->last_name)) }}</span>
-                                </span>
-                                <span class="profile-job-title">{{$ha->job_title}}</span>
-                                <span class="profile-job-title"><div class="emp-id">Emp ID-{{$ha->emp_id}}</div></span>
-                            </div> 
-                        </div>
-                    @endforeach  
-                   
-                    @foreach ($selected_lower_authorities as $la) 
-                        
-                            <div class="line"style="margin-left:110px;"></div>
-                            <div class="node employee">
-                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR1YjmQy7iBycLxXrdwvrl38TG9G_LxSHC1eg&s" alt="Profile Picture" class="profile-picture">
-                                <div style="display:flex;flex-direction:column;">
-                                    <span class="profile-name">{{ucwords(strtolower($la->first_name))}}&nbsp;{{ucwords(strtolower($la->last_name))}}
-                                             <span class="tooltip">{{ ucwords(strtolower($ha->first_name)) }} {{ ucwords(strtolower($ha->last_name)) }}</span>
-                                    </span>
-                                    <span class="profile-job-title">{{$la->job_title}}</span>
-                                    <span class="profile-job-title"><div class="emp-id">Emp ID-{{$la->emp_id}}</div></span>
-                                </div>
-                            </div>
-                          
-                    @endforeach 
-                   
-                    @endif 
-                    
-                </div>
-
+        </div>
+        <div class="node employee">
+            <img src="path/to/profile-picture.jpg" alt="Profile Picture" class="profile-picture">
+            <div style="display: flex; flex-direction: column; align-items: center;">
+                <span class="profile-name">B Swathi</span>
+                <span class="profile-job-title">Emp ID: XSS-0245</span>
+            </div>
+        </div>
+        <div class="node employee">
+            <img src="path/to/profile-picture.jpg" alt="Profile Picture" class="profile-picture">
+            <div style="display: flex; flex-direction: column; align-items: center;">
+                <span class="profile-name">Suryapal Rathore</span>
+                <span class="profile-job-title">Emp ID: XSS-0336</span>
+            </div>
+        </div>
+        <div class="node employee">
+            <img src="path/to/profile-picture.jpg" alt="Profile Picture" class="profile-picture">
+            <div style="display: flex; flex-direction: column; align-items: center;">
+                <span class="profile-name">Prabhu Kumar Y S</span>
+                <span class="profile-job-title">Emp ID: XSS-0341</span>
+            </div>
+        </div>
+        <div class="node employee">
+            <img src="path/to/profile-picture.jpg" alt="Profile Picture" class="profile-picture">
+            <div style="display: flex; flex-direction: column; align-items: center;">
+                <span class="profile-name">Meena Kachhipuram</span>
+                <span class="profile-job-title">Emp ID: XSS-0231</span>
+            </div>
+        </div>
+    </div>
+</div>   
         </div>
                      
         </div>

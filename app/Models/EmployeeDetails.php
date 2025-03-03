@@ -12,18 +12,19 @@ use Laravel\Sanctum\HasApiTokens;
 use App\Models\LeaveRequest;
 use App\Models\SwipeRecord;
 use App\Models\Chating;
+use Carbon\Carbon;
 
 class EmployeeDetails extends Authenticatable
 {
-    use HasFactory, Notifiable;
-    use HasFactory;
+    use HasFactory, Notifiable, HasApiTokens;
     protected $primaryKey = 'emp_id';
     public $incrementing = false;
+    protected $table = 'employee_details';
     protected $fillable = [
         'emp_id',
         'company_id',
-        'dept_id',
-        'sub_dept_id',
+        'department_id',
+        'sub_department_id',
         'first_name',
         'last_name',
         'gender',
@@ -45,31 +46,27 @@ class EmployeeDetails extends Authenticatable
         'resignation_date',
         'resignation_reason',
         'notice_period',
+        'last_working_date',
         'extension',
         'experience',
         'shift_type',
-        'shift_start_time',
-        'shift_end_time',
+        'shift_entries',
+        // 'shift_start_time',
+        // 'shift_end_time',
         'emp_domain',
         'referral',
         'probation_Period',
         'service_age',
         'confirmation_date',
-
     ];
+
     protected $casts = [
         'company_id' => 'array',
-        'emp_domain' => 'array',
-
     ];
 
     public function empBankDetails()
     {
         return $this->hasOne(EmpBankDetail::class, 'emp_id', 'emp_id');
-    }
-    public function personalInfo()
-    {
-        return $this->hasOne(EmpPersonalInfo::class, 'emp_id', 'emp_id');
     }
 
     public function empParentDetails()
@@ -81,11 +78,6 @@ class EmployeeDetails extends Authenticatable
     {
         return $this->hasOne(EmpPersonalInfo::class, 'emp_id', 'emp_id');
     }
-    public function hrPersonalInfo()
-    {
-        return $this->hasOne(EmpPersonalInfo::class, 'emp_id', 'hr_emp_id');
-    }
-
     public function empSpouseDetails()
     {
         return $this->hasOne(EmpSpouseDetails::class, 'emp_id', 'emp_id');
@@ -94,26 +86,14 @@ class EmployeeDetails extends Authenticatable
     {
         return $this->hasOne(EmpDepartment::class, 'dept_id', 'dept_id');
     }
-    public function empResignations()
-    {
-        return $this->hasOne(EmpResignations::class, 'emp_id', 'emp_id');
-    }
     public function empSubDepartment()
     {
-        return $this->hasOne(EmpSubDepartments::class, 'sub_dept_id', 'sub_dept_id');
+        return $this->hasOne(EmpSubDepartments::class, 'dept_id', 'dept_id');
     }
-
-
     public function leaveRequests()
     {
         return $this->hasMany(LeaveRequest::class, 'emp_id');
     }
-    // In App\Models\EmployeeDetails
-    public function getImageUrlAttribute()
-    {
-        return 'data:image/jpeg;base64,' . base64_encode($this->attributes['image']);
-    }
-
     public function leaveApplies()
     {
         return $this->hasMany(LeaveRequest::class, 'emp_id', 'emp_id');
@@ -122,10 +102,14 @@ class EmployeeDetails extends Authenticatable
     {
         return $this->hasMany(SwipeRecord::class, 'emp_id', 'emp_id');
     }
-
     public function comments()
     {
         return $this->hasMany(Comment::class, 'company_id', 'company_id');
+    }
+    public function canCreatePost()
+    {
+
+        return $this->emp_id === 'emp_id'  || $this->hasPermission('create-post');
     }
 
     // Inside the EmployeeDetails model
@@ -133,10 +117,52 @@ class EmployeeDetails extends Authenticatable
     {
         return $this->hasMany(StarredPeople::class, 'emp_id', 'emp_id');
     }
-
-    public function conversations()
+    public function personalInfo()
     {
+        return $this->hasOne(EmpPersonalInfo::class, 'emp_id', 'emp_id');
+    }
+    public function getImageUrlAttribute()
+    {
+        return 'data:image/jpeg;base64,' . base64_encode($this->attributes['image']);
+    }
+    public function getHireDateAttribute($value)
+    {
+        return $value ? Carbon::parse($value) : null;
+    }
+    public function company()
+    {
+        return $this->belongsTo(Company::class, 'company_id', 'company_id');
+    }
 
-        return $this->hasMany(Chating::class, 'sender_id')->orWhere('receiver_id', $this->emp_id)->whereNotDeleted();
+    public function employee()
+    {
+        return $this->belongsTo(EmployeeDetails::class, 'emp_id', 'emp_id');
+    }
+    public function emp()
+    {
+        return $this->belongsTo(EmployeeDetails::class, 'emp_id', 'emp_id');
+    }
+
+
+    // public function sendPasswordResetNotification($token)
+    // {
+
+    //     // Your own implementation.
+    //     $this->notify(new ResetPasswordLink($token));
+    // }
+
+
+    // Conversations the employee is part of
+  
+    // Define the relationship with the Department model
+    public function department()
+    {
+        return $this->belongsTo(EmpDepartment::class, 'dept_id');
+    }
+
+    // Define the relationship with the SubDepartment model
+    public function subDepartment()
+    {
+        return $this->belongsTo(EmpSubDepartments::class, 'sub_dept_id');
     }
 }

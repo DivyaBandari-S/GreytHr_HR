@@ -44,7 +44,7 @@ class HrOrganisationChart extends Component
     public $massTransferDialog=false;
     public $managers;
 
-    public $scale = 1;
+    public $scale = 0.5;
     public $selectedManagers=[];
     
     public $managerDetails;
@@ -53,6 +53,8 @@ class HrOrganisationChart extends Component
     public $selectedMassTransferManager;
     public $primary_lower_authorities;
 
+    public $topEmployee;
+    public $subordinates;
     public $manager_id;
 
     public $chartData;
@@ -62,6 +64,14 @@ class HrOrganisationChart extends Component
         $this->shiftSummary = []; // Example: [1, 2, 3]
         $this->selectedManagers=[];
         $this->chartData = $this->fetchChartData();
+        $this->topEmployee = EmployeeDetails::where('job_role', 'Chairman')->orWhere('job_role', 'Director')->first();
+
+        // Fetch all employees working under the top-level employee
+        if ($this->topEmployee) {
+            $this->subordinates = EmployeeDetails::where('manager_id', $this->topEmployee->id)->get();
+        } else {
+            $this->subordinates = collect(); // Empty collection if no top-level employee
+        }
     }
     public function fetchChartData()
     {

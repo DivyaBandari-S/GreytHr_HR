@@ -5,7 +5,7 @@
     position: absolute;
     bottom: 100px;
     right: 10px;
-    color: #0000FF;
+    color:hsl(240, 100.00%, 50.00%);
     font-weight:500;
     cursor: pointer;
 }
@@ -14,6 +14,7 @@ table {
             border-collapse: collapse;
             font-size: 16px;
             text-align: left;
+          
         }
         th, td {
             padding: 12px;
@@ -44,7 +45,7 @@ table {
                     </button>
                    
             <div class="row m-0 p-0 mt-4">
-            <div class="col-md-14"style="margin-top:50px;">    
+            <div class="col-md-14"style="margin-top:20px;">    
             <div class="table-container table-responsive p-0 m-0"style="border-radius:5px;border:1px solid #ddd;margin-left:45px;">  
                 <table id="employee-table">
                        <thead>
@@ -66,7 +67,7 @@ table {
                     
                     
                     
-                        
+                @if(count($lockConfiguration)>0)        
                     @foreach ($lockConfiguration as $l1)
                     
                     <tr>
@@ -111,8 +112,11 @@ table {
                         </tr>
                     @endforeach
                         
-                    
-                        
+                    @else
+                       <tr>
+                         <td colspan="12"style="text-align:center;font-size:14px;">Lock Configuration records not found</td>
+                       </tr> 
+                    @endif
 
                         
                     </tbody>

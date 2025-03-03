@@ -33,6 +33,7 @@
 
 
         @livewireScripts
+        @livewireChartsScripts
         <script src="{{ asset('js/admin-dash.js') }}"></script>
         <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

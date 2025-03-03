@@ -1,5 +1,5 @@
 <div>
-     <style>
+<style>
       .hide-attendance-help {
     position: absolute;
     bottom: 75px; /* Adjust as needed */
@@ -159,23 +159,41 @@
             cursor: pointer;
             /* Change cursor on hover */
         }
+        .employee-container {
+                display: inline-block;
+                padding: 5px 10px;
+                border-radius: 4px;
+                font-size: 14px;
+                color: #333;
+                background-color: #d9edf7;
+                border:1px solid #bce8f1;
+                color: #3a87ad;
+        }
       
      </style>     
-    <div class="attendance-overview-help"style="position: relative; padding: 20px; border: 1px solid #ccc; border-radius: 5px;">
-                    
-    <p>The <span style="font-weight:bold;">Shift Override</span> page enables you to override the shift details of one or more employees. Click <span style="font-weight:bold;">Override</span> to enter the details</p>
-    <p>To view frequently asked questions <span style="color: #1fb6ff;cursor:pointer;"> click here</span>.</p>
-                    
-                    <span class="hide-attendance-help" style="display: block; text-align: center; margin-top: 40px; cursor: pointer; color: blue; font-weight: bold;">
-                                 Hide Help
-                    </span>
-    </div>
+    <div class="attendance-overview-help">
+            <p style="font-size:13px;">On the Fines / Damages page, you can track the fines and damages collected or to be collected from an employee.<br/>Fines are collected from regular employees. At the same time, damages are collected from the contract employees. The collection can be<br/> in installments or at one time. Click Add Fine under the Fines tab and Add Damage under the Damages tab to add a new fine or damage. </p>
+            <p style="font-size:13px;">Explore greytHR by <a href="https://admin-help.greythr.com/admin/answers/123712613" target="_blank" style="color: #1fb6ff;cursor:pointer;">Help-Doc</a>.Watching<a href="https://youtu.be/drrSfJrjHz0?si=BrqYlKmNr9kFrHLT" target="_blank" style="color: #1fb6ff;cursor:pointer;">&nbsp;How-to Videos&nbsp;</a>and<a href="https://greythr.freshdesk.com/support/search/solutions?term=attendance+overview"style="color: #1fb6ff;cursor:pointer;">&nbsp;FAQ&nbsp;</a>.</p>
+            <span class="hide-attendance-help"wire:click="hideHelp">Hide Help</span>
+      </div>
     <div class="exception-form">
    
       
         <!-- Employee Selection -->
         <div class="form-group">
-        <label for="employeeType" wire:click="searchforEmployee" style="cursor:pointer;">Select Employee:</label>
+        <label for="employeeType" wire:click="searchforEmployee" style="cursor:pointer;">Employee:</label><br/>
+        @if (!empty($fineId))
+            
+                <div class="employee-container">
+                    <span id="employeeName">{{$empName}}</span>
+                    <span id="employeeId">({{$empId}})</span>
+                </div>
+            
+        
+        @endif
+        @if (empty($fineId))
+        
+       
         <div class="searchContainer" style="<?php echo ($searchEmployee == 1) ? 'display: block;' : ''; ?>">
             <!-- Content for the search container -->
             <div class="row mb-2 py-0 px-2">
@@ -248,7 +266,8 @@
             </div>
            
         </div>
-        @if(!empty($selectedEmployeeId))
+        @endif
+        @if(!empty($selectedEmployeeId) && empty($fineId))
             
                         @php
                             function getRandomAbsentColor() {
@@ -286,47 +305,80 @@
         </div>
       
         <!-- From Date -->
+       
         <div class="form-group">
-            <label for="from_date" class="form-label">From Date</label>
-            <input type="date" id="from_date" class="form-control"wire:model="from_date"wire:change="updatefromDate">
+            <label for="offence_date" class="form-label">Date of Offence:</label>
+            <input type="date" id="offence_date" class="form-control"wire:model="offence_date"wire:change="updateoffenceDate"@if($viewMode) disabled @endif>
         </div>
-        @error('from_date') <span class="text-danger">{{ $message }}</span> @enderror
+        @error('offence_date') <span class="text-danger">{{ $message }}</span> @enderror
         <!-- To Date -->
         <div class="form-group">
-            <label for="to_date" class="form-label">To Date</label>
-            <input type="date" id="to_date" class="form-control"wire:model="to_date"wire:change="updatetoDate">
+            <label for="act_or_omission" class="form-label">Act/omission for which fine imposed:</label>
+            <input type="text" id="act_or_omission" class="form-control"wire:model="act_or_omission"wire:change="updateActOrOmission"@if($viewMode) disabled @endif>
         </div>
-        @error('to_date') <span class="text-danger">{{ $message }}</span> @enderror
+        @error('act_or_omission') <span class="text-danger">{{ $message }}</span> @enderror
         <!-- Status -->
         <div class="form-group">
-             <label for="status" class="form-label">Shift</label>
-             <select id="status" class="form-control" wire:model="shift"wire:change="updateShift">
+             <label for="show_cause" class="form-label">Whether workman showed cause against fine:</label>
+             <select id="show_cause" class="form-control" wire:model="show_cause"wire:change="updateShowCause"@if($viewMode) disabled @endif>
                     <option value="">-- Select --</option>
-                    <option value="General Shift">General Shift</option>
-                    <option value="Afternoon Shift">Afternoon Shift</option>
-                    <option value="Evening Shift">Evening Shift</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                    
             </select>
         </div>
-        @error('shift') <span class="text-danger">{{ $message }}</span> @enderror
+        @error('show_cause') <span class="text-danger">{{ $message }}</span> @enderror
         <!-- Reason -->
+
         <div class="form-group">
-            <label for="reason" class="form-label">Reason</label>
-            <textarea id="reason" rows="3" class="form-control"wire:model="reason"wire:change="updateReason"></textarea>
+            <label for="show_cause_notice_date" class="form-label">Date of Show Cause Notice:</label>
+            <input type="date" id="show_cause_notice_date" class="form-control"wire:model="show_cause_notice_date"wire:change="updateShowCauseNoticeDate"@if($viewMode) disabled @endif>
         </div>
-        @error('reason') <span class="text-danger">{{ $message }}</span> @enderror
+        @error('show_cause_notice_date') <span class="text-danger">{{ $message }}</span> @enderror
+        <div class="form-group">
+            <label for="name" class="form-label">Name of the person in whose presence employee's explaination was heard
+            </label>
+            <input type="name" id="name" class="form-control"wire:model="name"wire:change="updateName"oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g, '')"@if($viewMode) disabled @endif>
+
+        </div>
+        @error('name') <span class="text-danger">{{ $message }}</span> @enderror
+
+        <div class="form-group">
+            <label for="amount" class="form-label">Amount of fine imposed
+
+            </label>
+            <input type="number" id="amount" class="form-control"wire:model="amount"wire:change="updateAmount"@if($viewMode) disabled @endif>
+        </div>
+        @error('amount') <span class="text-danger">{{ $message }}</span> @enderror
+        <div class="form-group">
+            <label for="fine_realised_date" class="form-label">Date on which fine realized
+            </label>
+            <input type="date" id="fine_realised_date" class="form-control"wire:model="fine_realised_date"wire:change="updatefineRealizedDate"@if($viewMode) disabled @endif>
+        </div>
+        @error('fine_realised_date') <span class="text-danger">{{ $message }}</span> @enderror
+        <div class="form-group">
+            <label for="remarks" class="form-label">Remarks
+            </label>
+            <textarea id="remarks" rows="3" class="form-control"wire:model="remarks"wire:change="updateRemarks"oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g, '')"@if($viewMode) disabled @endif></textarea>
+        </div>
+        @error('remarks') <span class="text-danger">{{ $message }}</span> @enderror
         <!-- Action Buttons -->
-        <div class="form-actions">
-            <button type="submit" class="btn btn-primary"wire:click="submitAttendanceException">Save</button>
-            <button type="button" class="btn btn-secondary"wire:click="closeAttendanceException">Cancel</button>
+        <div class="C">
+            @if($viewMode==false)
+            <button type="submit" class="btn btn-primary"wire:click="submitFineDetails">
+                @if ($fineId)
+                  Update
+                @else
+                  Save
+                @endif
+            </button>
+           
+            <button type="button" class="btn btn-secondary"wire:click="closeFineDetails">Cancel</button>
+        @else 
+           <button type="button" style="margin-left:145px;"class="btn btn-secondary"wire:click="closeFineDetails">Close</button>
+        
+        @endif
         </div>
     
-</div>
-<div>
-    <!-- <form wire:submit.prevent="sendNotifications">
-        <textarea wire:model="messageContent" placeholder="Enter the message to send to employees with emergency contacts"></textarea>
-        <button type="submit">Send SMS</button>
-    </form> -->
-
-   
 </div>
 </div>

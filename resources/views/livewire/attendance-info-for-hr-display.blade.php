@@ -1399,17 +1399,12 @@ color: #fff;
 
     <div>
 
-        <div class="row m-0" style="text-align: end;">
-            <div class="col-md-12">
-                <a href="/regularisation" class="btn btn-primary mb-3 my-button-attendance-info {{ request()->is('regularisation') ? 'active-bg1223' : '' }}" id="myButton"wire:click="redirectToRegularisation">My Regularisations</a>
-                  
-            </div>
-        </div>
+        
 
 
 
         <div class="row m-0 d-flex justify-content-center text-center">
-            <div class="col-12 col-md-4">
+            <div class="col-12 col-md-4"style="margin-top:20px;">
                 <div class="row m-0 topMsg-attendance-info d-flex align-items-center">
 
                     <div class="col-8 p-0">
@@ -2131,9 +2126,10 @@ color: #fff;
             </div>
             @endif
             @if($defaultfaCalendar==0)
-            @livewire('attendance-table', [
+            @livewire('hr-attendance-table', [
         'startDateForInsights' => $startDateForInsights, 
-        'toDate' => $toDate
+        'toDate' => $toDate,
+        'selectedEmployeeId'=>$selectedEmployeeId
     ], key($startDateForInsights . $toDate))
             @endif
             <div class="col-md-5 custom-scrollbar-for-right-side-container">
@@ -2249,9 +2245,8 @@ color: #fff;
                                                $shiftEndTime = \Carbon\Carbon::parse($shiftEndTime);
                                                // Check if first_in_time is greater than shiftStartTime
                                                $diffInMinutes1 = $shiftEndTime->diffInMinutes($lastOutTime);
-                                                  
-                                                   $earlyOuthours = floor($diffInMinutes1 / 60);
-                                                   $earlyOutminutes = $diffInMinutes1 % 60;
+                                               $earlyOuthours = floor($diffInMinutes1 / 60);
+                                               $earlyOutminutes = $diffInMinutes1 % 60;
                                                
                                            @endphp
                                             {{ sprintf('%02d', $earlyOuthours) }}:{{ sprintf('%02d', $earlyOutminutes) }}
