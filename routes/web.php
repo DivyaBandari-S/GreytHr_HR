@@ -83,6 +83,7 @@ use App\Livewire\Loans;
 use App\Livewire\ReleaseSalary;
 use App\Livewire\EmployeeSeparation;
 use App\Livewire\ItStatement;
+use App\Livewire\PayrollSalary;
 use App\Livewire\Tasks;
 use App\Livewire\WhoIsInChartHr;
 use App\Livewire\YearEndProcess;
@@ -251,5 +252,6 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
         Route::get('/user/loans', Loans::class)->name('loans');
         Route::get('/user/release-salary', ReleaseSalary::class)->name('release-salary');
         Route::get('/user/employee-lop-days', EmployeeLopDays::class)->name('employee-lop-days');
+        Route::get('/user/payroll-salary', PayrollSalary::class)->name('payroll-salary');
     });
 });

@@ -205,7 +205,7 @@ class EmployeeLopDays extends Component
 
         $record = ModelsEmployeeLopDays::findorfail($id);
         //  dd($record->payout_month);
-        if ($record->payout_month == $this->payout_month && Carbon::now()->day < 25) {
+        if ($record->payout_month == $this->payout_month && Carbon::now()->day <= 25) {
             // dd();
             $record->delete();
             $this->getTableData();
@@ -213,7 +213,7 @@ class EmployeeLopDays extends Component
         }
         return FlashMessageHelper::flashError('Previous Payout Month LOP Days Cannot Be Deleted.');
     }
-    
+
     function getPayoutMonth($date = null)
     {
         $date = $date ? Carbon::parse($date) : Carbon::now(); // Default to current date

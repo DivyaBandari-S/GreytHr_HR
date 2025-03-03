@@ -238,7 +238,7 @@ class HoldSalaries extends Component
         // dd( $this->deleteId);
 
         $stoppedEmployee = ModelsHoldSalaries::findorfail($this->deleteId);
-        if ($stoppedEmployee->payout_month == $this->payout_month && Carbon::now()->day < 25) {
+        if ($stoppedEmployee->payout_month == $this->payout_month && Carbon::now()->day <= 25) {
 
             $this->deleteEmpDetails = EmployeeDetails::where('emp_id', $stoppedEmployee->emp_id)
                 ->select('employee_details.emp_id', 'employee_details.first_name', 'employee_details.last_name')

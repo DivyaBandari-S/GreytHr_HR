@@ -41,6 +41,11 @@ class EmpSalaryRevision extends Model
     {
         return $value ? intval($this->decodeCTC($value)) : 0;
     }
+    public function getSalaryAttribute($value)
+    {
+        return $value ? intval($this->decodeCTC($value)) : 0;
+    }
+
 
     /**
      * Encode and set the revised CTC attribute.
@@ -165,10 +170,8 @@ class EmpSalaryRevision extends Model
             return $experience ?: "0M"; // If no experience, return "0m"
         }
 
-        return "No hire date provided";
+        return '';
     }
-
-
 
     public static function getComparisionData($current_ctc, $revised_ctc)
     {
@@ -261,16 +264,114 @@ class EmpSalaryRevision extends Model
 
         return $percentage_change;
     }
-    static public function changeStatus($id){
-        if($id==1){
+    static public function changeStatus($id)
+    {
+        if ($id == 1) {
             return 'Approved';
-        }elseif($id==0){
+        } elseif ($id == 0) {
             return 'Pending';
-        }elseif($id==2){
+        } elseif ($id == 2) {
             return 'Rejected';
-        }else{
+        } else {
             return 'Unknown';
         }
+    }
 
+    public static function getFullAndActualSalaryComponents($salary, $revised_ctc, $total_working_days,$lop_days)
+    {
+        $working_days=$total_working_days- $lop_days;
+
+
+        if ($revised_ctc > 0) {
+            $revised_monthly_ctc = floor($revised_ctc / 12);
+        }
+        $epf_percentage = 0.04802;
+        $basic_percentage = 0.42018; // 39.99% of CTC is Basic
+        $hra_percentage = 0.168082;
+        $pf_percentage = 0.04802;
+        $esi_percentage = 0.0075;
+
+        $full_epf = floor($revised_monthly_ctc * $epf_percentage);
+        $actual_epf=floor($salary * $epf_percentage);
+
+
+        $full_pf = floor($revised_monthly_ctc * $pf_percentage);
+        $actual_pf = floor($salary * $pf_percentage);
+
+        $full_gross = floor($revised_monthly_ctc -  $full_epf);
+        $actual_gross = floor($salary -  $actual_epf);
+
+        $full_esi = 0;
+        $actual_esi=0;
+        if ($full_gross <= 21000) {
+            $full_esi = ceil($full_gross * $esi_percentage);
+            $actual_esi = ceil($full_gross/$total_working_days * $working_days * $esi_percentage);
+            // dd($actual_esi);
+        }
+        $full_prof_tax = 0;
+        $actual_prof_tax = 0;
+        if ($full_gross > 15000 && $full_gross <= 20000 ) {
+            $full_prof_tax = 150;
+            $actual_prof_tax = 150;
+
+        } elseif($full_gross > 20000) {
+            $full_prof_tax = 200;
+            $actual_prof_tax = 200;
+        }
+
+        $full_basic = floor($full_gross * $basic_percentage);
+        $actual_basic = floor($full_basic/$total_working_days * $working_days);
+
+        $full_hra = floor($full_gross * $hra_percentage);
+        $actual_hra = floor($full_hra/$total_working_days * $working_days);
+        // dd( $full_hra, $actual_hra);
+
+        $full_conveyance = $full_gross > 0 ? 1600 : 0;
+        $actual_conveyance = $full_conveyance/$total_working_days * $working_days;
+        // dd($actual_conveyance);
+        $full_medical = $full_gross > 0 ? 1250 : 0;
+        $actual_medical = $full_medical/$total_working_days * $working_days;
+        // dd( $full_gross, $actual_gross );
+        $full_special = $full_gross - $full_basic - $full_hra - $full_conveyance - $full_medical;
+        // $actual_gross=$actual_basic+ $actual_hra+$actual_conveyance+$actual_medical+$actual_special;
+        $actual_special = $actual_gross - $actual_basic - $actual_hra - $actual_conveyance - $actual_medical;
+        // dd( $actual_special, $actual_gross,$actual_basic,$actual_hra,$actual_conveyance,$actual_medical);
+        $net_salary = $full_gross - $full_pf - $full_esi - $full_prof_tax;
+        $actual_net_salary = $actual_gross - $actual_pf - $actual_esi - $actual_prof_tax;
+        // dd($actual_net_salary);
+        $total_deductions=$full_pf + $full_esi + $full_prof_tax;
+        $actual_total_deductions=$actual_pf + $actual_esi + $actual_prof_tax;
+
+        // dd( $actual_total_deductions);
+        // dd($full_gross,$full_basic,$full_hra ,$full_conveyance,$full_medical, $full_pf, $full_prof_tax);
+
+        return [
+            'full_basic' => $full_basic,
+            'full_hra' => $full_hra,
+            'full_conveyance' => $full_conveyance,
+            'full_medical' => $full_medical,
+            'full_special' => $full_special,
+            'full_pf' => $full_pf,
+            'full_esi' => $full_esi,
+            'full_prof_tax' => $full_prof_tax,
+            'full_gross' => $full_gross,
+            'total_deductions'=>$total_deductions,
+            'net_salary' => $net_salary,
+            'full_days'=>$total_working_days,
+
+            'actual_basic' => $actual_basic,
+            'actual_hra' => $actual_hra,
+            'actual_conveyance' => $actual_conveyance,
+            'actual_medical' => $actual_medical,
+            'actual_special' => $actual_special +$actual_medical,
+            'actual_pf' => $actual_pf,
+            'actual_esi' => $actual_esi,
+            'actual_prof_tax' => $actual_prof_tax,
+            'actual_gross' => $actual_gross,
+            'actual_total_deductions'=>$actual_total_deductions,
+            'actual_net_salary' => $actual_net_salary,
+            'actual_working_days' => $working_days,
+            'lop_days' => $lop_days,
+        ];
     }
 }
