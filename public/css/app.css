@@ -6857,3 +6857,7 @@ button.btn.btn-link.edit-icon{
     font-size: var(--sub-headings-font-size);
     cursor: pointer;
 }
+
+.sidebar__dropdown-menu_list .active{
+    background-color: pink;
+}
