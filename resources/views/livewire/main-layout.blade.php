@@ -118,7 +118,7 @@
                     <li>
                         <a href="#">Payroll Inputs <i class="ph-caret-right-fill"></i></a>
                         <ul class="sidebar__dropdown-menu">
-                            <li><a href="/hr/user/generate-letter">Salary</a></li>
+                            <li><a href="/hr/user/payroll-salary">Salary</a></li>
                             <li><a href="/hr/user/loans">Loan</a></li>
                             <li><a href="/hr/user/salary-revision-list">Salary Revision</a></li>
                             <li><a href="/user">Income Tax</a></li>
