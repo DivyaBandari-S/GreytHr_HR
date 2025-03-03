@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Helpers\FlashMessageHelper;
+use App\Models\Company;
 use App\Models\EmpBankDetail;
 use App\Models\EmployeeDetails;
 use App\Models\LetterRequest;
@@ -60,6 +61,7 @@ class EmpDocument extends Component
     public $selectedEmployee;
     public $showDocDialog = false;
     public $isNames = false;
+    public $empCompanyLogoUrl;
     public $record;
     public $subject;
     public $FatherFirstName;
@@ -342,6 +344,36 @@ class EmpDocument extends Component
 
     public $showImageDialog = false;
     public $imageUrl;
+    private function getEmpCompanyLogoUrl()
+    {
+        // Get the current authenticated employee's company ID
+        if (auth()->check()) {
+            // Get the current authenticated employee's company ID
+            $empCompanyId = auth()->user()->company_id;
+            $employeeId = auth()->user()->emp_id;
+            $employeeDetails = DB::table('employee_details')
+                ->where('emp_id', $employeeId)
+                ->select('company_id') // Select only the company_id
+                ->first();
+
+            // Assuming you have a Company model with a 'company_logo' attribute
+            $companyIds = json_decode($employeeDetails->company_id);
+       
+            $company = DB::table('companies')
+                ->where('company_id', $companyIds)
+                ->where('is_parent', 'yes')
+                ->first();
+
+            // Return the company logo URL, or a default if company not found
+            return $company ? $company->company_logo : asset('user.jpg');
+        } elseif (auth()->guard('hr')->check()) {
+            $empCompanyId = auth()->guard('hr')->user()->company_id;
+
+            // Assuming you have a Company model with a 'company_logo' attribute
+            $company = Company::where('company_id', $empCompanyId)->first();
+            return $company ? $company->company_logo : asset('user.jpg');
+        }
+    }
     public function downloadImage()
     {
         if ($this->imageUrl) {
@@ -410,7 +442,7 @@ class EmpDocument extends Component
 
 
         $employeeId = auth()->user()->emp_id;
-
+        $this->empCompanyLogoUrl = $this->getEmpCompanyLogoUrl();
 
   
 
@@ -763,7 +795,7 @@ class EmpDocument extends Component
         if (!$empSalaryDetails) {
             return response()->json(['error' => 'Salary details not found for selected employee'], 404);
         }
-    
+        
         // Fetch employee personal & bank details
         $employeeDetails = EmployeeDetails::select('employee_details.*', 'emp_departments.department')
             ->leftJoin('emp_departments', 'employee_details.dept_id', '=', 'emp_departments.dept_id')
@@ -786,6 +818,7 @@ class EmpDocument extends Component
             'employeeDetails' => $employeeDetails, // Pass employee details
             'salaryRevision' => $salaryDivisions,  // Pass salary breakdown
             'empBankDetails' => $empBankDetails,   // Pass bank details
+         'empCompanyLogoUrl' => $this->empCompanyLogoUrl,
             'rupeesInText' => $this->convertNumberToWords($salaryDivisions['net_pay']), // Pass net pay in words
             'salMonth' => Carbon::parse($month)->format('F Y') // Pass month formatted
         ]);
@@ -971,7 +1004,7 @@ class EmpDocument extends Component
         }
 
 
-
+        $this->empCompanyLogoUrl = $this->getEmpCompanyLogoUrl();
         // Determine if there are people found
         $peopleFound = $this->employees->count() > 0;
         $this->requests = collect();

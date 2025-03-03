@@ -30,6 +30,7 @@ use Twilio\Rest\Client;
 class Payslips extends Component
 {
     use WithFileUploads;
+   
     public $requests;
     public $options=[];
     public $salaryRevision;
@@ -528,6 +529,7 @@ class Payslips extends Component
         $this->selectedEmployeeImage = EmployeeDetails::where('emp_id', $empId)->value('image');
         $this->searchTerm = '';
     }
+
     public function searchforEmployee()
     {
     
