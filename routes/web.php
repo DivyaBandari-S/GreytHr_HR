@@ -1,5 +1,6 @@
 <?php
 
+use App\Livewire\AccountsJv;
 use App\Livewire\AdminDashboard;
 use App\Livewire\AttendanceLockConfiguration;
 use App\Livewire\CompanyInfo;
@@ -84,6 +85,7 @@ use App\Livewire\ReleaseSalary;
 use App\Livewire\EmployeeSeparation;
 use App\Livewire\ItStatement;
 use App\Livewire\PayrollSalary;
+use App\Livewire\LeaveApplyOnBehalf;
 use App\Livewire\Tasks;
 use App\Livewire\WhoIsInChartHr;
 use App\Livewire\YearEndProcess;
@@ -150,13 +152,17 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
         Route::get('/everyone', Everyone::class)->name('everyone');
 
 
-        //HR Payroll Submodule Routes
+        //HR Payroll Submodule Routes->Published Info
         Route::get('/payslips', Payslips::class)->name('payslips');
         Route::get('/ctcslips', CTCSlips::class)->name('ctcslips');
         Route::get('/ytdreport', YtdReport::class)->name('ytdreport');
         Route::get('/pfytdreport', PfYtdReport::class)->name('pfytdreport');
         Route::get('/reimbursement', ReimbursementStatement::class)->name('reimbursement');
         Route::get('/itstatement', ItStatement::class)->name('itstatement');
+
+        //HR Payroll Submodule Routes->Payouts
+        Route::get('/accountsjv', AccountsJv::class)->name('accountsjv');
+
 
         //HR Employee-Main Submodule Routes
         Route::get('/user/main-overview', HrMainOverview::class)->name('main-overview');
@@ -201,6 +207,7 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
 
         //HR Leave-Infomation Submodule Routes
         Route::get('/user/employee-leave', EmployeeLeave::class)->name('employee-leave');
+        Route::get('/user/post-leave-request',LeaveApplyOnBehalf::class)->name('post-leave-request');
         Route::get('/user/shift-roster-hr', ShiftRosterHr::class)->name(name: 'shift-roster-hr');
         Route::get('/user/attendance-info', HrAttendanceInfo::class)->name('attendance-info');
         Route::get('/user/attendance-muster-hr', AttendanceMusterHr::class)->name(name: 'attendance-muster-hr');

@@ -341,6 +341,33 @@ const scrollContainer = document.getElementById("scrollContainer");
                 }
             }]
         };
+
+        var options2 = {
+            series: [{
+            data: [400, 430, 448, 470, 540, 580, 690, 1100, 1200, 1380]
+          }],
+            chart: {
+            type: 'bar',
+            height: 250
+          },
+          plotOptions: {
+            bar: {
+              borderRadius: 4,
+              borderRadiusApplication: 'end',
+              horizontal: true,
+            }
+          },
+          dataLabels: {
+            enabled: false
+          },
+          xaxis: {
+            categories: ['UI/UX', 'Development', 'Management', 'HR', 'Testing', 'Marketing'
+            ],
+          }
+        };
+  
+        var chart2 = new ApexCharts(document.querySelector("#employeeByDep"), options2);
+        chart2.render();
     
         var chart = new ApexCharts(document.querySelector("#attendanceDiv"), options);
         chart.render();

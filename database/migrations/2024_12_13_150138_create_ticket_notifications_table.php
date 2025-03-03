@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('ticket_notifications', function (Blueprint $table) {
-            $table->smallInteger('id')->autoIncrement();
+            $table->id();
             $table->string('title'); // Notification title
             $table->text('message'); // Notification message
             $table->boolean('is_read')->default(false)->nullable(); // Track if the notification has been read

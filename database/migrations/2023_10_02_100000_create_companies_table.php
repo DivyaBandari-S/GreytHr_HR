@@ -25,7 +25,7 @@ return new class extends Migration
             $table->string('branch_locations')->nullable();
             $table->date('company_registration_date')->nullable();
             $table->string('company_registration_no', 100)->unique();
-            $table->string('company_logo')->nullable();
+            $table->binary('company_logo')->nullable();
             $table->string('contact_email', 100)->unique();
             $table->string('email_domain');
             $table->string('parent_company_id', 20);

@@ -1198,6 +1198,7 @@ $this->employees = EmployeeDetails::where('company_id', $companyId)->get();
             // Reset form fields and redirect to posts page
             $this->reset(['category', 'description', 'file_path']);
             FlashMessageHelper::flashSuccess('Post created successfully!');
+            $this->showFeedsDialog=false;
              // Update 'manager.posts' to the actual route name for the posts page
     
         } catch (\Illuminate\Validation\ValidationException $e) {
