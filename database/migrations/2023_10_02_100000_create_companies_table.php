@@ -41,6 +41,7 @@ return new class extends Migration
             $table->string('parent_company_id', 20)->nullables();
             $table->enum('is_parent', ['yes', 'no'])->default('no');
             $table->string('contact_phone', 20)->unique();
+            $table->tinyInteger('status')->default(1);
             $table->timestamps(); // Created_at and updated_at columns
         });
     }

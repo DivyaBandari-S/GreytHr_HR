@@ -39,13 +39,12 @@ class Company extends Authenticatable
         'parent_company_id',
         'is_parent',
         'contact_phone',
+        'status'
     ];
 
     protected $casts = [
         'state' => 'array',
         'company_registration_date' => 'date',
     ];
+
 }
-
-
-
