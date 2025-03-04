@@ -137,7 +137,7 @@
                                         <option value="deported">Deported</option>
                                         <option value="resigned">Resigned</option>
                                         <option value="terminated">Terminated</option>
-                                        <option value="other">Other</option>
+                                        <option value="others">Other</option>
                                         <option value="contract_expiry">Contract Expiry</option>
                                         <option value="absconding">Absconding</option>
                                         <option value="expired">Expired</option>
