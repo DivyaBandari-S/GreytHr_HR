@@ -36,27 +36,46 @@
                                     </div>
                                     <div class="d-flex flex-column position-relative">
                                         <label for="search" class="mb-2">Search An Employee</label>
-                                        <div class="rounded-pill">
-                                            <input
-                                                type="text"
-                                                class="form-control rounded-pill"
-                                                wire:click="closeSearchContainer"
-                                                placeholder="Search Employee"
-                                                wire:model.live="searchTerm"
-                                                wire:keyup="loadEmployeeList"
-                                                id="search">
-
-                                            @if($searchTerm)
-                                            <button
-                                                type="button"
-                                                class="position-absolute end-0 translate-middle-y border-0 bg-transparent"
-                                                wire:click="closeSearchContainer"
-                                                aria-label="Clear Search" style="width:30px;color:#ccc;left:42%;top:72%;">
-                                                <i class="fa fa-times-circle text-muted" style="color:#ccc;"></i>
-                                            </button>
+                                        <div class="searchWidth rounded-pill position-relative">
+                                            @if($seleceted_emp_id && $selecetdEmpDetails)
+                                            <!-- Display Selected Employee Details -->
+                                            <div class="d-flex align-items-center p-2 rounded-pill border bg-light">
+                                                @if ($selecetdEmpDetails->image !== null && $selecetdEmpDetails->image != "null" && $selecetdEmpDetails->image != "Null" && $selecetdEmpDetails->image != "")
+                                                <img src="data:image/jpeg;base64,{{ ($selecetdEmpDetails->image ) }}" style="width: 35px; height: 35px; object-fit: cover;" class="rounded-circle">
+                                                @else
+                                                <!-- Fallback image if no image is found -->
+                                                <img src="{{ asset('images/user.jpg') }}" style="width: 35px; height: 35px; object-fit: cover;" class="rounded-circle">
+                                                @endif
+                                                <div class="ms-2 d-flex flex-column align-items-start">
+                                                    <span class=" normalText">{{ ucwords(strtolower($selecetdEmpDetails->first_name)) }} {{ ucwords(strtolower($selecetdEmpDetails->last_name)) }}</span>
+                                                    <span class="normalText"> {{ $selecetdEmpDetails->emp_id }}</span>
+                                                </div>
+                                                <button
+                                                    type="button"
+                                                    class="position-absolute end-0 translate-middle-y border-0 bg-transparent"
+                                                    wire:click="closeSearchContainer"
+                                                    aria-label="Clear Selection"
+                                                    style="width:30px;color:#ccc;left:90%;top:50%;">
+                                                    <i class="fa fa-times-circle text-muted"></i>
+                                                </button>
+                                            </div>
+                                            @else
+                                            <!-- Display Search Input with User Icon -->
+                                            <div class="d-flex align-items-center p-2 rounded-pill border bg-light">
+                                                <i class="fa fa-user-circle text-muted" style="font-size: 24px;"></i>
+                                                <input
+                                                    type="text"
+                                                    class="form-control border-0 bg-transparent ms-2"
+                                                    wire:click="closeSearchContainer"
+                                                    placeholder="Search Employee"
+                                                    wire:model.live="searchTerm"
+                                                    wire:keyup="loadEmployeeList"
+                                                    id="search">
+                                            </div>
                                             @endif
                                         </div>
                                     </div>
+
                                     @if($showEmployeeSearch)
                                     <div class="selectEmp mb-3 bg-white d-flex flex-column position-absolute">
                                         <div class="d-flex justify-content-end">

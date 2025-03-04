@@ -53,6 +53,7 @@ class EmployeeSeparation extends Component
     public $showExitInterviewEdit = false;
     public $other_date;
     public $separationDetails;
+    public $selecetdEmpDetails;
 
     //get selected employee
     public function getSelectedEmp($empId)
@@ -60,6 +61,11 @@ class EmployeeSeparation extends Component
         $this->showResignSection = true;
         $this->showEmployeeSearch = false;
         $this->seleceted_emp_id = $empId;
+        $this->getEmpDetailsFor();
+    }
+
+    public function getEmpDetailsFor(){
+        $this->selecetdEmpDetails = EmployeeDetails::where('emp_id', $this->seleceted_emp_id)->first();
     }
     public function getEmpSeparationDetails()
     {
@@ -185,6 +191,7 @@ class EmployeeSeparation extends Component
     public function closeSearchContainer()
     {
         $this->showEmployeeSearch = !$this->showEmployeeSearch;
+        $this->getEmpDetailsFor();
     }
 
     //get employee filter based on dropdown
@@ -654,7 +661,9 @@ class EmployeeSeparation extends Component
                 'employeeIds' => $this->employeeIds,
                 'separationDetails' => $this->separationDetails,
                 'warningMessage' => $this->warningMessage,
-                'method' => $this->method
+                'method' => $this->method,
+                'selecetdEmpDetails' => $this->selecetdEmpDetails,
+                'seleceted_emp_id' => $this->seleceted_emp_id
             ]
         );
     }
