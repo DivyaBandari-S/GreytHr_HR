@@ -6,6 +6,7 @@ use App\Helpers\FlashMessageHelper;
 use App\Models\Company;
 use App\Models\EmployeeDetails;
 use App\Models\LeavePolicySetting;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use Livewire\Component;
 
@@ -21,6 +22,7 @@ class LeaveSettingPolicy extends Component
     public $companyID;
     public $showAddForm = false;
     public $leavePolicy;
+    public  $currentYear;
     public $leavePolicies = [];
     protected $rules = [
         'leave_name' => 'required|string|max:50',
@@ -40,6 +42,7 @@ class LeaveSettingPolicy extends Component
     public function mount()
     {
         try {
+            $this->currentYear = Carbon::now()->format('Y');
             $this->leavePolicies = LeavePolicySetting::all()->keyBy('id')->toArray();
             $loggedInEmpID = auth()->guard('hr')->user()->emp_id;
 
@@ -68,7 +71,7 @@ class LeaveSettingPolicy extends Component
     public function getLeaveTypes()
     {
         try {
-            $this->allowedLeavesAsPerPolicy = LeavePolicySetting::where('company_id', $this->company_id)->get();
+            $this->allowedLeavesAsPerPolicy = LeavePolicySetting::whereJsonContains('company_id', $this->company_id)->get();
         } catch (\Exception $e) {
             Log::error('Error in getLeaveTypes method: ' . $e->getMessage());
             FlashMessageHelper::flashError('An error occurred while fetching leave types.');
@@ -230,7 +233,8 @@ class LeaveSettingPolicy extends Component
     {
         return view('livewire.leave-setting-policy', [
             'company_id' => $this->company_id,
-            'allowedLeavesAsPerPolicy' => $this->allowedLeavesAsPerPolicy
+            'allowedLeavesAsPerPolicy' => $this->allowedLeavesAsPerPolicy,
+            'currentYear' => $this->currentYear
         ]);
     }
 }

@@ -1088,7 +1088,7 @@ body {
   /* From Uiverse.io by Smit-Prajapati */ 
 .card-stat {
 	position: relative;
-	width: 200px;
+	/* width: 200px; */
 	height: 200px;
 	background: lightgrey;
 	border-radius: 30px;
@@ -1321,3 +1321,9 @@ body {
 .fs10 {
 	font-size: 10px;
 }
+@media only screen and (max-width: 600px) {
+	.main__top__title {
+		display: none;
+	}
+}
+  
