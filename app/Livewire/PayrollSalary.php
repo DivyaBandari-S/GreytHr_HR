@@ -2,9 +2,11 @@
 
 namespace App\Livewire;
 
+use App\Models\EmpBankDetail;
 use App\Models\EmployeeDetails;
 use App\Models\EmpSalary;
 use App\Models\EmpSalaryRevision;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
@@ -27,6 +29,12 @@ class PayrollSalary extends Component
     public $filteredcomponents = [];
     public $expanded = [];
     public $expandAll = false;
+    public $pdfPreviewBase64 = null;
+    public $bankDetails;
+    public $bankId;
+    public $salaryComponents;
+    public $salaryMonth;
+    public $showPayslip = false;
 
     public function toogleHelp()
     {
@@ -92,7 +100,7 @@ class PayrollSalary extends Component
         } else {
             $this->showSearch = false;
             $this->showContainer = false;
-           $this->loadComponents();
+            $this->loadComponents();
             $this->getEmpDetails();
         }
     }
@@ -104,9 +112,19 @@ class PayrollSalary extends Component
     public function getEmpDetails()
     {
         $this->empDetails = DB::table('employee_details')
-        ->leftJoin('emp_personal_infos', 'emp_personal_infos.emp_id', '=', 'employee_details.emp_id')
+            ->leftJoin('emp_personal_infos', 'emp_personal_infos.emp_id', '=', 'employee_details.emp_id')
+            ->leftJoin('emp_departments', 'emp_departments.dept_id', '=', 'employee_details.dept_id')
             ->where('employee_details.emp_id', $this->selectedEmployee)
-            ->select('emp_personal_infos.date_of_birth', 'employee_details.hire_date', 'employee_details.emp_id', 'employee_details.job_location', 'employee_details.first_name', 'employee_details.last_name')
+            ->select(
+                'emp_personal_infos.date_of_birth',
+                'emp_departments.department',
+                'employee_details.hire_date',
+                'employee_details.emp_id',
+                'employee_details.job_location',
+                'employee_details.job_role',
+                'employee_details.first_name',
+                'employee_details.last_name'
+            )
             ->first();
         // dd( $this->empDetails);
     }
@@ -117,11 +135,10 @@ class PayrollSalary extends Component
     }
     public function mount()
     {
-        $this->selectEmployee(null);
-
-
+        $this->selectEmployee('xss-0481');
     }
-    public function loadComponents(){
+    public function loadComponents()
+    {
 
         $this->components = [
             [
@@ -493,13 +510,18 @@ class PayrollSalary extends Component
             ->latest('emp_salaries.month_of_sal') // Get latest salary by month
             ->select('emp_salaries.*', 'salary_revisions.*') // Ensure all columns are selected
             ->first();
+        $this->bankId = $lastSalary->bank_id;
+     $this->salaryMonth=$lastSalary->month_of_sal;
+
+        // dd(  $this->bankId);
 
         $lastSalary = $lastSalary ? $lastSalary->toArray() : [];
         // dd($lastSalary );
         if ($lastSalary) {
-            $salaryComponents = EmpSalaryRevision::getFullAndActualSalaryComponents($lastSalary['salary'], $lastSalary['revised_ctc'],$lastSalary['total_working_days'],$lastSalary['lop_days']);
+            $salaryComponents = EmpSalaryRevision::getFullAndActualSalaryComponents($lastSalary['salary'], $lastSalary['revised_ctc'], $lastSalary['total_working_days'], $lastSalary['lop_days']);
+            $this->salaryComponents = $salaryComponents;
             // $salaryComponents = EmpSalaryRevision::getFullAndActualSalaryComponents(18000, 240000,30,3);
-// dd($salaryComponents);
+            // dd($salaryComponents);
             $this->updateComponentAmount($this->components, 'FULL BASIC', $salaryComponents['actual_basic']);
             $this->updateComponentAmount($this->components, 'FULL HRA', $salaryComponents['actual_hra']);
             $this->updateComponentAmount($this->components, 'FULL CONVEYANCE', $salaryComponents['actual_conveyance']);
@@ -544,6 +566,26 @@ class PayrollSalary extends Component
         }
     }
 
+    public function generatePdfPreview()
+    {
+        $this->showPayslip=true;
+
+        $this->bankDetails = EmpBankDetail::findOrFail($this->bankId);
+
+        $pdf = Pdf::loadView('download-pdf', [
+            'employees' => $this->empDetails,
+            'salaryRevision' => $this->salaryComponents,
+            'empBankDetails' => $this->bankDetails,
+            'salMonth' => $this->salaryMonth,
+            'rupeesInText' => EmpSalaryRevision::convertNumberToWords($this->salaryComponents['actual_net_salary']),
+        ]);
+
+        $this->pdfPreviewBase64 = 'data:application/pdf;base64,' . base64_encode($pdf->output());
+
+    }
+    public function closeModal(){
+        $this->showPayslip=false;
+    }
     // Example usage
 
     public function render()
