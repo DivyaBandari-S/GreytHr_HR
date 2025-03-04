@@ -47,8 +47,8 @@
                                                 <img src="{{ asset('images/user.jpg') }}" style="width: 35px; height: 35px; object-fit: cover;" class="rounded-circle">
                                                 @endif
                                                 <div class="ms-2 d-flex flex-column align-items-start">
-                                                    <span class=" normalText">{{ ucwords(strtolower($selecetdEmpDetails->first_name)) }} {{ ucwords(strtolower($selecetdEmpDetails->last_name)) }}</span>
-                                                    <span class="normalText"> {{ $selecetdEmpDetails->emp_id }}</span>
+                                                    <span class=" normalText">{{ ucwords(strtolower($selecetdEmpDetails->first_name)) ?? '-' }} {{ ucwords(strtolower($selecetdEmpDetails->last_name)) ?? '-'}}</span>
+                                                    <span class="normalText"> {{ $selecetdEmpDetails->emp_id ?? '-'}}</span>
                                                 </div>
                                                 <button
                                                     type="button"
