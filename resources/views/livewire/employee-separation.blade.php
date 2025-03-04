@@ -317,11 +317,11 @@
                                         @endif
                                     </div>
                                     <div class="form-group emp-data-resign">
-                                        <label for="other_date">Date</label>
+                                        <label for="other_date">Other Date</label>
                                         @if($showEdit)
                                         <input type="date" wire:model="other_date" id="other_date" class="form-control">
                                         @else
-                                        <span>{{ \Carbon\Carbon::parse($separationDetails->other_date)->format('d M, Y') ?? '-' }}</span>
+                                        <span>{{ $separationDetails->other_date ? \Carbon\Carbon::parse($separationDetails->other_date)->format('d M, Y') : '-' }}</span>
                                         @endif
                                     </div>
                                     <div class="form-group emp-data-resign">
@@ -329,7 +329,7 @@
                                         @if($showEdit)
                                         <input type="date" wire:model="retired_date" id="retired_date" class="form-control">
                                         @else
-                                        <span>{{ \Carbon\Carbon::parse($separationDetails->retired_date)->format('d M, Y') ?? '-' }}</span>
+                                        <span>{{ $separationDetails->retired_date ?  \Carbon\Carbon::parse($separationDetails->retired_date)->format('d M, Y') : '-' }}</span>
                                         @endif
                                     </div>
                                     <div class="form-group emp-data-resign">
