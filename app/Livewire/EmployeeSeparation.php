@@ -49,7 +49,7 @@ class EmployeeSeparation extends Component
     public $retired_date;
     public $section;
     public $showResignationEdit = false;
-    public$showExitDetailsEdit = false;
+    public $showExitDetailsEdit = false;
     public $showExitInterviewEdit = false;
     public $other_date;
     public $separationDetails;
@@ -63,8 +63,40 @@ class EmployeeSeparation extends Component
     }
     public function getEmpSeparationDetails()
     {
-        $this->separationDetails = EmpSeparationDetails::where('emp_id', $this->seleceted_emp_id)->first();
+        try {
+            // Fetch the record or provide a default object with null values
+            $this->separationDetails = EmpSeparationDetails::where('emp_id', $this->seleceted_emp_id)->first() ?? (object) [
+                'emp_id' => null,
+                'hr_emp_id' => null,
+                'separation_mode' => null,
+                'other_date' => null,
+                'resignation_submitted_on' => null,
+                'reason' => null,
+                'notice_required' => null,
+                'exclude_final_settlement' => null,
+                'notice_period' => null,
+                'short_fall_notice_period' => null,
+                'tentative_date' => null,
+                'remarks' => null,
+                'notes' => null,
+                'exit_interview_date' => null,
+                'leaving_date' => null,
+                'settled_date' => null,
+                'is_left_org' => null,
+                'is_served_notice' => null,
+                'fit_to_rehire' => null,
+                'alt_email_id' => null,
+                'alt_mbl_no' => null,
+                'date_of_demise' => null,
+                'retired_date' => null,
+            ];
+        } catch (\Exception $e) {
+            Log::error('Error fetching separation details: ' . $e->getMessage());
+        }
     }
+
+
+
 
     //edit method
     public function toggleEdit()

@@ -163,7 +163,8 @@
                                         </div>
                                         @else
                                         <!-- Display the selected value -->
-                                        <span>{{ $separationDetails->is_left_org == 1 ? 'Yes' : 'No' }}</span>
+                                        <span>{{ $separationDetails ? ($separationDetails->is_left_org == 1 ? 'Yes' : 'No') : 'N/A' }}
+                                        </span>
                                         @endif
                                     </div>
 
@@ -172,13 +173,13 @@
                                         @if($showEdit)
                                         <input type="date" wire:model="other_date" id="other_date" class="form-control">
                                         @else
-                                        <span>{{ \Carbon\Carbon::parse($separationDetails->other_date)->format('d M, Y') ?? '-' }}</span>
+                                        <span>{{ optional($separationDetails->other_date)->format('d M, Y') ?? '-' }}</span>
                                         @endif
                                     </div>
                                     <div class="form-group emp-data-resign">
                                         <label for="remarks">Remarks</label>
                                         @if($showEdit)
-                                        <textarea  wire:model="remarks" id="remarks" class="form-control" spellcheck="true"></textarea>
+                                        <textarea wire:model="remarks" id="remarks" class="form-control" spellcheck="true"></textarea>
                                         @else
                                         <span>{{ $separationDetails->remarks ?? '-'}}</span>
                                         @endif
@@ -265,7 +266,7 @@
                                     <div class="form-group emp-data-resign">
                                         <label for="remarks">Remarks</label>
                                         @if($showEdit)
-                                        <textarea  wire:model="remarks" id="remarks" spellcheck="true" class="form-control"></textarea>
+                                        <textarea wire:model="remarks" id="remarks" spellcheck="true" class="form-control"></textarea>
                                         @else
                                         <span>{{ $separationDetails->remarks ?? '-'}}</span>
                                         @endif
@@ -334,7 +335,7 @@
                                     <div class="form-group emp-data-resign">
                                         <label for="remarks">Remarks</label>
                                         @if($showEdit)
-                                        <textarea  wire:model="remarks" id="remarks" spellcheck="true" class="form-control"></textarea>
+                                        <textarea wire:model="remarks" id="remarks" spellcheck="true" class="form-control"></textarea>
                                         @else
                                         <span>{{ $separationDetails->remarks ?? '-'}}</span>
                                         @endif
@@ -372,7 +373,7 @@
                                         @if($showResignationEdit)
                                         <input type="date" wire:model="resignation_submitted_on" id="resignation_submitted_on" class="form-control">
                                         @else
-                                        <span>{{ \Carbon\Carbon::parse($separationDetails->resignation_submitted_on)->format('d M, Y') ?? '-' }}</span>
+                                        <span>{{ $separationDetails && $separationDetails->resignation_submitted_on ? \Carbon\Carbon::parse($separationDetails->resignation_submitted_on)->format('d M, Y') : '-' }}</span>
                                         @endif
                                     </div>
                                     <div class="form-group emp-data-resign">
@@ -424,7 +425,7 @@
                                         @if($showResignationEdit)
                                         <input type="date" wire:model="tentative_date" id="tentative_date" class="form-control">
                                         @else
-                                        <span>{{ \Carbon\Carbon::parse($separationDetails->tentative_date)->format('d M, Y')  ?? '-' }}</span>
+                                        <span>{{ $separationDetails->tentative_date ? \Carbon\Carbon::parse($separationDetails->tentative_date)->format('d M, Y')  : '-' }}</span>
                                         @endif
                                     </div>
                                     <div class="form-group emp-data-resign">
@@ -444,7 +445,7 @@
                                             Remarks
                                         </label>
                                         @if($showResignationEdit)
-                                        <textarea  wire:model="remarks" id="remarks" spellcheck="true" class="form-control"></textarea>
+                                        <textarea wire:model="remarks" id="remarks" spellcheck="true" class="form-control"></textarea>
                                         @else
                                         <span>{{ $separationDetails->remarks ?? '-'}}</span>
                                         @endif
@@ -478,7 +479,10 @@
                                         @if($showExitInterviewEdit)
                                         <input type="date" wire:model="exit_interview_date" id="exit_interview_date" class="form-control">
                                         @else
-                                        <span>{{ \Carbon\Carbon::parse($separationDetails->exit_interview_date)->format('d M, Y')  ?? '-' }}</span>
+                                        <span>
+                                            {{ $separationDetails->exit_interview_date ? \Carbon\Carbon::parse($separationDetails->exit_interview_date)->format('d M, Y') : '-' }}
+                                        </span>
+
                                         @endif
                                     </div>
                                     <div class="form-group emp-data-resign">
