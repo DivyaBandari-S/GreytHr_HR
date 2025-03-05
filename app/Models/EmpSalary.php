@@ -32,18 +32,25 @@ class EmpSalary extends Model
     public function getDecodedSalary()
     {
         if ($this->decodedSalary === null) {
+            // Check if salary exists in attributes
+            if (!isset($this->attributes['salary'])) {
+                return 0; // Return 0 if salary is missing
+            }
+    
             $decoded = Hashids::decode($this->attributes['salary']);
+    
             if (count($decoded) === 0) {
-                // If decoding fails, return 0
-                $this->decodedSalary = 0;
+                $this->decodedSalary = 0; // If decoding fails
             } else {
                 $integerValue = $decoded[0];
                 $decimalPlaces = $decoded[1] ?? 0;
                 $this->decodedSalary = $integerValue / pow(10, $decimalPlaces);
             }
         }
+    
         return $this->decodedSalary;
     }
+    
 
     /**
      * Define relationship with EmpSalaryRevision.

@@ -1,6 +1,6 @@
 <div>
 
-<div class="row" style="margin-top:-20px;">
+<div class="row" style="margin-top:-20px;width:100%">
 <ul class="nav custom-nav-tabs" role="tablist" >
     <li class="nav-item" role="presentation">
         <a class="nav-link active custom-nav-link" id="simple-tab-0" data-bs-toggle="tab" href="#simple-tabpanel-0" role="tab" aria-controls="simple-tabpanel-0" aria-selected="true">Main</a>
@@ -220,7 +220,7 @@
                     </tr>
                     <tr class="earnings-row">
                         <td class="earnings-label">CONVEYANCE</td>
-                        <td class="earnings-value">₹{{ number_format($salaryDivisions['conveyance'], 2) }}</td>
+                        <td class="earnings-value">₹{{ number_format($salaryDivisions['conveyance'], decimals: 2) }}</td>
                         <td class="deductions-label"></td>
                         <td class="deductions-value"></td>
                     </tr>

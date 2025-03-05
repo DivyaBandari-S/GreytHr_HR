@@ -10,6 +10,7 @@ use App\Models\EmployeeDetails;
 use App\Models\EmpPersonalInfo;
 use App\Models\EmpSalary;
 use App\Models\EmpSalaryRevision;
+use App\Models\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use DateTime;
@@ -92,7 +93,8 @@ public function mount()
                 ->pluck('first_name', 'id') // Adjust based on your DB column
                 ->toArray();
         }
-        
+    
+        $this->updatedFilterType(); 
     // Adjust this line based on your actual database column for category
 
     $loggedInEmpID = auth()->guard('hr')->user()->emp_id;
@@ -587,6 +589,8 @@ public function searchforEmployee()
             $this->selectedEmployeeFirstName = ucfirst(strtolower($employee->first_name));
             $this->selectedEmployeeLastName = ucfirst(strtolower($employee->last_name));
             $this->searchTerm = ''; // Clears search term, but input retains full name
+            $this->filterType = '6months';
+            $this->updatedFilterType();
         }
         $this->selectedEmployeeFirstName = EmployeeDetails::where('emp_id', $empId)->value('first_name');
         $this->selectedEmployeeLastName = EmployeeDetails::where('emp_id', $empId)->value('last_name');
@@ -604,9 +608,135 @@ public function searchforEmployee()
                 ->where('employee_details.emp_id', $this->selectedEmployeeId)
                 ->first();
 
-          
+                $this->filterType = '6months';
+            $this->updatedFilterType();
+        $this->checkPayslips();
         } 
     }
+    public $hasPayslips = false;
+    
+    public $filterType = '6months'; // Default filter: last 6 months
+    public $startDate;
+    public $endDate;
+
+    // When employee is selected, check for payslips
+
+    // Update filter type based on radio button selection
+  public function updatedFilterType()
+    {
+
+        
+        if ($this->filterType === '6months') {
+            $this->startDate = Carbon::now()->subMonths(7)->startOfMonth()->format('Y-m');
+            $this->endDate = Carbon::now()->endOfMonth()->format('Y-m');
+        } elseif ($this->filterType === '3months') {
+            $this->startDate = Carbon::now()->subMonths(4)->startOfMonth()->format('Y-m');
+            $this->endDate = Carbon::now()->endOfMonth()->format('Y-m');
+        } elseif ($this->filterType === 'custom') {
+            $this->startDate = null; // Clear dates when switching to custom
+            $this->endDate = null;
+        }
+    }
+
+
+    // When custom date range is updated
+    public function updatedStartDate()
+    {
+        if ($this->filterType === 'custom' && $this->startDate && $this->endDate) {
+            $this->checkPayslips();
+        }
+    }
+
+    public function updatedEndDate()
+    {
+        if ($this->filterType === 'custom' && $this->startDate && $this->endDate) {
+            $this->checkPayslips();
+        }
+    }
+
+    // Check if payslips exist for the selected filter
+    public function checkPayslips()
+    {
+        if (!$this->selectedEmployeeId) return;
+    
+ 
+    
+        // Ensure month_of_sal is in YYYY-MM-DD format
+        $payslipCount = DB::table('emp_salaries')
+            ->join('salary_revisions', 'emp_salaries.sal_id', '=', 'salary_revisions.id')
+            ->where('salary_revisions.emp_id', $this->selectedEmployeeId)
+            ->where('emp_salaries.is_payslip', 1)
+            ->whereBetween('emp_salaries.month_of_sal', [
+                Carbon::parse($this->startDate)->format('Y-m'),
+                Carbon::parse($this->endDate)->format('Y-m')
+            ])
+            ->count(); // Use count() instead of get()
+      
+
+        Log::info('Payslips Found:', ['Count' => $payslipCount]);
+    
+        $this->hasPayslips = $payslipCount > 0;
+    }
+    
+
+    // Download Payslips
+    public function multipledownloadPayslips()
+    {
+        if (!$this->selectedEmployeeId) return;
+    
+       
+      
+            $salaryDetails =DB::table('emp_salaries')
+            ->join('salary_revisions', 'emp_salaries.sal_id', '=', 'salary_revisions.id')
+            ->where('salary_revisions.emp_id', $this->selectedEmployeeId)
+            ->where('emp_salaries.is_payslip', 1)
+            ->whereBetween('emp_salaries.month_of_sal', [
+                Carbon::parse($this->startDate)->format('Y-m'),
+                Carbon::parse($this->endDate)->format('Y-m')
+            ])
+            ->get();
+
+        if ($salaryDetails->isEmpty()) {
+            return back()->with('error', 'No payslips found for the selected period.');
+        }
+    
+        $zip = new ZipArchive;
+        $zipFileName = 'payslips-' . '.zip';
+        $zipFilePath = tempnam(sys_get_temp_dir(), 'payslips_');
+    
+        if ($zip->open($zipFilePath, ZipArchive::CREATE) !== TRUE) {
+            return response()->json(['error' => 'Could not create ZIP file'], 500);
+        }
+    
+        foreach ($salaryDetails as $salary) {
+            $employee = EmployeeDetails::where('emp_id', $salary->emp_id)->first();
+            if (!$employee) continue;
+            $salaryDivisions = $this->calculateSalaryComponents($salary->salary);
+            $empBankDetails = EmpBankDetail::where('emp_id', $salary->emp_id)->first();
+    
+            $pdf = Pdf::loadView('download-pdf', [
+                'employeeDetails' => $employee,
+                'salaryRevision' => $salaryDivisions,
+                'empBankDetails' => $empBankDetails,
+                'rupeesInText' => $this->convertNumberToWords($salaryDivisions['net_pay']),
+                'salMonth' => Carbon::now()->format('F Y'),
+                'empCompanyLogoUrl' => $this->getEmpCompanyLogoUrl(),
+            
+            ]);
+    
+            $pdfFileName = 'payslip-' . $employee->emp_id . '-' . Carbon::parse($salary->month_of_sal)->format('MY') . '.pdf';
+            $zip->addFromString($pdfFileName, $pdf->output());
+        }
+    
+        $zip->close();
+        return response()->download($zipFilePath, $zipFileName)->deleteFileAfterSend(true);
+       
+        
+
+       
+    }
+
+
     public function downloadPayslipsZip()
 {
     if (count($this->selectedEmployees) === 1) {
