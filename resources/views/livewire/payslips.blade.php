@@ -19,7 +19,7 @@
                         <div class="row d-flex align-items-center">
     <div class="col-10">
         <p class="main-text mb-0">
-        The Accounts JV page enables you to generate, cancel and export JVs. Click Generate JV to generate a fresh JV. If you make any changes to the Payroll after the JV is generated, you can click Cancel JV to cancel the JV. Once canceled, the Generate JV button displays again.
+        The Payslips page enables you to generate Payslips for your employees. You can Download the Payslips in PDF format, or email the Payslips directly to your employees. In case you are using the Employee Self-Service or Employee Portal, you can release the payslips on the portal from the Published Info > Payslips page.
         </p>
     </div>
     <div class="col-2 text-end">
