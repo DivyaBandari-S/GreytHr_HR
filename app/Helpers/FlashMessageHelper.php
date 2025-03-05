@@ -11,7 +11,7 @@ class FlashMessageHelper
             type: 'error',
             options: [
                 'position' => 'top-center',
-                // 'timeout' => 3000, // Uncomment if needed
+                // 'timeout'f => 3000, // Uncomment if needed
             ]
         );
     }

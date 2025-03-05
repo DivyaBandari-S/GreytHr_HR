@@ -15,7 +15,22 @@ return new class extends Migration
             $table->smallInteger('id')->autoIncrement();
             $table->string('emp_id', 10)->unique()->nullable();
             $table->string('hr_emp_id', 10)->nullable();
-            $table->string('separation_mode',25)->nullable();
+            $table->enum('separation_mode', [
+                'active',
+                'on-leave',
+                'terminated',
+                'resigned',
+                'on-probation',
+                'transferred',
+                'sick',
+                'retired',
+                'expired',
+                'deported',
+                'awol',
+                'contract-expiry',
+                'absconding',
+                'others',
+            ])->default('active');
             $table->date('other_date')->nullable();
             $table->date('resignation_submitted_on')->nullable();
             $table->text('reason')->nullable();

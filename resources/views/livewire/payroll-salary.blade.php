@@ -261,7 +261,7 @@
 
     @if($selectedEmployee)
     <div class=" d-flex" style="width: 100%;gap:10px;justify-content:end;">
-        <button wire:click="" class="btn btn-primary " style="font-size: 12px;padding:5px">Preview Payslip</button>
+        <button wire:click="generatePdfPreview" class="btn btn-primary " data-bs-toggle="modal" data-bs-target="#payslipModal" style="font-size: 12px;padding:5px">Preview Payslip</button>
         <button wire:click="showRevisedSalary" class="btn bg-white text-primary border-primary float-end " style="font-size: 12px;padding:5px">Update Salary</button>
         <button wire:click="" class="btn btn-primary" style="font-size: 12px;padding:5px">Process Payroll</button>
     </div>
@@ -362,6 +362,44 @@
             </div>
         </div>
     </div>
+    @if($showPayslip)
+    {{--<div class="modal fade" id="payslipModal" tabindex="-1" aria-labelledby="payslipModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Payslip Preview</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    @if($pdfPreviewBase64)
+                    <iframe src="{{ $pdfPreviewBase64 }}" width="100%" height="600px"></iframe>
+                    @else
+                    <p>Generating preview...</p>
+                    @endif
+                </div>
+            </div>
+        </div>
+    </div>--}}
+    <div class="modal" id="logoutModal" tabindex="-1" style="display: block;">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+            <div class="modal-header">
+                    <h5 class="modal-title">Payslip Preview</h5>
+                    <button type="button" class="btn-close" wire:click="closeModal" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    @if($pdfPreviewBase64)
+                    <iframe src="{{ $pdfPreviewBase64 }}" width="100%" height="600px"></iframe>
+                    @else
+                    <p>Generating preview...</p>
+                    @endif
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="modal-backdrop fade show"></div>
+    @endif
     @else
     @endif
 
