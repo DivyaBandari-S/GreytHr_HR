@@ -84,6 +84,7 @@ use App\Livewire\Loans;
 use App\Livewire\ReleaseSalary;
 use App\Livewire\EmployeeSeparation;
 use App\Livewire\ItStatement;
+use App\Livewire\SalarySlip;
 use App\Livewire\PayrollSalary;
 use App\Livewire\LeaveApplyOnBehalf;
 use App\Livewire\Tasks;
@@ -162,7 +163,7 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
 
         //HR Payroll Submodule Routes->Payouts
         Route::get('/accountsjv', AccountsJv::class)->name('accountsjv');
-
+        Route::get('/salaryslip', SalarySlip::class)->name('salaryslip');
 
         //HR Employee-Main Submodule Routes
         Route::get('/user/main-overview', HrMainOverview::class)->name('main-overview');
