@@ -152,7 +152,7 @@
                             <li><a href="/hr/accountsjv">Accounts JV</a></li>
                             <li><a href="/user">Bank Transfer</a></li>
                             <li><a href="/user">Cheque / Cash Statement</a></li>
-                            <li><a href="/user">Payslips</a></li>
+                            <li><a href="/hr/salaryslip">Payslips</a></li>
                             <li><a href="/hr/user/hold-salaries">Hold Salary Payout</a></li>
                         </ul>
                     </li>

@@ -1,6 +1,6 @@
 <div>
 
-<div class="row" style="margin-top:-20px;">
+<div class="row" style="margin-top:-20px;width:100%">
 <ul class="nav custom-nav-tabs" role="tablist" >
     <li class="nav-item" role="presentation">
         <a class="nav-link active custom-nav-link" id="simple-tab-0" data-bs-toggle="tab" href="#simple-tabpanel-0" role="tab" aria-controls="simple-tabpanel-0" aria-selected="true">Main</a>
@@ -19,7 +19,7 @@
                         <div class="row d-flex align-items-center">
     <div class="col-10">
         <p class="main-text mb-0">
-        The Accounts JV page enables you to generate, cancel and export JVs. Click Generate JV to generate a fresh JV. If you make any changes to the Payroll after the JV is generated, you can click Cancel JV to cancel the JV. Once canceled, the Generate JV button displays again.
+        The Payslips page enables you to generate Payslips for your employees. You can Download the Payslips in PDF format, or email the Payslips directly to your employees. In case you are using the Employee Self-Service or Employee Portal, you can release the payslips on the portal from the Published Info > Payslips page.
         </p>
     </div>
     <div class="col-2 text-end">
@@ -220,7 +220,7 @@
                     </tr>
                     <tr class="earnings-row">
                         <td class="earnings-label">CONVEYANCE</td>
-                        <td class="earnings-value">₹{{ number_format($salaryDivisions['conveyance'], 2) }}</td>
+                        <td class="earnings-value">₹{{ number_format($salaryDivisions['conveyance'], decimals: 2) }}</td>
                         <td class="deductions-label"></td>
                         <td class="deductions-value"></td>
                     </tr>
