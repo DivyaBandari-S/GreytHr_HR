@@ -29,7 +29,8 @@ class LeaveRequest extends Model
         'is_read',
         'file_paths',
         'leave_status',
-        'action_by'
+        'action_by',
+        'applied_by'
     ];
 
     protected $casts = [
