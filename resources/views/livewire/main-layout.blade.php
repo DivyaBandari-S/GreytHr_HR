@@ -12,7 +12,8 @@
                 <ul class="sidebar__submenu">
                     <li class="title">Home</li>
                     <li><a href="{{route('home')}}">Home</a></li>
-
+                    <li><a href="/hr/HelpDesk">HelpDesk</a></li>
+                    <li><a href="/hr/request">Request</a></li>
                 </ul>
             </li>
             <li>
@@ -118,15 +119,15 @@
                     <li>
                         <a href="#">Payroll Inputs <i class="ph-caret-right-fill"></i></a>
                         <ul class="sidebar__dropdown-menu">
-                            <li><a href="/hr/user/generate-letter">Salary</a></li>
+                            <li><a href="/hr/user/payroll-salary">Salary</a></li>
                             <li><a href="/hr/user/loans">Loan</a></li>
                             <li><a href="/hr/user/salary-revision-list">Salary Revision</a></li>
                             <li><a href="/user">Income Tax</a></li>
                             <li><a href="/user">Reimbursement</a></li>
-                            <li><a href="/user">Employee LOP Days</a></li>
+                            <li><a href="/hr/user/employee-lop-days">Employee LOP Days</a></li>
                             <li><a href="/hr/user/stop-salaries">Stop Salary Processing</a></li>
                             <li><a href="/user">Arrears</a></li>
-                            <li><a href="/user">Release Salary</a></li>
+                            <li><a href="/hr/user/release-salary">Release Salary</a></li>
                             <li><a href="/user">Final Settlement</a></li>
                             <li><a href="/user">Resettlement</a></li>
                             <li><a href="/user">Overtime Register</a></li>
@@ -149,10 +150,10 @@
                     <li>
                         <a href="#">Payout <i class="ph-caret-right-fill"></i></a>
                         <ul class="sidebar__dropdown-menu">
-                            <li><a href="/home">Accounts JV</a></li>
+                            <li><a href="/hr/accountsjv">Accounts JV</a></li>
                             <li><a href="/user">Bank Transfer</a></li>
                             <li><a href="/user">Cheque / Cash Statement</a></li>
-                            <li><a href="/user">Payslips</a></li>
+                            <li><a href="/hr/salaryslip">Payslips</a></li>
                             <li><a href="/hr/user/hold-salaries">Hold Salary Payout</a></li>
                         </ul>
                     </li>
@@ -165,7 +166,7 @@
                             <li><a href="/hr/ytdreport">YTD Summary</a></li>
                             <li><a href="/hr/pfytdreport">PF YTD Statement</a></li>
                             <li><a href="/hr/reimbursement">Reimbursement Statement</a></li>
-                            <li><a href="/user">IT Statement</a></li>
+                            <li><a href="/hr/itstatement">IT Statement</a></li>
                             <li><a href="/user">Loan Statement</a></li>
                             <li><a href="/user">IT Declaration</a></li>
                             <li><a href="/user">FBP Declaration</a></li>

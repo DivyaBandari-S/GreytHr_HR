@@ -1,6 +1,6 @@
 <div>
 
-<div class="row" style="margin-top:-20px;">
+<div class="row" style="margin-top:-20px;width:100%">
 <ul class="nav custom-nav-tabs" role="tablist" >
     <li class="nav-item" role="presentation">
         <a class="nav-link active custom-nav-link" id="simple-tab-0" data-bs-toggle="tab" href="#simple-tabpanel-0" role="tab" aria-controls="simple-tabpanel-0" aria-selected="true">Main</a>
@@ -19,7 +19,7 @@
                         <div class="row d-flex align-items-center">
     <div class="col-10">
         <p class="main-text mb-0">
-        The Payslip page displays the payslips of employees. This is the same view as seen by the employees on the Employee Self Service portal. The Lock & Publish button appears on this page if the Payslips are not yet released on the portal. Click this button to lock the Payroll and allow employees to view their Payslip
+        The Payslips page enables you to generate Payslips for your employees. You can Download the Payslips in PDF format, or email the Payslips directly to your employees. In case you are using the Employee Self-Service or Employee Portal, you can release the payslips on the portal from the Published Info > Payslips page.
         </p>
     </div>
     <div class="col-2 text-end">
@@ -149,9 +149,11 @@
     </div>
     <div class="col-md-2 ml-4">
             <select class="dropdown-salary bg-white px-3 py-1" wire:model="selectedMonth" wire:change="changeMonth">
-                @foreach($options as $value => $label)
-                <option value="{{ $value }}" style="background-color: #fff; color: #333; font-size: 13px;">{{ $label }}</option>
-                @endforeach
+            @foreach($options as $value => $label)
+        <option value="{{ $value }}" {{ $selectedMonth == $value ? 'selected' : '' }} style="background-color: #fff; color: #333; font-size: 13px;">
+            {{ $label }}
+        </option>
+    @endforeach
             </select>
         </div>
 </div>
@@ -218,7 +220,7 @@
                     </tr>
                     <tr class="earnings-row">
                         <td class="earnings-label">CONVEYANCE</td>
-                        <td class="earnings-value">₹{{ number_format($salaryDivisions['conveyance'], 2) }}</td>
+                        <td class="earnings-value">₹{{ number_format($salaryDivisions['conveyance'], decimals: 2) }}</td>
                         <td class="deductions-label"></td>
                         <td class="deductions-value"></td>
                     </tr>
@@ -253,7 +255,7 @@
             </div>
         @else
         <div class="d-flex justify-content-center align-items-center" style="width: 100%;  margin: auto;margin-top:5px">
-    <div class="alert alert-info text-start mt-2" style="width: 80%;font-size:12px;margin-left:50px">Salary is on hold for this month  {{ \Carbon\Carbon::parse($selectedMonth . '-01')->format('F Y') }}     <br> <button class="btn btn-primary" style="font-size:12px" wire:click="PayrollRequest">
+    <div class="alert alert-info text-start mt-2" style="width: 80%;font-size:12px;margin-left:50px">Salary is on hold for this month    {{ !empty($selectedMonth) ? \Carbon\Carbon::parse($selectedMonth . '-01')->format('F Y') : 'N/A' }}     <br> <button class="btn btn-primary" style="font-size:12px" wire:click="PayrollRequest">
  Lock & Release
 </button></div>
 

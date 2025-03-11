@@ -184,7 +184,7 @@
                     <td>{{ $index+1}}</td>
                     <td>{{$stoppedEmployee->emp_id}}</td>
                     <td style="text-transform: capitalize;">{{$stoppedEmployee->first_name}} {{$stoppedEmployee->last_name}} </td>
-                    <td>{{$stoppedEmployee->payout_month}}</td>
+                    <td>{{\Carbon\Carbon::parse($stoppedEmployee->payout_month)->format('M Y')}}</td>
                     <td>{{$stoppedEmployee->reason}}</td>
                     <td style="text-align: center;" ><i class="fa fa-trash"  wire:click="deleteStoppedEmployee({{$stoppedEmployee->id}})" style="cursor: pointer;"></i></td>
                 </tr>
@@ -373,7 +373,7 @@
         @if($isAlreadyStopped)
         <div class="col-md-6 mt-2 mb-2" style="background-color: #f2dede;padding:10px 10px;font-size:12px">
             <p class="m-0" style="text-transform: capitalize;">
-                Payment already stopped for {{ ucfirst(strtolower($empDetails->first_name)) }} {{ ucfirst(strtolower($empDetails->last_name)) }} ({{$empDetails->emp_id}}) for the month {{$payout_month}}.
+                Payment already stopped for {{ ucfirst(strtolower($empDetails->first_name)) }} {{ ucfirst(strtolower($empDetails->last_name)) }} ({{$empDetails->emp_id}}) for the month {{ \Carbon\Carbon::parse($payout_month)->format('M Y')}}.
             </p>
         </div>
         @endif

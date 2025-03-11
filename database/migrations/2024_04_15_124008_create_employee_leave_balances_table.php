@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('employee_leave_balances', function (Blueprint $table) {
-            $table->id();
+            $table->smallInteger('id')->autoIncrement();
             $table->string('emp_id');
             $table->integer('batch_id')->nullable();
             $table->json('leave_policy_id')->nullable();
@@ -28,6 +28,7 @@ return new class extends Migration
             $table->string('to_date')->nullable();
             $table->softDeletes();
             $table->timestamps();
+
         });
     }
 

@@ -56,6 +56,7 @@ class EmployeeLeaveBalances extends Model
         $balances = self::where('emp_id', $employeeId)
             ->where('period', 'like', "%$year%")
             ->get();
+
         // Loop through each balance record
         foreach ($balances as $balance) {
             // Decode the JSON leave_policy_id column
@@ -71,6 +72,7 @@ class EmployeeLeaveBalances extends Model
                 }
             }
         }
+
         // Return 0 if the leave type is not found in any of the records
         return 0;
     }

@@ -57,6 +57,7 @@ class StopSalaries extends Component
         $this->search = '';
         $this->selectedEmployee = null;
         $this->showSearch = true;
+        $this->reason = null;
     }
 
     public function filterEmployeeType()
@@ -128,10 +129,11 @@ class StopSalaries extends Component
         $this->isAlreadyStopped = false;
         $stoppedPayoutEmployee = ModelsStopSalaries::where('emp_id', $this->selectedEmployee)
             ->where('payout_month', $this->payout_month)->first();
-        // dd( $stoppedPayoutEmployee);
+
         if ($stoppedPayoutEmployee) {
             $this->isAlreadyStopped = true;
         }
+        // dd( $this->isAlreadyStopped);
     }
 
     public function hideContainer()
@@ -154,12 +156,12 @@ class StopSalaries extends Component
 
 
         $this->payout_month = $this->getPayoutMonth(null);
+        // dd($this->payout_month);
         $this->getTableData();
         // dd( $this->stoppedPayoutEmployees);
     }
     public function  getTableData()
     {
-
         $this->stoppedPayoutEmployees = DB::table('stop_salaries')
             ->join('employee_details', 'employee_details.emp_id', '=', 'stop_salaries.emp_id')
             ->select('stop_salaries.*', 'employee_details.first_name', 'employee_details.last_name')
@@ -178,10 +180,10 @@ class StopSalaries extends Component
 
         // If today is on or after the 26th, payout is for the next month
         if ($date->day >= 26) {
-            return $date->addMonth()->format('M Y'); // Next month
+            return $date->addMonth()->format('Y-m'); // Next month in YYYY-MM format
         }
 
-        return $date->format('M Y'); // Current month
+        return $date->format('Y-m'); // Current month in YYYY-MM format
     }
 
 
@@ -195,25 +197,30 @@ class StopSalaries extends Component
     {
         $stoppedEmployee = ModelsStopSalaries::findorfail($id);
 
+        if ($stoppedEmployee->payout_month == $this->payout_month && Carbon::now()->day <= 25) {
 
-        $deleteEmpDetails = EmployeeDetails::where('emp_id', $stoppedEmployee->emp_id)
-            ->select('employee_details.emp_id', 'employee_details.first_name', 'employee_details.last_name')
-            ->first();
-        $stoppedEmployee->delete();
+            $deleteEmpDetails = EmployeeDetails::where('emp_id', $stoppedEmployee->emp_id)
+                ->select('employee_details.emp_id', 'employee_details.first_name', 'employee_details.last_name')
+                ->first();
+            $stoppedEmployee->delete();
 
-        FlashMessageHelper::flashSuccess(
-            ucwords(strtolower($deleteEmpDetails->first_name)) . ' ' .
-                ucwords(strtolower($deleteEmpDetails->last_name)) .
-                ' (' . $deleteEmpDetails->emp_id . ') is successfully deleted from stop salary process list for payroll:' . ' ' . $this->payout_month
-        );
-
-        $this->getTableData();
+            FlashMessageHelper::flashSuccess(
+                ucwords(strtolower($deleteEmpDetails->first_name)) . ' ' .
+                    ucwords(strtolower($deleteEmpDetails->last_name)) .
+                    ' (' . $deleteEmpDetails->emp_id . ') is successfully deleted from stop salary process list for payroll:' . ' ' . Carbon::parse($this->payout_month)->format('M Y')
+            );
+            $this->getTableData();
+        }else{
+            FlashMessageHelper::flashError("Previous Month Stopped Payout's Cannot Be Deleted.");
+        }
     }
 
     public function saveStopProcessingSalary()
     {
         $this->validate();
 
+        $this->payout_month = Carbon::parse($this->payout_month)->format('Y-m');
+        // dd($this->payout_month);
         try {
             ModelsStopSalaries::create([
                 'emp_id' => $this->selectedEmployee,
@@ -224,7 +231,7 @@ class StopSalaries extends Component
             FlashMessageHelper::flashSuccess(
                 ucwords(strtolower($this->empDetails->first_name)) . ' ' .
                     ucwords(strtolower($this->empDetails->last_name)) .
-                    ' (' . $this->empDetails->emp_id . ') is excluded from payroll:' . ' ' . $this->payout_month
+                    ' (' . $this->empDetails->emp_id . ') is excluded from payroll:' . ' ' . Carbon::parse($this->payout_month)->format('M Y')
             );
 
             $this->isPageOne = true;

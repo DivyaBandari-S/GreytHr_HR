@@ -13,19 +13,18 @@ return new class extends Migration
     {
 
         Schema::create('salary_revisions', function (Blueprint $table) {
-            $table->id();
-            $table->string('emp_id')->unique();
-            $table->string('company_id');
-            $table->decimal('salary', 10, 2);
-            $table->date('salary_month');
-            $table->date('last_revision_period');
-            $table->date('present_revision_period');
-            $table->decimal('revised_monthly_ctc', 10, 2);
-            $table->decimal('previous_monthly_ctc', 10, 2);
+            $table->smallInteger('id')->autoIncrement();
+            $table->string('emp_id', 10);
+            $table->string('current_ctc')->nullable();
+            $table->string('revised_ctc')->nullable();
+            $table->date('revision_date')->nullable();
+            $table->text('revision_type')->nullable();
+            $table->string('reason')->nullable();
+            $table->string('payout_month',20);
+            $table->tinyInteger('status')->default(1);
             $table->timestamps();
             // Define the foreign key relationship
             $table->foreign('emp_id')->references('emp_id')->on('employee_details');
-            $table->foreign('company_id')->references('company_id')->on('companies');
         });
     }
 

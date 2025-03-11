@@ -21,7 +21,7 @@
                         <div class="row d-flex align-items-center">
     <div class="col-10">
         <p class="main-text mb-0">
-        The Payslip page displays the payslips of employees. This is the same view as seen by the employees on the Employee Self Service portal. The Lock & Publish button appears on this page if the Payslips are not yet released on the portal. Click this button to lock the Payroll and allow employees to view their Payslip
+        The CTC Payslip page displays the payslips of employees as per their annual CTC. 
         </p>
     </div>
     <div class="col-2 text-end">

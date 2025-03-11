@@ -41,6 +41,11 @@ class EmpSalaryRevision extends Model
     {
         return $value ? intval($this->decodeCTC($value)) : 0;
     }
+    public function getSalaryAttribute($value)
+    {
+        return $value ? intval($this->decodeCTC($value)) : 0;
+    }
+
 
     /**
      * Encode and set the revised CTC attribute.
@@ -165,10 +170,8 @@ class EmpSalaryRevision extends Model
             return $experience ?: "0M"; // If no experience, return "0m"
         }
 
-        return "No hire date provided";
+        return '';
     }
-
-
 
     public static function getComparisionData($current_ctc, $revised_ctc)
     {
@@ -261,16 +264,204 @@ class EmpSalaryRevision extends Model
 
         return $percentage_change;
     }
-    static public function changeStatus($id){
-        if($id==1){
+    static public function changeStatus($id)
+    {
+        if ($id == 1) {
             return 'Approved';
-        }elseif($id==0){
+        } elseif ($id == 0) {
             return 'Pending';
-        }elseif($id==2){
+        } elseif ($id == 2) {
             return 'Rejected';
-        }else{
+        } else {
             return 'Unknown';
         }
+    }
 
+    public static function getFullAndActualSalaryComponents($salary, $revised_ctc, $total_working_days,$lop_days)
+    {
+        $working_days=$total_working_days- $lop_days;
+
+
+        if ($revised_ctc > 0) {
+            $revised_monthly_ctc = floor($revised_ctc / 12);
+        }
+        $epf_percentage = 0.04802;
+        $basic_percentage = 0.42018; // 39.99% of CTC is Basic
+        $hra_percentage = 0.168082;
+        $pf_percentage = 0.04802;
+        $esi_percentage = 0.0075;
+
+        $full_epf = floor($revised_monthly_ctc * $epf_percentage);
+        $actual_epf=floor($salary * $epf_percentage);
+
+
+        $full_pf = floor($revised_monthly_ctc * $pf_percentage);
+        $actual_pf = floor($salary * $pf_percentage);
+
+        $full_gross = floor($revised_monthly_ctc -  $full_epf);
+        $actual_gross = floor($salary -  $actual_epf);
+
+        $full_esi = 0;
+        $actual_esi=0;
+        if ($full_gross <= 21000) {
+            $full_esi = ceil($full_gross * $esi_percentage);
+            $actual_esi = ceil($full_gross/$total_working_days * $working_days * $esi_percentage);
+            // dd($actual_esi);
+        }
+        $full_prof_tax = 0;
+        $actual_prof_tax = 0;
+        if ($full_gross > 15000 && $full_gross <= 20000 ) {
+            $full_prof_tax = 150;
+            $actual_prof_tax = 150;
+
+        } elseif($full_gross > 20000) {
+            $full_prof_tax = 200;
+            $actual_prof_tax = 200;
+        }
+
+        $full_basic = floor($full_gross * $basic_percentage);
+        $actual_basic = floor($full_basic/$total_working_days * $working_days);
+
+        $full_hra = floor($full_gross * $hra_percentage);
+        $actual_hra = floor($full_hra/$total_working_days * $working_days);
+        // dd( $full_hra, $actual_hra);
+
+        $full_conveyance = $full_gross > 0 ? 1600 : 0;
+        $actual_conveyance = $full_conveyance/$total_working_days * $working_days;
+        // dd($actual_conveyance);
+        $full_medical = $full_gross > 0 ? 1250 : 0;
+        $actual_medical = $full_medical/$total_working_days * $working_days;
+        // dd( $full_gross, $actual_gross );
+        $full_special = $full_gross - $full_basic - $full_hra - $full_conveyance - $full_medical;
+        // $actual_gross=$actual_basic+ $actual_hra+$actual_conveyance+$actual_medical+$actual_special;
+        $actual_special = $actual_gross - $actual_basic - $actual_hra - $actual_conveyance - $actual_medical;
+        // dd( $actual_special, $actual_gross,$actual_basic,$actual_hra,$actual_conveyance,$actual_medical);
+        $net_salary = $full_gross - $full_pf - $full_esi - $full_prof_tax;
+        $actual_net_salary = $actual_gross - $actual_pf - $actual_esi - $actual_prof_tax;
+        // dd($actual_net_salary);
+        $total_deductions=$full_pf + $full_esi + $full_prof_tax;
+        $actual_total_deductions=$actual_pf + $actual_esi + $actual_prof_tax;
+
+        // dd( $actual_total_deductions);
+        // dd($full_gross,$full_basic,$full_hra ,$full_conveyance,$full_medical, $full_pf, $full_prof_tax);
+
+        return [
+            'full_basic' => $full_basic,
+            'full_hra' => $full_hra,
+            'full_conveyance' => $full_conveyance,
+            'full_medical' => $full_medical,
+            'full_special' => $full_special,
+            'full_pf' => $full_pf,
+            'full_esi' => $full_esi,
+            'full_prof_tax' => $full_prof_tax,
+            'full_gross' => $full_gross,
+            'total_deductions'=>$total_deductions,
+            'net_salary' => $net_salary,
+            'full_days'=>$total_working_days,
+
+            'actual_basic' => $actual_basic,
+            'actual_hra' => $actual_hra,
+            'actual_conveyance' => $actual_conveyance,
+            'actual_medical' => $actual_medical,
+            'actual_special' => $actual_special,
+            'actual_pf' => $actual_pf,
+            'actual_esi' => $actual_esi,
+            'actual_prof_tax' => $actual_prof_tax,
+            'actual_gross' => $actual_gross,
+            'actual_total_deductions'=>$actual_total_deductions,
+            'actual_net_salary' => $actual_net_salary,
+            'actual_working_days' => $working_days,
+            'lop_days' => $lop_days,
+        ];
+    }
+    public static function convertNumberToWords($number)
+    {
+        // Array to represent numbers from 0 to 19 and the tens up to 90
+        $words = [
+            0 => 'zero',
+            1 => 'one',
+            2 => 'two',
+            3 => 'three',
+            4 => 'four',
+            5 => 'five',
+            6 => 'six',
+            7 => 'seven',
+            8 => 'eight',
+            9 => 'nine',
+            10 => 'ten',
+            11 => 'eleven',
+            12 => 'twelve',
+            13 => 'thirteen',
+            14 => 'fourteen',
+            15 => 'fifteen',
+            16 => 'sixteen',
+            17 => 'seventeen',
+            18 => 'eighteen',
+            19 => 'nineteen',
+            20 => 'twenty',
+            30 => 'thirty',
+            40 => 'forty',
+            50 => 'fifty',
+            60 => 'sixty',
+            70 => 'seventy',
+            80 => 'eighty',
+            90 => 'ninety'
+        ];
+
+        // Handle special cases
+        if ($number < 0) {
+            return 'minus ' . self::convertNumberToWords(-$number);
+        }
+
+        // Handle numbers less than 100
+        if ($number < 100) {
+            if ($number < 20) {
+                return $words[$number];
+            } else {
+                $tens = $words[10 * (int) ($number / 10)];
+                $ones = $number % 10;
+                if ($ones > 0) {
+                    return $tens . ' ' . $words[$ones];
+                } else {
+                    return $tens;
+                }
+            }
+        }
+
+        // Handle numbers greater than or equal to 100
+        if ($number < 1000) {
+            $hundreds = $words[(int) ($number / 100)] . ' hundred';
+            $remainder = $number % 100;
+            if ($remainder > 0) {
+                return $hundreds . ' ' . self::convertNumberToWords($remainder);
+            } else {
+                return $hundreds;
+            }
+        }
+
+        // Handle larger numbers
+        if ($number < 1000000) {
+            $thousands =  self::convertNumberToWords((int) ($number / 1000)) . ' thousand';
+            $remainder = $number % 1000;
+            if ($remainder > 0) {
+                return $thousands . ' ' .  self::convertNumberToWords($remainder);
+            } else {
+                return $thousands;
+            }
+        }
+
+        // Handle even larger numbers
+        if ($number < 1000000000) {
+            $millions =  self::convertNumberToWords((int) ($number / 1000000)) . ' million';
+            $remainder = $number % 1000000;
+            if ($remainder > 0) {
+                return $millions . ' ' .  self::convertNumberToWords($remainder);
+            } else {
+                return $millions;
+            }
+        }
+
+        // Handle numbers larger than or equal to a billion
+        return 'number too large to convert';
     }
 }

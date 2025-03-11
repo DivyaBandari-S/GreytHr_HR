@@ -1,8 +1,10 @@
 <?php
 
+use App\Livewire\AccountsJv;
 use App\Livewire\AddEditHrEmployees;
 use App\Livewire\AdminDashboard;
 use App\Livewire\AttendanceLockConfiguration;
+use App\Livewire\CompanyInfo;
 use App\Livewire\Dashboard;
 use App\Livewire\HrLogin;
 use App\Livewire\HomeDashboard;
@@ -31,6 +33,7 @@ use App\Livewire\EmpLeaveGranterDetails;
 use App\Livewire\EmployeeAsset;
 use App\Livewire\GrantLeaveBalance;
 use App\Livewire\RegularisationPendingForHr;
+use App\Livewire\ResettlementProcessPage;
 use App\Livewire\UpdateEmployeeDetails;
 use App\Livewire\Resignationrequests;
 use App\Livewire\EmployeeDirectory;
@@ -78,8 +81,16 @@ use App\Livewire\SwipeManagementForHr;
 use App\Livewire\AuthorizeSignatory;
 use App\Livewire\CreateSignatory;
 use App\Livewire\EmployeeDataUpdate;
+use App\Livewire\EmployeeLopDays;
 use App\Livewire\Loans;
+use App\Livewire\ReleaseSalary;
 use App\Livewire\EmployeeSeparation;
+use App\Livewire\EmpResettlement;
+use App\Livewire\ItStatement;
+use App\Livewire\SalarySlip;
+use App\Livewire\PayrollSalary;
+use App\Livewire\LeaveApplyOnBehalf;
+use App\Livewire\PayrollArrears;
 use App\Livewire\EditSignatory;
 use App\Livewire\Tasks;
 use App\Livewire\WhoIsInChartHr;
@@ -136,6 +147,7 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
         Route::get('/update-employee-details', UpdateEmployeeDetails::class)->name('update-employee-details');
         Route::get('/resig-requests', Resignationrequests::class)->name('resig-requests');
         Route::get('/HelpDesk', HelpDesk::class)->name('HelpDesk');
+        Route::get('/request', Requests::class)->name('request');
         Route::get('/user/tasks', Tasks::class)->name('tasks');
         // Route::get('/user/client-registration', ClientRegistration::class)->name('client.create');
         // Route for adding a new client
@@ -160,19 +172,24 @@ Route::get('/user/client-registration/{clientId}', ClientRegistration::class)->n
             ]);
         })->name('files.showTask');
 
-
+       //company info
+       Route::get('company-info',CompanyInfo::class)->name('company_info');
         //feeds
         Route::get('/hrFeeds', Feeds::class)->name('hrfeeds');
         Route::get('/everyone', Everyone::class)->name('everyone');
 
 
-        //HR Payroll Submodule Routes
+        //HR Payroll Submodule Routes->Published Info
         Route::get('/payslips', Payslips::class)->name('payslips');
         Route::get('/ctcslips', CTCSlips::class)->name('ctcslips');
         Route::get('/ytdreport', YtdReport::class)->name('ytdreport');
         Route::get('/pfytdreport', PfYtdReport::class)->name('pfytdreport');
         Route::get('/reimbursement', ReimbursementStatement::class)->name('reimbursement');
+        Route::get('/itstatement', ItStatement::class)->name('itstatement');
 
+        //HR Payroll Submodule Routes->Payouts
+        Route::get('/accountsjv', AccountsJv::class)->name('accountsjv');
+        Route::get('/salaryslip', SalarySlip::class)->name('salaryslip');
 
         //HR Employee-Main Submodule Routes
         Route::get('/user/main-overview', HrMainOverview::class)->name('main-overview');
@@ -218,6 +235,7 @@ Route::get('/user/client-registration/{clientId}', ClientRegistration::class)->n
 
         //HR Leave-Infomation Submodule Routes
         Route::get('/user/employee-leave', EmployeeLeave::class)->name('employee-leave');
+        Route::get('/user/apply-leave-behalf',LeaveApplyOnBehalf::class)->name('apply-leave-behalf');
         Route::get('/user/shift-roster-hr', ShiftRosterHr::class)->name(name: 'shift-roster-hr');
         Route::get('/user/attendance-info', HrAttendanceInfo::class)->name('attendance-info');
         Route::get('/user/attendance-muster-hr', AttendanceMusterHr::class)->name(name: 'attendance-muster-hr');
@@ -267,5 +285,11 @@ Route::get('/user/client-registration/{clientId}', ClientRegistration::class)->n
         Route::get('/user/salary-revision-analytics', SalaryRevisionAnalytics::class)->name('salary-revision-analytics');
         Route::get('/user/addorview-salary-revision', AddOrViewSalaryRevision::class)->name('addorview-salary-revision');
         Route::get('/user/loans', Loans::class)->name('loans');
+        Route::get('/user/release-salary', ReleaseSalary::class)->name('release-salary');
+        Route::get('/user/employee-lop-days', EmployeeLopDays::class)->name('employee-lop-days');
+        Route::get('/user/payroll-salary', PayrollSalary::class)->name('payroll-salary');
+        Route::get('/user/payroll/arrears', PayrollArrears::class)->name('arrears');
+        Route::get('/user/payroll/resttlement', EmpResettlement::class)->name('resttlement');
+        Route::get('/user/payroll/resttlement/process', ResettlementProcessPage::class)->name('resttelement-process');
     });
 });

@@ -131,7 +131,8 @@ body {
 }
 #sidebar .sidebar__menu > li > a.active,
 #sidebar .sidebar__menu > li > a:hover,
-#sidebar .sidebar__menu li > a.clicked {
+#sidebar .sidebar__menu li > a.clicked,
+#sidebar .sidebar__menu li > a.clicked-url {
 	/* background: var(--dark-l-1); */
 	background-color: #fff;
 	color: #545679;
@@ -958,10 +959,16 @@ body {
 	cursor: pointer;
   }
   
+  @media only screen and (max-width: 600px) {
+	.container-sec {
+		max-width: 220px !important;
+	}
+}
 
   
   .container-sec {
 	max-width: 990px;
+	/* width: inherit; */
 	padding: 20px;
 	/* background: #121212; */
 	position: relative;
@@ -1088,7 +1095,7 @@ body {
   /* From Uiverse.io by Smit-Prajapati */ 
 .card-stat {
 	position: relative;
-	width: 200px;
+	/* width: 200px; */
 	height: 200px;
 	background: lightgrey;
 	border-radius: 30px;
@@ -1321,3 +1328,9 @@ body {
 .fs10 {
 	font-size: 10px;
 }
+@media only screen and (max-width: 600px) {
+	.main__top__title {
+		display: none;
+	}
+}
+  
