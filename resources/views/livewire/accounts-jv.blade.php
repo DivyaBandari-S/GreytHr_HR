@@ -1,50 +1,8 @@
 <div>
-<style>
-    /* Ensure proper styling for table */
-    .payroll-table {
-        width: 90%;
-        border-radius: 5px;
-        border: 1px solid silver;
-        border-collapse: collapse; /* Ensures proper rendering */
-    }
-
-    /* Header styles */
-    .payroll-table th {
-        border: 1px solid silver;
-        padding: 8px;
-        text-align: center;
-        border-radius: 5px;
-        font-size: 12px;
-        background-color: #e4e9f0 !important;
-    }
-
-    /* Row styling */
-    .payroll-table td {
-        padding: 8px;
-        text-align: center;
-        font-size: 12px;
-    }
-
-    /* Apply alternate row colors */
-    .payroll-table tbody tr:nth-child(odd) {
-        background-color: #ffffff !important;
-    }
-
-    .payroll-table tbody tr:nth-child(even) {
-        background-color: rgb(250, 248, 248) !important;
-    }
-
-    /* 🚀 Hover Effect Fix */
-    .payroll-table tbody tr:hover {
-        background-color: #e4e9f0 !important; /* Light blue */
-        transition: background-color 0.3s ease-in-out;
-        cursor: pointer;
-    }
-</style>
 
 
 
-<div class="row" style="margin-top:-20px;">
+<div style="margin-top: -20px;">
 <ul class="nav custom-nav-tabs" role="tablist" >
     <li class="nav-item" role="presentation">
         <a class="nav-link active custom-nav-link" id="simple-tab-0" data-bs-toggle="tab" href="#simple-tabpanel-0" role="tab" aria-controls="simple-tabpanel-0" aria-selected="true">Main</a>

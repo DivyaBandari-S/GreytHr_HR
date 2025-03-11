@@ -53,6 +53,7 @@ class EmployeeSeparation extends Component
     public $showExitInterviewEdit = false;
     public $other_date;
     public $separationDetails;
+    public $selecetdEmpDetails;
 
     //get selected employee
     public function getSelectedEmp($empId)
@@ -60,6 +61,12 @@ class EmployeeSeparation extends Component
         $this->showResignSection = true;
         $this->showEmployeeSearch = false;
         $this->seleceted_emp_id = $empId;
+        $this->getEmpDetailsFor();
+    }
+
+    public function getEmpDetailsFor()
+    {
+        $this->selecetdEmpDetails = EmployeeDetails::where('emp_id', $this->seleceted_emp_id)->first();
     }
     public function getEmpSeparationDetails()
     {
@@ -92,10 +99,9 @@ class EmployeeSeparation extends Component
             ];
         } catch (\Exception $e) {
             Log::error('Error fetching separation details: ' . $e->getMessage());
+            FlashMessageHelper::flashError('An error occured please try again later.');
         }
     }
-
-
 
 
     //edit method
@@ -185,6 +191,7 @@ class EmployeeSeparation extends Component
     public function closeSearchContainer()
     {
         $this->showEmployeeSearch = !$this->showEmployeeSearch;
+        $this->getEmpDetailsFor();
     }
 
     //get employee filter based on dropdown
@@ -246,7 +253,7 @@ class EmployeeSeparation extends Component
     public function toggleContent()
     {
         switch ($this->separation_mode) {
-            case 'other':
+            case 'others':
                 $this->showOtherDetails = true;
                 $this->showResignationDetails = false;
                 $this->showOtherDetailsExp = false;
@@ -321,17 +328,24 @@ class EmployeeSeparation extends Component
                 ]
             );
 
+            // Check if EmployeeDetails exists and update `employee_status`
+            $employee = EmployeeDetails::where('emp_id', $this->seleceted_emp_id)->first();
+            if ($employee) {
+                $employee->update([
+                    'employee_status' => $this->separation_mode,
+                    'status' => false
+                ]);
+            }
+
             // Reset details and update UI
             $this->resetDetails();
             $this->showEdit = false;
             $this->getEmpSeparationDetails();
-
             // Flash a success message after saving the details
             FlashMessageHelper::flashSuccess('Data updated successfully');
         } catch (\Exception $e) {
             // Log the exception (optional)
             Log::error('Error while saving separation details: ' . $e->getMessage());
-
             // Flash an error message to inform the user
             FlashMessageHelper::flashError('An error occurred while saving the data. Please try again.');
         }
@@ -369,6 +383,14 @@ class EmployeeSeparation extends Component
                     'retired_date' => null
                 ]
             );
+            // Check if EmployeeDetails exists and update `employee_status`
+            $employee = EmployeeDetails::where('emp_id', $this->seleceted_emp_id)->first();
+            if ($employee) {
+                $employee->update([
+                    'employee_status' => $this->separation_mode,
+                    'status' => false
+                ]);
+            }
 
             $this->resetDetails();
             $this->showEdit = false;
@@ -417,6 +439,14 @@ class EmployeeSeparation extends Component
                     'remarks' => $this->remarks,
                 ]
             );
+            // Check if EmployeeDetails exists and update `employee_status`
+            $employee = EmployeeDetails::where('emp_id', $this->seleceted_emp_id)->first();
+            if ($employee) {
+                $employee->update([
+                    'employee_status' => $this->separation_mode,
+                    'status' => false
+                ]);
+            }
 
             $this->resetDetails();
             $this->showEdit = false;
@@ -469,9 +499,16 @@ class EmployeeSeparation extends Component
                     'remarks' => $this->remarks
                 ]
             );
-
+            // Check if EmployeeDetails exists and update `employee_status`
+            $employee = EmployeeDetails::where('emp_id', $this->seleceted_emp_id)->first();
+            if ($employee) {
+                $employee->update([
+                    'employee_status' => $this->separation_mode,
+                    'status' => false
+                ]);
+            }
             $this->resetDetails();
-            $this->showEdit = false;
+            $this->showResignationDetails = false;
             $this->showWarningModal = false;
             $this->getEmpSeparationDetails();
             // Flash a success message after saving the details
@@ -517,8 +554,16 @@ class EmployeeSeparation extends Component
                 ]
             );
 
+            // Check if EmployeeDetails exists and update `employee_status`
+            $employee = EmployeeDetails::where('emp_id', $this->seleceted_emp_id)->first();
+            if ($employee) {
+                $employee->update([
+                    'employee_status' => $this->separation_mode,
+                    'status' => false
+                ]);
+            }
             $this->resetDetails();
-            $this->showEdit = false;
+            $this->showExitInterviewEdit = false;
             $this->showWarningModal = false;
             $this->getEmpSeparationDetails();
             // Flash a success message after saving the details
@@ -539,6 +584,7 @@ class EmployeeSeparation extends Component
             $logginEmpId = Auth::guard('hr')->user()->hr_emp_id;
             // Check if the selected employee's separation mode already exists
             $existingSeparation = EmpSeparationDetails::where('emp_id', $this->seleceted_emp_id)->first();
+
             // If the separation mode exists and it's different from the entered one
             if ($existingSeparation && $existingSeparation->separation_mode != $this->separation_mode) {
                 // Trigger warning modal (can be done by setting a flag for the frontend)
@@ -567,9 +613,16 @@ class EmployeeSeparation extends Component
                     'alt_email_no' => $this->alt_email_no
                 ]
             );
-
+            // Check if EmployeeDetails exists and update `employee_status`
+            $employee = EmployeeDetails::where('emp_id', $this->seleceted_emp_id)->first();
+            if ($employee) {
+                $employee->update([
+                    'employee_status' => $this->separation_mode,
+                    'status' => false
+                ]);
+            }
             $this->resetDetails();
-            $this->showEdit = false;
+            $this->showExitDetailsEdit = false;
             $this->showWarningModal = false;
             $this->getEmpSeparationDetails();
             // Flash a success message after saving the details
@@ -585,25 +638,56 @@ class EmployeeSeparation extends Component
     // handle dynamic method calling
     public function handleConfirmation()
     {
-        // Ensure separation_mode is updated before calling the dynamic method
-        if ($this->separation_mode) {
-            // Here, you can update the separation_mode wherever necessary.
-            $existingSeparation = EmpSeparationDetails::where('emp_id', $this->seleceted_emp_id)->first();
+        try {
 
-            if ($existingSeparation) {
-                $existingSeparation->update([
-                    'separation_mode' => $this->separation_mode, // Update the separation mode
-                ]);
+            // Ensure separation_mode is updated before calling the dynamic method
+            if ($this->separation_mode) {
+                // Check if emp_id exists in EmpSeparationDetails
+                $existingSeparation = EmpSeparationDetails::where('emp_id', $this->seleceted_emp_id)->first();
+    
+                if ($existingSeparation) {
+                    $existingSeparation->update([
+                        'separation_mode' => $this->separation_mode, // Update the separation mode
+                    ]);
+                } else {
+                    FlashMessageHelper::flashWarning('EmpSeparationDetails not found for emp_id: ' . $this->seleceted_emp_id);
+                }
             }
-        }
 
-        // Check if the method name is set
-        if (method_exists($this, $this->method)) {
-            // Dynamically call the method
-            $this->{$this->method}();
-        } else {
-            // Handle the case where the method is not found
-            FlashMessageHelper::flashError('Invalid method.');
+
+            // Check if EmployeeDetails exists and update `employee_status`
+            $employee = EmployeeDetails::where('emp_id', $this->seleceted_emp_id)->first();
+            if ($employee) {
+                Log::info('Updating EmployeeDetails for emp_id: ' . $this->seleceted_emp_id);
+                $employee->update([
+                    'employee_status' => $this->separation_mode,
+                    'status' => false
+                ]);
+            } else {
+                FlashMessageHelper::flashWarning('EmployeeDetails not found for emp_id: ' . $this->seleceted_emp_id);
+            }
+    
+
+            // Check if the method name is set and exists
+            if (isset($this->method) && method_exists($this, $this->method)) {
+                $this->{$this->method}();
+            } else {
+                Log::error('Invalid method: ' . ($this->method ?? 'NULL'));
+                FlashMessageHelper::flashError('Invalid method call.');
+            }
+    
+            FlashMessageHelper::flashSuccess('Separation details updated successfully!');
+            $this->showWarningModal = false;
+
+        } catch (\Exception $e) {
+            // Log the exception for debugging
+            Log::error('Error in handleConfirmation: ' . $e->getMessage());
+    
+            // Optional: log the stack trace for deeper debugging
+            Log::error($e->getTraceAsString());
+    
+            // Show error message to the user
+            FlashMessageHelper::flashError('An error occurred while updating separation details. Please try again.');
         }
     }
 
@@ -654,7 +738,9 @@ class EmployeeSeparation extends Component
                 'employeeIds' => $this->employeeIds,
                 'separationDetails' => $this->separationDetails,
                 'warningMessage' => $this->warningMessage,
-                'method' => $this->method
+                'method' => $this->method,
+                'selecetdEmpDetails' => $this->selecetdEmpDetails,
+                'seleceted_emp_id' => $this->seleceted_emp_id
             ]
         );
     }

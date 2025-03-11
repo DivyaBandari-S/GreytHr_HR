@@ -32,6 +32,7 @@ use App\Livewire\EmpLeaveGranterDetails;
 use App\Livewire\EmployeeAsset;
 use App\Livewire\GrantLeaveBalance;
 use App\Livewire\RegularisationPendingForHr;
+use App\Livewire\ResettlementProcessPage;
 use App\Livewire\UpdateEmployeeDetails;
 use App\Livewire\Resignationrequests;
 use App\Livewire\EmployeeDirectory;
@@ -85,9 +86,13 @@ use App\Livewire\ReleaseSalary;
 use App\Livewire\EmployeeSeparation;
 use App\Livewire\FinalSettlement;
 use App\Livewire\FinalSettlementStepper;
+use App\Livewire\EmpResettlement;
 use App\Livewire\ItStatement;
+use App\Livewire\SalarySlip;
 use App\Livewire\PayrollSalary;
 use App\Livewire\LeaveApplyOnBehalf;
+use App\Livewire\QuickSalary;
+use App\Livewire\PayrollArrears;
 use App\Livewire\Tasks;
 use App\Livewire\WhoIsInChartHr;
 use App\Livewire\YearEndProcess;
@@ -161,9 +166,11 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
         Route::get('/pfytdreport', PfYtdReport::class)->name('pfytdreport');
         Route::get('/reimbursement', ReimbursementStatement::class)->name('reimbursement');
         Route::get('/itstatement', ItStatement::class)->name('itstatement');
-
         //HR Payroll Submodule Routes->Payouts
         Route::get('/accountsjv', AccountsJv::class)->name('accountsjv');
+        Route::get('/salaryslip', SalarySlip::class)->name('salaryslip');
+       //HR Payroll Submodule Routes->Verify
+       Route::get('/quicksalary', QuickSalary::class)->name('quicksalary');
 
 
         //HR Employee-Main Submodule Routes
@@ -209,7 +216,7 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
 
         //HR Leave-Infomation Submodule Routes
         Route::get('/user/employee-leave', EmployeeLeave::class)->name('employee-leave');
-        Route::get('/user/post-leave-request',LeaveApplyOnBehalf::class)->name('post-leave-request');
+        Route::get('/user/apply-leave-behalf',LeaveApplyOnBehalf::class)->name('apply-leave-behalf');
         Route::get('/user/shift-roster-hr', ShiftRosterHr::class)->name(name: 'shift-roster-hr');
         Route::get('/user/attendance-info', HrAttendanceInfo::class)->name('attendance-info');
         Route::get('/user/attendance-muster-hr', AttendanceMusterHr::class)->name(name: 'attendance-muster-hr');
@@ -264,5 +271,8 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
         Route::get('/user/payroll-salary', PayrollSalary::class)->name('payroll-salary');
         Route::get('/user/final-settlement', FinalSettlement::class)->name('final-settlement');
         Route::get('/user/final-settlement-stepper',FinalSettlementStepper::class)->name('final-settlement-stepper');
+        Route::get('/user/payroll/arrears', PayrollArrears::class)->name('arrears');
+        Route::get('/user/payroll/resttlement', EmpResettlement::class)->name('resttlement');
+        Route::get('/user/payroll/resttlement/process', ResettlementProcessPage::class)->name('resttelement-process');
     });
 });

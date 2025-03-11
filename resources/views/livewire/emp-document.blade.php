@@ -170,7 +170,7 @@
 
 
 </style>
-<div class="row" style="margin-top:-20px;">
+<div style="margin-top: -20px;">
 <ul class="nav custom-nav-tabs" role="tablist" >
     <li class="nav-item" role="presentation">
         <a class="nav-link active custom-nav-link" id="simple-tab-0" data-bs-toggle="tab" href="#simple-tabpanel-0" role="tab" aria-controls="simple-tabpanel-0" aria-selected="true">Main</a>
@@ -640,15 +640,33 @@
                 @endforeach
             @else
                 {{-- No requests found for the current employee --}}
-                <div class="request-item-container">
-                    <h3>No requests found for Employee ID: {{ $employeeId }}</h3>
-                </div>
+                <div class="d-flex justify-content-start align-items-start mt-2">
+                <div class="card p-4 text-start">
+                <div class="no-data p-4 text-align-center justify-content-center align-items-center" style="width:900px;height:300px">
+        <img src="{{ asset('images/no-data_Gif.gif') }}" 
+     alt="No data available" 
+     style="width:100%; height: 250px; object-fit: contain;">
+
+            <p>No data available</p>
+        </div>
+        </div>
+        </div>
             @endif
         @endforeach
     @else
-    <div class="request-item-container">
-                    <h3>No requests found for Employee ID: {{ $employeeId }}</h3>
-                </div>
+    
+    <div class="d-flex justify-content-start align-items-start mt-2">
+                <div class="card text-start">
+                <div class="no-data text-align-center justify-content-center align-items-center" style="width:900px;height:300px">
+        <img src="{{ asset('images/no-data_Gif.gif') }}" 
+     alt="No data available" 
+     style="width:100%; height: 250px; object-fit: contain;">
+
+            <p>No data available</p>
+        </div>
+        </div>
+        </div>
+               
     @endif
 
 
@@ -929,9 +947,19 @@
             @endforeach
       
 @else
-<div class="request-item-container">
-                    <h3>No requests found for Employee ID</h3>
-                </div>
+
+<div class="d-flex justify-content-start align-items-start mt-2">
+                <div class="card text-start">
+                <div class="no-data  text-align-center justify-content-center align-items-center" style="width:900px;height:300px">
+        <img src="{{ asset('images/no-data_Gif.gif') }}" 
+     alt="No data available" 
+     style="width:100%; height: 250px; object-fit: contain;">
+
+            <p>No data available</p>
+        </div>
+        </div>
+        </div>
+              
 @endif
 @endforeach
 

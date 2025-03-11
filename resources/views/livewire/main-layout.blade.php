@@ -141,7 +141,7 @@
                     <li>
                         <a href="#">Verify <i class="ph-caret-right-fill"></i></a>
                         <ul class="sidebar__dropdown-menu">
-                            <li><a href="/home">Quick Salary Statement</a></li>
+                            <li><a href="/hr/quicksalary">Quick Salary Statement</a></li>
                             <li><a href="/home">Payroll Statement</a></li>
                             <li><a href="/home">Payroll Differences</a></li>
                         </ul>
@@ -152,7 +152,7 @@
                             <li><a href="/hr/accountsjv">Accounts JV</a></li>
                             <li><a href="/user">Bank Transfer</a></li>
                             <li><a href="/user">Cheque / Cash Statement</a></li>
-                            <li><a href="/user">Payslips</a></li>
+                            <li><a href="/hr/salaryslip">Payslips</a></li>
                             <li><a href="/hr/user/hold-salaries">Hold Salary Payout</a></li>
                         </ul>
                     </li>

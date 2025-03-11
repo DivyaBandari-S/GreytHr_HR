@@ -2,7 +2,7 @@
 
 
 
-<div class="row" style="margin-top:-20px;">
+<div style="margin-top: -20px;">
 <ul class="nav custom-nav-tabs" role="tablist" >
     <li class="nav-item" role="presentation">
         <a class="nav-link active custom-nav-link" id="simple-tab-0" data-bs-toggle="tab" href="#simple-tabpanel-0" role="tab" aria-controls="simple-tabpanel-0" aria-selected="true">Main</a>
@@ -21,7 +21,7 @@
                         <div class="row d-flex align-items-center">
     <div class="col-10">
         <p class="main-text mb-0">
-        The Payslip page displays the payslips of employees. This is the same view as seen by the employees on the Employee Self Service portal. The Lock & Publish button appears on this page if the Payslips are not yet released on the portal. Click this button to lock the Payroll and allow employees to view their Payslip
+        The CTC Payslip page displays the payslips of employees as per their annual CTC. 
         </p>
     </div>
     <div class="col-2 text-end">
@@ -92,7 +92,7 @@
                 <!-- Dropdown icon on the left side -->
                 <span class="input-group-text" id="basic-addon" style="background:#5bb75b; width: 30px; display: flex; justify-content: center; align-items: center;height:30px">
                     <button class="dropdown-toggle payroll" id="dropdownButton">
-                        <i class="bi bi-box" ></i> <!-- Box icon for dropdown -->
+                    <!-- Box icon for dropdown -->
                     </button>
                 </span>
 
