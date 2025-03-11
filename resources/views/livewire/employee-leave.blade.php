@@ -333,7 +333,7 @@
                     <p class="employee-leave-start-para">Start searching to see specific employee details here</p>
                     <div class="d-flex mb-2">
                         <label style="margin-top: 7px;" for="">Employee Type:</label>
-                        <select class="Employee-select-leave" style="border: none; margin-left: 10px;"
+                        <select class="Employee-select-leave" style="border: none; margin-left: 10px; width: 195px;"
                             wire:model="employeeType" wire:change="filterEmployeeType">
                             <option value="active">Current Employees</option>
                             <option value="non-active">Past Employees</option>
@@ -354,7 +354,7 @@
                         </div>
                         @if ($selectedEmployee)
                         <div class="row" style="margin-top: 10px; margin-bottom: 10px;">
-                            <div class="col-md-4 col-6">
+                            <div class="col-md-6 col-6">
                                 <div class="d-flex Employee-details-hr">
                                     <div class="d-flex Employee-details-img-details-hr">
                                         @if ($selectedEmployeesDetails && $selectedEmployeesDetails->isNotEmpty())
@@ -1224,6 +1224,7 @@
     document.addEventListener('DOMContentLoaded', function() {
         const ctx = document.getElementById('leaveChart').getContext('2d');
         let leaveChart;
+        console.log(monthlyCounts);
 
         function renderChart(monthlyCounts) {
             if (leaveChart) {

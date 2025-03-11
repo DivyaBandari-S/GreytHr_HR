@@ -484,6 +484,7 @@ public static function getLeaveBalances($employeeId, $selectedYear)
                 ->where('leave_status', 2)
                 ->whereYear('created_at', $yearToFetch)
                 ->get();
+
             $leaveBalances = EmployeeLeave::getLeaveBalances($this->selectedEmployee,  $yearToFetch);
             
             // Structure leave data
