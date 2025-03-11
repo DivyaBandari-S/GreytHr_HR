@@ -511,7 +511,7 @@
                                 Post Leave Transaction
                             </button>
                             <button class="cancel-btn" type="button">
-                                <a href="/hr/user/post-leave-request">
+                                <a href="/hr/user/apply-leave-behalf">
                                     Apply on Behalf
                                 </a>
                             </button>

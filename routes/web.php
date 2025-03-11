@@ -32,6 +32,7 @@ use App\Livewire\EmpLeaveGranterDetails;
 use App\Livewire\EmployeeAsset;
 use App\Livewire\GrantLeaveBalance;
 use App\Livewire\RegularisationPendingForHr;
+use App\Livewire\ResettlementProcessPage;
 use App\Livewire\UpdateEmployeeDetails;
 use App\Livewire\Resignationrequests;
 use App\Livewire\EmployeeDirectory;
@@ -83,11 +84,13 @@ use App\Livewire\EmployeeLopDays;
 use App\Livewire\Loans;
 use App\Livewire\ReleaseSalary;
 use App\Livewire\EmployeeSeparation;
+use App\Livewire\EmpResettlement;
 use App\Livewire\ItStatement;
 use App\Livewire\SalarySlip;
 use App\Livewire\PayrollSalary;
 use App\Livewire\LeaveApplyOnBehalf;
 use App\Livewire\QuickSalary;
+use App\Livewire\PayrollArrears;
 use App\Livewire\Tasks;
 use App\Livewire\WhoIsInChartHr;
 use App\Livewire\YearEndProcess;
@@ -211,7 +214,7 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
 
         //HR Leave-Infomation Submodule Routes
         Route::get('/user/employee-leave', EmployeeLeave::class)->name('employee-leave');
-        Route::get('/user/post-leave-request',LeaveApplyOnBehalf::class)->name('post-leave-request');
+        Route::get('/user/apply-leave-behalf',LeaveApplyOnBehalf::class)->name('apply-leave-behalf');
         Route::get('/user/shift-roster-hr', ShiftRosterHr::class)->name(name: 'shift-roster-hr');
         Route::get('/user/attendance-info', HrAttendanceInfo::class)->name('attendance-info');
         Route::get('/user/attendance-muster-hr', AttendanceMusterHr::class)->name(name: 'attendance-muster-hr');
@@ -264,5 +267,8 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
         Route::get('/user/release-salary', ReleaseSalary::class)->name('release-salary');
         Route::get('/user/employee-lop-days', EmployeeLopDays::class)->name('employee-lop-days');
         Route::get('/user/payroll-salary', PayrollSalary::class)->name('payroll-salary');
+        Route::get('/user/payroll/arrears', PayrollArrears::class)->name('arrears');
+        Route::get('/user/payroll/resttlement', EmpResettlement::class)->name('resttlement');
+        Route::get('/user/payroll/resttlement/process', ResettlementProcessPage::class)->name('resttelement-process');
     });
 });
