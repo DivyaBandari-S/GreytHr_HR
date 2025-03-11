@@ -71,7 +71,7 @@
                                 style="width: 90px; height: 90px; border: 1px solid rgb(182, 147, 194); border-radius: 5px; margin-left: 20px;padding: 10px; background:rgb(234, 225, 237);cursor:pointer">
                                 <img src="{{ asset('images/postheader.jpeg') }}"
                                     style="width: 30px; height: 30px; margin-bottom: 20px;" alt="">
-                                <p style="font-size: 10px; font-weight: 600;margin-top:-5px">create <br >posts</p>
+                                <p style="font-size: 10px; font-weight: 600;margin-top:-5px">Create <br >Posts</p>
                             </div>
                             @if ($showKudosDialog)
                                 <div class="modal" tabindex="-1" role="dialog" style="display: block;">

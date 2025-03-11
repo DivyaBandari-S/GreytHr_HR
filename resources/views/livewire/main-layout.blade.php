@@ -141,7 +141,7 @@
                     <li>
                         <a href="#">Verify <i class="ph-caret-right-fill"></i></a>
                         <ul class="sidebar__dropdown-menu">
-                            <li><a href="/home">Quick Salary Statement</a></li>
+                            <li><a href="/hr/quicksalary">Quick Salary Statement</a></li>
                             <li><a href="/home">Payroll Statement</a></li>
                             <li><a href="/home">Payroll Differences</a></li>
                         </ul>

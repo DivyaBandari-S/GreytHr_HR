@@ -87,6 +87,7 @@ use App\Livewire\ItStatement;
 use App\Livewire\SalarySlip;
 use App\Livewire\PayrollSalary;
 use App\Livewire\LeaveApplyOnBehalf;
+use App\Livewire\QuickSalary;
 use App\Livewire\Tasks;
 use App\Livewire\WhoIsInChartHr;
 use App\Livewire\YearEndProcess;
@@ -160,10 +161,12 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
         Route::get('/pfytdreport', PfYtdReport::class)->name('pfytdreport');
         Route::get('/reimbursement', ReimbursementStatement::class)->name('reimbursement');
         Route::get('/itstatement', ItStatement::class)->name('itstatement');
-
         //HR Payroll Submodule Routes->Payouts
         Route::get('/accountsjv', AccountsJv::class)->name('accountsjv');
         Route::get('/salaryslip', SalarySlip::class)->name('salaryslip');
+       //HR Payroll Submodule Routes->Verify
+       Route::get('/quicksalary', QuickSalary::class)->name('quicksalary');
+    
 
         //HR Employee-Main Submodule Routes
         Route::get('/user/main-overview', HrMainOverview::class)->name('main-overview');

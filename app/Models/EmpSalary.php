@@ -19,6 +19,8 @@ class EmpSalary extends Model
     /**
      * Set and encode salary before saving.
      */
+    
+
     public function setSalaryAttribute($value)
     {
         $decimalPlaces = strpos($value, '.') !== false ? strlen(substr(strrchr($value, "."), 1)) : 0;

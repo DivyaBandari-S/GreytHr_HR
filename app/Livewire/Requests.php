@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Helpers\FlashMessageHelper;
 use App\Models\EmployeeDetails;
+use App\Models\HelpDesks;
 use App\Models\OffboardingRequest;
 use App\Models\Request;
 use Illuminate\Support\Facades\Auth;
@@ -325,36 +326,36 @@ class Requests extends Component
         {
             $this->showViewImageDialog = false;
         }
-        public function searchHelpDesk($searchTerm)
-        {
-            $employeeId = auth()->user()->emp_id;
-            
-            // Start the base query based on status and employee ID or cc_to
-            $query = OffboardingRequest::where(function ($query) use ($employeeId) {
-                $query->where('emp_id', $employeeId)->orWhere('cc_to', 'like', "%$employeeId%");
-            });
+        private function extractEmpId($string)
+{
+    preg_match('/\(#(.*?)\)/', $string, $matches);
+    return $matches[1] ?? null; // Return extracted emp_id or null
+}
 
-            // If there's a search term, apply search filtering
-            if ($searchTerm) {
-                $query->where(function ($query) use ($searchTerm) {
-                    $query->where('emp_id', 'like', '%' . $searchTerm . '%')
-                        
-                        ->orWhereHas('emp', function ($query) use ($searchTerm) {
-                            $query->where('first_name', 'like', '%' . $searchTerm . '%')
-                                ->orWhere('last_name', 'like', '%' . $searchTerm . '%');
-                        });
-                });
-            }
+public function searchHelpDesk($searchTerm)
+{
+    $employeeId = auth()->user()->emp_id;
+
+    $query = OffboardingRequest::where(function ($query) use ($employeeId) {
+        $query->where('emp_id', $employeeId)
+              ->orWhere('cc_to', 'like', "%$employeeId%");
+    });
+
+    if ($searchTerm) {
+        $query->where(function ($query) use ($searchTerm) {
+            // Ensure case-insensitive search and match partial names in cc_to
+            $query->orWhereRaw("LOWER(cc_to) LIKE LOWER(?)", ["%$searchTerm%"]);
+        });
+    }
+
+    $this->filterData = $query->orderBy('created_at', 'desc')->get();
+   // Debugging
+    $this->peopleFound = count($this->filterData) > 0;
+}
+
+
+
         
-            // Log the query to check if it's correct
-            Log::info("HelpDesk Query: " . $query->toSql());
-            Log::info("Bindings: " . implode(', ', $query->getBindings()));
-    
-            // Get results and update filterData
-            $this->filterData = $query->orderBy('created_at', 'desc')->get();
-        
-            $this->peopleFound = count($this->filterData) > 0;
-        }
         
     
     public function closePeoples()
@@ -372,7 +373,7 @@ class Requests extends Component
         // Pass the activeSearch property (which holds the search term)
         $this->searchHelpDesk($this->activeSearch);
     }
-    
+
 
     public function closecatalog()
     {
@@ -433,118 +434,71 @@ class Requests extends Component
 
   
     }
-    public function selectPerson($personId)
+
+
+    public function addselectPerson($personId)
     {
         try {
-            if (count($this->selectedPeopleNames) >= 5 && !in_array($personId, $this->selectedPeople)) {
- 
-                return;
-            }
+            $addselectedPerson = $this->peoples->where('emp_id', $personId)->first();
     
-          
-            $selectedPerson = $this->peoples->where('emp_id', $personId)->first();
-
-            if ($selectedPerson) {
-                if (in_array($personId, $this->selectedPeople)) {
-                    $this->selectedPeopleNames[] =  ucwords(strtolower($selectedPerson->first_name)) . ' ' . ucwords(strtolower($selectedPerson->last_name)) . ' #(' . $selectedPerson->emp_id . ')';
+            if ($addselectedPerson) {
+                $fullName = ucwords(strtolower($addselectedPerson->first_name)) . ' ' . ucwords(strtolower($addselectedPerson->last_name)) . ' (#' . $addselectedPerson->emp_id . ')';
+    
+                // Toggle selection
+                if (in_array($personId, $this->addselectedPeople)) {
+                    // Remove from selection
+                    $this->addselectedPeople = array_values(array_diff($this->addselectedPeople, [$personId]));
+                    $this->selectedPeopleNames = array_values(array_diff($this->selectedPeopleNames, [$fullName]));
                 } else {
-                    $this->selectedPeopleNames = array_diff($this->selectedPeopleNames, [ucwords(strtolower($selectedPerson->first_name)) . ' ' . ucwords(strtolower($selectedPerson->last_name)) . ' #(' . $selectedPerson->emp_id . ')']);
+                    // Allow only one selection
+                    if (count($this->addselectedPeople) < 1) {
+                        $this->addselectedPeople[] = $personId;
+                        $this->selectedPeopleNames = [$fullName]; // Reset and set only the selected one
+                    }
                 }
-                $this->cc_to = implode(', ', array_unique($this->selectedPeopleNames));
+    
+                // Update cc_to field
+                $this->cc_to = implode(', ', $this->selectedPeopleNames);
             }
         } catch (\Exception $e) {
-            // Log the exception message or handle it as needed
             Log::error('Error selecting person: ' . $e->getMessage());
-            // Optionally, you can set an error message to display to the user
-            $this->dispatchBrowserEvent('error', ['message' => 'An error occurred while selecting the person. Please try again.']);
-        }
-   
-    }
-    public function updatedSelectedPeople()
-    {
-        // Check if the number of selected people exceeds 5
-        if (count($this->selectedPeople) > 5) {
-            if (!$this->warningShown) {
-                // Flash a warning message only once
-                FlashMessageHelper::flashWarning('You can only select up to 5 people.');
-                
-                // Set the flag to true, so the warning won't be shown again in this iteration
-                $this->warningShown = true;
-            }
-            
-            // Optionally, reset the selected people array or remove the last selection
-            $this->selectedPeople = array_slice($this->selectedPeople, 0, 5);
-        } else {
-            // If the number of selected people is valid, update the cc_to field
-            $this->cc_to = implode(', ', array_unique($this->selectedPeopleNames));
-            
-            // Reset the warning flag when the count is valid
-            $this->warningShown = false;
+            $this->dispatch('error', ['message' => 'An error occurred while selecting the person. Please try again.']);
         }
     }
-public function addselectPerson($personId)
-{
-    try {
-        $addselectedPerson = $this->peoples->where('emp_id', $personId)->first();
-
-        if ($addselectedPerson) {
-            // Toggle the person's selection
-            if (in_array($personId, $this->addselectedPeople)) {
-                // Remove from selection
-                $this->addselectedPeople = array_diff($this->addselectedPeople, [$personId]);
-                $this->selectedPeopleNames = array_diff($this->selectedPeopleNames, [
-                    ucwords(strtolower($addselectedPerson->first_name)) . ' ' . ucwords(strtolower($addselectedPerson->last_name)) . ' #(' . $addselectedPerson->emp_id . ')',
-                ]);
-            } else {
-                // Add to selection (ensure limit of 1 is respected)
-                if (count($this->addselectedPeople) < 1) {
-                    $this->addselectedPeople[] = $personId;
-                    $this->selectedPeopleNames[] = ucwords(strtolower($addselectedPerson->first_name)) . ' ' . ucwords(strtolower($addselectedPerson->last_name)) . ' #(' . $addselectedPerson->emp_id . ')';
-                
-                }
-            }
-
-            // Update cc_to field
-            $this->cc_to = implode(', ', array_unique($this->selectedPeopleNames));
-        }
-    } catch (\Exception $e) {
-        Log::error('Error selecting person: ' . $e->getMessage());
-        $this->dispatch('error', ['message' => 'An error occurred while selecting the person. Please try again.']);
-    }
-}
+    
 
     public function updatedAddselectedPeople()
     {
-        // Ensure $this->addselectedPeople is always an array
+        // Ensure `$this->addselectedPeople` is always an array
         if (!is_array($this->addselectedPeople)) {
             $this->addselectedPeople = [];
         }
     
-        // Limit the selection in addselectedPeople to a maximum of 1
+        // Limit selection to only 1 person
         if (count($this->addselectedPeople) > 1) {
             FlashMessageHelper::flashWarning('You can only select up to 1 person.');
-            $this->addselectedPeople = array_slice($this->addselectedPeople, 0, 1); // Trim the array
+            $this->addselectedPeople = array_slice($this->addselectedPeople, 0, 1);
         }
     
-        // Clear $selectedPeopleNames and rebuild it based on $addselectedPeople
+        // Rebuild `$selectedPeopleNames`
         $this->selectedPeopleNames = [];
     
         foreach ($this->addselectedPeople as $personId) {
             $person = $this->peoples->where('emp_id', $personId)->first();
             if ($person) {
-                $name = ucwords(strtolower($person->first_name)) . ' ' . ucwords(strtolower($person->last_name)) . ' #(' . $person->emp_id . ')';
-                if (!in_array($name, $this->selectedPeopleNames)) {
-                    $this->selectedPeopleNames[] = $name;
-                }
+                $fullName = ucwords(strtolower($person->first_name)) . ' ' . ucwords(strtolower($person->last_name)) . ' (#' . $person->emp_id . ')';
+                $this->selectedPeopleNames = [$fullName]; // Only keep the selected person
             }
         }
     
-        // Update cc_to field
-        $this->cc_to = implode(', ', array_unique($this->selectedPeopleNames));
+        // Update `cc_to` field
+        $this->cc_to = implode(', ', $this->selectedPeopleNames);
+    
+        // Update additional fields based on selected person
         if (!empty($this->addselectedPeople)) {
             $selectedPersonId = $this->addselectedPeople[0];
             $selectedPerson = EmployeeDetails::where('emp_id', $selectedPersonId)->first();
-
+    
             if ($selectedPerson) {
                 $this->mail = $selectedPerson->email ?? '-';
                 $this->mobile = $selectedPerson->emergency_contact ?? '-';
@@ -552,15 +506,15 @@ public function addselectPerson($personId)
             } else {
                 $this->mail = null;
                 $this->mobile = null;
-                $this->job_role=null;
+                $this->job_role = null;
             }
         } else {
             $this->mail = null;
             $this->mobile = null;
-            $this->job_role=null;
+            $this->job_role = null;
         }
-     
     }
+    
  
  public function Offboarding()
     {
@@ -623,7 +577,7 @@ public function addselectPerson($personId)
                
                 'mobile' => $this->mobile,
                 'mail' => $this->mail,
-        'file_paths' => !empty($fileDataArray) ? json_encode($fileDataArray) : null, 
+         'file_paths' => !empty($fileDataArray) ? json_encode($fileDataArray) : null, 
                 'cc_to' => $this->cc_to ,
                 'status_code' => 8, // Pending or any default status code
                 'last_working_day' => $this->last_working_day, // Make sure this is added
@@ -632,7 +586,7 @@ public function addselectPerson($personId)
 
             FlashMessageHelper::flashSuccess('Request created successfully.');
             $this->reset();
-            return redirect()->to('/request');
+     $this->IDRequestaceessDialog=false;
         } catch (\Illuminate\Validation\ValidationException $e) {
             $this->setErrorBag($e->validator->getMessageBag());
         } catch (\Exception $e) {
