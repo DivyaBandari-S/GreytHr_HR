@@ -53,4 +53,5 @@ class LogOut extends Component
     {
         return view('livewire.log-out');
     }
+
 }

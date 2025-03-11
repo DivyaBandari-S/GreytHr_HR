@@ -11,9 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
+        Schema::create('company_types', function (Blueprint $table) {
+            $table->id(); // Default bigIncrements
+            $table->string('name', 100)->unique();
+            $table->timestamps();
+        });
+
         Schema::create('industry_types', function (Blueprint $table) {
-            $table->mediumIncrements('id');
-            $table->string('name',100)->unique();
+            $table->id(); // Changed from mediumIncrements to id()
+            $table->string('name', 100)->unique();
             $table->timestamps();
         });
     }
@@ -24,5 +30,6 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('industry_types');
+        Schema::dropIfExists('company_types'); // Added this line to properly rollback both tables
     }
 };
