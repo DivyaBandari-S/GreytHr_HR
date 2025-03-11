@@ -1389,15 +1389,15 @@ a.custom-nav-link {
 }
 /* Custom tab styles */
 .custom-nav-tabs {
-    margin-top: 10px;
+
     background-color: #fff;
     border-radius: 5px;
     display: flex;
     font-weight: 500;
+    width:100%;
     text-align: center;
     color: var(--label-color);
-    padding: 0;
-    margin: 0;
+
     font-size: var(--normal-font-size);
 }
 

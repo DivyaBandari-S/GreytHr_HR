@@ -97,6 +97,8 @@ class EmpSalaryRevision extends Model
     /**
      * Relationship to Employee model.
      */
+
+
     public function employee()
     {
         return $this->belongsTo(EmployeeDetails::class, 'emp_id', 'emp_id');

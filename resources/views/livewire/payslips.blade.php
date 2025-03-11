@@ -1,6 +1,6 @@
 <div>
 
-<div class="row" style="margin-top:-20px;width:100%">
+<div style="margin-top: -20px;">
 <ul class="nav custom-nav-tabs" role="tablist" >
     <li class="nav-item" role="presentation">
         <a class="nav-link active custom-nav-link" id="simple-tab-0" data-bs-toggle="tab" href="#simple-tabpanel-0" role="tab" aria-controls="simple-tabpanel-0" aria-selected="true">Main</a>
@@ -10,7 +10,6 @@
     </li>
 </ul>
 </div>
-
 
 <div class="tab-content pt-5" id="tab-content">
   <div class="tab-pane active" id="simple-tabpanel-0" role="tabpanel" aria-labelledby="simple-tab-0" style="overflow-x: hidden;">
@@ -90,7 +89,7 @@
                 <!-- Dropdown icon on the left side -->
                 <span class="input-group-text" id="basic-addon" style="background:#5bb75b; width: 30px; display: flex; justify-content: center; align-items: center;height:30px">
                     <button class="dropdown-toggle payroll" id="dropdownButton">
-                        <i class="bi bi-box" ></i> <!-- Box icon for dropdown -->
+                        <!-- Box icon for dropdown -->
                     </button>
                 </span>
 
@@ -168,10 +167,10 @@
                 <tbody class="payslip-body" style="border-radius:5px">
                     <tr class="payslip-row">
                         <td class="data" style="width:50%;">
-                            <span style="color:#778899;">Employee No:</span> {{ $employeeDetails->emp_id }}
+                            <span style="color:#778899;">Employee No:</span> {{ $employees['emp_id'] }}
                         </td>
                         <td class="data" style="width:50%;">
-                            <span style="color:#778899;">Name:</span> {{ ucwords(strtolower($employeeDetails->first_name)) }} {{ ucwords(strtolower($employeeDetails->last_name)) }}
+                            <span style="color:#778899;">Name:</span> {{ ucwords(strtolower($employees['first_name'])) }} {{ ucwords(strtolower($employees['last_name'])) }}
                         </td>
                     </tr>
                     <tr class="payslip-row">
@@ -184,10 +183,10 @@
                     </tr>
                     <tr class="payslip-row">
                         <td class="data" style="width:50%;">
-                            <span style="color:#778899;">Joining Date:</span> {{ \Carbon\Carbon::parse($employeeDetails->hire_date)->format('d M Y') }}
+                            <span style="color:#778899;">Joining Date:</span> {{ \Carbon\Carbon::parse($employees->hire_date)->format('d M Y') }}
                         </td>
                         <td class="data" style="width:50%;">
-                            <span style="color:#778899;">PF No:</span> {{ $employeeDetails->pf_no ?? 'N/A' }}
+                            <span style="color:#778899;">PF No:</span> {{ $employees->pf_no ?? 'N/A' }}
                         </td>
                     </tr>
                 </tbody>
