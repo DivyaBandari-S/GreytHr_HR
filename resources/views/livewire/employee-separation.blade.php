@@ -36,27 +36,46 @@
                                     </div>
                                     <div class="d-flex flex-column position-relative">
                                         <label for="search" class="mb-2">Search An Employee</label>
-                                        <div class="rounded-pill">
-                                            <input
-                                                type="text"
-                                                class="form-control rounded-pill"
-                                                wire:click="closeSearchContainer"
-                                                placeholder="Search Employee"
-                                                wire:model.live="searchTerm"
-                                                wire:keyup="loadEmployeeList"
-                                                id="search">
-
-                                            @if($searchTerm)
-                                            <button
-                                                type="button"
-                                                class="position-absolute end-0 translate-middle-y border-0 bg-transparent"
-                                                wire:click="closeSearchContainer"
-                                                aria-label="Clear Search" style="width:30px;color:#ccc;left:42%;top:72%;">
-                                                <i class="fa fa-times-circle text-muted" style="color:#ccc;"></i>
-                                            </button>
+                                        <div class="searchWidth rounded-pill position-relative">
+                                            @if($seleceted_emp_id && $selecetdEmpDetails)
+                                            <!-- Display Selected Employee Details -->
+                                            <div class="d-flex align-items-center p-2 rounded-pill border bg-light">
+                                                @if ($selecetdEmpDetails->image !== null && $selecetdEmpDetails->image != "null" && $selecetdEmpDetails->image != "Null" && $selecetdEmpDetails->image != "")
+                                                <img src="data:image/jpeg;base64,{{ ($selecetdEmpDetails->image ) }}" style="width: 35px; height: 35px; object-fit: cover;" class="rounded-circle">
+                                                @else
+                                                <!-- Fallback image if no image is found -->
+                                                <img src="{{ asset('images/user.jpg') }}" style="width: 35px; height: 35px; object-fit: cover;" class="rounded-circle">
+                                                @endif
+                                                <div class="ms-2 d-flex flex-column align-items-start">
+                                                    <span class=" normalText">{{ ucwords(strtolower($selecetdEmpDetails->first_name)) ?? '-' }} {{ ucwords(strtolower($selecetdEmpDetails->last_name)) ?? '-'}}</span>
+                                                    <span class="normalText"> {{ $selecetdEmpDetails->emp_id ?? '-'}}</span>
+                                                </div>
+                                                <button
+                                                    type="button"
+                                                    class="position-absolute end-0 translate-middle-y border-0 bg-transparent"
+                                                    wire:click="closeSearchContainer"
+                                                    aria-label="Clear Selection"
+                                                    style="width:30px;color:#ccc;left:90%;top:50%;">
+                                                    <i class="fa fa-times-circle text-muted"></i>
+                                                </button>
+                                            </div>
+                                            @else
+                                            <!-- Display Search Input with User Icon -->
+                                            <div class="d-flex align-items-center p-2 rounded-pill border bg-light">
+                                                <i class="fa fa-user-circle text-muted" style="font-size: 24px;"></i>
+                                                <input
+                                                    type="text"
+                                                    class="form-control border-0 bg-transparent ms-2"
+                                                    wire:click="closeSearchContainer"
+                                                    placeholder="Search Employee"
+                                                    wire:model.live="searchTerm"
+                                                    wire:keyup="loadEmployeeList"
+                                                    id="search">
+                                            </div>
                                             @endif
                                         </div>
                                     </div>
+
                                     @if($showEmployeeSearch)
                                     <div class="selectEmp mb-3 bg-white d-flex flex-column position-absolute">
                                         <div class="d-flex justify-content-end">
@@ -118,7 +137,7 @@
                                         <option value="deported">Deported</option>
                                         <option value="resigned">Resigned</option>
                                         <option value="terminated">Terminated</option>
-                                        <option value="other">Other</option>
+                                        <option value="others">Other</option>
                                         <option value="contract_expiry">Contract Expiry</option>
                                         <option value="absconding">Absconding</option>
                                         <option value="expired">Expired</option>
@@ -163,7 +182,8 @@
                                         </div>
                                         @else
                                         <!-- Display the selected value -->
-                                        <span>{{ $separationDetails->is_left_org == 1 ? 'Yes' : 'No' }}</span>
+                                        <span>{{ $separationDetails ? ($separationDetails->is_left_org == 1 ? 'Yes' : 'No') : 'N/A' }}
+                                        </span>
                                         @endif
                                     </div>
 
@@ -172,13 +192,13 @@
                                         @if($showEdit)
                                         <input type="date" wire:model="other_date" id="other_date" class="form-control">
                                         @else
-                                        <span>{{ \Carbon\Carbon::parse($separationDetails->other_date)->format('d M, Y') ?? '-' }}</span>
+                                        <span>{{ optional($separationDetails->other_date)->format('d M, Y') ?? '-' }}</span>
                                         @endif
                                     </div>
                                     <div class="form-group emp-data-resign">
                                         <label for="remarks">Remarks</label>
                                         @if($showEdit)
-                                        <textarea  wire:model="remarks" id="remarks" class="form-control" spellcheck="true"></textarea>
+                                        <textarea wire:model="remarks" id="remarks" class="form-control" spellcheck="true"></textarea>
                                         @else
                                         <span>{{ $separationDetails->remarks ?? '-'}}</span>
                                         @endif
@@ -265,7 +285,7 @@
                                     <div class="form-group emp-data-resign">
                                         <label for="remarks">Remarks</label>
                                         @if($showEdit)
-                                        <textarea  wire:model="remarks" id="remarks" spellcheck="true" class="form-control"></textarea>
+                                        <textarea wire:model="remarks" id="remarks" spellcheck="true" class="form-control"></textarea>
                                         @else
                                         <span>{{ $separationDetails->remarks ?? '-'}}</span>
                                         @endif
@@ -316,11 +336,11 @@
                                         @endif
                                     </div>
                                     <div class="form-group emp-data-resign">
-                                        <label for="other_date">Date</label>
+                                        <label for="other_date">Other Date</label>
                                         @if($showEdit)
                                         <input type="date" wire:model="other_date" id="other_date" class="form-control">
                                         @else
-                                        <span>{{ \Carbon\Carbon::parse($separationDetails->other_date)->format('d M, Y') ?? '-' }}</span>
+                                        <span>{{ $separationDetails->other_date ? \Carbon\Carbon::parse($separationDetails->other_date)->format('d M, Y') : '-' }}</span>
                                         @endif
                                     </div>
                                     <div class="form-group emp-data-resign">
@@ -328,13 +348,13 @@
                                         @if($showEdit)
                                         <input type="date" wire:model="retired_date" id="retired_date" class="form-control">
                                         @else
-                                        <span>{{ \Carbon\Carbon::parse($separationDetails->retired_date)->format('d M, Y') ?? '-' }}</span>
+                                        <span>{{ $separationDetails->retired_date ?  \Carbon\Carbon::parse($separationDetails->retired_date)->format('d M, Y') : '-' }}</span>
                                         @endif
                                     </div>
                                     <div class="form-group emp-data-resign">
                                         <label for="remarks">Remarks</label>
                                         @if($showEdit)
-                                        <textarea  wire:model="remarks" id="remarks" spellcheck="true" class="form-control"></textarea>
+                                        <textarea wire:model="remarks" id="remarks" spellcheck="true" class="form-control"></textarea>
                                         @else
                                         <span>{{ $separationDetails->remarks ?? '-'}}</span>
                                         @endif
@@ -372,7 +392,7 @@
                                         @if($showResignationEdit)
                                         <input type="date" wire:model="resignation_submitted_on" id="resignation_submitted_on" class="form-control">
                                         @else
-                                        <span>{{ \Carbon\Carbon::parse($separationDetails->resignation_submitted_on)->format('d M, Y') ?? '-' }}</span>
+                                        <span>{{ $separationDetails && $separationDetails->resignation_submitted_on ? \Carbon\Carbon::parse($separationDetails->resignation_submitted_on)->format('d M, Y') : '-' }}</span>
                                         @endif
                                     </div>
                                     <div class="form-group emp-data-resign">
@@ -424,7 +444,7 @@
                                         @if($showResignationEdit)
                                         <input type="date" wire:model="tentative_date" id="tentative_date" class="form-control">
                                         @else
-                                        <span>{{ \Carbon\Carbon::parse($separationDetails->tentative_date)->format('d M, Y')  ?? '-' }}</span>
+                                        <span>{{ $separationDetails->tentative_date ? \Carbon\Carbon::parse($separationDetails->tentative_date)->format('d M, Y')  : '-' }}</span>
                                         @endif
                                     </div>
                                     <div class="form-group emp-data-resign">
@@ -444,7 +464,7 @@
                                             Remarks
                                         </label>
                                         @if($showResignationEdit)
-                                        <textarea  wire:model="remarks" id="remarks" spellcheck="true" class="form-control"></textarea>
+                                        <textarea wire:model="remarks" id="remarks" spellcheck="true" class="form-control"></textarea>
                                         @else
                                         <span>{{ $separationDetails->remarks ?? '-'}}</span>
                                         @endif
@@ -478,7 +498,10 @@
                                         @if($showExitInterviewEdit)
                                         <input type="date" wire:model="exit_interview_date" id="exit_interview_date" class="form-control">
                                         @else
-                                        <span>{{ \Carbon\Carbon::parse($separationDetails->exit_interview_date)->format('d M, Y')  ?? '-' }}</span>
+                                        <span>
+                                            {{ $separationDetails->exit_interview_date ? \Carbon\Carbon::parse($separationDetails->exit_interview_date)->format('d M, Y') : '-' }}
+                                        </span>
+
                                         @endif
                                     </div>
                                     <div class="form-group emp-data-resign">

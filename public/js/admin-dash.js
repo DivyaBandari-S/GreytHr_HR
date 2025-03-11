@@ -367,8 +367,8 @@ function setActiveSidebarItemFromURL() {
         // Uncomment if you want a default menu to open when no match is found
         
         const firstSubmenu = allSidebarSubmenu[0];
-        firstSubmenu.classList.add('active');
-        firstSubmenu.previousElementSibling.classList.add('clicked');
+        // firstSubmenu.classList.add('active');
+        // firstSubmenu.previousElementSibling.classList.add('clicked');
         // mainSection.classList.add('openLeftSubMenu');
         
     }

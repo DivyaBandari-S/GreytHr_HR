@@ -81,7 +81,8 @@ class ReportsManagement extends Component
         $this->resetErrorBag($propertyName); // Clear errors for the updated property
     }
 
-    public function mount() {
+    public function mount()
+    {
         $this->getReportsData();
     }
 
@@ -123,12 +124,14 @@ class ReportsManagement extends Component
 
             if ($report->favorite == true) {
                 $report->favorite = false;
+                $report->save();
+                FlashMessageHelper::flashSuccess('Removed from favorite successfully!');
             } elseif ($report->favorite == false) {
                 $report->favorite = true;
+                $report->save();
+                FlashMessageHelper::flashSuccess('Added to favorite successfully!');
             }
-            $report->save();
             $this->getReportsData();
-            FlashMessageHelper::flashSuccess('Added to favorite successfully!');
             // Flash a success message
         } catch (\Exception $e) {
             // Handle any errors that occur
@@ -204,7 +207,7 @@ class ReportsManagement extends Component
                         ->orWhere('employee_details.employee_status', 'terminated');
                 });
             }
-           
+
 
             $query = $query->groupBy(
                 'date_only',
@@ -264,13 +267,13 @@ class ReportsManagement extends Component
                             'leave_status' => $item->status,
                             'managerDetails' => $managerDetails,
                             'manager_id' => $managerId,
-                'manager_first_name' => $managerFirstName,
-                'manager_last_name' => $managerLastName,
+                            'manager_first_name' => $managerFirstName,
+                            'manager_last_name' => $managerLastName,
                         ];
                     })
                 ];
             });
-           
+
 
 
             $employeeDetails = EmployeeDetails::where('emp_id', $loggedInEmpId)->first();
@@ -341,7 +344,7 @@ class ReportsManagement extends Component
                         $query->where('leave_applications.leave_type', $leaveTypes[$this->leaveType]);
                     }
                 })
-               
+
                 ->where('to_date', '<=', $this->toDate)
                 ->where('leave_applications.leave_status', 2);
 
@@ -482,7 +485,7 @@ class ReportsManagement extends Component
                     // ->where(function ($query) use ($loggedInEmpId) {
                     //     // Fetch team members whose manager is the logged-in employee
                     //     $query->where('employee_details.manager_id', $loggedInEmpId)
-                            ->whereNotIn('employee_details.employee_status', ['terminated', 'resigned'])
+                    ->whereNotIn('employee_details.employee_status', ['terminated', 'resigned'])
                     // })
                     ->when($this->leaveType && $this->leaveType != 'all', function ($query) {
                         $leaveTypes = [
@@ -527,7 +530,7 @@ class ReportsManagement extends Component
 
                             $managerDetails = $employeeDetails ? EmployeeDetails::where('emp_id', $employeeDetails->manager_id)->first() : null;
 
-       
+
 
                             $managerId = $managerDetails ? $managerDetails->emp_id : null;
 
@@ -556,10 +559,10 @@ class ReportsManagement extends Component
                                     'managerDetails' => $managerDetails,
 
                                     'manager_id' => $managerId,
-        
-                        'manager_first_name' => $managerFirstName,
-        
-                        'manager_last_name' => $managerLastName,
+
+                                    'manager_first_name' => $managerFirstName,
+
+                                    'manager_last_name' => $managerLastName,
                                 ];
                             }
 
@@ -581,7 +584,7 @@ class ReportsManagement extends Component
                     // ->where(function ($query) use ($loggedInEmpId) {
                     //     // Fetch team members whose manager is the logged-in employee
                     //     $query->where('employee_details.manager_id', $loggedInEmpId)
-                            ->whereNotIn('employee_details.employee_status', ['terminated', 'resigned'])
+                    ->whereNotIn('employee_details.employee_status', ['terminated', 'resigned'])
                     // })
                     ->where('employee_leave_balances.is_lapsed', 1)
                     ->when($this->leaveType && $this->leaveType != 'all', function ($query) {
@@ -637,7 +640,7 @@ class ReportsManagement extends Component
 
                             $managerDetails = $employeeDetails ? EmployeeDetails::where('emp_id', $employeeDetails->manager_id)->first() : null;
 
-       
+
 
                             $managerId = $managerDetails ? $managerDetails->emp_id : null;
 
@@ -671,14 +674,14 @@ class ReportsManagement extends Component
                                     'status' => 'Lapsed',
                                     'created_at' => $item->created_at,
                                     'from_date' => $decemberStart,  // The start date of the year
-                                    'to_date' => $decemberEnd, 
+                                    'to_date' => $decemberEnd,
                                     'managerDetails' => $managerDetails,
 
                                     'manager_id' => $managerId,
-        
-                        'manager_first_name' => $managerFirstName,
-        
-                        'manager_last_name' => $managerLastName,     // The end date of the year
+
+                                    'manager_first_name' => $managerFirstName,
+
+                                    'manager_last_name' => $managerLastName,     // The end date of the year
 
 
                                 ];
@@ -703,7 +706,7 @@ class ReportsManagement extends Component
                     // ->where(function ($query) use ($loggedInEmpId) {
                     //     // Fetch team members whose manager is the logged-in employee
                     //     $query->where('employee_details.manager_id', $loggedInEmpId)
-                            ->whereNotIn('employee_details.employee_status', ['terminated', 'resigned'])
+                    ->whereNotIn('employee_details.employee_status', ['terminated', 'resigned'])
                     // })
                     ->when($this->leaveType && $this->leaveType != 'all', function ($query) {
                         $leaveTypes = [
@@ -754,12 +757,12 @@ class ReportsManagement extends Component
                                 $endDate = Carbon::createFromFormat('Y', $period)->lastOfYear()->toDateString(); // '2024-12-31'
                                 $employeeDetails = EmployeeDetails::where('emp_id', $item->emp_id)->first();
 
-                        // Get manager details using the manager_id from the employee's details
-                        $managerDetails = $employeeDetails ? EmployeeDetails::where('emp_id', $employeeDetails->manager_id)->first() : null;
+                                // Get manager details using the manager_id from the employee's details
+                                $managerDetails = $employeeDetails ? EmployeeDetails::where('emp_id', $employeeDetails->manager_id)->first() : null;
 
-                        $managerId = $managerDetails ? $managerDetails->emp_id : null;
-                        $managerFirstName = $managerDetails ? $managerDetails->first_name : null;
-                        $managerLastName = $managerDetails ? $managerDetails->last_name : null;
+                                $managerId = $managerDetails ? $managerDetails->emp_id : null;
+                                $managerFirstName = $managerDetails ? $managerDetails->first_name : null;
+                                $managerLastName = $managerDetails ? $managerDetails->last_name : null;
                                 $leaveDetails[] = [
                                     'leave_name' => $leave['leave_name'] ?? 'Unknown',
                                     'grant_days' => $leave['grant_days'] ?? 0,
@@ -768,19 +771,19 @@ class ReportsManagement extends Component
                                     'from_date' => $startDate,  // The start date of the year
                                     'to_date' => $endDate,
                                     'managerDetails' => $managerDetails,
-                            'manager_id' => $managerId,
-                'manager_first_name' => $managerFirstName,
-                'manager_last_name' => $managerLastName,
+                                    'manager_id' => $managerId,
+                                    'manager_first_name' => $managerFirstName,
+                                    'manager_last_name' => $managerLastName,
                                 ];
                             }
-                            
+
 
                             return $leaveDetails;
                         }),
-                        
+
                     ];
                 });
-                
+
 
                 $query = EmployeeLeaveBalances::select(
                     'employee_leave_balances.emp_id',
@@ -795,7 +798,7 @@ class ReportsManagement extends Component
                     // ->where(function ($query) use ($loggedInEmpId) {
                     //     // Fetch team members whose manager is the logged-in employee
                     //     $query->where('employee_details.manager_id', $loggedInEmpId)
-                            ->whereNotIn('employee_details.employee_status', ['terminated', 'resigned'])
+                    ->whereNotIn('employee_details.employee_status', ['terminated', 'resigned'])
                     // })
                     ->where('employee_leave_balances.is_lapsed', 1)
                     ->when($this->leaveType && $this->leaveType != 'all', function ($query) {
@@ -847,7 +850,7 @@ class ReportsManagement extends Component
 
                             // Get manager details using the manager_id from the employee's details
                             $managerDetails = $employeeDetails ? EmployeeDetails::where('emp_id', $employeeDetails->manager_id)->first() : null;
-    
+
                             $managerId = $managerDetails ? $managerDetails->emp_id : null;
                             $managerFirstName = $managerDetails ? $managerDetails->first_name : null;
                             $managerLastName = $managerDetails ? $managerDetails->last_name : null;
@@ -879,11 +882,11 @@ class ReportsManagement extends Component
                                     'status' => 'Lapsed',
                                     'created_at' => $item->created_at,
                                     'from_date' => $decemberStart,  // The start date of the year
-                                    'to_date' => $decemberEnd, 
+                                    'to_date' => $decemberEnd,
                                     'managerDetails' => $managerDetails,
-                            'manager_id' => $managerId,
-                'manager_first_name' => $managerFirstName,
-                'manager_last_name' => $managerLastName,     // The end date of the year
+                                    'manager_id' => $managerId,
+                                    'manager_first_name' => $managerFirstName,
+                                    'manager_last_name' => $managerLastName,     // The end date of the year
 
 
                                 ];
@@ -927,7 +930,7 @@ class ReportsManagement extends Component
                             $query->where('leave_applications.leave_type', $leaveTypes[$this->leaveType]);
                         }
                     })
-                 
+
                     ->where(function ($query) {
                         $query->whereBetween('from_date', [$this->fromDate, $this->toDate])
                             ->orWhereBetween('to_date', [$this->fromDate, $this->toDate])
@@ -983,7 +986,7 @@ class ReportsManagement extends Component
                 // Log::info('Leave request data retrieved successfully.');
 
                 $leaveTransactionData = $query->groupBy('date_only')->map(function ($group) {
-                   
+
                     return [
                         'date' => Carbon::parse($group->first()->date_only)->format('d M Y'),
                         'emp_id' => $group->first()->emp_id,  // Add emp_id
@@ -994,7 +997,7 @@ class ReportsManagement extends Component
 
                             // Get manager details using the manager_id from the employee's details
                             $managerDetails = $employeeDetails ? EmployeeDetails::where('emp_id', $employeeDetails->manager_id)->first() : null;
-        
+
                             $managerId = $managerDetails ? $managerDetails->emp_id : null;
                             $managerFirstName = $managerDetails ? $managerDetails->first_name : null;
                             $managerLastName = $managerDetails ? $managerDetails->last_name : null;
@@ -1020,9 +1023,9 @@ class ReportsManagement extends Component
                                 'leave_days' => $leaveDays,
                                 'leave_status' => $item->leave_status,
                                 'managerDetails' => $managerDetails,
-                            'manager_id' => $managerId,
-                'manager_first_name' => $managerFirstName,
-                'manager_last_name' => $managerLastName, 
+                                'manager_id' => $managerId,
+                                'manager_first_name' => $managerFirstName,
+                                'manager_last_name' => $managerLastName,
                             ];
                         })
                     ];
@@ -1063,7 +1066,7 @@ class ReportsManagement extends Component
                             $query->where('leave_applications.leave_type', $leaveTypes[$this->leaveType]);
                         }
                     })
-                    
+
                     ->where(function ($query) {
                         $query->whereBetween('from_date', [$this->fromDate, $this->toDate])
                             ->orWhereBetween('to_date', [$this->fromDate, $this->toDate])
@@ -1133,7 +1136,7 @@ class ReportsManagement extends Component
 
                             $managerDetails = $employeeDetails ? EmployeeDetails::where('emp_id', $employeeDetails->manager_id)->first() : null;
 
-       
+
 
                             $managerId = $managerDetails ? $managerDetails->emp_id : null;
 
@@ -1163,13 +1166,13 @@ class ReportsManagement extends Component
                                 'leave_status' => $item->leave_status,
 
 
- 'managerDetails' => $managerDetails,
+                                'managerDetails' => $managerDetails,
 
- 'manager_id' => $managerId,
+                                'manager_id' => $managerId,
 
-'manager_first_name' => $managerFirstName,
+                                'manager_first_name' => $managerFirstName,
 
-'manager_last_name' => $managerLastName,
+                                'manager_last_name' => $managerLastName,
                             ];
                         })
                     ];
@@ -1219,14 +1222,14 @@ class ReportsManagement extends Component
         $balanceKey = lcfirst($leaveName) . 'Balance'; // Ensure the first letter is lowercase and append 'Balance'
         return $balanceKey;
     }
-   
+
 
     public function searchfilterleave()
     {
         $this->searching = 1;
         $loggedInEmpId = Auth::guard('hr')->user()->emp_id;
         $employees = EmployeeDetails::whereNotIn('employee_details.employee_status', ['terminated', 'resigned'])
-        ->get();
+            ->get();
         $nameFilter = $this->search;
 
         $filteredEmployees = $employees->filter(function ($employee) use ($nameFilter) {
@@ -1237,8 +1240,8 @@ class ReportsManagement extends Component
                 stripos($employee->city, $nameFilter) !== false ||
                 stripos($employee->state, $nameFilter) !== false;
         });
-      
-    
+
+
 
         if ($filteredEmployees->isEmpty()) {
             $this->notFound = true;
@@ -1272,8 +1275,8 @@ class ReportsManagement extends Component
                 $employees = EmployeeDetails::whereIn('emp_id', $this->leaveBalance)
                     ->select('emp_id', 'first_name', 'last_name')
                     ->get();
-                    
-                 
+
+
 
 
 
@@ -1308,7 +1311,7 @@ class ReportsManagement extends Component
                         'manager_id' => $managerId,
 
                         'manager_first_name' => $managerFirstName,
-        
+
                         'manager_last_name' => $managerLastName,
                     ];
                 });
@@ -1423,7 +1426,7 @@ class ReportsManagement extends Component
                     // ->where(function ($query) use ($loggedInEmpId) {
                     //     // Fetch team members whose manager is the logged-in employee
                     //     $query->where('employee_details.manager_id', $loggedInEmpId)
-                            ->whereNotIn('employee_details.employee_status', ['terminated', 'resigned'])
+                    ->whereNotIn('employee_details.employee_status', ['terminated', 'resigned'])
                     // })
                     ->when($this->leaveType && $this->leaveType != 'all', function ($query) {
                         $leaveTypes = [
@@ -1468,7 +1471,7 @@ class ReportsManagement extends Component
 
                             $managerDetails = $employeeDetails ? EmployeeDetails::where('emp_id', $employeeDetails->manager_id)->first() : null;
 
-       
+
 
                             $managerId = $managerDetails ? $managerDetails->emp_id : null;
 
@@ -1497,7 +1500,7 @@ class ReportsManagement extends Component
                                     'manager_id' => $managerId,
 
                                     'manager_first_name' => $managerFirstName,
-                    
+
                                     'manager_last_name' => $managerLastName,
                                 ];
                             }
@@ -1523,7 +1526,7 @@ class ReportsManagement extends Component
                     // ->where(function ($query) use ($loggedInEmpId) {
                     //     // Fetch team members whose manager is the logged-in employee
                     //     $query->where('employee_details.manager_id', $loggedInEmpId)
-                            ->whereNotIn('employee_details.employee_status', ['terminated', 'resigned'])
+                    ->whereNotIn('employee_details.employee_status', ['terminated', 'resigned'])
                     // })
                     ->where('employee_leave_balances.is_lapsed', 1)  // Filter for lapsed leave
                     ->when($this->leaveType && $this->leaveType != 'all', function ($query) {
@@ -1579,7 +1582,7 @@ class ReportsManagement extends Component
 
                             $managerDetails = $employeeDetails ? EmployeeDetails::where('emp_id', $employeeDetails->manager_id)->first() : null;
 
-       
+
 
                             $managerId = $managerDetails ? $managerDetails->emp_id : null;
 
@@ -1618,7 +1621,7 @@ class ReportsManagement extends Component
                                     'manager_id' => $managerId,
 
                                     'manager_first_name' => $managerFirstName,
-                    
+
                                     'manager_last_name' => $managerLastName,
 
 
@@ -1649,7 +1652,7 @@ class ReportsManagement extends Component
                     // ->where(function ($query) use ($loggedInEmpId) {
                     //     // Fetch team members whose manager is the logged-in employee
                     //     $query->where('employee_details.manager_id', $loggedInEmpId)
-                            ->whereNotIn('employee_details.employee_status', ['terminated', 'resigned'])
+                    ->whereNotIn('employee_details.employee_status', ['terminated', 'resigned'])
                     // })
                     ->when($this->leaveType && $this->leaveType != 'all', function ($query) {
                         $leaveTypes = [
@@ -1697,7 +1700,7 @@ class ReportsManagement extends Component
 
                             $managerDetails = $employeeDetails ? EmployeeDetails::where('emp_id', $employeeDetails->manager_id)->first() : null;
 
-       
+
 
                             $managerId = $managerDetails ? $managerDetails->emp_id : null;
 
@@ -1723,7 +1726,7 @@ class ReportsManagement extends Component
                                     'manager_id' => $managerId,
 
                                     'manager_first_name' => $managerFirstName,
-                    
+
                                     'manager_last_name' => $managerLastName,
                                 ];
                             }
@@ -1835,7 +1838,7 @@ class ReportsManagement extends Component
 
                             $managerDetails = $employeeDetails ? EmployeeDetails::where('emp_id', $employeeDetails->manager_id)->first() : null;
 
-       
+
 
                             $managerId = $managerDetails ? $managerDetails->emp_id : null;
 
@@ -1861,7 +1864,7 @@ class ReportsManagement extends Component
                                 'manager_id' => $managerId,
 
                                 'manager_first_name' => $managerFirstName,
-                
+
                                 'manager_last_name' => $managerLastName,
                             ];
                         }),
@@ -1883,7 +1886,7 @@ class ReportsManagement extends Component
                     // ->where(function ($query) use ($loggedInEmpId) {
                     //     // Fetch team members whose manager is the logged-in employee
                     //     $query->where('employee_details.manager_id', $loggedInEmpId)
-                            ->whereNotIn('employee_details.employee_status', ['terminated', 'resigned'])
+                    ->whereNotIn('employee_details.employee_status', ['terminated', 'resigned'])
                     // })
                     ->where('employee_leave_balances.is_lapsed', 1)  // Filter for lapsed leave
                     ->when($this->leaveType && $this->leaveType != 'all', function ($query) {
@@ -1939,7 +1942,7 @@ class ReportsManagement extends Component
 
                             $managerDetails = $employeeDetails ? EmployeeDetails::where('emp_id', $employeeDetails->manager_id)->first() : null;
 
-       
+
 
                             $managerId = $managerDetails ? $managerDetails->emp_id : null;
 
@@ -1978,7 +1981,7 @@ class ReportsManagement extends Component
                                     'manager_id' => $managerId,
 
                                     'manager_first_name' => $managerFirstName,
-                    
+
                                     'manager_last_name' => $managerLastName,
 
 
@@ -1994,8 +1997,6 @@ class ReportsManagement extends Component
 
 
                 $leaveTransactions = $leaveTransactionData->concat($lapsedData)->concat($grantedData);
-               
-
             } else {
                 // The existing code for handling leave requests in 'availed', 'rejected', etc.
                 // Log::info('Fetching leave request data for transaction type: ' . $this->transactionType);
@@ -2100,7 +2101,7 @@ class ReportsManagement extends Component
 
                             $managerDetails = $employeeDetails ? EmployeeDetails::where('emp_id', $employeeDetails->manager_id)->first() : null;
 
-       
+
 
                             $managerId = $managerDetails ? $managerDetails->emp_id : null;
 
@@ -2126,7 +2127,7 @@ class ReportsManagement extends Component
                                 'manager_id' => $managerId,
 
                                 'manager_first_name' => $managerFirstName,
-                
+
                                 'manager_last_name' => $managerLastName,
                             ];
                         }),
@@ -2171,32 +2172,32 @@ class ReportsManagement extends Component
 
     public function render()
     {
-         // For Leave Balance On Day
+        // For Leave Balance On Day
 
 
-         $this->employees = EmployeeDetails::whereNotIn('employee_details.employee_status', ['terminated', 'resigned'])
-         ->select('emp_id', 'first_name', 'last_name')->get();
-         if ($this->searching == 1) {
-             $nameFilter = $this->search; // Assuming $this->search contains the name filter
-             $this->filteredEmployees = $this->employees->filter(function ($employee) use ($nameFilter) {
-                 return stripos($employee->first_name, $nameFilter) !== false ||
-                     stripos($employee->last_name, $nameFilter) !== false ||
-                     stripos($employee->emp_id, $nameFilter) !== false ||
-                     stripos($employee->job_title, $nameFilter) !== false ||
-                     stripos($employee->city, $nameFilter) !== false ||
-                     stripos($employee->state, $nameFilter) !== false;
-             });
-           
- 
- 
-             if ($this->filteredEmployees->isEmpty()) {
-                 $this->notFound = true; // Set a flag indicating that the name was not found
-             } else {
-                 $this->notFound = false;
-             }
-         } else {
-             $this->filteredEmployees = $this->employees;
-         }
+        $this->employees = EmployeeDetails::whereNotIn('employee_details.employee_status', ['terminated', 'resigned'])
+            ->select('emp_id', 'first_name', 'last_name')->get();
+        if ($this->searching == 1) {
+            $nameFilter = $this->search; // Assuming $this->search contains the name filter
+            $this->filteredEmployees = $this->employees->filter(function ($employee) use ($nameFilter) {
+                return stripos($employee->first_name, $nameFilter) !== false ||
+                    stripos($employee->last_name, $nameFilter) !== false ||
+                    stripos($employee->emp_id, $nameFilter) !== false ||
+                    stripos($employee->job_title, $nameFilter) !== false ||
+                    stripos($employee->city, $nameFilter) !== false ||
+                    stripos($employee->state, $nameFilter) !== false;
+            });
+
+
+
+            if ($this->filteredEmployees->isEmpty()) {
+                $this->notFound = true; // Set a flag indicating that the name was not found
+            } else {
+                $this->notFound = false;
+            }
+        } else {
+            $this->filteredEmployees = $this->employees;
+        }
         return view('livewire.reports-management', [
             'reportsGallery' => $this->reportsGallery
         ]);

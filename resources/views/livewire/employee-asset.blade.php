@@ -662,7 +662,7 @@
 @else
     {{-- No requests available --}}
     <div class="request-item-container">
-                    <h3>No requests found for Employee ID</h3>
+                    <h7>No requests found for Employee ID</h7>
                 </div>
 @endif
 
