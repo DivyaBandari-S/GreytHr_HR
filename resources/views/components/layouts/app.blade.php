@@ -18,34 +18,37 @@
     <script src="https://unpkg.com/phosphor-icons"></script>
     <link rel="stylesheet" href="{{ asset('css/employee.css?v=' . filemtime(public_path('css/employee.css'))) }}">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
 
 </head>
 
 @guest
-    <livewire:hrlogin />
+<livewire:hrlogin />
 @else
 
-    <body>
-        <section id="main">
-            @livewire('main-layout')
-            <div class="main__body " style="overflow: auto; height: calc(100vh - 84px);background-color: #f3f3f3;"> {{ $slot }} </div>
-        </section>
+<body>
+    <section id="main">
+        @livewire('main-layout')
+        <div class="main__body " style="overflow: auto; height: calc(100vh - 84px);background-color: #f3f3f3;"> {{ $slot }} </div>
+    </section>
 
 
-        @livewireScripts
-        <script src="{{ asset('js/admin-dash.js') }}"></script>
-        <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" crossorigin="anonymous">
-        </script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous">
-        </script>
-        <script>
-            function toggleSidebar() {
-                document.body.classList.toggle('sidebar-toggled');
-            }
-        </script>
-    </body>
+    @livewireScripts
+    <script src="{{ asset('js/admin-dash.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" crossorigin="anonymous">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous">
+    </script>
+    <script>
+        function toggleSidebar() {
+            document.body.classList.toggle('sidebar-toggled');
+        }
+    </script>
+</body>
 
 @endguest
 

@@ -127,7 +127,7 @@
                             <li><a href="/hr/user/stop-salaries">Stop Salary Processing</a></li>
                             <li><a href="/user">Arrears</a></li>
                             <li><a href="/hr/user/release-salary">Release Salary</a></li>
-                            <li><a href="/user">Final Settlement</a></li>
+                            <li><a href="/hr/user/final-settlement">Final Settlement</a></li>
                             <li><a href="/user">Resettlement</a></li>
                             <li><a href="/user">Overtime Register</a></li>
                         </ul>

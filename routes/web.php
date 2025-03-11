@@ -83,6 +83,8 @@ use App\Livewire\EmployeeLopDays;
 use App\Livewire\Loans;
 use App\Livewire\ReleaseSalary;
 use App\Livewire\EmployeeSeparation;
+use App\Livewire\FinalSettlement;
+use App\Livewire\FinalSettlementStepper;
 use App\Livewire\ItStatement;
 use App\Livewire\PayrollSalary;
 use App\Livewire\LeaveApplyOnBehalf;
@@ -260,5 +262,7 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
         Route::get('/user/release-salary', ReleaseSalary::class)->name('release-salary');
         Route::get('/user/employee-lop-days', EmployeeLopDays::class)->name('employee-lop-days');
         Route::get('/user/payroll-salary', PayrollSalary::class)->name('payroll-salary');
+        Route::get('/user/final-settlement', FinalSettlement::class)->name('final-settlement');
+        Route::get('/user/final-settlement-stepper',FinalSettlementStepper::class)->name('final-settlement-stepper');
     });
 });
