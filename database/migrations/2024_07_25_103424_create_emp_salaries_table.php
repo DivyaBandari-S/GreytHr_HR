@@ -20,7 +20,6 @@ return new class extends Migration
             $table->date('effective_date');
             $table->string('total_working_days');
             $table->string('lop_days');
-            $table->date('effective_date');
             $table->string('remarks')->nullable();
             $table->tinyInteger('is_payslip')->default(0);
             $table->timestamps();
