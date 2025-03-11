@@ -86,12 +86,12 @@
                                     <img src="data:image/jpeg;base64,{{ $signature }}" alt="Signature"
                                         style="width:150px; height:auto;">
                                 </div>
-                            @elseif ($this->signature)
+                            {{-- @elseif ($this->signature)
                                 <!-- If signature exists but hasn't been changed yet, show the old one -->
                                 <div class="mt-3">
                                     <img src="data:image/jpeg;base64,{{ $this->signature }}" alt="Previous Signature"
                                         style="width:150px; height:auto;">
-                                </div>
+                                </div> --}}
                             @endif
                         </div>
                     </div>

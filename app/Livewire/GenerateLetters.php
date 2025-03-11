@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use App\Models\GenerateLetter;
+use App\Models\LetterRequest;
 use Illuminate\Support\Facades\Log;
 use App\Models\EmployeeDetails;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -81,18 +82,61 @@ public function loadLetters()
         $this->showHelp = true;
     }
 
-    public function publishLetter($letterId)
+//     public function publishLetter($letterId)
+// {
+//     $letter = GenerateLetter::find($letterId);
+//     dd($letter);
+//     if ($letter) {
+//         $letter->update(['status' => 'Published']);
+//         session()->flash('success', 'Letter published successfully.');
+//         $this->loadLetters(); // Refresh the list
+//     } else {
+//         session()->flash('error', 'Letter not found.');
+//     }
+  
+// }
+public function publishLetter($letterId)
 {
+    // Find the letter by ID
     $letter = GenerateLetter::find($letterId);
+     // Debugging to see the letter details
+
     if ($letter) {
+        // Decode the 'employees' field to get the employee details
+        $employees = json_decode($letter->employees, true);
+
+        // Check if employees exist and find a match with the emp_id
+        if ($employees && isset($employees[0]['id'])) {
+            // Compare the employee ID with the emp_id in the letterrequest table
+            $empId = $employees[0]['id'];  // Get the employee ID from the letter
+
+            // Find the matching record in the letterrequest table based on emp_id
+            $letterRequest = LetterRequest::where('emp_id', $empId)->first();
+
+            if ($letterRequest) {
+                // If a matching record is found, update the status field from 5 to 9
+                if ($letterRequest->status == 5) {
+                    $letterRequest->update(['status' => 9]);
+                  
+                }
+            } else {
+                session()->flash('error', 'Letter request not found for this employee.');
+            }
+        } else {
+            session()->flash('error', 'No valid employee data found in the letter.');
+        }
+
+        // Update the letter's own status to 'Published'
         $letter->update(['status' => 'Published']);
         session()->flash('success', 'Letter published successfully.');
-        $this->loadLetters(); // Refresh the list
+
+        // Refresh the list (assuming this method reloads the list of letters)
+        $this->loadLetters();
     } else {
         session()->flash('error', 'Letter not found.');
     }
-  
 }
+
 public $previewLetter=null;
 public $letter;
 public $showLetterModal = false; // To control modal visibility

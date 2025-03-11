@@ -58,7 +58,7 @@
 
             <div class="row pt-3">
 
-                <!-- <div class="col-md-4 col-12 mb-3">
+                <div class="col-md-4 col-12 mb-3">
                     <div class="border rounded p-3 bg-white main-overview-requests-container">
                         <h2 class="main-overview-count-text">
                             {{ $hrRequestSolvedCount }}</h2>
@@ -80,7 +80,7 @@
                             </div>
                         </div>
                     </div>
-                </div> -->
+                </div>
                 {{-- <div class="col-md-4 col-12 mb-3">
                     <div class="border rounded p-3 bg-white">
                         <h2 class="main-overview-count-text">

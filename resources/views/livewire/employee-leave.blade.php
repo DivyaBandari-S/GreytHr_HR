@@ -1,4 +1,4 @@
-<div >
+<div class="position-relative">
     <style>
         /* Calendar->Information->Employee leave styles start  */
 
@@ -617,8 +617,8 @@
                 <div class="tab-pane fade show {{ $activeTab === 'Overview' ? 'active' : '' }}" id="Overview"
                     role="tabpanel" aria-labelledby="Overview-tab" style="overflow-x: hidden;">
                     <div class="row  p-3">
-                        <div class="col-md-1"></div>
-                        <div class="col-md-9 Employee-leave-table-maindiv">
+                        {{-- <div class="col-md-1"></div> --}}
+                        <div class="col-md-12 Employee-leave-table-maindiv">
                             <p
                                 style="font-size: var(--normal-font-size); font-weight: 600; padding: 5px 5px; margin: 0px;">
                                 Scheme Name<span
@@ -635,7 +635,7 @@
                                         <th>Granted</th>
                                         <th>Availed</th>
                                         <th>Applied</th>
-                                        <th>Leave</th>
+                                        <th>Leave Deduction</th>
                                         <th>Lapsed</th>
                                         <th>Balance</th>
                                     </tr>
@@ -724,7 +724,7 @@
 
                             </table>
                         </div>
-                        <div class="col-md-1"></div>
+                        {{-- <div class="col-md-1"></div> --}}
                     </div>
                 </div>
 

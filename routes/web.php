@@ -1,5 +1,6 @@
 <?php
 
+use App\Livewire\AddEditHrEmployees;
 use App\Livewire\AdminDashboard;
 use App\Livewire\AttendanceLockConfiguration;
 use App\Livewire\Dashboard;
@@ -88,6 +89,13 @@ use App\Models\EmpResignations;
 use App\Models\Task;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Response;
+use App\Livewire\ClientRegistration;
+use App\Livewire\ClientSList;
+use App\Livewire\AddProjects;
+use App\Livewire\AssignProject;
+use App\Livewire\HrEmployeesList;
+use App\Livewire\ProjectsList;
+use App\Models\ClientProjects;
 
 /*
 |--------------------------------------------------------------------------
@@ -129,6 +137,20 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
         Route::get('/resig-requests', Resignationrequests::class)->name('resig-requests');
         Route::get('/HelpDesk', HelpDesk::class)->name('HelpDesk');
         Route::get('/user/tasks', Tasks::class)->name('tasks');
+        // Route::get('/user/client-registration', ClientRegistration::class)->name('client.create');
+        // Route for adding a new client
+Route::get('/user/client-registration', ClientRegistration::class)->name('client.create');
+Route::get('/hr-employees-list', HrEmployeesList::class)->name('hr-employees-list');
+Route::get('/add-edit-hr', AddEditHrEmployees::class)->name('add-edit-hr');
+
+// Route for editing an existing client
+Route::get('/user/client-registration/{clientId}', ClientRegistration::class)->name('client.edit');
+
+        Route::get('/letter-preview', LetterPreview::class);
+        Route::get('/clientList', ClientSList::class)->name('clientList.page');
+        Route::get('/projectList', ProjectsList::class)->name('project.list');
+        Route::get('/projects/create/{client_id}', AddProjects::class)->name('project.create');
+        Route::get('assign-project', AssignProject::class)->name('assign.project');
         Route::get('/taskfile/{id}', function ($id) {
             $file = Task::findOrFail($id);
 

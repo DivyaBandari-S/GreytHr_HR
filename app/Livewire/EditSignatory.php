@@ -23,14 +23,11 @@ class EditSignatory extends Component
     ];
     public function updatedSignature()
 {
-    // If a new signature is uploaded, you can handle the new image here.
-    // This is called automatically when the wire:model of the signature is updated.
-    if ($this->signature) {
+    if($this->signature) {
+        
         $this->validate([
             'signature' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
-        // Optionally you can process the file (if needed) here to store it
-        // For example, saving the uploaded image to the server and then converting it to base64 for preview
         $this->signature = base64_encode(file_get_contents($this->signature->getRealPath())); // If it's a file upload
 
     }
@@ -93,4 +90,5 @@ class EditSignatory extends Component
         return view('livewire.edit-signatory');
     }
 }
+
 

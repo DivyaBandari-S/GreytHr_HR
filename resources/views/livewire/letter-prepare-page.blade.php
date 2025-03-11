@@ -1,4 +1,4 @@
-<div class="container mt-4">
+<div class="container mt-4 position-relative">
     <!-- Progress Bar -->
     <style>
         .progress-container {
@@ -424,7 +424,8 @@
                                 <option value="Daisy M (CEO)" selected>Daisy M (CEO)</option>
                                 <option value="John D (HR Manager)">John D (HR Manager)</option>
                             </select> --}}
-                            <select class="form-select" wire:model="authorized_signatory" wire:change="updateAuthorizedSignatory">
+                            <select class="form-select" wire:model="authorized_signatory"
+                                wire:change="updateAuthorizedSignatory">
                                 <option value="">Select Signatory</option>
                                 @foreach ($signatories as $signatory)
                                     <option
@@ -459,13 +460,13 @@
             <div class="mb-3 d-flex align-items-center">
                 <label class="fw-bold me-3">Generate For:</label>
                 <div class="form-check form-check-inline">
-                    <input type="radio" id="singleEmployee" class="form-check-input" wire:model="generateFor" wire:change="generateForChanged($event.target.value)"
-                        value="single">
+                    <input type="radio" id="singleEmployee" class="form-check-input" wire:model="generateFor"
+                        wire:change="generateForChanged($event.target.value)" value="single">
                     <label class="form-check-label" for="singleEmployee">Single</label>
                 </div>
                 <div class="form-check form-check-inline">
-                    <input type="radio" id="multipleEmployees" class="form-check-input" wire:model="generateFor" wire:change="generateForChanged($event.target.value)"
-                        value="multiple">
+                    <input type="radio" id="multipleEmployees" class="form-check-input" wire:model="generateFor"
+                        wire:change="generateForChanged($event.target.value)" value="multiple">
                     <label class="form-check-label" for="multipleEmployees">Multiple</label>
                 </div>
                 @error('generateFor')
@@ -482,12 +483,12 @@
                         <div wire:click="searchFilter" style="cursor: pointer;">
                             <label>Search Employee</label>
                         </div>
-                      
+
                         @if ($selectedEmployee)
-                        @php
-                        $employee= App\Models\EmployeeDetails::where('emp_id', $selectedEmployee)->first();
-                        $employeeDetailsCollection = collect($selectedEmployeeDetails);
-                      @endphp
+                            @php
+                                $employee = App\Models\EmployeeDetails::where('emp_id', $selectedEmployee)->first();
+                                $employeeDetailsCollection = collect($selectedEmployeeDetails);
+                            @endphp
                             <div class="row" style="margin-top: 10px; margin-bottom: 10px;">
                                 <div class="col-md-4 col-6">
                                     <div class="d-flex Employee-details-hr">
@@ -509,16 +510,17 @@
                                                             src="{{ asset('images/female-default.jpg') }}"
                                                             alt="Default Female Image">
                                                     @else
-                                                        <img class="profile-image" src="{{ asset('images/user.jpg') }}"
-                                                            alt="Default Image">
+                                                        <img class="profile-image"
+                                                            src="{{ asset('images/user.jpg') }}" alt="Default Image">
                                                     @endif
                                                 @endif
                                                 <div style="margin-left: 15px; color: var(--label-color)">
                                                     <p class="Emp-name-leave-details">
                                                         {{ ucfirst(strtolower($employeeDetailsCollection['name'])) }}
-                                                        
+
                                                     </p>
-                                                    <p class="Emp-id-leave-details">{{ $employeeDetailsCollection['id'] }}
+                                                    <p class="Emp-id-leave-details">
+                                                        {{ $employeeDetailsCollection['id'] }}
                                                     </p>
                                                 </div>
                                             @endif
@@ -604,7 +606,7 @@
                 <div class="mb-3">
                     <label class="fw-bold mb-3">Select Employees</label>
                     <div style="height: 400px; max-height: 400px; overflow-y: auto;">
-                        <table class="analytic-table" >
+                        <table class="analytic-table">
                             <thead>
                                 <tr>
                                     <th><input type="checkbox" wire:model="selectAll"></th>
@@ -616,7 +618,8 @@
                                 @foreach ($employees as $employee)
                                     <tr>
                                         <td>
-                                            <input type="checkbox" wire:model="selectedEmployees" value="{{ $employee['id'] }}">
+                                            <input type="checkbox" wire:model="selectedEmployees"
+                                                value="{{ $employee['id'] }}">
                                         </td>
                                         <td>{{ $employee['id'] }}</td>
                                         <td>{{ $employee['name'] }}</td>
@@ -625,7 +628,7 @@
                             </tbody>
                         </table>
                     </div>
-                   
+
                 </div>
             @endif
 
@@ -638,12 +641,10 @@
                     @enderror
                 </div>
             @endif
-            @elseif ($currentStep == 3)
-            
-           
+        @elseif ($currentStep == 3)
             <h5>Step 3: Preview</h5>
             <p>Review your selections before finalizing the letter.</p>
-        
+
             @livewire('letter-preview', ['previewLetter' => $previewLetter])
         @endif
 
