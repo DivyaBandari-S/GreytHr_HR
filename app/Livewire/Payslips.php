@@ -668,7 +668,7 @@ class Payslips extends Component
         }
 
         // Fetch employee personal & bank details
-        $employeeDetails = EmployeeDetails::select('employee_details.*', 'emp_departments.department')
+        $employees = EmployeeDetails::select('employee_details.*', 'emp_departments.department')
             ->leftJoin('emp_departments', 'employee_details.dept_id', '=', 'emp_departments.dept_id')
             ->where('employee_details.emp_id', $this->selectedEmployeeId)
             ->first();
@@ -676,7 +676,7 @@ class Payslips extends Component
 
         // ✅ Define variables correctly before passing them
         // ✅ Call the function correctly
-        if($employeeDetails){
+        if($employees){
             $salaryDivisions = EmpSalaryRevision::getFullAndActualSalaryComponents(
                 $empSalaryDetails['salary'],
                 $empSalaryDetails['revised_ctc'],
@@ -699,7 +699,7 @@ class Payslips extends Component
         $this->empCompanyLogoUrl = $this->getEmpCompanyLogoUrl();
         // Pass data to PDF view
         $pdf = Pdf::loadView('download-pdf', [
-            'employeeDetails' => $employeeDetails, // Pass employee details
+            'employeeDetails' => $employees, // Pass employee details
             'salaryRevision' => $salaryDivisions,  // Pass salary breakdown
             'empBankDetails' => $empBankDetails,   // Pass bank details
             'rupeesInText' => $this->convertNumberToWords($salaryDivisions['actual_net_salary']), // Pass net pay in words

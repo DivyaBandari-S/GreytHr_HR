@@ -161,6 +161,8 @@ public $pftotals = [];
     }
     public function export()
     {
+
+        $this->getSalaryDetails();
         if (empty($this->salaryData)) {
             session()->flash('error', 'No salary data available for export.');
             return;
