@@ -111,7 +111,7 @@ class Payslips extends Component
 
     public $recentHires = [];
 
-    public $employees;
+    public $employees=[];
 
 
     public $employeeDetails = [];
@@ -349,15 +349,15 @@ class Payslips extends Component
 
 
         // Retrieve the company_id associated with the logged-in emp_id
-        $employeeDetails = EmployeeDetails::where('emp_id', $loggedInEmpID)->first();
+        $employees = EmployeeDetails::where('emp_id', $loggedInEmpID)->first();
 
-        if (!$employeeDetails) {
+        if (!$employees) {
             // Debug if no employee details are found for this emp_id
 
             return;
         }
 
-        $companyID = $employeeDetails->company_id;
+        $companyID = $employees->company_id;
 
         if (!$companyID) {
             // Handle the case where companyID is null
@@ -597,7 +597,7 @@ class Payslips extends Component
 
 
 
-            $this->employeeDetails = EmployeeDetails::select('employee_details.*', 'emp_departments.department')
+            $this->employees = EmployeeDetails::select('employee_details.*', 'emp_departments.department')
                 ->leftJoin('emp_departments', 'employee_details.dept_id', '=', 'emp_departments.dept_id')
                 ->leftJoin('emp_personal_infos', 'employee_details.emp_id', '=', 'emp_personal_infos.emp_id')
                 ->where('employee_details.emp_id', $this->selectedEmployeeId)
@@ -623,13 +623,13 @@ class Payslips extends Component
             // Get the current authenticated employee's company ID
             $empCompanyId = auth()->user()->company_id;
             $employeeId = auth()->user()->emp_id;
-            $employeeDetails = DB::table('employee_details')
+            $employees = DB::table('employee_details')
                 ->where('emp_id', $employeeId)
                 ->select('company_id') // Select only the company_id
                 ->first();
 
             // Assuming you have a Company model with a 'company_logo' attribute
-            $companyIds = json_decode($employeeDetails->company_id);
+            $companyIds = json_decode($employees->company_id);
 
             $company = DB::table('companies')
                 ->where('company_id', $companyIds)
@@ -699,7 +699,7 @@ class Payslips extends Component
         $this->empCompanyLogoUrl = $this->getEmpCompanyLogoUrl();
         // Pass data to PDF view
         $pdf = Pdf::loadView('download-pdf', [
-            'employeeDetails' => $employees, // Pass employee details
+            'employees' => $employees, // Pass employee details
             'salaryRevision' => $salaryDivisions,  // Pass salary breakdown
             'empBankDetails' => $empBankDetails,   // Pass bank details
             'rupeesInText' => $this->convertNumberToWords($salaryDivisions['actual_net_salary']), // Pass net pay in words
@@ -776,29 +776,6 @@ class Payslips extends Component
         return Hashids::encode($integerValue, $decimalPlaces);
     }
 
-    public function sendTwilioSMS($to, $message)
-    {
-        try {
-            $sid = config('services.twilio.sid');
-            $token = config('services.twilio.token');
-            $from = config('services.twilio.from');
-
-            $twilio = new \Twilio\Rest\Client($sid, $token);
-            $response = $twilio->messages->create($to, [
-                'from' => $from,
-                'body' => $message,
-            ]);
-
-            Log::info("SMS sent successfully to {$to}");
-
-            return $response; // ✅ Return the response for debugging
-
-        } catch (\Exception $e) {
-            Log::error("Twilio SMS Error: " . $e->getMessage());
-
-            return "Error: " . $e->getMessage(); // ✅ Return error message
-        }
-    }
 
     public  $to;
     public $message;

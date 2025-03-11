@@ -190,7 +190,7 @@
                 <!-- Dropdown icon on the left side -->
                 <span class="input-group-text" id="basic-addon" style="background:#5bb75b; width: 30px; display: flex; justify-content: center; align-items: center;height:30px">
                     <button class="dropdown-toggle payroll" id="dropdownButton">
-                        <i class="bi bi-box" ></i> <!-- Box icon for dropdown -->
+                        <!-- Box icon for dropdown -->
                     </button>
                 </span>
 

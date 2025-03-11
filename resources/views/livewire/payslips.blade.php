@@ -89,7 +89,7 @@
                 <!-- Dropdown icon on the left side -->
                 <span class="input-group-text" id="basic-addon" style="background:#5bb75b; width: 30px; display: flex; justify-content: center; align-items: center;height:30px">
                     <button class="dropdown-toggle payroll" id="dropdownButton">
-                        <i class="bi bi-box" ></i> <!-- Box icon for dropdown -->
+                        <!-- Box icon for dropdown -->
                     </button>
                 </span>
 
@@ -167,10 +167,10 @@
                 <tbody class="payslip-body" style="border-radius:5px">
                     <tr class="payslip-row">
                         <td class="data" style="width:50%;">
-                            <span style="color:#778899;">Employee No:</span> {{ $employeeDetails->emp_id }}
+                            <span style="color:#778899;">Employee No:</span> {{ $employees['emp_id'] }}
                         </td>
                         <td class="data" style="width:50%;">
-                            <span style="color:#778899;">Name:</span> {{ ucwords(strtolower($employeeDetails->first_name)) }} {{ ucwords(strtolower($employeeDetails->last_name)) }}
+                            <span style="color:#778899;">Name:</span> {{ ucwords(strtolower($employees['first_name'])) }} {{ ucwords(strtolower($employees['last_name'])) }}
                         </td>
                     </tr>
                     <tr class="payslip-row">
@@ -183,10 +183,10 @@
                     </tr>
                     <tr class="payslip-row">
                         <td class="data" style="width:50%;">
-                            <span style="color:#778899;">Joining Date:</span> {{ \Carbon\Carbon::parse($employeeDetails->hire_date)->format('d M Y') }}
+                            <span style="color:#778899;">Joining Date:</span> {{ \Carbon\Carbon::parse($employees->hire_date)->format('d M Y') }}
                         </td>
                         <td class="data" style="width:50%;">
-                            <span style="color:#778899;">PF No:</span> {{ $employeeDetails->pf_no ?? 'N/A' }}
+                            <span style="color:#778899;">PF No:</span> {{ $employees->pf_no ?? 'N/A' }}
                         </td>
                     </tr>
                 </tbody>
