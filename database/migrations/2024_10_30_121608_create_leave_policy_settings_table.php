@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('leave_policy_settings', function (Blueprint $table) {
             $table->smallInteger('id')->autoIncrement();
             $table->string('leave_name',50);
-            $table->integer('grant_days');
+            $table->double('grant_days')->nullable();
             $table->enum('leave_frequency', ['Annual', 'Monthly'])->nullable();
             $table->integer('is_active')->default(1);
             $table->string('leave_code', '10')->unique();

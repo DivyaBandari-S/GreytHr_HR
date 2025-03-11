@@ -51,29 +51,33 @@ class EmployeeLeaveBalances extends Model
      */
     public static function getLeaveBalancePerYear($employeeId, $leaveName, $year)
     {
-
         // Retrieve all records for the specific employee and year
         $balances = self::where('emp_id', $employeeId)
             ->where('period', 'like', "%$year%")
             ->get();
-
+    
+        // Initialize a variable to sum up all the granted days
+        $totalGrantDays = 0;
+    
         // Loop through each balance record
         foreach ($balances as $balance) {
             // Decode the JSON leave_policy_id column
             $leavePolicies = is_string($balance->leave_policy_id) ? json_decode($balance->leave_policy_id, true) : $balance->leave_policy_id;
-
+    
             if (is_array($leavePolicies)) {
                 foreach ($leavePolicies as $policy) {
                     // Check if the leave_name matches the specified leave name
                     if (isset($policy['leave_name']) && $policy['leave_name'] == $leaveName) {
-                        // Return the grant_days for the specified leave_name
-                        return $policy['grant_days'];
+                        // Add the grant_days for the specified leave_name
+                        $totalGrantDays += $policy['grant_days'];
                     }
                 }
             }
         }
-
-        // Return 0 if the leave type is not found in any of the records
-        return 0;
+    
+        // Round the total sum of granted days to 2 decimal places
+        return round($totalGrantDays, 2);
     }
+
+
 }
