@@ -11,9 +11,11 @@ use App\Models\IndustryType;
 use App\Models\State;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\Log;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Livewire\WithPagination;
+use Illuminate\Validation\Rule;
 
 class CompanyInfo extends Component
 {
@@ -50,6 +52,12 @@ class CompanyInfo extends Component
     public $stateDropdownOpen = false;
     public $cityDropdownOpen = false;
     public $errorMessage = '';
+    public $deleteCompanyId; // Holds the ID of the company to be deleted
+    public $showDeleteModal = false; // Controls the modal visibility
+    protected $paginationTheme = 'bootstrap';
+    public $sortField = 'company_name'; // Default sorting field
+    public $sortDirection = 'asc'; // Default sorting order
+
     protected function rules()
     {
         return [
@@ -66,28 +74,28 @@ class CompanyInfo extends Component
             'company_type' => 'required|string',
             'time_zone' => 'required|string',
             'currency' => 'required|string',
-            'company_logo' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:1024',
-            'company_registration_no' => 'required|string|unique:companies,company_registration_no,' . $this->company_id . ',company_id',
-            'gst_no' => 'required|string|unique:companies,gst_no,' . $this->company_id . ',company_id',
-            'pf_no' => 'required|string|unique:companies,pf_no,' . $this->company_id . ',company_id',
-            'lin_no' => 'required|string|unique:companies,lin_no,' . $this->company_id . ',company_id',
-            'pan_no' => 'required|string|unique:companies,pan_no,' . $this->company_id . ',company_id',
-            'esi_no' => 'required|string|unique:companies,esi_no,' . $this->company_id . ',company_id',
-            'tan_no' => 'required|string|unique:companies,tan_no,' . $this->company_id . ',company_id',
+            'company_logo' => 'nullable',
+            'company_registration_no' => ['required', 'string', Rule::unique('companies', 'company_registration_no')->ignore($this->company_id, 'company_id'), 'regex:/^[0-9A-Za-z\-\/]+$/'],
+
+            'gst_no' => ['required', 'string', Rule::unique('companies', 'gst_no')->ignore($this->company_id, 'company_id'), 'regex:/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[0-9A-Z]{1}Z[0-9A-Z]{1}$/'],
+
+            'pf_no' => ['required', 'string', Rule::unique('companies', 'pf_no')->ignore($this->company_id, 'company_id'), 'regex:/^[A-Z]{2}[A-Z0-9]{3}[0-9]{7}$/'],
+
+            'lin_no' => ['required', 'string', Rule::unique('companies', 'lin_no')->ignore($this->company_id, 'company_id'), 'regex:/^[0-9]{8}$/'],
+
+            'pan_no' => ['required', 'string', Rule::unique('companies', 'pan_no')->ignore($this->company_id, 'company_id'), 'regex:/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/'],
+
+            'esi_no' => ['required', 'string', Rule::unique('companies', 'esi_no')->ignore($this->company_id, 'company_id'), 'regex:/^[0-9]{17}$/'],
+
+            'tan_no' => ['required', 'string', Rule::unique('companies', 'tan_no')->ignore($this->company_id, 'company_id'), 'regex:/^[A-Z]{4}[0-9]{5}[A-Z]{1}$/'],
+
             'company_website' => 'required|url|unique:companies,company_website,' . $this->company_id . ',company_id',
             'company_registration_date' => 'required|date',
             'selectedStates' => 'required|array|min:1|max:5',
-            'email_domain' => 'required|string|max:255|regex:/^[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/|unique:companies,email_domain,' . $this->company_id . ',company_id',
             'selectedCities' => 'required|array|min:1|max:5',
+            'email_domain' => 'required|string|max:255|regex:/^[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/|unique:companies,email_domain,' . $this->company_id . ',company_id',
         ];
     }
-
-
-    // public function updatedCompanyRegistrationDate($date)
-    // {
-    //     // Convert date to Y-m-d format if needed
-    //     $this->company_registration_date = $date;
-    // }
 
     public function clearError($field)
     {
@@ -224,8 +232,8 @@ class CompanyInfo extends Component
 
     public function saveCompanyInfo()
     {
-        $this->validate();
 
+        $this->validate();
         // Find existing company or set to null
         $company = $this->company_id ? Company::where('company_id', $this->company_id)->first() : null;
 
@@ -250,11 +258,12 @@ class CompanyInfo extends Component
             'gst_no' => $this->gst_no,
             'company_registration_no' => $this->company_registration_no,
             'company_website' => $this->company_website,
-            'state' => json_encode($this->selectedStatesData), // Store states as JSON
-            'branch_locations' => json_encode($this->selectedCitiesData), // Store branch locations as JSON
-            'company_logo' => $this->company_logo
+            'state' => json_encode($this->selectedStates), // Store states as JSON
+            'branch_locations' => json_encode($this->selectedCities), // Store branch locations as JSON
+            'company_logo' => $this->company_logo instanceof \Illuminate\Http\UploadedFile
                 ? base64_encode(file_get_contents($this->company_logo->getRealPath()))
-                : ($company ? $company->company_logo : null), // Preserve existing logo
+                : ($company ? $company->company_logo : null),
+
             'company_registration_date' => $this->company_registration_date
                 ? Carbon::parse($this->company_registration_date)->format('Y-m-d')
                 : null, // Store formatted date
@@ -293,6 +302,7 @@ class CompanyInfo extends Component
 
     public function editCompanyInfo($id)
     {
+        $this->resetValidation(); // Clears all validation errors
         $company = Company::find($id);
 
         if (!$company) {
@@ -301,17 +311,20 @@ class CompanyInfo extends Component
 
         $this->fill($company->toArray());
 
-        $stateIds = is_string($company->state) ? json_decode($company->state, true) : [];
-        $cityIds = is_string($company->branch_locations) ? json_decode($company->branch_locations, true) : [];
+        // Decode stored IDs from JSON
+        $this->selectedStates = json_decode($company->state, true) ?? [];
+        $this->selectedCities = json_decode($company->branch_locations, true) ?? [];
 
-        // Extract IDs correctly
-        $stateIds = is_array($stateIds) ? array_column($stateIds, 'id') : [];
-        $cityIds = is_array($cityIds) ? array_column($cityIds, 'id') : [];
+        // Retrieve state and city names
+        $this->selectedStatesData = State::whereIn('id', $this->selectedStates)
+            ->orderBy('name', 'asc')
+            ->get(['id', 'name'])
+            ->toArray();
 
-        // Retrieve state and city details
-        $this->selectedStatesData = State::whereIn('id', $stateIds)->get(['id', 'name'])->toArray();
-        $this->selectedCitiesData = City::whereIn('id', $cityIds)->get(['id', 'name'])->toArray();
-
+        $this->selectedCitiesData = City::whereIn('id', $this->selectedCities)
+            ->orderBy('name', 'asc')
+            ->get(['id', 'name'])
+            ->toArray();
 
         $this->company_id = $company->company_id;
 
@@ -321,36 +334,57 @@ class CompanyInfo extends Component
 
     public function viewCompanyInfo($id)
     {
+        $this->resetValidation(); // Clears all validation errors
         $company = Company::find($id);
 
         if (!$company) {
             return;
         }
 
-        // Decode JSON fields safely
-        $stateIds = is_string($company->state) ? json_decode($company->state, true) : [];
-        $cityIds = is_string($company->branch_locations) ? json_decode($company->branch_locations, true) : [];
-
-        // Ensure state and city IDs are simple arrays
-        $stateIds = is_array($stateIds) ? array_map('intval', array_column($stateIds, 'id')) : [];
-        $cityIds = is_array($cityIds) ? array_map('intval', array_column($cityIds, 'id')) : [];
-
-        // Retrieve selected states and cities with their names
-        $this->selectedStatesData = State::whereIn('id', $stateIds)->get(['id', 'name'])->toArray();
-        $this->selectedCitiesData = City::whereIn('id', $cityIds)->get(['id', 'name'])->toArray();
         $this->fill($company->toArray());
 
-        // Assign company ID and set view mode
+        // Decode stored IDs from JSON
+        $this->selectedStates = json_decode($company->state, true) ?? [];
+        $this->selectedCities = json_decode($company->branch_locations, true) ?? [];
+
+        // Retrieve state and city names
+        $this->selectedStatesData = State::whereIn('id', $this->selectedStates)
+            ->orderBy('name', 'asc')
+            ->get(['id', 'name'])
+            ->toArray();
+
+        $this->selectedCitiesData = City::whereIn('id', $this->selectedCities)
+            ->orderBy('name', 'asc')
+            ->get(['id', 'name'])
+            ->toArray();
+        $this->company_registration_date = Carbon::parse($company->company_registration_date)->format('Y-m-d');
+
         $this->company_id = $company->company_id;
         $this->viewMode = true;
     }
 
-
-
-    public function deleteCompanyInfo($id)
+    // Show confirmation modal
+    public function confirmDelete($id)
     {
-        $company = Company::find($id);
+        $this->deleteCompanyId = $id;
+        $this->showDeleteModal = true;
     }
+
+    // Soft delete by updating status to 0
+    public function deleteCompanyInfo()
+    {
+        $company = Company::find($this->deleteCompanyId);
+        if ($company) {
+            $company->status = 0; // Updating status to 0 instead of deleting
+            $company->save();
+
+            FlashMessageHelper::flashSuccess('The Company as been deleted.');
+        }
+
+        // Close the modal
+        $this->showDeleteModal = false;
+    }
+
 
 
     public function resetForm()
@@ -397,18 +431,51 @@ class CompanyInfo extends Component
         $this->companyTypes = CompanyType::pluck('name', 'id')->toArray();
     }
 
-
+    // Reset pagination when search is updated
+    public function updatedSearch()
+    {
+        $this->resetPage();
+    }
+    // Function to handle sorting
+    public function sortBy($field)
+    {
+        if ($this->sortField === $field) {
+            // Toggle between ascending and descending
+            $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
+        } else {
+            // Set new sort field and default to ascending
+            $this->sortField = $field;
+            $this->sortDirection = 'asc';
+        }
+    }
     public function render()
     {
         $this->getIndustries();
         $this->getCompanyTypes();
         $this->getCountries();
-        $savedCompanies = Company::where('company_name', 'like', '%' . $this->search . '%')
-            ->where('status', 1)
-            ->paginate(5);
-        // dd($savedCompanies->pluck('company_logo'));
+        try {
 
-        // Adjust the number of items per page
+            $savedCompanies = Company::where(function ($query) {
+                $searchTerm = trim($this->search ?? ''); // Trim spaces from search input
+
+                if (!empty($searchTerm)) {
+                    $query->where('company_name', 'like', '%' . $searchTerm . '%')
+                        ->orWhere('company_registration_no', 'like', '%' . $searchTerm . '%')
+                        ->orWhere('pf_no', 'like', '%' . $searchTerm . '%')
+                        ->orWhere('tan_no', 'like', '%' . $searchTerm . '%')
+                        ->orWhere('esi_no', 'like', '%' . $searchTerm . '%')
+                        ->orWhere('pan_no', 'like', '%' . $searchTerm . '%')
+                        ->orWhere('lin_no', 'like', '%' . $searchTerm . '%');
+                }
+            })
+                ->where('status', 1)
+                ->orderBy($this->sortField, $this->sortDirection) // Dynamic sorting
+                ->paginate(3);
+        } catch (QueryException $e) {
+            Log::error('Database error fetching companies: ' . $e->getMessage());
+            $savedCompanies = collect(); // Return an empty collection to prevent crashes
+        }
+
         return view('livewire.company-info', compact('savedCompanies'));
     }
 }

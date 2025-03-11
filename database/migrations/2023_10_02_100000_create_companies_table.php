@@ -26,7 +26,7 @@ return new class extends Migration
             $table->json('state')->nullable();
             $table->string('time_zone',100)->nullable();
             $table->string('currency')->nullable();
-            $table->string('branch_locations')->nullable();
+            $table->json('branch_locations')->nullable();
             $table->date('company_registration_date')->nullable();
             $table->string('company_registration_no', 100)->unique()->nullable();
             $table->string('pan_no', 20)->unique()->nullable();
