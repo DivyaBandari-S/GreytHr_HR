@@ -9,7 +9,7 @@
         </div>
     </div>
     <div class="row justify-content-center mt-2"  >
-                        <div class="col-md-9 custom-container d-flex flex-column">
+                        <div class="col-md-10 custom-container d-flex flex-column">
                         <div class="d-flex align-items-center mb-2">
     <p class="main-text mb-0" style="width:88%">
     The Monitor: Help Desk page enables you to view the workflow of all Help Desk transactions that are underway or are completed. Use the drop-downs to sort out the employees. Click Detailed View to get additional information on a transaction. Click Export Excel to download the Help Desk data in an Excel file.
@@ -76,7 +76,9 @@
 
 
     @if($forHR->whereIn('status_code', [8, 10])->count() > 0)
+    
     @foreach ($forHR->whereIn('status_code', [8, 10]) as $record)
+    
             <div class="container d-flex justify-content-center align-items-center mt-2">
     <div class="card" style="width:80%;margin-top:30px;">
         <div class="card-header" style="background-color:#dbf0f9; color: black;border: 1px solid #ddd;height:auto;cursor:pointer" data-bs-toggle="collapse" data-bs-target="#collapse-body-{{ $record->id }}" aria-expanded="false" aria-controls="collapse-body-{{ $record->id }}">
@@ -233,7 +235,7 @@
             @else
             <div class="d-flex justify-content-center align-items-center mt-2">
                 <div class="card p-4 text-center">
-                <div class="no-data p-4 text-align-center justify-content-center align-items-center" style="width:900px;height:300px">
+                <div class="no-data p-4 text-align-center justify-content-center align-items-center" style="width:700px;height:260px">
         <img src="{{ asset('images/no-data_Gif.gif') }}" 
      alt="No data available" 
      style="width:100%; height: 250px; object-fit: contain;">
@@ -397,7 +399,7 @@
   
              <div class="d-flex justify-content-center align-items-center mt-2">
                 <div class="card p-4 text-center">
-                <div class="no-data p-4 text-align-center justify-content-center align-items-center" style="width:900px;height:300px">
+                <div class="no-data p-4 text-align-center justify-content-center align-items-center" style="width:700px;height:260px">
         <img src="{{ asset('images/no-data_Gif.gif') }}" 
      alt="No data available" 
      style="width:100%; height: 250px; object-fit: contain;">
@@ -575,7 +577,7 @@
                 @else
                 <div class="d-flex justify-content-center align-items-center mt-2">
                 <div class="card p-4 text-center">
-                <div class="no-data p-4 text-align-center justify-content-center align-items-center" style="width:900px;height:300px">
+                <div class="no-data p-4 text-align-center justify-content-center align-items-center" style="width:700px;height:260px">
         <img src="{{ asset('images/no-data_Gif.gif') }}" 
      alt="No data available" 
      style="width:100%; height: 250px; object-fit: contain;">

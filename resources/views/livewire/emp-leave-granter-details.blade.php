@@ -512,13 +512,13 @@
 
             </div>
 
-            <div class="tab-pane" id="dashboard-tab-pane" role="tabpanel" aria-labelledby="dashboard-tab" tabindex="0">
+                <div class="tab-pane" id="dashboard-tab-pane" role="tabpanel" aria-labelledby="dashboard-tab" tabindex="0">
 
-                <div>
-                    activity review
+                    <div>
+                        activity review
+                    </div>
+
                 </div>
-
-            </div>
 
         </div>
 

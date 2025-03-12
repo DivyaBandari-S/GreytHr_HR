@@ -26,7 +26,7 @@ class LeaveSettingPolicy extends Component
     public $leavePolicies = [];
     protected $rules = [
         'leave_name' => 'required|string|max:50',
-        'grant_days' => 'required|integer',
+        'grant_days' => 'required',
         'leave_frequency' => 'required|in:Annual,Monthly',
         'leave_code' => 'required|string|unique:leave_policy_settings,leave_code',
         'company_id' => 'required|exists:companies,company_id',

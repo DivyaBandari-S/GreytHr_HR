@@ -97,6 +97,8 @@ class EmpSalaryRevision extends Model
     /**
      * Relationship to Employee model.
      */
+
+
     public function employee()
     {
         return $this->belongsTo(EmployeeDetails::class, 'emp_id', 'emp_id');
@@ -363,7 +365,7 @@ class EmpSalaryRevision extends Model
             'actual_hra' => $actual_hra,
             'actual_conveyance' => $actual_conveyance,
             'actual_medical' => $actual_medical,
-            'actual_special' => $actual_special +$actual_medical,
+            'actual_special' => $actual_special,
             'actual_pf' => $actual_pf,
             'actual_esi' => $actual_esi,
             'actual_prof_tax' => $actual_prof_tax,
@@ -373,5 +375,95 @@ class EmpSalaryRevision extends Model
             'actual_working_days' => $working_days,
             'lop_days' => $lop_days,
         ];
+    }
+    public static function convertNumberToWords($number)
+    {
+        // Array to represent numbers from 0 to 19 and the tens up to 90
+        $words = [
+            0 => 'zero',
+            1 => 'one',
+            2 => 'two',
+            3 => 'three',
+            4 => 'four',
+            5 => 'five',
+            6 => 'six',
+            7 => 'seven',
+            8 => 'eight',
+            9 => 'nine',
+            10 => 'ten',
+            11 => 'eleven',
+            12 => 'twelve',
+            13 => 'thirteen',
+            14 => 'fourteen',
+            15 => 'fifteen',
+            16 => 'sixteen',
+            17 => 'seventeen',
+            18 => 'eighteen',
+            19 => 'nineteen',
+            20 => 'twenty',
+            30 => 'thirty',
+            40 => 'forty',
+            50 => 'fifty',
+            60 => 'sixty',
+            70 => 'seventy',
+            80 => 'eighty',
+            90 => 'ninety'
+        ];
+
+        // Handle special cases
+        if ($number < 0) {
+            return 'minus ' . self::convertNumberToWords(-$number);
+        }
+
+        // Handle numbers less than 100
+        if ($number < 100) {
+            if ($number < 20) {
+                return $words[$number];
+            } else {
+                $tens = $words[10 * (int) ($number / 10)];
+                $ones = $number % 10;
+                if ($ones > 0) {
+                    return $tens . ' ' . $words[$ones];
+                } else {
+                    return $tens;
+                }
+            }
+        }
+
+        // Handle numbers greater than or equal to 100
+        if ($number < 1000) {
+            $hundreds = $words[(int) ($number / 100)] . ' hundred';
+            $remainder = $number % 100;
+            if ($remainder > 0) {
+                return $hundreds . ' ' . self::convertNumberToWords($remainder);
+            } else {
+                return $hundreds;
+            }
+        }
+
+        // Handle larger numbers
+        if ($number < 1000000) {
+            $thousands =  self::convertNumberToWords((int) ($number / 1000)) . ' thousand';
+            $remainder = $number % 1000;
+            if ($remainder > 0) {
+                return $thousands . ' ' .  self::convertNumberToWords($remainder);
+            } else {
+                return $thousands;
+            }
+        }
+
+        // Handle even larger numbers
+        if ($number < 1000000000) {
+            $millions =  self::convertNumberToWords((int) ($number / 1000000)) . ' million';
+            $remainder = $number % 1000000;
+            if ($remainder > 0) {
+                return $millions . ' ' .  self::convertNumberToWords($remainder);
+            } else {
+                return $millions;
+            }
+        }
+
+        // Handle numbers larger than or equal to a billion
+        return 'number too large to convert';
     }
 }

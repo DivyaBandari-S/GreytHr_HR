@@ -1,6 +1,6 @@
 <div>
 
-<div class="row" style="margin-top:-20px;">
+<div style="margin-top: -20px;">
 <ul class="nav custom-nav-tabs" role="tablist" >
     <li class="nav-item" role="presentation">
         <a class="nav-link active custom-nav-link" id="simple-tab-0" data-bs-toggle="tab" href="#simple-tabpanel-0" role="tab" aria-controls="simple-tabpanel-0" aria-selected="true">Main</a>
@@ -11,7 +11,6 @@
 </ul>
 </div>
 
-
 <div class="tab-content pt-5" id="tab-content">
   <div class="tab-pane active" id="simple-tabpanel-0" role="tabpanel" aria-labelledby="simple-tab-0" style="overflow-x: hidden;">
     <div class="row justify-content-center"  >
@@ -19,7 +18,7 @@
                         <div class="row d-flex align-items-center">
     <div class="col-10">
         <p class="main-text mb-0">
-        The Accounts JV page enables you to generate, cancel and export JVs. Click Generate JV to generate a fresh JV. If you make any changes to the Payroll after the JV is generated, you can click Cancel JV to cancel the JV. Once canceled, the Generate JV button displays again.
+        The Payslips page enables you to generate Payslips for your employees. You can Download the Payslips in PDF format, or email the Payslips directly to your employees. In case you are using the Employee Self-Service or Employee Portal, you can release the payslips on the portal from the Published Info > Payslips page.
         </p>
     </div>
     <div class="col-2 text-end">
@@ -90,7 +89,7 @@
                 <!-- Dropdown icon on the left side -->
                 <span class="input-group-text" id="basic-addon" style="background:#5bb75b; width: 30px; display: flex; justify-content: center; align-items: center;height:30px">
                     <button class="dropdown-toggle payroll" id="dropdownButton">
-                        <i class="bi bi-box" ></i> <!-- Box icon for dropdown -->
+                        <!-- Box icon for dropdown -->
                     </button>
                 </span>
 
@@ -168,10 +167,10 @@
                 <tbody class="payslip-body" style="border-radius:5px">
                     <tr class="payslip-row">
                         <td class="data" style="width:50%;">
-                            <span style="color:#778899;">Employee No:</span> {{ $employeeDetails->emp_id }}
+                            <span style="color:#778899;">Employee No:</span> {{ $employees['emp_id'] }}
                         </td>
                         <td class="data" style="width:50%;">
-                            <span style="color:#778899;">Name:</span> {{ ucwords(strtolower($employeeDetails->first_name)) }} {{ ucwords(strtolower($employeeDetails->last_name)) }}
+                            <span style="color:#778899;">Name:</span> {{ ucwords(strtolower($employees['first_name'])) }} {{ ucwords(strtolower($employees['last_name'])) }}
                         </td>
                     </tr>
                     <tr class="payslip-row">
@@ -184,10 +183,10 @@
                     </tr>
                     <tr class="payslip-row">
                         <td class="data" style="width:50%;">
-                            <span style="color:#778899;">Joining Date:</span> {{ \Carbon\Carbon::parse($employeeDetails->hire_date)->format('d M Y') }}
+                            <span style="color:#778899;">Joining Date:</span> {{ \Carbon\Carbon::parse($employees->hire_date)->format('d M Y') }}
                         </td>
                         <td class="data" style="width:50%;">
-                            <span style="color:#778899;">PF No:</span> {{ $employeeDetails->pf_no ?? 'N/A' }}
+                            <span style="color:#778899;">PF No:</span> {{ $employees->pf_no ?? 'N/A' }}
                         </td>
                     </tr>
                 </tbody>
@@ -220,7 +219,7 @@
                     </tr>
                     <tr class="earnings-row">
                         <td class="earnings-label">CONVEYANCE</td>
-                        <td class="earnings-value">₹{{ number_format($salaryDivisions['conveyance'], 2) }}</td>
+                        <td class="earnings-value">₹{{ number_format($salaryDivisions['conveyance'], decimals: 2) }}</td>
                         <td class="deductions-label"></td>
                         <td class="deductions-value"></td>
                     </tr>

@@ -11,8 +11,7 @@ class EmpSalary extends Model
 {
     use HasFactory;
 
-    protected $table=['emp_salaries'];
-    protected $fillable = ['sal_id', 'bank_id', 'salary', 'effective_date','total_working_days','lop_days', 'remarks', 'month_of_sal'];
+    protected $fillable = ['sal_id', 'bank_id', 'salary', 'effective_date', 'remarks', 'month_of_sal','is_payslip','total_working_days,lop_days'];
     protected $appends = ['basic', 'hra', 'medical', 'special', 'conveyance', 'pf'];
 
     private $decodedSalary = null; // Cache decoded salary for repeated calculations
@@ -20,6 +19,8 @@ class EmpSalary extends Model
     /**
      * Set and encode salary before saving.
      */
+    
+
     public function setSalaryAttribute($value)
     {
         $decimalPlaces = strpos($value, '.') !== false ? strlen(substr(strrchr($value, "."), 1)) : 0;
@@ -33,18 +34,25 @@ class EmpSalary extends Model
     public function getDecodedSalary()
     {
         if ($this->decodedSalary === null) {
+            // Check if salary exists in attributes
+            if (!isset($this->attributes['salary'])) {
+                return 0; // Return 0 if salary is missing
+            }
+    
             $decoded = Hashids::decode($this->attributes['salary']);
+    
             if (count($decoded) === 0) {
-                // If decoding fails, return 0
-                $this->decodedSalary = 0;
+                $this->decodedSalary = 0; // If decoding fails
             } else {
                 $integerValue = $decoded[0];
                 $decimalPlaces = $decoded[1] ?? 0;
                 $this->decodedSalary = $integerValue / pow(10, $decimalPlaces);
             }
         }
+    
         return $this->decodedSalary;
     }
+    
 
     /**
      * Define relationship with EmpSalaryRevision.
@@ -57,6 +65,56 @@ class EmpSalary extends Model
     /**
      * Salary breakdown attributes.
      */
+    public function getBasicAttribute()
+    {
+        return $this->getDecodedSalary() > 0 ? $this->calculatePercentageOfSalary(0.4) : 0;
+    }
+
+    public function getHraAttribute()
+    {
+        return $this->basic > 0 ? $this->basic * 0.4 : 0;
+    }
+
+    public function getMedicalAttribute()
+    {
+        return 1250;
+    }
+
+    public function getConveyanceAttribute()
+    {
+        return 1600;
+    }
+
+    public function getSpecialAttribute()
+    {
+        $totalDeductions = $this->basic + $this->hra + $this->conveyance + $this->medical + $this->pf;
+        return $this->getDecodedSalary() > 0 ? max($this->getDecodedSalary() - $totalDeductions, 0) : 0;
+    }
+
+    public function getPfAttribute()
+    {
+        return $this->basic > 0 ? $this->calculatePercentageOfBasic(0.12) : 0;
+    }
+
+    public function calculateEsi()
+    {
+        return $this->basic > 0 ? $this->calculatePercentageOfBasic(0.0075) : 0;
+    }
+
+    public function calculateProfTax()
+    {
+        return 150;
+    }
+
+    public function calculateTotalDeductions()
+    {
+        return $this->pf + $this->calculateEsi() + $this->calculateProfTax();
+    }
+
+    public function calculateTotalAllowance()
+    {
+        return $this->basic + $this->hra + $this->conveyance + $this->medical + $this->special;
+    }
 
     /**
      * Helper methods.
@@ -139,15 +197,6 @@ class EmpSalary extends Model
             'employeer_pension'=> $employeer_pension,
         ];
     }
-    private function encodeCTC($value)
-{
-    $decimalPlaces = strpos($value, '.') !== false ? strlen(substr(strrchr($value, "."), 1)) : 0;
-    $factor = pow(10, $decimalPlaces);
-
-    $integerValue = intval($value * $factor);
-    return Hashids::encode($integerValue, $decimalPlaces);
-}
-
 
     private function decodeCTC($value)
     {

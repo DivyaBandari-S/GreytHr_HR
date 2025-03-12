@@ -9,30 +9,42 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 class Company extends Authenticatable
 {
     use HasFactory;
-    use HasFactory;
-    protected $primaryKey = 'company_id';
-    public $incrementing = false;
+    // protected $primaryKey = 'company_id';
     protected $fillable = [
         'company_id',
         'company_name',
-        'hr_name',
-        'company_address1',
-        'company_address2',
+        'ceo_name',
+        'company_website',
+        'company_type',
+        'company_industry',
+        'company_description',
+        'company_present_address',
+        'company_permanent_address',
+        'country',
+        'state',
+        'time_zone',
+        'currency',
+        'branch_locations',
         'company_registration_date',
+        'company_registration_no',
+        'pan_no',
+        'pf_no',
+        'tan_no',
+        'lin_no',
+        'gst_no',
+        'esi_no',
         'company_logo',
-        'password',
         'contact_email',
         'email_domain',
-        'branch_locations',
         'parent_company_id',
         'is_parent',
-        'contact_phone'
-        // Add other fields that you want to be fillable here
+        'contact_phone',
+        'status'
     ];
-    protected $casts=[
-        'branch_locations'=>'array',
+
+    protected $casts = [
+        'state' => 'array',
+        'company_registration_date' => 'date',
     ];
+
 }
-
-
-

@@ -178,12 +178,14 @@ class ReportsManagement extends Component
 
             if ($report->favorite == true) {
                 $report->favorite = false;
+                $report->save();
+                FlashMessageHelper::flashSuccess('Removed from favorite successfully!');
             } elseif ($report->favorite == false) {
                 $report->favorite = true;
+                $report->save();
+                FlashMessageHelper::flashSuccess('Added to favorite successfully!');
             }
-            $report->save();
             $this->getReportsData();
-            FlashMessageHelper::flashSuccess('Added to favorite successfully!');
             // Flash a success message
         } catch (\Exception $e) {
             // Handle any errors that occur
@@ -259,7 +261,7 @@ class ReportsManagement extends Component
                         ->orWhere('employee_details.employee_status', 'terminated');
                 });
             }
-           
+
 
             $query = $query->groupBy(
                 'date_only',
@@ -321,11 +323,13 @@ class ReportsManagement extends Component
                             'manager_id' => $managerId,
                             'manager_first_name' => $managerFirstName,
                             'manager_last_name' => $managerLastName,
+                            'manager_first_name' => $managerFirstName,
+                            'manager_last_name' => $managerLastName,
                         ];
                     })
                 ];
             });
-           
+
 
 
             $employeeDetails = EmployeeDetails::where('emp_id', $loggedInEmpId)->first();
@@ -664,7 +668,7 @@ public function downloadAbsentReport()
                         $query->where('leave_applications.leave_type', $leaveTypes[$this->leaveType]);
                     }
                 })
-               
+
                 ->where('to_date', '<=', $this->toDate)
                 ->where('leave_applications.leave_status', 2);
 
@@ -805,7 +809,7 @@ public function downloadAbsentReport()
                     // ->where(function ($query) use ($loggedInEmpId) {
                     //     // Fetch team members whose manager is the logged-in employee
                     //     $query->where('employee_details.manager_id', $loggedInEmpId)
-                            ->whereNotIn('employee_details.employee_status', ['terminated', 'resigned'])
+                    ->whereNotIn('employee_details.employee_status', ['terminated', 'resigned'])
                     // })
                     ->when($this->leaveType && $this->leaveType != 'all', function ($query) {
                         $leaveTypes = [
@@ -850,7 +854,7 @@ public function downloadAbsentReport()
 
                             $managerDetails = $employeeDetails ? EmployeeDetails::where('emp_id', $employeeDetails->manager_id)->first() : null;
 
-       
+
 
                             $managerId = $managerDetails ? $managerDetails->emp_id : null;
 
@@ -879,10 +883,10 @@ public function downloadAbsentReport()
                                     'managerDetails' => $managerDetails,
 
                                     'manager_id' => $managerId,
-        
-                        'manager_first_name' => $managerFirstName,
-        
-                        'manager_last_name' => $managerLastName,
+
+                                    'manager_first_name' => $managerFirstName,
+
+                                    'manager_last_name' => $managerLastName,
                                 ];
                             }
 
@@ -904,7 +908,7 @@ public function downloadAbsentReport()
                     // ->where(function ($query) use ($loggedInEmpId) {
                     //     // Fetch team members whose manager is the logged-in employee
                     //     $query->where('employee_details.manager_id', $loggedInEmpId)
-                            ->whereNotIn('employee_details.employee_status', ['terminated', 'resigned'])
+                    ->whereNotIn('employee_details.employee_status', ['terminated', 'resigned'])
                     // })
                     ->where('employee_leave_balances.is_lapsed', 1)
                     ->when($this->leaveType && $this->leaveType != 'all', function ($query) {
@@ -960,7 +964,7 @@ public function downloadAbsentReport()
 
                             $managerDetails = $employeeDetails ? EmployeeDetails::where('emp_id', $employeeDetails->manager_id)->first() : null;
 
-       
+
 
                             $managerId = $managerDetails ? $managerDetails->emp_id : null;
 
@@ -994,14 +998,14 @@ public function downloadAbsentReport()
                                     'status' => 'Lapsed',
                                     'created_at' => $item->created_at,
                                     'from_date' => $decemberStart,  // The start date of the year
-                                    'to_date' => $decemberEnd, 
+                                    'to_date' => $decemberEnd,
                                     'managerDetails' => $managerDetails,
 
                                     'manager_id' => $managerId,
-        
-                        'manager_first_name' => $managerFirstName,
-        
-                        'manager_last_name' => $managerLastName,     // The end date of the year
+
+                                    'manager_first_name' => $managerFirstName,
+
+                                    'manager_last_name' => $managerLastName,     // The end date of the year
 
 
                                 ];
@@ -1026,7 +1030,7 @@ public function downloadAbsentReport()
                     // ->where(function ($query) use ($loggedInEmpId) {
                     //     // Fetch team members whose manager is the logged-in employee
                     //     $query->where('employee_details.manager_id', $loggedInEmpId)
-                            ->whereNotIn('employee_details.employee_status', ['terminated', 'resigned'])
+                    ->whereNotIn('employee_details.employee_status', ['terminated', 'resigned'])
                     // })
                     ->when($this->leaveType && $this->leaveType != 'all', function ($query) {
                         $leaveTypes = [
@@ -1077,12 +1081,12 @@ public function downloadAbsentReport()
                                 $endDate = Carbon::createFromFormat('Y', $period)->lastOfYear()->toDateString(); // '2024-12-31'
                                 $employeeDetails = EmployeeDetails::where('emp_id', $item->emp_id)->first();
 
-                        // Get manager details using the manager_id from the employee's details
-                        $managerDetails = $employeeDetails ? EmployeeDetails::where('emp_id', $employeeDetails->manager_id)->first() : null;
+                                // Get manager details using the manager_id from the employee's details
+                                $managerDetails = $employeeDetails ? EmployeeDetails::where('emp_id', $employeeDetails->manager_id)->first() : null;
 
-                        $managerId = $managerDetails ? $managerDetails->emp_id : null;
-                        $managerFirstName = $managerDetails ? $managerDetails->first_name : null;
-                        $managerLastName = $managerDetails ? $managerDetails->last_name : null;
+                                $managerId = $managerDetails ? $managerDetails->emp_id : null;
+                                $managerFirstName = $managerDetails ? $managerDetails->first_name : null;
+                                $managerLastName = $managerDetails ? $managerDetails->last_name : null;
                                 $leaveDetails[] = [
                                     'leave_name' => $leave['leave_name'] ?? 'Unknown',
                                     'grant_days' => $leave['grant_days'] ?? 0,
@@ -1091,19 +1095,19 @@ public function downloadAbsentReport()
                                     'from_date' => $startDate,  // The start date of the year
                                     'to_date' => $endDate,
                                     'managerDetails' => $managerDetails,
-                            'manager_id' => $managerId,
-                'manager_first_name' => $managerFirstName,
-                'manager_last_name' => $managerLastName,
+                                    'manager_id' => $managerId,
+                                    'manager_first_name' => $managerFirstName,
+                                    'manager_last_name' => $managerLastName,
                                 ];
                             }
-                            
+
 
                             return $leaveDetails;
                         }),
-                        
+
                     ];
                 });
-                
+
 
                 $query = EmployeeLeaveBalances::select(
                     'employee_leave_balances.emp_id',
@@ -1118,7 +1122,7 @@ public function downloadAbsentReport()
                     // ->where(function ($query) use ($loggedInEmpId) {
                     //     // Fetch team members whose manager is the logged-in employee
                     //     $query->where('employee_details.manager_id', $loggedInEmpId)
-                            ->whereNotIn('employee_details.employee_status', ['terminated', 'resigned'])
+                    ->whereNotIn('employee_details.employee_status', ['terminated', 'resigned'])
                     // })
                     ->where('employee_leave_balances.is_lapsed', 1)
                     ->when($this->leaveType && $this->leaveType != 'all', function ($query) {
@@ -1170,7 +1174,7 @@ public function downloadAbsentReport()
 
                             // Get manager details using the manager_id from the employee's details
                             $managerDetails = $employeeDetails ? EmployeeDetails::where('emp_id', $employeeDetails->manager_id)->first() : null;
-    
+
                             $managerId = $managerDetails ? $managerDetails->emp_id : null;
                             $managerFirstName = $managerDetails ? $managerDetails->first_name : null;
                             $managerLastName = $managerDetails ? $managerDetails->last_name : null;
@@ -1202,11 +1206,11 @@ public function downloadAbsentReport()
                                     'status' => 'Lapsed',
                                     'created_at' => $item->created_at,
                                     'from_date' => $decemberStart,  // The start date of the year
-                                    'to_date' => $decemberEnd, 
+                                    'to_date' => $decemberEnd,
                                     'managerDetails' => $managerDetails,
-                            'manager_id' => $managerId,
-                'manager_first_name' => $managerFirstName,
-                'manager_last_name' => $managerLastName,     // The end date of the year
+                                    'manager_id' => $managerId,
+                                    'manager_first_name' => $managerFirstName,
+                                    'manager_last_name' => $managerLastName,     // The end date of the year
 
 
                                 ];
@@ -1250,7 +1254,7 @@ public function downloadAbsentReport()
                             $query->where('leave_applications.leave_type', $leaveTypes[$this->leaveType]);
                         }
                     })
-                 
+
                     ->where(function ($query) {
                         $query->whereBetween('from_date', [$this->fromDate, $this->toDate])
                             ->orWhereBetween('to_date', [$this->fromDate, $this->toDate])
@@ -1306,7 +1310,7 @@ public function downloadAbsentReport()
                 // Log::info('Leave request data retrieved successfully.');
 
                 $leaveTransactionData = $query->groupBy('date_only')->map(function ($group) {
-                   
+
                     return [
                         'date' => Carbon::parse($group->first()->date_only)->format('d M Y'),
                         'emp_id' => $group->first()->emp_id,  // Add emp_id
@@ -1317,7 +1321,7 @@ public function downloadAbsentReport()
 
                             // Get manager details using the manager_id from the employee's details
                             $managerDetails = $employeeDetails ? EmployeeDetails::where('emp_id', $employeeDetails->manager_id)->first() : null;
-        
+
                             $managerId = $managerDetails ? $managerDetails->emp_id : null;
                             $managerFirstName = $managerDetails ? $managerDetails->first_name : null;
                             $managerLastName = $managerDetails ? $managerDetails->last_name : null;
@@ -1343,9 +1347,9 @@ public function downloadAbsentReport()
                                 'leave_days' => $leaveDays,
                                 'leave_status' => $item->leave_status,
                                 'managerDetails' => $managerDetails,
-                            'manager_id' => $managerId,
-                'manager_first_name' => $managerFirstName,
-                'manager_last_name' => $managerLastName, 
+                                'manager_id' => $managerId,
+                                'manager_first_name' => $managerFirstName,
+                                'manager_last_name' => $managerLastName,
                             ];
                         })
                     ];
@@ -1386,7 +1390,7 @@ public function downloadAbsentReport()
                             $query->where('leave_applications.leave_type', $leaveTypes[$this->leaveType]);
                         }
                     })
-                    
+
                     ->where(function ($query) {
                         $query->whereBetween('from_date', [$this->fromDate, $this->toDate])
                             ->orWhereBetween('to_date', [$this->fromDate, $this->toDate])
@@ -1456,7 +1460,7 @@ public function downloadAbsentReport()
 
                             $managerDetails = $employeeDetails ? EmployeeDetails::where('emp_id', $employeeDetails->manager_id)->first() : null;
 
-       
+
 
                             $managerId = $managerDetails ? $managerDetails->emp_id : null;
 
@@ -1486,13 +1490,13 @@ public function downloadAbsentReport()
                                 'leave_status' => $item->leave_status,
 
 
- 'managerDetails' => $managerDetails,
+                                'managerDetails' => $managerDetails,
 
- 'manager_id' => $managerId,
+                                'manager_id' => $managerId,
 
-'manager_first_name' => $managerFirstName,
+                                'manager_first_name' => $managerFirstName,
 
-'manager_last_name' => $managerLastName,
+                                'manager_last_name' => $managerLastName,
                             ];
                         })
                     ];
@@ -1542,14 +1546,14 @@ public function downloadAbsentReport()
         $balanceKey = lcfirst($leaveName) . 'Balance'; // Ensure the first letter is lowercase and append 'Balance'
         return $balanceKey;
     }
-   
+
 
     public function searchfilterleave()
     {
         $this->searching = 1;
         $loggedInEmpId = Auth::guard('hr')->user()->emp_id;
         $employees = EmployeeDetails::whereNotIn('employee_details.employee_status', ['terminated', 'resigned'])
-        ->get();
+            ->get();
         $nameFilter = $this->search;
 
         $filteredEmployees = $employees->filter(function ($employee) use ($nameFilter) {
@@ -1560,8 +1564,8 @@ public function downloadAbsentReport()
                 stripos($employee->city, $nameFilter) !== false ||
                 stripos($employee->state, $nameFilter) !== false;
         });
-      
-    
+
+
 
         if ($filteredEmployees->isEmpty()) {
             $this->notFound = true;
@@ -1604,8 +1608,8 @@ public function downloadAbsentReport()
                 $employees = EmployeeDetails::whereIn('emp_id', $this->leaveBalance)
                     ->select('emp_id', 'first_name', 'last_name')
                     ->get();
-                    
-                 
+
+
 
 
 
@@ -1640,7 +1644,7 @@ public function downloadAbsentReport()
                         'manager_id' => $managerId,
 
                         'manager_first_name' => $managerFirstName,
-        
+
                         'manager_last_name' => $managerLastName,
                     ];
                 });
@@ -1755,7 +1759,7 @@ public function downloadAbsentReport()
                     // ->where(function ($query) use ($loggedInEmpId) {
                     //     // Fetch team members whose manager is the logged-in employee
                     //     $query->where('employee_details.manager_id', $loggedInEmpId)
-                            ->whereNotIn('employee_details.employee_status', ['terminated', 'resigned'])
+                    ->whereNotIn('employee_details.employee_status', ['terminated', 'resigned'])
                     // })
                     ->when($this->leaveType && $this->leaveType != 'all', function ($query) {
                         $leaveTypes = [
@@ -1800,7 +1804,7 @@ public function downloadAbsentReport()
 
                             $managerDetails = $employeeDetails ? EmployeeDetails::where('emp_id', $employeeDetails->manager_id)->first() : null;
 
-       
+
 
                             $managerId = $managerDetails ? $managerDetails->emp_id : null;
 
@@ -1829,7 +1833,7 @@ public function downloadAbsentReport()
                                     'manager_id' => $managerId,
 
                                     'manager_first_name' => $managerFirstName,
-                    
+
                                     'manager_last_name' => $managerLastName,
                                 ];
                             }
@@ -1855,7 +1859,7 @@ public function downloadAbsentReport()
                     // ->where(function ($query) use ($loggedInEmpId) {
                     //     // Fetch team members whose manager is the logged-in employee
                     //     $query->where('employee_details.manager_id', $loggedInEmpId)
-                            ->whereNotIn('employee_details.employee_status', ['terminated', 'resigned'])
+                    ->whereNotIn('employee_details.employee_status', ['terminated', 'resigned'])
                     // })
                     ->where('employee_leave_balances.is_lapsed', 1)  // Filter for lapsed leave
                     ->when($this->leaveType && $this->leaveType != 'all', function ($query) {
@@ -1911,7 +1915,7 @@ public function downloadAbsentReport()
 
                             $managerDetails = $employeeDetails ? EmployeeDetails::where('emp_id', $employeeDetails->manager_id)->first() : null;
 
-       
+
 
                             $managerId = $managerDetails ? $managerDetails->emp_id : null;
 
@@ -1950,7 +1954,7 @@ public function downloadAbsentReport()
                                     'manager_id' => $managerId,
 
                                     'manager_first_name' => $managerFirstName,
-                    
+
                                     'manager_last_name' => $managerLastName,
 
 
@@ -1981,7 +1985,7 @@ public function downloadAbsentReport()
                     // ->where(function ($query) use ($loggedInEmpId) {
                     //     // Fetch team members whose manager is the logged-in employee
                     //     $query->where('employee_details.manager_id', $loggedInEmpId)
-                            ->whereNotIn('employee_details.employee_status', ['terminated', 'resigned'])
+                    ->whereNotIn('employee_details.employee_status', ['terminated', 'resigned'])
                     // })
                     ->when($this->leaveType && $this->leaveType != 'all', function ($query) {
                         $leaveTypes = [
@@ -2029,7 +2033,7 @@ public function downloadAbsentReport()
 
                             $managerDetails = $employeeDetails ? EmployeeDetails::where('emp_id', $employeeDetails->manager_id)->first() : null;
 
-       
+
 
                             $managerId = $managerDetails ? $managerDetails->emp_id : null;
 
@@ -2055,7 +2059,7 @@ public function downloadAbsentReport()
                                     'manager_id' => $managerId,
 
                                     'manager_first_name' => $managerFirstName,
-                    
+
                                     'manager_last_name' => $managerLastName,
                                 ];
                             }
@@ -2167,7 +2171,7 @@ public function downloadAbsentReport()
 
                             $managerDetails = $employeeDetails ? EmployeeDetails::where('emp_id', $employeeDetails->manager_id)->first() : null;
 
-       
+
 
                             $managerId = $managerDetails ? $managerDetails->emp_id : null;
 
@@ -2193,7 +2197,7 @@ public function downloadAbsentReport()
                                 'manager_id' => $managerId,
 
                                 'manager_first_name' => $managerFirstName,
-                
+
                                 'manager_last_name' => $managerLastName,
                             ];
                         }),
@@ -2215,7 +2219,7 @@ public function downloadAbsentReport()
                     // ->where(function ($query) use ($loggedInEmpId) {
                     //     // Fetch team members whose manager is the logged-in employee
                     //     $query->where('employee_details.manager_id', $loggedInEmpId)
-                            ->whereNotIn('employee_details.employee_status', ['terminated', 'resigned'])
+                    ->whereNotIn('employee_details.employee_status', ['terminated', 'resigned'])
                     // })
                     ->where('employee_leave_balances.is_lapsed', 1)  // Filter for lapsed leave
                     ->when($this->leaveType && $this->leaveType != 'all', function ($query) {
@@ -2271,7 +2275,7 @@ public function downloadAbsentReport()
 
                             $managerDetails = $employeeDetails ? EmployeeDetails::where('emp_id', $employeeDetails->manager_id)->first() : null;
 
-       
+
 
                             $managerId = $managerDetails ? $managerDetails->emp_id : null;
 
@@ -2310,7 +2314,7 @@ public function downloadAbsentReport()
                                     'manager_id' => $managerId,
 
                                     'manager_first_name' => $managerFirstName,
-                    
+
                                     'manager_last_name' => $managerLastName,
 
 
@@ -2326,8 +2330,6 @@ public function downloadAbsentReport()
 
 
                 $leaveTransactions = $leaveTransactionData->concat($lapsedData)->concat($grantedData);
-               
-
             } else {
                 // The existing code for handling leave requests in 'availed', 'rejected', etc.
                 // Log::info('Fetching leave request data for transaction type: ' . $this->transactionType);
@@ -2432,7 +2434,7 @@ public function downloadAbsentReport()
 
                             $managerDetails = $employeeDetails ? EmployeeDetails::where('emp_id', $employeeDetails->manager_id)->first() : null;
 
-       
+
 
                             $managerId = $managerDetails ? $managerDetails->emp_id : null;
 
@@ -2458,7 +2460,7 @@ public function downloadAbsentReport()
                                 'manager_id' => $managerId,
 
                                 'manager_first_name' => $managerFirstName,
-                
+
                                 'manager_last_name' => $managerLastName,
                             ];
                         }),

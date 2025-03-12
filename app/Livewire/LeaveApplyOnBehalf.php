@@ -84,8 +84,12 @@ class LeaveApplyOnBehalf extends Component
     public $field;
     public $managerDetails, $fullName;
     public $empManagerDetails;
+    public $showEmployeeSearch;
+    public $seleceted_emp_id;
     public  $selectedManagerDetails;
     public $hasReachedLimit = false;
+    public $hrAppliedLeaveRequests;
+
     protected $rules = [
         'leave_type' => 'required',
         'from_date' => 'required|date',
@@ -115,17 +119,61 @@ class LeaveApplyOnBehalf extends Component
     public function mount()
     {
         try {
+            $this->getHrAppliedLeaveList();
             $this->selectedPeople = [];
             $this->searchTerm = '';
             $this->searchQuery = '';
             $this->selectedYear = Carbon::now()->format('Y');
+        } catch (\Exception $e) {
+            // Optionally, notify the user using FlashMessageHelper
+            FlashMessageHelper::flashError('An error occurred while loading the data. Please try again.');
+            return false;
+        }
+    }
 
-            $employeeId = auth()->guard('hr')->user()->emp_id;
+    //get fetching the leave requests data which are applied by HR on behalf of an employee
+    public function getHrAppliedLeaveList()
+    {
+        try {
+            // Fetch leave requests with employee details
+            $this->hrAppliedLeaveRequests = LeaveRequest::with('employee')
+                ->whereNotNull('applied_by')
+                ->orderBy('created_at')
+                ->get();
+    
+            // Process each leave request
+            foreach ($this->hrAppliedLeaveRequests as $leaveRequest) {
+                $createdAt = Carbon::parse($leaveRequest->created_at);
+    
+                // Check if the leave request is within this week using startOfWeek and endOfWeek
+                $startOfWeek = Carbon::now()->startOfWeek();
+                $endOfWeek = Carbon::now()->endOfWeek();
+    
+                if ($createdAt->between($startOfWeek, $endOfWeek)) {
+                    $leaveRequest->formatted_created_at = $createdAt->format('l h:i A'); // e.g., "Wednesday 4:00 PM"
+                } else {
+                    $leaveRequest->formatted_created_at = $createdAt->format('Y-m-d'); // e.g., "2025-03-06"
+                }
+            }
+    
+        } catch (\Exception $e) {
+            // Log the exception message
+            Log::error('Error while fetching or formatting leave requests: ' . $e->getMessage());
+
+            // Optionally, you could return a message or perform another action if something goes wrong
+            FlashMessageHelper::flashError('Something went wrong while processing leave requests.');
+        }
+    }
+
+    //get manager details
+    public function getManagerDetailsForEmp()
+    {
+        try {
+            $employeeId = $this->seleceted_emp_id;
             $this->employee = EmployeeDetails::where('emp_id', $employeeId)->first();
 
             if ($this->employee) {
                 $managerId = $this->employee->manager_id;
-
                 // Fetch the logged-in employee's manager details
                 $managerDetails = EmployeeDetails::where('emp_id', $managerId)->first();
 
@@ -168,6 +216,9 @@ class LeaveApplyOnBehalf extends Component
                 $this->showCasualLeaveProbationYear = $this->employee &&
                     !empty($this->employee->confirmation_date) &&
                     (date('Y', strtotime($this->employee->confirmation_date)) == $currentYear);
+            } else {
+                $this->employee = null;
+                $this->managerDetails = null;
             }
         } catch (\Exception $e) {
             // Optionally, notify the user using FlashMessageHelper
@@ -177,13 +228,80 @@ class LeaveApplyOnBehalf extends Component
     }
 
 
-
+    public function getSelectedEmp($empId)
+    {
+        $this->showEmployeeSearch = false;
+        $this->seleceted_emp_id = $empId;
+        $this->getApplyingToDetails();
+        $this->getEmpDetailsFor();
+    }
+    public function closeSearchContainer()
+    {
+        $this->showEmployeeSearch = !$this->showEmployeeSearch;
+        $this->getEmpDetailsFor();
+    }
     public function toggleInfo()
     {
         $this->showinfoMessage = !$this->showinfoMessage;
         $this->showinfoButton = !$this->showinfoButton;
     }
 
+    public $searchEmployeeIds;
+
+    //get employee filter based on dropdown
+    public function loadEmployeeList()
+    {
+        try {
+            // Get the logged-in employee's ID
+            $loggedInEmpID = auth()->guard('hr')->user()->emp_id;
+            // Fetch the company ID for the logged-in employee
+            $companyID = EmployeeDetails::where('emp_id', $loggedInEmpID)
+                ->pluck('company_id')
+                ->first();
+            // Check if company ID is an array or a string and decode it if necessary
+            $companyIdsArray = is_array($companyID) ? $companyID : json_decode($companyID, true);
+
+            // Query employees based on company IDs and status
+            $query = EmployeeDetails::where(function ($query) use ($companyIdsArray) {
+                foreach ($companyIdsArray as $companyId) {
+                    $query->orWhere('company_id', 'like', "%\"$companyId\"%");
+                }
+            });
+
+            // Add the searchTerm filter if it's provided (not null or empty)
+            if (!empty($this->searchTerm)) {
+                $query->where(DB::raw("CONCAT(first_name, ' ', last_name)"), 'like', '%' . $this->searchTerm . '%');
+            }
+
+            // Fetch the employee details with image and full name
+            $this->searchEmployeeIds = $query->orderBy(DB::raw("CONCAT(first_name, ' ', last_name)"))
+                ->get(['emp_id', 'first_name', 'last_name', 'image', DB::raw("CONCAT(first_name, ' ', last_name) as full_name")])
+                ->mapWithKeys(function ($employee) {
+                    // Map each employee's ID to their full name and image URL
+                    return [
+                        $employee->emp_id => [
+                            'full_name' => $employee->full_name,
+                            'image' => $employee->image
+                        ]
+                    ];
+                })
+                ->toArray();
+        } catch (\Illuminate\Database\QueryException $e) {
+            // Catch database-related exceptions
+            Log::error("Database query error in loadEmployeeList: " . $e->getMessage());
+            FlashMessageHelper::flashError('There was a database error while loading the employee list.');
+        } catch (\Exception $e) {
+            // Catch any other exceptions
+            Log::error("Unexpected error in loadEmployeeList: " . $e->getMessage());
+            FlashMessageHelper::flashError('An unexpected error occurred while loading the employee list.');
+        }
+    }
+
+    public $selecetdEmpDetails;
+    public function getEmpDetailsFor()
+    {
+        $this->selecetdEmpDetails = EmployeeDetails::where('emp_id', $this->seleceted_emp_id)->first();
+    }
     //this method used to filter cc recipients from employee details
     public function searchCCRecipients()
     {
@@ -407,7 +525,7 @@ class LeaveApplyOnBehalf extends Component
                     ];
                 }
             } else {
-                $employeeDetails = EmployeeDetails::where('emp_id', auth()->guard('hr')->user()->emp_id)->first();
+                $employeeDetails = EmployeeDetails::where('emp_id', auth()->guard('hr')->user()->hr_emp_id)->first();
                 $defaultManager = $employeeDetails->manager_id;
                 $defaultManagerEmail = EmployeeDetails::where('emp_id', $defaultManager)->first();
                 $applyingToDetails[] = [
@@ -450,7 +568,8 @@ class LeaveApplyOnBehalf extends Component
 
             // Create the leave request
             $this->createdLeaveRequest = LeaveRequest::create([
-                'emp_id' => auth()->guard('hr')->user()->emp_id,
+                'applied_by' => auth()->guard('hr')->user()->hr_emp_id,
+                'emp_id' => $this->seleceted_emp_id,
                 'leave_type' => $this->leave_type,
                 'category_type' => 'Leave',
                 'from_date' => $this->from_date,
@@ -466,7 +585,7 @@ class LeaveApplyOnBehalf extends Component
             FlashMessageHelper::flashSuccess("Leave application submitted successfully!");
             // Notify
             Notification::create([
-                'emp_id' => auth()->guard('hr')->user()->emp_id,
+                'emp_id' =>  $this->seleceted_emp_id,
                 'notification_type' => 'leave',
                 'leave_type' => $this->leave_type,
                 // 'leave_reason' => $this->reason,
@@ -488,12 +607,10 @@ class LeaveApplyOnBehalf extends Component
                     ->cc($ccEmails)
                     ->send(new LeaveApplicationNotification($this->createdLeaveRequest, $applyingToDetails, $ccToDetails));
             }
-
             $this->resetFields();
         } catch (\Exception $e) {
-            Log::error('dfghjk,.' . $e->getMessage());
+            Log::error('dfghjk' . $e->getmessage());
             FlashMessageHelper::flashError("Failed to submit leave application. Please try again later.");
-            return redirect()->to('/leave-form-page');
         }
     }
     public function updatedFromDate()
@@ -522,24 +639,21 @@ class LeaveApplyOnBehalf extends Component
         $this->validateOnly($field);
         try {
 
-            $employeeId = auth()->guard('hr')->user()->emp_id;
+            $employeeId = $this->seleceted_emp_id;
             $checkJoinDate = EmployeeDetails::where('emp_id', $employeeId)->first();
 
             // Clear any previous error messages
             $this->errorMessageValidation = null;
-
-            // Check for date parsing errors
-            try {
-                $fromDate = Carbon::parse($this->from_date)->format('Y-m-d');
-                $toDate = Carbon::parse($this->to_date)->format('Y-m-d');
-                $hireDate = Carbon::parse($checkJoinDate->hire_date)->format('Y-m-d');
-            } catch (\Exception $e) {
-                $this->errorMessageValidation = FlashMessageHelper::flashError('Invalid date format.');
-                return false; // Stop further processing
-            }
             $currentYear = Carbon::now()->year;
             $fromYear = Carbon::parse($this->from_date)->year;
             $toYear = Carbon::parse($this->to_date)->year;
+
+            //check validation for employeeid
+            if ($employeeId == null) {
+                $this->errorMessageValidation = FlashMessageHelper::flashWarning('Please select an employee');
+                return false;
+            }
+
             // Validate that the selected year is current year or last year
             if ($this->from_date && $this->to_date) {
                 if ($fromYear != $currentYear) {
@@ -555,6 +669,15 @@ class LeaveApplyOnBehalf extends Component
                 if ($leaveBalance <= 0 && $this->checkLeaveBalance($this->calculatedNumberOfDays, $this->leaveBalances, $this->leave_type, $fromDateYear)) {
                     return false;
                 }
+            }
+            // Check for date parsing errors
+            try {
+                $fromDate = Carbon::parse($this->from_date)->format('Y-m-d');
+                $toDate = Carbon::parse($this->to_date)->format('Y-m-d');
+                $hireDate = Carbon::parse($checkJoinDate->hire_date)->format('Y-m-d');
+            } catch (\Exception $e) {
+                $this->errorMessageValidation = FlashMessageHelper::flashError('Invalid date format.');
+                return false; // Stop further processing
             }
 
             // 1. Check if the selected dates are on weekends
@@ -681,15 +804,15 @@ class LeaveApplyOnBehalf extends Component
             $fromSession = $this->from_session;  // Get the from_session value
             $toSession = $this->to_session;      // Get the to_session value
 
+            $currentYearNow = date('Y');
             // Retrieve leave requests for the employee
             $leaveRequests = LeaveRequest::where('emp_id', $employeeId)
                 ->where('category_type', 'Leave')
                 ->whereIn('leave_status', [2, 5])
                 ->whereIn('cancel_status', [5, 7])
-                ->whereYear('from_date', '=', date('Y'))  // Ensure from_date is in the current year
-                ->whereYear('to_date', '=', date('Y'))    // Ensure to_date is in the current year
+                ->whereBetween('from_date', ["{$currentYearNow}-01-01", "{$currentYearNow}-12-31"])  // Ensure from_date is in the current year
+                ->whereBetween('to_date', ["{$currentYearNow}-01-01", "{$currentYearNow}-12-31"])    // Ensure to_date is in the current year
                 ->get();
-
 
             // Iterate over each leave request to format the dates and check for overlaps
             foreach ($leaveRequests as $leaveRequest) {
@@ -774,14 +897,14 @@ class LeaveApplyOnBehalf extends Component
         try {
             // Extract the year from the 'from_date' (use the year from the 'from_date' instead of the current year)
             $fromDateYear = Carbon::parse($this->from_date)->year;
-
             // Retrieve leave balances for the year from 'from_date'
             $toggleLapsedData = EmployeeLeaveBalances::where('emp_id', $employeeId)
-                ->where('is_lapsed', true)
+                ->whereNull('lapsed_date')
+                ->where('granted_for_year', $fromDateYear)
                 ->where('period', 'like', "%$fromDateYear%")
                 ->first();
 
-            if ($toggleLapsedData && $toggleLapsedData->is_lapsed) {
+            if ($toggleLapsedData && $toggleLapsedData->laspsed_date != null) {
                 // If lapsed, set the balance directly to 0 for all leave types
                 $leaveBalances = [
                     'Sick Leave' => 0,
@@ -802,7 +925,6 @@ class LeaveApplyOnBehalf extends Component
                     'Paternity Leave' => EmployeeLeaveBalances::getLeaveBalancePerYear($employeeId, 'Paternity Leave', $fromDateYear),
                 ];
             }
-
             // Return the balance for the specific leave type
             return (float)($leaveBalances[$this->leave_type] ?? 0);
         } catch (\Exception $e) {
@@ -962,6 +1084,7 @@ class LeaveApplyOnBehalf extends Component
     public function selectLeave()
     {
         try {
+            $this->getManagerDetailsForEmp();
             $this->show_reporting = $this->leave_type !== 'default';
             $this->showApplyingTo = false;
             $this->selectedYear = Carbon::now()->format('Y');
@@ -976,7 +1099,7 @@ class LeaveApplyOnBehalf extends Component
                 // Fallback to the current year if no dates are set
                 $this->selectedYear = Carbon::now()->format('Y');
             }
-            $employeeId = auth()->guard('hr')->user()->emp_id;
+            $employeeId = $this->seleceted_emp_id;
             // Retrieve all leave balances
             $allLeaveBalances = LeaveBalances::getLeaveBalances($employeeId, $this->selectedYear);
             // Filter leave balances based on the selected leave type
@@ -1136,7 +1259,7 @@ class LeaveApplyOnBehalf extends Component
             $this->fetchManagerDetails($empId);
             $this->showApplyingToContainer = false;
         } else {
-            $employeeId = auth()->guard('hr')->user()->emp_id;
+            $employeeId = $this->seleceted_emp_id;
             $applying_to = EmployeeDetails::where('emp_id', $employeeId)->first();
             if ($applying_to) {
                 $managerId = $applying_to->manager_id;
@@ -1194,120 +1317,136 @@ class LeaveApplyOnBehalf extends Component
         $this->selectedManager = [];
     }
 
+    public $hrEmployeeId;
 
-    public function render()
+    public $managers;
+    public $employeeGender;
+    //get manager and Hr details
+    public function getApplyingToDetails()
     {
-        $this->selectedYear = Carbon::now()->format('Y');
-        $employeeId = auth()->guard('hr')->user()->emp_id;
+        $employeeId = $this->seleceted_emp_id;
         $this->loginEmpManager = null;
         $this->selectedManager = $this->selectedManager ?? [];
         $managers = collect();
 
-        $employeeGender = null;
+        $this->employeeGender = null;
 
         try {
             // Fetch details for the current employee
             $applying_to = EmployeeDetails::where('emp_id', $employeeId)->first();
-            if (!$applying_to) {
-                throw new \Exception("Employee details not found.");
-            }
 
-            $managerId = $applying_to->manager_id;
+            if ($applying_to) {
+                $managerId = $applying_to->manager_id;
 
-            // Fetch the logged-in employee's manager details
-            $managerDetails = EmployeeDetails::where('emp_id', $managerId)->first();
+                if ($managerId) {
+                    // Fetch the logged-in employee's manager details
+                    $managerDetails = EmployeeDetails::where('emp_id', $managerId)->first();
+                } else {
+                    $managerDetails = null;
+                }
 
-            if ($managerDetails) {
-                $fullName = ucfirst(strtolower($managerDetails->first_name)) . ' ' . ucfirst(strtolower($managerDetails->last_name));
-                $this->loginEmpManager = $fullName;
-                $this->empManagerDetails = $managerDetails;
+                if ($managerDetails) {
+                    $fullName = ucfirst(strtolower($managerDetails->first_name)) . ' ' . ucfirst(strtolower($managerDetails->last_name));
+                    $this->loginEmpManager = $fullName;
+                    $this->empManagerDetails = $managerDetails;
 
-                // Add the logged-in manager to the collection
-                $managers->push([
-                    'full_name' => $fullName,
-                    'emp_id' => $managerDetails->emp_id,
-                    'gender' => $managerDetails->gender,
-                    'image' => $managerDetails->image,
-                ]);
-            }
-
-            // Fetch the gender of the logged-in employee
-            $employeeGender = $applying_to->gender;
-            // Fetch employees with job roles CTO, Chairman, and HR
-            $jobRoles = ['CTO', 'Chairman'];
-            $filteredManagers = EmployeeDetails::whereIn('job_role', $jobRoles)
-                ->when($this->searchQuery, function ($query) {
-                    return $query->whereRaw('CONCAT(first_name, " ", last_name) LIKE ?', ["%{$this->searchQuery}%"]);
-                })
-                ->get(['first_name', 'last_name', 'emp_id', 'gender', 'image']);
-
-            // Add the filtered managers to the collection
-            $managers = $managers->merge(
-                $filteredManagers->map(function ($manager) {
-                    $fullName = ucfirst(strtolower($manager->first_name)) . ' ' . ucfirst(strtolower($manager->last_name));
-                    return [
+                    // Add the logged-in manager to the collection
+                    $managers->push([
                         'full_name' => $fullName,
-                        'emp_id' => $manager->emp_id,
-                        'gender' => $manager->gender,
-                        'image' => $manager->image,
-                    ];
-                })
-            );
+                        'emp_id' => $managerDetails->emp_id,
+                        'gender' => $managerDetails->gender,
+                        'image' => $managerDetails->image,
+                    ]);
+                } else {
+                    $managers = [];
+                }
 
-            // Get the company_id from the logged-in employee's details
-            $companyIds = $applying_to->company_id;
+                // Fetch the gender of the logged-in employee
+                $this->employeeGender = $applying_to->gender;
+                // Fetch employees with job roles CTO, Chairman, and HR
+                $jobRoles = ['CTO', 'Chairman'];
+                $filteredManagers = EmployeeDetails::whereIn('job_role', $jobRoles)
+                    ->when($this->searchQuery, function ($query) {
+                        return $query->whereRaw('CONCAT(first_name, " ", last_name) LIKE ?', ["%{$this->searchQuery}%"]);
+                    })
+                    ->get(['first_name', 'last_name', 'emp_id', 'gender', 'image']);
 
-            // Convert the company IDs to an array if it's in JSON format
-            $companyIdsArray = is_array($companyIds) ? $companyIds : json_decode($companyIds, true);
+                // Add the filtered managers to the collection
+                $managers = $managers->merge(
+                    $filteredManagers->map(function ($manager) {
+                        $fullName = ucfirst(strtolower($manager->first_name)) . ' ' . ucfirst(strtolower($manager->last_name));
+                        return [
+                            'full_name' => $fullName,
+                            'emp_id' => $manager->emp_id,
+                            'gender' => $manager->gender,
+                            'image' => $manager->image,
+                        ];
+                    })
+                );
 
-            // Fetch emp_ids from the HR table
-            $hrEmpIds = Hr::pluck('emp_id');
-            // Now, fetch employee details for these HR emp_ids
-            $hrManagers = EmployeeDetails::whereIn('emp_id', $hrEmpIds)
-                ->where(function ($query) use ($companyIdsArray) {
-                    foreach ($companyIdsArray as $companyId) {
-                        $query->orWhere('company_id', 'like', "%\"$companyId\"%");
-                    }
-                })
-                ->get(['first_name', 'last_name', 'emp_id', 'gender', 'image']);
+                // Get the company_id from the logged-in employee's details
+                $companyIds = $applying_to->company_id;
 
-            // Add HR managers to the collection
-            $hrManagers->each(function ($hrManager) use ($managers) {
-                $fullName = ucfirst(strtolower($hrManager->first_name)) . ' ' . ucfirst(strtolower($hrManager->last_name));
-                $managers->push([
-                    'full_name' => $fullName,
-                    'emp_id' => $hrManager->emp_id,
-                    'gender' => $hrManager->gender,
-                    'image' => $hrManager->image,
-                ]);
-            });
+                // Convert the company IDs to an array if it's in JSON format
+                $companyIdsArray = is_array($companyIds) ? $companyIds : json_decode($companyIds, true);
 
-            // Keep only unique emp_ids
-            $managers = $managers->unique('emp_id')->values(); // Ensure we reset the keys
+                // Fetch emp_ids from the HR table
+                $hrEmpIds = Hr::pluck('emp_id');
+                // Now, fetch employee details for these HR emp_ids
+                $hrManagers = EmployeeDetails::whereIn('emp_id', $hrEmpIds)
+                    ->where(function ($query) use ($companyIdsArray) {
+                        foreach ($companyIdsArray as $companyId) {
+                            $query->orWhere('company_id', 'like', "%\"$companyId\"%");
+                        }
+                    })
+                    ->get(['first_name', 'last_name', 'emp_id', 'gender', 'image']);
+
+                // Add HR managers to the collection
+                $hrManagers->each(function ($hrManager) use ($managers) {
+                    $fullName = ucfirst(strtolower($hrManager->first_name)) . ' ' . ucfirst(strtolower($hrManager->last_name));
+                    $managers->push([
+                        'full_name' => $fullName,
+                        'emp_id' => $hrManager->emp_id,
+                        'gender' => $hrManager->gender,
+                        'image' => $hrManager->image,
+                    ]);
+                });
+                // Keep only unique emp_ids
+                $managers = $managers->unique('emp_id')->values(); // Ensure we reset the keys
+                $this->managers = $managers;
+            } else {
+                FlashMessageHelper::flashError('Please select an employee to apply leave');
+            }
         } catch (\Exception $e) {
             FlashMessageHelper::flashError("Error fetching employee or manager details. Please try again.");
         }
-
+    }
+    public function render()
+    {
+        $this->selectedYear = Carbon::now()->format('Y');
         return view('livewire.leave-apply-on-behalf', [
-            'employeeGender' => $employeeGender,
+            'employeeGender' => $this->employeeGender,
             'calculatedNumberOfDays' => $this->calculatedNumberOfDays,
             'empManagerDetails' => $this->empManagerDetails,
             'selectedManagerDetails' => $this->selectedManagerDetails,
             'loginEmpManager' => $this->loginEmpManager,
-            'managers' => $managers,
+            'managers' => $this->managers,
             'ccRecipients' => $this->ccRecipients,
             'showCasualLeaveProbation' => $this->showCasualLeaveProbation,
+            'seleceted_emp_id' => $this->seleceted_emp_id,
+            'selecetdEmpDetails' => $this->selecetdEmpDetails,
+            'searchEmployeeIds' => $this->searchEmployeeIds,
+            'hrAppliedLeaveRequests' => $this->hrAppliedLeaveRequests
         ]);
     }
 
     // Add a method to update the search query
     public function getFilteredManagers()
     {
-        $this->render();
+        $this->getApplyingToDetails();
     }
     public function handleEnterKey()
     {
         $this->searchCCRecipients();
     }
-
 }

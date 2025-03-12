@@ -43,4 +43,8 @@ class Country extends Model
     {
         return $this->belongsTo(Subregion::class, 'subregion_id');
     }
+    public function states()
+    {
+        return $this->hasMany(State::class, 'country_id');
+    }
 }

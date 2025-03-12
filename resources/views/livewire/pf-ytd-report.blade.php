@@ -100,7 +100,7 @@
             background-color: #eaf0f6;
         }
     </style>
-<div class="row" style="margin-top:-20px;">
+<div style="margin-top: -20px;">
 <ul class="nav custom-nav-tabs" role="tablist" >
     <li class="nav-item" role="presentation">
         <a class="nav-link active custom-nav-link" id="simple-tab-0" data-bs-toggle="tab" href="#simple-tabpanel-0" role="tab" aria-controls="simple-tabpanel-0" aria-selected="true">Main</a>
@@ -190,7 +190,7 @@
                 <!-- Dropdown icon on the left side -->
                 <span class="input-group-text" id="basic-addon" style="background:#5bb75b; width: 30px; display: flex; justify-content: center; align-items: center;height:30px">
                     <button class="dropdown-toggle payroll" id="dropdownButton">
-                        <i class="bi bi-box" ></i> <!-- Box icon for dropdown -->
+                        <!-- Box icon for dropdown -->
                     </button>
                 </span>
 

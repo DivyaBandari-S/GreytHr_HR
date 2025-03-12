@@ -1,7 +1,7 @@
 <!-- start: MAIN -->
 <section>
     <!-- start: MAIN BODY -->
-    <div >
+    <div a>
         <section class="tab-section">
             <div class="container-fluid">
                 <div class="tab-pane">
@@ -277,7 +277,7 @@
                                 
                             </div>
 
-                            <div class="border m-0 rounded row mb-3">
+                            <!-- <div class="border m-0 rounded row mb-3">
                                 <div class="border-bottom m-0 mt-3 row">
                                     <div class="col-md-6">
                                         <p class="fw-bold">Employees By Department</p>
@@ -287,7 +287,7 @@
                                     </div>
                                 </div>
                                 <div id="employeeByDep"></div>
-                            </div>
+                            </div> -->
 
 
                         </div>
@@ -311,94 +311,94 @@
                                         <p class="fs12">01 Nov 2024 to 28 Feb 2025</p>
                                     </div>
                                 </div>
+                                <div class="table-responsive">
+                                    <table class="table fs12">
+                                        <thead class="table-secondary">
+                                            <tr>
+                                                <th scope="col">ID</th>
+                                                <th scope="col">Name</th>
+                                                <th scope="col">Team</th>
+                                                <th scope="col">Priority</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>PRO-001</td>
+                                                <td>Alok BD</td>
+                                                <td>
+                                                    <div class="avatar-list-stacked avatar-group-sm">
+                                                        <span class="avatar avatar-rounded">
+                                                            <img class="border border-white" src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-27.jpg" alt="img">
+                                                        </span>
+                                                        <span class="avatar avatar-rounded">
+                                                            <img class="border border-white" src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-30.jpg" alt="img">
+                                                        </span>
+                                                        <span class="avatar avatar-rounded">
+                                                            <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-14.jpg" alt="img">
+                                                        </span>
+                                                        <span class="avatar avatar-rounded">
+                                                            <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-29.jpg" alt="img">
+                                                        </span>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <span class="badge text-bg-danger">High</span>
+                                                </td>
+                                            </tr>
 
-                                <table class="table fs12">
-                                    <thead class="table-secondary">
-                                        <tr>
-                                            <th scope="col">ID</th>
-                                            <th scope="col">Name</th>
-                                            <th scope="col">Team</th>
-                                            <th scope="col">Priority</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>PRO-001</td>
-                                            <td>Alok BD</td>
-                                            <td>
-                                                <div class="avatar-list-stacked avatar-group-sm">
-                                                    <span class="avatar avatar-rounded">
-                                                        <img class="border border-white" src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-27.jpg" alt="img">
-                                                    </span>
-                                                    <span class="avatar avatar-rounded">
-                                                        <img class="border border-white" src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-30.jpg" alt="img">
-                                                    </span>
-                                                    <span class="avatar avatar-rounded">
-                                                        <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-14.jpg" alt="img">
-                                                    </span>
-                                                    <span class="avatar avatar-rounded">
-                                                        <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-29.jpg" alt="img">
-                                                    </span>
-                                                    <!-- <a class="avatar bg-primary avatar-rounded text-fixed-white fs10" href="/react/template/index" data-discover="true">+1</a> -->
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <span class="badge text-bg-danger">High</span>
-                                            </td>
-                                        </tr>
+                                            <tr>
+                                                <td>PRO-002</td>
+                                                <td>T Akash</td>
+                                                <td>
+                                                    <div class="avatar-list-stacked avatar-group-sm">
+                                                        <span class="avatar avatar-rounded">
+                                                            <img class="border border-white" src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-27.jpg" alt="img">
+                                                        </span>
+                                                        <span class="avatar avatar-rounded">
+                                                            <img class="border border-white" src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-30.jpg" alt="img">
+                                                        </span>
+                                                        <span class="avatar avatar-rounded">
+                                                            <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-14.jpg" alt="img">
+                                                        </span>
+                                                        <span class="avatar avatar-rounded">
+                                                            <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-29.jpg" alt="img">
+                                                        </span>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <span class="badge text-bg-danger">High</span>
+                                                </td>
+                                            </tr>
 
-                                        <tr>
-                                            <td>PRO-002</td>
-                                            <td>T Akash</td>
-                                            <td>
-                                                <div class="avatar-list-stacked avatar-group-sm">
-                                                    <span class="avatar avatar-rounded">
-                                                        <img class="border border-white" src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-27.jpg" alt="img">
-                                                    </span>
-                                                    <span class="avatar avatar-rounded">
-                                                        <img class="border border-white" src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-30.jpg" alt="img">
-                                                    </span>
-                                                    <span class="avatar avatar-rounded">
-                                                        <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-14.jpg" alt="img">
-                                                    </span>
-                                                    <span class="avatar avatar-rounded">
-                                                        <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-29.jpg" alt="img">
-                                                    </span>
-                                                    <!-- <a class="avatar bg-primary avatar-rounded text-fixed-white fs10" href="/react/template/index" data-discover="true">+1</a> -->
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <span class="badge text-bg-danger">High</span>
-                                            </td>
-                                        </tr>
+                                            <tr>
+                                                <td>PRO-003</td>
+                                                <td>Akhil KC</td>
+                                                <td>
+                                                    <div class="avatar-list-stacked avatar-group-sm">
+                                                        <span class="avatar avatar-rounded">
+                                                            <img class="border border-white" src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-27.jpg" alt="img">
+                                                        </span>
+                                                        <span class="avatar avatar-rounded">
+                                                            <img class="border border-white" src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-30.jpg" alt="img">
+                                                        </span>
+                                                        <span class="avatar avatar-rounded">
+                                                            <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-14.jpg" alt="img">
+                                                        </span>
+                                                        <span class="avatar avatar-rounded">
+                                                            <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-29.jpg" alt="img">
+                                                        </span>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <span class="badge text-bg-danger">High</span>
+                                                </td>
+                                            </tr>
+                                            
+                                        </tbody>
+                                    </table>
+                                </div>
 
-                                        <tr>
-                                            <td>PRO-003</td>
-                                            <td>Akhil KC</td>
-                                            <td>
-                                                <div class="avatar-list-stacked avatar-group-sm">
-                                                    <span class="avatar avatar-rounded">
-                                                        <img class="border border-white" src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-27.jpg" alt="img">
-                                                    </span>
-                                                    <span class="avatar avatar-rounded">
-                                                        <img class="border border-white" src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-30.jpg" alt="img">
-                                                    </span>
-                                                    <span class="avatar avatar-rounded">
-                                                        <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-14.jpg" alt="img">
-                                                    </span>
-                                                    <span class="avatar avatar-rounded">
-                                                        <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-29.jpg" alt="img">
-                                                    </span>
-                                                    <!-- <a class="avatar bg-primary avatar-rounded text-fixed-white fs10" href="/react/template/index" data-discover="true">+1</a> -->
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <span class="badge text-bg-danger">High</span>
-                                            </td>
-                                        </tr>
-                                        
-                                    </tbody>
-                                </table>
+                                
                             </div>
 
                         </div>
@@ -414,6 +414,7 @@
                                 <button class="btn btn-outline-primary btn-sm"><i class="fa-regular fa-calendar"></i> This Week</button>
                             </div>
                         </div>
+
                         <div class="m-0 mt-3 row">
                             <div class="col-md-6">
                                 <p>Total Employee</p>
@@ -422,6 +423,7 @@
                                 <p>154</p>
                             </div>
                         </div>
+
                         <div class="m-0 px-4 row">
                             <div class="p-0 progress-stacked">
                                 <div class="progress" role="progressbar" aria-label="Segment one" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100" style="width: 15%">
@@ -741,7 +743,7 @@
 
                     <div class="row m-0 mt-3">
                         
-                        <div class="col-md-6 ps-0">
+                        <!-- <div class="col-md-6 ps-0">
                             <div class="border m-0 rounded row">
                                 <div class="border-bottom m-0 mt-3 row">
                                     <div class="col-md-6">
@@ -752,118 +754,118 @@
                                     </div>
                                 </div>
 
-                                <table class="table fs12">
-                                    <thead class="table-secondary">
-                                        <tr>
-                                            <th scope="col">ID</th>
-                                            <th scope="col">Name</th>
-                                            <th scope="col">Team</th>
-                                            <th scope="col">Hours</th>
-                                            <th scope="col">Deadline</th>
-                                            <th scope="col">Priority</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>PRO-001</td>
-                                            <td>Office Management App</td>
-                                            <td>
-                                                <div class="avatar-list-stacked avatar-group-sm">
-                                                    <span class="avatar avatar-rounded">
-                                                        <img class="border border-white" src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-27.jpg" alt="img">
-                                                    </span>
-                                                    <span class="avatar avatar-rounded">
-                                                        <img class="border border-white" src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-30.jpg" alt="img">
-                                                    </span>
-                                                    <span class="avatar avatar-rounded">
-                                                        <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-14.jpg" alt="img">
-                                                    </span>
-                                                    <span class="avatar avatar-rounded">
-                                                        <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-29.jpg" alt="img">
-                                                    </span>
-                                                    <!-- <a class="avatar bg-primary avatar-rounded text-fixed-white fs10" href="/react/template/index" data-discover="true">+1</a> -->
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <p class="mb-1">15/255 Hrs</p>
-                                                <div class="progress" role="progressbar" aria-label="Example 20px high" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style="height: 5px">
-                                                    <div class="progress-bar" style="width: 25%"></div>
-                                                </div>
-                                            </td>
-                                            <td>12/09/2024</td>
-                                            <td>
-                                                <span class="badge text-bg-danger">High</span>
-                                            </td>
-                                        </tr>
+                                <div class="table-responsive">
 
-                                        <tr>
-                                            <td>PRO-002</td>
-                                            <td>Office Management App</td>
-                                            <td>
-                                                <div class="avatar-list-stacked avatar-group-sm">
-                                                    <span class="avatar avatar-rounded">
-                                                        <img class="border border-white" src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-27.jpg" alt="img">
-                                                    </span>
-                                                    <span class="avatar avatar-rounded">
-                                                        <img class="border border-white" src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-30.jpg" alt="img">
-                                                    </span>
-                                                    <span class="avatar avatar-rounded">
-                                                        <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-14.jpg" alt="img">
-                                                    </span>
-                                                    <span class="avatar avatar-rounded">
-                                                        <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-29.jpg" alt="img">
-                                                    </span>
-                                                    <!-- <a class="avatar bg-primary avatar-rounded text-fixed-white fs10" href="/react/template/index" data-discover="true">+1</a> -->
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <p class="mb-1">15/255 Hrs</p>
-                                                <div class="progress" role="progressbar" aria-label="Example 20px high" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style="height: 5px">
-                                                    <div class="progress-bar" style="width: 25%"></div>
-                                                </div>
-                                            </td>
-                                            <td>12/09/2024</td>
-                                            <td>
-                                                <span class="badge text-bg-danger">High</span>
-                                            </td>
-                                        </tr>
+                                    <table class="table fs12">
+                                        <thead class="table-secondary">
+                                            <tr>
+                                                <th scope="col">ID</th>
+                                                <th scope="col">Name</th>
+                                                <th scope="col">Team</th>
+                                                <th scope="col">Hours</th>
+                                                <th scope="col">Deadline</th>
+                                                <th scope="col">Priority</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>PRO-001</td>
+                                                <td>Office Management App</td>
+                                                <td>
+                                                    <div class="avatar-list-stacked avatar-group-sm">
+                                                        <span class="avatar avatar-rounded">
+                                                            <img class="border border-white" src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-27.jpg" alt="img">
+                                                        </span>
+                                                        <span class="avatar avatar-rounded">
+                                                            <img class="border border-white" src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-30.jpg" alt="img">
+                                                        </span>
+                                                        <span class="avatar avatar-rounded">
+                                                            <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-14.jpg" alt="img">
+                                                        </span>
+                                                        <span class="avatar avatar-rounded">
+                                                            <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-29.jpg" alt="img">
+                                                        </span>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <p class="mb-1">15/255 Hrs</p>
+                                                    <div class="progress" role="progressbar" aria-label="Example 20px high" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style="height: 5px">
+                                                        <div class="progress-bar" style="width: 25%"></div>
+                                                    </div>
+                                                </td>
+                                                <td>12/09/2024</td>
+                                                <td>
+                                                    <span class="badge text-bg-danger">High</span>
+                                                </td>
+                                            </tr>
 
-                                        <tr>
-                                            <td>PRO-003</td>
-                                            <td>Office Management App</td>
-                                            <td>
-                                                <div class="avatar-list-stacked avatar-group-sm">
-                                                    <span class="avatar avatar-rounded">
-                                                        <img class="border border-white" src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-27.jpg" alt="img">
-                                                    </span>
-                                                    <span class="avatar avatar-rounded">
-                                                        <img class="border border-white" src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-30.jpg" alt="img">
-                                                    </span>
-                                                    <span class="avatar avatar-rounded">
-                                                        <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-14.jpg" alt="img">
-                                                    </span>
-                                                    <span class="avatar avatar-rounded">
-                                                        <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-29.jpg" alt="img">
-                                                    </span>
-                                                    <!-- <a class="avatar bg-primary avatar-rounded text-fixed-white fs10" href="/react/template/index" data-discover="true">+1</a> -->
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <p class="mb-1">15/255 Hrs</p>
-                                                <div class="progress" role="progressbar" aria-label="Example 20px high" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style="height: 5px">
-                                                    <div class="progress-bar" style="width: 25%"></div>
-                                                </div>
-                                            </td>
-                                            <td>12/09/2024</td>
-                                            <td>
-                                                <span class="badge text-bg-danger">High</span>
-                                            </td>
-                                        </tr>
-                                        
-                                    </tbody>
-                                </table>
+                                            <tr>
+                                                <td>PRO-002</td>
+                                                <td>Office Management App</td>
+                                                <td>
+                                                    <div class="avatar-list-stacked avatar-group-sm">
+                                                        <span class="avatar avatar-rounded">
+                                                            <img class="border border-white" src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-27.jpg" alt="img">
+                                                        </span>
+                                                        <span class="avatar avatar-rounded">
+                                                            <img class="border border-white" src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-30.jpg" alt="img">
+                                                        </span>
+                                                        <span class="avatar avatar-rounded">
+                                                            <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-14.jpg" alt="img">
+                                                        </span>
+                                                        <span class="avatar avatar-rounded">
+                                                            <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-29.jpg" alt="img">
+                                                        </span>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <p class="mb-1">15/255 Hrs</p>
+                                                    <div class="progress" role="progressbar" aria-label="Example 20px high" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style="height: 5px">
+                                                        <div class="progress-bar" style="width: 25%"></div>
+                                                    </div>
+                                                </td>
+                                                <td>12/09/2024</td>
+                                                <td>
+                                                    <span class="badge text-bg-danger">High</span>
+                                                </td>
+                                            </tr>
+
+                                            <tr>
+                                                <td>PRO-003</td>
+                                                <td>Office Management App</td>
+                                                <td>
+                                                    <div class="avatar-list-stacked avatar-group-sm">
+                                                        <span class="avatar avatar-rounded">
+                                                            <img class="border border-white" src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-27.jpg" alt="img">
+                                                        </span>
+                                                        <span class="avatar avatar-rounded">
+                                                            <img class="border border-white" src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-30.jpg" alt="img">
+                                                        </span>
+                                                        <span class="avatar avatar-rounded">
+                                                            <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-14.jpg" alt="img">
+                                                        </span>
+                                                        <span class="avatar avatar-rounded">
+                                                            <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-29.jpg" alt="img">
+                                                        </span>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <p class="mb-1">15/255 Hrs</p>
+                                                    <div class="progress" role="progressbar" aria-label="Example 20px high" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style="height: 5px">
+                                                        <div class="progress-bar" style="width: 25%"></div>
+                                                    </div>
+                                                </td>
+                                                <td>12/09/2024</td>
+                                                <td>
+                                                    <span class="badge text-bg-danger">High</span>
+                                                </td>
+                                            </tr>
+                                            
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
-                        </div>
+                        </div> -->
                     </div>
 
                 </div>
