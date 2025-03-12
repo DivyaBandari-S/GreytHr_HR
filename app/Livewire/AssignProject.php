@@ -70,10 +70,7 @@ class AssignProject extends Component
             $this->searchCCRecipients();
             $this->fetchEmployeeDetails();
         } catch (\Exception $e) {
-            // Log the exception message
-            Log::error('An error occurred while processing your selection: ' . $e->getMessage(), [
-                'exception' => $e
-            ]);
+           
         
             // Notify the user if an error occurs
             FlashMessageHelper::flashError('An error occurred while processing your selection. Please try again.');
@@ -121,13 +118,9 @@ class AssignProject extends Component
             // Optionally, remove duplicates if necessary
             $this->ccRecipients = $this->ccRecipients->unique('emp_id');
         } catch (\Exception $e) {
-            // Log the error
-            FlashMessageHelper::flashError('An error occurred while searching for CC recipients. Please try again later.');
-            Log::info('search error:', [
-                'message' => $e->getMessage(),
-                'stack_trace' => $e->getTraceAsString(),
-            ]);
             
+            FlashMessageHelper::flashError('An error occurred while searching for CC recipients. Please try again later.');
+          
         }
     }
     public function fetchEmployeeDetails()
@@ -239,9 +232,7 @@ class AssignProject extends Component
     {
         $this->resetErrorBag($field);
         $clientId = $this->selectedClient;  // This retrieves the selected client ID from the bound property.
-    
-        // Log the selected client ID
-        Log::info('Selected Client ID: ' . $clientId);
+ 
     
         if ($clientId) {
             // Fetch projects related to the selected client
@@ -299,14 +290,6 @@ class AssignProject extends Component
     {
         
         $this->validate();
-   
-        Log::info('Assigning Project:', [
-            'selectedClient' => $this->selectedClient,
-            'selectedProject' => $this->selectedProject,
-            'selectedEmployee' => $this->selectedEmployee,
-            'startDate' => $this->startDate,
-            'endDate' => $this->endDate,
-        ]);
         $ccToDetails = [];
             foreach ($this->selectedCCEmployees as $selectedEmployee) {
                 $selectedEmployeeId = $selectedEmployee['emp_id']; // Get the emp_id

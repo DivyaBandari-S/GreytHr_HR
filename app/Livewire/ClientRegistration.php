@@ -40,7 +40,7 @@ class ClientRegistration extends Component
     {
     
         if( $this->client_logo ) {
-            dd($this->client_logo);
+           
         
             $this->validate([
                 'client_logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',

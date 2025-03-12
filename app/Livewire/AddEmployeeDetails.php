@@ -815,7 +815,7 @@ class AddEmployeeDetails extends Component
             // Clear the form fields
             $this->currentStep++;
         } catch (\Exception $e) {
-            Log::error('Error in registerEmployeeDetails method: ' . $e->getMessage());
+          
             throw $e;
         }
     }

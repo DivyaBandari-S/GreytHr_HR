@@ -25,7 +25,7 @@ class AddEditHrEmployees extends Component
     {
         // Check if the employee is already selected
         $this->selectedEmployee = $employeeId; // Change here
-        Log::info('Selected Employee: ', [$this->selectedEmployee]);
+     
     
         if (is_null($employeeId)) {
             $this->showSearch = true;
