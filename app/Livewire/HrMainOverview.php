@@ -368,38 +368,38 @@ class HrMainOverview extends Component
         $previousMonthStart = Carbon::now()->subMonth()->startOfMonth(); // Start of the previous month
         $previousMonthEnd = Carbon::now()->subMonth()->endOfMonth();
 
-        // Fetch the records within the date range and category list
-        // $this->hrRequestCount = DB::table('help_desks')
-        //     ->whereIn('category', $categories)
-        //     ->whereBetween('created_at', [$startDate, $endDate])
-        //     ->count();
+     
+        $this->hrRequestCount = DB::table('help_desks')
+            ->whereIn('category', $categories)
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->where('status_code', 10)
+            ->count();
 
-        // Count for the current month
-        // $this->hrRequestCountCurrentMonth = DB::table('help_desks')
-        //     ->whereIn('category', $categories)
-        //     ->whereBetween('created_at', [$currentMonthStart, $currentMonthEnd])
-        //     ->count();
+        $this->hrRequestCountCurrentMonth = DB::table('help_desks')
+            ->whereIn('category', $categories)
+            ->whereBetween('created_at', [$currentMonthStart, $currentMonthEnd])
+            ->count();
 
-        // Count for the previous month
-        // $this->hrRequestCountPreviousMonth = DB::table('help_desks')
-        //     ->whereIn('category', $categories)
-        //     ->whereBetween('created_at', [$previousMonthStart, $previousMonthEnd])
-        //     ->count();
-        //     $percentageChange = $this->calculatePercentageChange(
-        //         $this->hrRequestCountCurrentMonth,
-        //         $this->hrRequestCountPreviousMonth
-        //     );
+       
+        $this->hrRequestCountPreviousMonth = DB::table('help_desks')
+            ->whereIn('category', $categories)
+            ->whereBetween('created_at', [$previousMonthStart, $previousMonthEnd])
+            ->count();
+            $percentageChange = $this->calculatePercentageChange(
+                $this->hrRequestCountCurrentMonth,
+                $this->hrRequestCountPreviousMonth
+            );
 
-            // Format percentage change
-        //     $percentageChangeFormatted = number_format(abs($percentageChange), 2); // Absolute value for formatting
+         
+            $percentageChangeFormatted = number_format(abs($percentageChange), 2); // Absolute value for formatting
 
-        //     $percentageChangeText = "{$percentageChangeFormatted}%";
+            $percentageChangeText = "{$percentageChangeFormatted}%";
 
-        // $this->hrRequestSolvedCount = DB::table('help_desks')
-        //     ->whereIn('category', $categories)
-        //     ->whereBetween('created_at', [$startDate, $endDate])
-        //     ->where('status', 'Completed')
-        //     ->count();
+        $this->hrRequestSolvedCount = DB::table('help_desks')
+            ->whereIn('category', $categories)
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->where('status_code', 11)
+            ->count();
 
 
 
@@ -448,8 +448,8 @@ class HrMainOverview extends Component
             'inactiveEmployees' => $this->inactiveEmployees,
             'confirmationDue' => $this->confirmationDue,
             'employeeCounts' => $this->employeeCounts,
-            // 'hrRequestCount' => $this->hrRequestCount,
-            // 'hrRequestSolvedCount' => $this->hrRequestSolvedCount,
+            'hrRequestCount' => $this->hrRequestCount,
+            'hrRequestSolvedCount' => $this->hrRequestSolvedCount,
             'months' => $this->months,
             'mobileUsersCount' => $this->mobileUsersCount,
             'data' => $this->data,

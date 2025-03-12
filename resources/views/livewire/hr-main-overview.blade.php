@@ -1,6 +1,7 @@
+<div >
 <div class="p-2 m-0 main-overview-container">
 
-    <div>
+    <div>a
         @if ($showHelp == false)
             <div class="row main-overview-help">
                 <div class="col-md-11 col-10 d-flex flex-column">
@@ -57,7 +58,7 @@
 
             <div class="row pt-3">
 
-                <!-- <div class="col-md-4 col-12 mb-3">
+                <div class="col-md-4 col-12 mb-3">
                     <div class="border rounded p-3 bg-white main-overview-requests-container">
                         <h2 class="main-overview-count-text">
                             {{ $hrRequestSolvedCount }}</h2>
@@ -79,7 +80,7 @@
                             </div>
                         </div>
                     </div>
-                </div> -->
+                </div>
                 {{-- <div class="col-md-4 col-12 mb-3">
                     <div class="border rounded p-3 bg-white">
                         <h2 class="main-overview-count-text">
@@ -510,7 +511,7 @@
 
 </div>
 <!-- JavaScript for Chart -->
-
+</div>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         var months = @json($months);

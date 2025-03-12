@@ -43,7 +43,6 @@ class LetterPreparePage extends Component
             if ($this->generateFor == 'single') {
                 return [
                     'selectedEmployee' => 'required|exists:employee_details,emp_id', // Ensure employee exists
-                    'ctc' => 'required',
                 ];
             }
     

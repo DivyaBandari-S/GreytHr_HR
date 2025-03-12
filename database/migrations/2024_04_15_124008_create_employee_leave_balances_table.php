@@ -13,8 +13,9 @@ return new class extends Migration
     {
         Schema::create('employee_leave_balances', function (Blueprint $table) {
             $table->smallInteger('id')->autoIncrement();
-            $table->string('emp_id');
-            $table->integer('batch_id')->nullable();
+            $table->string('emp_id',10);
+            $table->string('hr_emp_id',10)->nullable();length:
+            $table->integer('batch_id',10)->nullable();
             $table->json('leave_policy_id')->nullable();
             $table->foreign('emp_id')->references('emp_id')->on('employee_details')->onDelete('cascade')->onUpdate('cascade');
             $table->string('leave_scheme', 25)->default('General');
@@ -24,10 +25,15 @@ return new class extends Migration
             $table->string('granted_for_year', 10)->nullable();
             $table->boolean('is_lapsed')->default(false);
             $table->timestamp('lapsed_date')->nullable();
-            $table->string('from_date')->nullable();
-            $table->string('to_date')->nullable();
+            $table->string('from_date',25)->nullable();
+            $table->string('to_date',25)->nullable();
             $table->softDeletes();
             $table->timestamps();
+            $table->foreign('hr_emp_id')
+                ->references('hr_emp_id')
+                ->on('hr_employees')
+                ->onDelete('restrict')
+                ->onUpdate('cascade');
 
         });
     }

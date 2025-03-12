@@ -14,6 +14,7 @@ class EmployeeLeaveBalances extends Model
     // Fields that can be mass-assigned
     protected $fillable = [
         'emp_id',
+        'hr_emp_id',
         'leave_scheme',
         'period',
         'status',
@@ -40,6 +41,10 @@ class EmployeeLeaveBalances extends Model
     {
         return $this->belongsTo(EmployeeDetails::class, 'emp_id', 'emp_id');
     }
+    public function HrEmployee()
+    {
+        return $this->belongsTo(HR::class, 'hr_emp_id', 'hr_emp_id');
+    }
 
     /**
      * Get the leave balance for a given year, leave type, and employee.
@@ -55,13 +60,13 @@ class EmployeeLeaveBalances extends Model
         $balances = self::where('emp_id', $employeeId)
             ->where('period', 'like', "%$year%")
             ->get();
-    
-        // Initialize a variable to sum up all the granted days
+
+        // Initialize variables
         $totalGrantDays = 0;
-    
+
         // Loop through each balance record
         foreach ($balances as $balance) {
-            // Decode the JSON leave_policy_id column
+            // Decode JSON leave_policy_id column
             $leavePolicies = is_string($balance->leave_policy_id) ? json_decode($balance->leave_policy_id, true) : $balance->leave_policy_id;
     
             if (is_array($leavePolicies)) {
@@ -74,10 +79,9 @@ class EmployeeLeaveBalances extends Model
                 }
             }
         }
-    
-        // Round the total sum of granted days to 2 decimal places
+
+        // Ensure the last month rounds to the nearest whole number
         return round($totalGrantDays, 2);
     }
-
 
 }

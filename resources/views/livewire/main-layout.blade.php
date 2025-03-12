@@ -30,6 +30,7 @@
                 <ul class="sidebar__submenu">
                     <li class="title">Task</li>
                     <li><a href="/hr/user/tasks">Tasks</a></li>
+                    <li><a href="/hr/clientList">Clients</a></li>
                     {{-- <li><a href="#">Basic</a></li>
                     <li><a href="#">Input group</a></li>
                     <li><a href="#">Layout</a></li>
@@ -46,7 +47,7 @@
                             <li><a href="/hr/user/main-overview">Overview</a></li>
                             <li><a href="/hr/user/analytics-hub">Analytics Hub</a></li>
                             <li><a href="/hr/user/hremployeedirectory">Employee Directory</a></li>
-                            <li><a href="/user">Organization Chart</a></li>
+                            <li><a href="/hr/user/hr-organisation-chart">Organization Chart</a></li>
                         </ul>
                     </li>
                     <li>
@@ -93,7 +94,7 @@
                     <li>
                         <a href="#">Statutory <i class="ph-caret-right-fill"></i></a>
                         <ul class="sidebar__dropdown-menu">
-                            <li><a href="/home">Fines/Damages</a></li>
+                            <li><a href="/hr/user/fine-and-damage">Fines/Damages</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -256,7 +257,7 @@
                         <a href="#">Setup <i class="ph-caret-right-fill"></i></a>
                         <ul class="sidebar__dropdown-menu">
                             <li><a href="/hr/user/holidayList">Holiday List</a></li>
-                            <li><a href="/user">weekend Override</a></li>
+                            <li><a href="/hr/user/weekend-override">weekend Override</a></li>
                             <li><a href="/hr/user">Swipe Managment</a></li>
                             <li><a href="/user">Shift Rotation Calendar</a></li>
                             <li><a href="/home">Employee Week Days</a></li>
