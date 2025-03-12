@@ -55,7 +55,7 @@ class FineComponent extends Component
     {
         $this->selectedOption='all';
         $this->search='';
-        $this->fineAndDamage=FineAndDamage::all();
+        $this->fineAndDamage=FineAndDamage::orderByDesc('created_at')->get();
         $this->finepage = $finepage;
         $this->damagepage = $damagepage;
     }

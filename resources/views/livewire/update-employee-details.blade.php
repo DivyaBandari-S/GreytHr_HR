@@ -1,4 +1,4 @@
-<div style="width:100%;">
+<div >
 
     <head>
 
@@ -291,7 +291,6 @@
                 </ul>
             </nav>
         </div>
-
         @endif
     </div>
 

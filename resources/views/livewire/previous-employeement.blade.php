@@ -247,7 +247,7 @@
         <div class="modal-content" style="width: 90%;">
             <div class="modal-header helpdesk-modal align-items-center">
                 <h5 class="modal-title helpdesk-title"><b>Experience Details</b></h5>
-                <button type="button" class="btn-close"  aria-label="Close"></button>
+                <button type="button" class="btn-close"  wire:click="close" aria-label="Close"></button>
             </div>
             <div class="modal-body" style="overflow-y: auto; max-height: 500px; padding: 20px;">
             <form wire:submit.prevent="saveExperience">

@@ -25,12 +25,12 @@ return new class extends Migration
 
             $table->foreign('job_id')
                 ->references('job_id')
-                ->on('jobs')
+                ->on('jobs_lists')
                 ->onDelete('restrict')
                 ->onUpdate('cascade');
             $table->foreign('user_id')
                 ->references('user_id')
-                ->on('users')
+                ->on('jobs_users')
                 ->onDelete('restrict')
                 ->onUpdate('cascade');
         });

@@ -1,4 +1,4 @@
-<div class="leaveSettings">
+<div>
     <div class="row m-0  leaveGranter-container">
         <div class="col-md-8">
             <div class="leaveGranter-header mb-2">
@@ -6,7 +6,7 @@
                     <h3 class="mb-0">Leave Settings</h3>
                     <p>This page helps you to configure leave policy.</p>
                 </div>
-                <span class="subTextValue">Jan 2024 - Dec 2024</span>
+                <span class="subTextValue">Jan {{ $currentYear }} - Dec {{ $currentYear }}</span>
             </div>
 
             <div class="accordion d-flex flex-column gap-3" id="leaveAccordion">
@@ -78,7 +78,6 @@
                 </div>
                 @endforeach
             </div>
-            <button class="submit-btn mt-3">OK & Continue</button>
         </div>
         <div class="col-md-4">
             <div class="d-flex justify-content-end">

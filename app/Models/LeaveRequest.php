@@ -22,13 +22,13 @@ class LeaveRequest extends Model
         'to_date',
         'applying_to',
         'cc_to',
-        'contact_details','cancel_status',
+        'contact_details',
+        'cancel_status',
         'reason',
         'leave_cancel_reason',
         'is_read',
         'file_paths',
         'leave_status',
-        'cancel_status',
         'action_by'
     ];
 

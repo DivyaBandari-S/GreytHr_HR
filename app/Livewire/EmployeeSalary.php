@@ -2,20 +2,20 @@
 
 namespace App\Livewire;
 
+use Livewire\Component;
 use App\Exports\EmployeePeersExport;
 use App\Helpers\FlashMessageHelper;
 use App\Models\EmployeeDetails;
 use App\Models\EmpSalaryRevision;
-use App\Models\SalaryRevision;
-use Illuminate\Support\Facades\Log;
-use Livewire\Component;
 use Carbon\Carbon;
-use Illuminate\Queue\Listener;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Session;
 use Maatwebsite\Excel\Facades\Excel;
 
 class EmployeeSalary extends Component
 {
+
     public $search = '';
     public $peerSearch = '';
 
@@ -53,6 +53,11 @@ class EmployeeSalary extends Component
     public $selectedEmployees = [];
     public $selectedEmployeesPeers;
     public $selectedEmployeesPeersData;
+    public $isShowHelp = true;
+    public function toogleHelp()
+    {
+        $this->isShowHelp = !$this->isShowHelp;
+    }
 
 
     public function removePeersEmployee($emp_id)
@@ -80,7 +85,7 @@ class EmployeeSalary extends Component
 
     public function showPeersModal()
     {
-        $this->peerSearch="";
+        $this->peerSearch = "";
         $this->isPeersModal = true;
         $this->getEmployeesList();
         // dd($this->allEmployees);
@@ -138,9 +143,9 @@ class EmployeeSalary extends Component
                 $experience = EmpSalaryRevision::calculateExperience($emp_details->hire_date);
             }
 
-            $percentage_chance = round((($revised_ctc -  $current_ctc) /  $current_ctc) * 100, 2);
-
-
+            $percentage_chance = ($current_ctc > 0)
+                ? round((($revised_ctc -  $current_ctc) /  $current_ctc) * 100, 2)
+                : 0;
 
             $this->selectedEmployeesPeersData[] = [
                 'emp_id' => $emp_id,
@@ -215,89 +220,12 @@ class EmployeeSalary extends Component
             $this->getSalaryData();
         };
     }
-    public function getPercentageRevisedSalary()
-    {
-        if ($this->isNewRevised) {
-            if ($this->ctc_percentage != '') {
-                // dd($this->ctc_percentage);
-                $this->comparisionData = EmpSalaryRevision::getPercentageWiseRevisedSalary($this->selected_revised_ctc, $this->ctc_percentage);
-                $this->new_revised_ctc = $this->comparisionData['revised']['annual_ctc'];
-                // dd(  $this->new_revised_ctc);
-            }
-        }
-    }
-
-    public function getNewRevisedSalary()
-    {
-        if ($this->isNewRevised) {
-            if ($this->new_revised_ctc != '') {
-                $this->comparisionData = EmpSalaryRevision::getComparisionData($this->selected_revised_ctc, $this->new_revised_ctc);
-                $this->ctc_percentage = $this->comparisionData['percentage_change'];
-            } else {
-                $this->comparisionData = EmpSalaryRevision::getComparisionData($this->selected_revised_ctc, 0);
-                $this->ctc_percentage = '';
-            }
-        }
-    }
-
-    public function selectRevision($date, $current_ctc, $revised_ctc, $reason, $notes)
-    {
-
-        $this->selectedDate = $date;
-        $this->reason = $reason;
-        $this->notes = $notes;
-        if ($revised_ctc == 0) {
-            $this->new_revised_ctc = '';
-        } else {
-            $this->new_revised_ctc = $revised_ctc;
-        }
-
-        if ($date == 'null') {
-            $this->isNewRevised = true;
-            $this->effectiveDate = now()->startOfMonth()->format('Y-m-d');
-        } else {
-            $this->effectiveDate = Carbon::parse($date)->format('Y-m-d');
-            // dd( $this->effectiveDate);
-            $this->isNewRevised = false;
-            // dd($this->isNewRevised);
-        }
-        $this->comparisionData = EmpSalaryRevision::getComparisionData($current_ctc, $revised_ctc);
-        $this->ctc_percentage = $this->comparisionData['percentage_change'];
-
-        // dd( $this->ctc_percentage);
-        // dd(  $this->selected_current_ctc, $this->selected_revised_ctc);
-
-
-    }
-
     public function showRevisedSalary()
     {
-        $this->showPage1 = !$this->showPage1;
-        if ($this->showPage1) {
-            $this->dispatch('getChartData');
-            $this->isNewRevised = false;
-            $this->getSalaryData();
-        } else {
-            $this->selectedDate = $this->decryptedData[0]['revision_date'];
-            $this->selected_current_ctc = $this->decryptedData[0]['current_ctc'];
-            $this->selected_revised_ctc = $this->decryptedData[0]['revised_ctc'];
-            $this->last_revised_ctc = $this->decryptedData[0]['revised_ctc'];
-            $this->effectiveDate = Carbon::parse($this->decryptedData[0]['revision_date'])->format('Y-m-d');
-
-            if ($this->selected_revised_ctc == 0) {
-                $this->new_revised_ctc = '';
-            } else {
-                $this->new_revised_ctc = $this->selected_revised_ctc;
-            }
-            $this->comparisionData = EmpSalaryRevision::getComparisionData($this->selected_current_ctc, $this->selected_revised_ctc);
-            $this->ctc_percentage = $this->comparisionData['percentage_change'];
-            // dd(  $this->ctc_percentage);
-        }
-        // dd(  $this->comparisionData);
+        return redirect('/hr/user/employee-salary-component');
     }
     public function showModal($sal, $payoutmonth, $remarks)
     {
-
         $this->effectiveDate = $payoutmonth;
         $this->remarks = $remarks;
         $this->salaryComponentDetails = EmpSalaryRevision::calculateSalaryComponents($sal);
@@ -357,11 +285,13 @@ class EmployeeSalary extends Component
 
     public function mount()
     {
-        // $this->selectEmployee('XSS-0481');
+        $selectedEmployee = session('selectedEmployee', null);
+        $this->selectEmployee($selectedEmployee);
     }
 
     public function selectEmployee($employeeId)
     {
+        Session::put('selectedEmployee', $employeeId);
         // Check if the employee is already selected
         $this->selectedEmployee = $employeeId; // Change here
         $this->mainEmp_id = $employeeId;
@@ -373,6 +303,8 @@ class EmployeeSalary extends Component
             $this->search = '';
             $this->decryptedData = [];
             $this->selectedEmployees = [];
+            session()->forget('selectedEmployee');
+
             // $this->showContainer = true;
             // $this->showSearch = false;
             $this->selectedEmployee = null;
@@ -393,7 +325,6 @@ class EmployeeSalary extends Component
             ->where('employee_details.emp_id', $this->selectedEmployee)
             ->select('emp_departments.department', 'employee_details.job_role', 'employee_details.hire_date', 'employee_details.emp_id', 'employee_details.job_role')
             ->first();
-        // dd($this->empDetails );
 
     }
     public function getSalaryData()
@@ -499,7 +430,6 @@ class EmployeeSalary extends Component
     }
 
 
-
     public function getChartData()
     {
 
@@ -532,4 +462,5 @@ class EmployeeSalary extends Component
             'selectedEmployeesDetails' => $selectedEmployeesDetails,
         ]);
     }
+
 }

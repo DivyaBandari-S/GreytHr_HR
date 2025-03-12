@@ -318,7 +318,91 @@ ul {
     margin-top: 8px;
 }
 /* admin dashboard */
-.a {
+.green-bg {
+    display: flex;
+    flex-direction: column;
+    background-color: #dbffdf;
+    border: 1px solid #b4f7a6;
+}
+.green-bg-icon {
+    background-color: #b4f7a6;
+    padding: 10px;
+    border-radius: 6px;
+    margin-bottom: 3em;
+}
+.yellow-bg {
+    display: flex;
+    flex-direction: column;
+    background-color: #ffdef5;
+    border: 1px solid #fc9af7;
+}
+.yellow-bg-icon {
+    background-color: #fc9af7;
+    padding: 10px;
+    border-radius: 6px;
+    margin-bottom: 3em;
+}
+.purple-bg {
+    display: flex;
+    flex-direction: column;
+    background-color: #f7deff;
+    border: 1px solid #dd9afc;
+}
+.purple-bg-icon {
+    background-color: #dd9afc;
+    padding: 10px;
+    border-radius: 6px;
+    margin-bottom: 3em;
+}
+.scroll-item {
+    font-size: var(--sub-headings-font-size);
+    font-weight: 500;
+}
+.scroll-item p {
+    margin-bottom: 0;
+    margin-top: 30px;
+}
+.chipTextFav.active {
+    background-color: #fbf0ea; /* Active background color */
+    border-color: #df6d2d;
+    font-weight: 500;
+    color: #df6d2d; /* Active text color */
+}
+/* Regular icon style */
+.fa-solid {
+    cursor: pointer;
+    transition: color 0.3s ease, text-shadow 0.3s ease; /* Smooth transition */
+}
+
+/* Active state for the icon */
+.fa-solid.active {
+    color: #f1c232;
+    text-shadow: 0 0 0px #f1c232, 0 0 0px #f1c232, 0 0 20px #f1c232; /* Glowing effect */
+}
+
+.homeContainers {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.homeContainers .rounded-3 {
+    flex-grow: 1;
+}
+
+.homeContainers p {
+    font-weight: 500;
+    white-space: normal; /* Ensure the text is not truncated */
+    overflow-wrap: break-word; /* Prevent long words from breaking the layout */
+}
+
+.text-truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap; /* Use this if you still want the text to be truncated on overflow */
+}
+
+.homeContainers .a {
     background: #fcfcfc;
     border: 1px solid #ccc;
     color: rgb(2, 17, 79);
@@ -3289,6 +3373,12 @@ input[type="date"]::before {
 }
 
 @media (max-width: 576px) {
+    .searchEmp input.form-control.rounded-pill {
+        width: 100%;
+    }
+    select#employee_type.form-control {
+        width: 100%;
+    }
     .card-profile {
         width: 95%; /* For very small screens */
     }
@@ -3319,7 +3409,7 @@ input[type="date"]::before {
     color: #778899;
 }
 /* .custom-nav-link {
-    color: white; 
+    color: white;
 } */
 
 .custom-nav-link:hover {
@@ -3450,7 +3540,6 @@ input[type="date"]::before {
 .search-container {
     max-height: 250px; /* Set maximum height */
     overflow-y: auto; /* Enable vertical scrolling */
-
     padding: 10px; /* Optional: Add some padding */
     cursor: pointer;
     margin-top: 5px;
@@ -3588,6 +3677,16 @@ input[type="date"]::before {
     border: none;
     color:#fff;
 }
+.close-btn-for-selected-employee
+{
+
+    position: absolute;
+    right: 5px;
+    top: 1px;
+    border: none;
+    background: transparent;
+    color:black;
+}
 .position-row {
     display: flex;
 
@@ -3698,9 +3797,14 @@ input[type="date"]::before {
     font-weight: 600;
 }
 
-@media (max-width: 455px) {
+@media (max-width: 465px) {
     .hide-main-overview-help {
         white-space: normal;
+    }
+    .image-item {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
     }
 }
 
@@ -3922,7 +4026,7 @@ input[type="date"]::before {
 
 .filters select,
 .date-picker input {
-    padding: 8px 12px;
+    padding: 8px 30px;
     border: 1px solid #d9dde2;
     border-radius: 4px;
     background-color: #fff;
@@ -4192,8 +4296,8 @@ input[type="date"]::before {
     width: 50%;
 }
 .selectEmp {
-    width: 250px;
-    height: 200px;
+    width: 25%;
+    height: auto;
     margin-top: 3px;
     overflow-y: auto;
     border: 1px solid #ccc;
@@ -4219,9 +4323,6 @@ input[type="date"]::before {
     color: var(--label-color);
 }
 
-.leaveSettings {
-    padding: 20px;
-}
 .accordion-button:focus {
     z-index: 3;
     outline: 0;
@@ -4971,7 +5072,7 @@ input[type="date"]::before {
 .tabButtons {
     display: flex;
     /* Ensure buttons are in a row */
-    border: 0.5px solid #007bff;
+    border: 0.5px solid #555;
     border-radius: 5px;
     overflow: hidden;
     gap: 1px;
@@ -4984,7 +5085,7 @@ input[type="date"]::before {
 
     border: none;
     color: #555;
-    background-color: #f0f0f0;
+    background-color: white;
     cursor: pointer;
     transition: background-color 0.3s;
     flex: 1;
@@ -4994,14 +5095,14 @@ input[type="date"]::before {
 }
 
 .tab-button:hover {
-    background-color: #e4e1e1;
+    background-color: #fdf9f9;
     /* color: white; */
     /* border: 1px solid black; */
     /* Add a hover effect */
 }
 
 .tab-button.active {
-    background-color: #007bff;
+    background-color: #5473e3;
     color: white;
 }
 
@@ -5057,7 +5158,6 @@ input[type="date"]::before {
 }
 .dropdown {
     display: inline-block;
-    margin-top: 20px;
 }
 
 select {
@@ -6278,20 +6378,28 @@ select:focus {
 /* task module styles ended */
 
 /* start of bulk photos upload page */
-.image-item{
+.active > .page-link,
+.page-link.active {
+    background-color: var(--main-button-color);
+}
+.page-link {
+    font-size: var(--normal-font-size);
+    font-weight: 500;
+}
+.image-item {
     display: flex;
     gap: 10px;
     background: #fff;
     padding: 10px 20px;
-    width: 75%;
+    width: 45%;
     margin-bottom: 20px;
 }
-.image-gallery{
+.image-gallery {
     background-color: #ccc;
     padding: 30px;
     border: 1px dashed #555;
 }
-.anchorLink{
+.anchorLink {
     color: var(--main-button-color) !important;
     cursor: pointer;
     text-decoration: underline;
@@ -6356,7 +6464,7 @@ select:focus {
     background-color: lightgreen;
     border-color: lightgreen;
 }
-.label{
+.label {
     text-transform: uppercase;
     font-size: var(--sub-headings-font-size) !important;
     color: var(--main-button-color);
@@ -6522,7 +6630,6 @@ select:focus {
 .deductions-value {
     text-align: right; /* Align values to the right */
     font-size: 12px;
-
     color: #333;
 }
 
@@ -6548,3 +6655,220 @@ select:focus {
 }
 
 /*payslips ended*/
+
+/* Payroll module styles  */
+.bold-items{
+    font-weight: bold;
+}
+
+/* //Employee data upddate styles */
+.displayContnet {
+    padding: 20px;
+}
+.empDelContent {
+    padding: 10px 20px;
+}
+/* .selEmpData{
+    background-color: #f9f9f9;
+} */
+input.form-control.rounded-pill{
+    padding: 10px;
+    width: 48%;
+}
+.profileCon {
+    border-radius: 10px;
+    background-color: white;
+    padding: 10px;
+}
+.emp-content {
+    padding: 20px;
+    background-color: #f9f9f9;
+    box-shadow: 2px 1px 2px rgba(0, 0, 0, 0.1);
+}
+.profileCon:hover {
+    background: #e0effa;
+}
+.selecetdEmpDet .more-info {
+    padding: 30px;
+}
+.more-info {
+    background: #f9f9f9;
+    box-shadow: 2px 1px 2px rgba(0, 0, 0, 0.1);
+}
+.normalTextValue {
+    font-size: var(--normal-font-size);
+    color: var(--label-color);
+}
+.normalTextSmall {
+    font-size: var(--normal-font-size);
+    color: #555;
+}
+.custom-table {
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+.custom-table td {
+    padding: 10px 50px;
+}
+.custom-table td strong {
+    font-weight: 500;
+    font-size: 11px;
+}
+.custom-cell {
+    border: 1px solid #ccc;
+    padding: 8px;
+    font-size: var(--normal-font-size);
+}
+.confirmInput {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+}
+.confirmed-emp {
+    background-color: #f9f9f9;
+    padding: 10px 20px;
+}
+.main-title {
+    font-size: var(--sub-headings-font-size);
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+/* //Employee data upddate styles */
+.displayContnet{
+    padding: 20px;
+}
+.empDelContent{
+    padding: 10px 20px;
+}
+/* .selEmpData{
+    background-color: #f9f9f9;
+} */
+.searchEmp{
+    width: 25%;
+}
+.profileCon{
+    border-radius: 10px;
+    background-color: white;
+    padding: 10px;
+}
+.emp-content{
+    padding: 20px;
+    background-color: #f9f9f9;
+    box-shadow: 2px 1px 2px rgba(0, 0, 0, 0.1);
+}
+.profileCon:hover{
+    background:  #e0effa;
+}
+.selecetdEmpDet .more-info{
+    padding: 30px;
+}
+.more-info{
+    background: #f9f9f9;
+    box-shadow: 2px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.custom-table {
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+.custom-table td{
+    padding: 10px 50px;
+}
+.custom-table td strong{
+    font-weight: 500;
+    font-size: 11px;
+}
+.custom-cell {
+    border: 1px solid #ccc;
+    padding: 8px;
+    font-size: var(--normal-font-size);
+}
+.confirmInput{
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+}
+.confirmed-emp{
+    background-color: #f9f9f9;
+    padding: 10px 20px;
+}
+.main-title{
+    font-size: var(--sub-headings-font-size);
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+
+/* //employee separation styles */
+.emp-search-div {
+    padding: 15px 20px;
+}
+.emp-type {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.emp-type select {
+    width: 30%;
+}
+.resign-status
+{
+    padding: 15px 20px;
+}
+.right-border{
+    display: flex;
+    align-items: center;
+    padding: 3px 7px;
+    border-left: 0.15rem solid #d9534f;
+}
+.left-border{
+    display: flex;
+    align-items: center;
+    padding: 2px 7px;
+    border-left: 0.15rem solid #059212;
+    margin-bottom: 20px;
+}
+
+.emp-data-resign label{
+    color: #778899;
+}
+.emp-data-resign span{
+    color: #778899;
+}
+.emp-data-resign{
+    display: flex;
+    flex-direction: column;
+}
+.coulumn-grid{
+    display: grid;
+    grid-template-columns: repeat(3, 4fr);
+    margin: 10px 0px;
+    gap: 20px;
+}
+.coulumn-resign-grid{
+    display: grid;
+    gap: 20px;
+    grid-template-columns: repeat(4, 4fr);
+    margin: 10px 0px;
+}
+.coulumn-grid .form-group input.form-control{
+    width: 70%;
+}
+.emp-data-resign span{
+    font-size: 14px;
+    color: #555;
+    font-weight: 500;
+    text-transform: capitalize;
+}
+button.btn.btn-link.edit-icon{
+    padding: 0;
+    margin: 0;
+    color: var(--main-button-color);
+    font-size: var(--sub-headings-font-size);
+    cursor: pointer;
+}
+
+.sidebar__dropdown-menu_list .active{
+    background-color: pink;
+}

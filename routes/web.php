@@ -1,11 +1,14 @@
 <?php
 
+use App\Livewire\AccountsJv;
 use App\Livewire\AdminDashboard;
 use App\Livewire\AttendanceLockConfiguration;
+use App\Livewire\CompanyInfo;
 use App\Livewire\Dashboard;
 use App\Livewire\HrLogin;
 use App\Livewire\HomeDashboard;
 use App\Livewire\AddEmployeeDetails;
+use App\Livewire\AddOrViewSalaryRevision;
 use App\Livewire\AnalyticsHub;
 use App\Livewire\AnalyticsHubViewAll;
 use App\Livewire\AttendanceException;
@@ -13,7 +16,7 @@ use App\Livewire\AttendanceExceptionForDisplay;
 use App\Livewire\AttendanceMusterHr;
 use App\Livewire\AttendanceProcess;
 use App\Livewire\BankAccount;
-use App\Livewire\BulletinBoard;
+use App\Livewire\LetterPreview;
 use App\Livewire\CreateAttendanceExceptionPage;
 use App\Livewire\CreateDamageComponent;
 use App\Livewire\CreateEmployeeWeekDayChart;
@@ -40,11 +43,13 @@ use App\Livewire\EmployeeProfile;
 use App\Livewire\EmployeeSwipesForHr;
 use App\Livewire\EmployeeWeekDayChart;
 use App\Livewire\EmployeeSalary;
+use App\Livewire\EmployeeSalaryCommonComponent;
 use App\Livewire\Everyone;
 use App\Livewire\Feeds;
 use App\Livewire\FineAndDamageComponent;
 use App\Livewire\HelpDesk;
 use App\Livewire\GenerateLetters;
+use App\Livewire\HoldSalaries;
 use App\Livewire\HrAttendanceInfo;
 use App\Livewire\HrAttendanceOverviewNew;
 use App\Livewire\HrHolidayList;
@@ -59,19 +64,39 @@ use App\Livewire\LeaveTypeReviewer;
 use App\Livewire\LetterPreparePage;
 use App\Livewire\MyFlowchart;
 use App\Livewire\ParentDetails;
+use App\Livewire\PayrollOverview;
 use App\Livewire\Payslips;
+use App\Livewire\PfYtdReport;
 use App\Livewire\PositionHistory;
 use App\Livewire\PreviousEmployeement;
+use App\Livewire\ReimbursementStatement;
 use App\Livewire\ReportsManagement;
 use App\Livewire\Requests;
+use App\Livewire\SalaryRevision;
 use App\Livewire\SalaryRevisionAnalytics;
+use App\Livewire\SalaryRevisionHistory;
+use App\Livewire\SalaryRevisionList;
 use App\Livewire\ShiftOverrideHr;
 use App\Livewire\ShiftRosterHr;
 use App\Livewire\ShiftRotationCalendar;
+use App\Livewire\StopSalaries;
 use App\Livewire\SwipeManagementForHr;
+use App\Livewire\AuthorizeSignatory;
+use App\Livewire\CreateSignatory;
+use App\Livewire\EmployeeDataUpdate;
+use App\Livewire\EmployeeLopDays;
+use App\Livewire\Loans;
+use App\Livewire\ReleaseSalary;
+use App\Livewire\EmployeeSeparation;
+use App\Livewire\Flowchart;
+use App\Livewire\ItStatement;
+use App\Livewire\PayrollSalary;
+use App\Livewire\LeaveApplyOnBehalf;
 use App\Livewire\Tasks;
 use App\Livewire\WeekendOverride;
 use App\Livewire\WhoIsInChartHr;
+use App\Livewire\YearEndProcess;
+use App\Livewire\YtdReport;
 use App\Models\EmpResignations;
 use App\Models\Task;
 use Illuminate\Support\Facades\Route;
@@ -116,6 +141,7 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
         Route::get('/update-employee-details', UpdateEmployeeDetails::class)->name('update-employee-details');
         Route::get('/resig-requests', Resignationrequests::class)->name('resig-requests');
         Route::get('/HelpDesk', HelpDesk::class)->name('HelpDesk');
+        Route::get('/request', Requests::class)->name('request');
         Route::get('/user/tasks', Tasks::class)->name('tasks');
         Route::get('/taskfile/{id}', function ($id) {
             $file = Task::findOrFail($id);
@@ -126,10 +152,24 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
             ]);
         })->name('files.showTask');
 
-
+       //company info
+       Route::get('company-info',CompanyInfo::class)->name('company_info');
         //feeds
         Route::get('/hrFeeds', Feeds::class)->name('hrfeeds');
         Route::get('/everyone', Everyone::class)->name('everyone');
+
+
+        //HR Payroll Submodule Routes->Published Info
+        Route::get('/payslips', Payslips::class)->name('payslips');
+        Route::get('/ctcslips', CTCSlips::class)->name('ctcslips');
+        Route::get('/ytdreport', YtdReport::class)->name('ytdreport');
+        Route::get('/pfytdreport', PfYtdReport::class)->name('pfytdreport');
+        Route::get('/reimbursement', ReimbursementStatement::class)->name('reimbursement');
+        Route::get('/itstatement', ItStatement::class)->name('itstatement');
+
+        //HR Payroll Submodule Routes->Payouts
+        Route::get('/accountsjv', AccountsJv::class)->name('accountsjv');
+
 
         //HR Employee-Main Submodule Routes
         Route::get('/user/main-overview', HrMainOverview::class)->name('main-overview');
@@ -156,8 +196,9 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
         Route::get('/user/add-fine-page/{id?}/{viewMode?}',CreateFineComponent::class)->name('add-fine-page');
         Route::get('/user/add-damage-page/{id?}/{viewMode?}',CreateDamageComponent::class)->name('add-damage-page');
         Route::get('/user/damage-page',DamageComponent::class)->name('damage-page');
+        Route::get('/user/flowchart/{selectedEmployeeId}',Flowchart::class)->name('flowchart');
         //HR Leave-Main Submodule Routes
-        Route::get('/user/hr-organisation-chart', HrOrganisationChart::class)->name('hr-organisation-chart');
+        Route::get('/user/hr-organisation-chart/{selectedEmployeeId?}', HrOrganisationChart::class)->name('hr-organisation-chart');
         Route::get('/user/employee-weekday-chart', EmployeeWeekDayChart::class)->name('employee-weekday-chart');
         Route::get('/user/create-employee-weekday-chart', CreateEmployeeWeekDayChart::class)->name('create-employee-weekday-chart');
         Route::get('/user/hr-attendance-overview', HrAttendanceOverviewNew::class)->name('attendance-overview');
@@ -183,6 +224,7 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
 
         //HR Leave-Infomation Submodule Routes
         Route::get('/user/employee-leave', EmployeeLeave::class)->name('employee-leave');
+        Route::get('/user/post-leave-request',LeaveApplyOnBehalf::class)->name('post-leave-request');
         Route::get('/user/shift-roster-hr', ShiftRosterHr::class)->name(name: 'shift-roster-hr');
         Route::get('/user/attendance-info', HrAttendanceInfo::class)->name('attendance-info');
         Route::get('/user/attendance-muster-hr', AttendanceMusterHr::class)->name(name: 'attendance-muster-hr');
@@ -191,21 +233,49 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
 
         //HR Leave-Admin Submodule Routes
         Route::get('/user/grantLeave', GrantLeaveBalance::class)->name('grantLeave');
-        Route::get('/user/grant-summary', EmpLeaveGranterDetails::class)->name( 'grant-summary');
-        Route::get('/user/leavePolicySettings', LeaveSettingPolicy::class)->name( 'leavePolicySettings');
-
+        Route::get('/user/grant-summary', EmpLeaveGranterDetails::class)->name('grant-summary');
+        Route::get('/user/leavePolicySettings', LeaveSettingPolicy::class)->name('leavePolicySettings');
+        Route::get('/user/leaveYearEndProcess', YearEndProcess::class)->name('year-end-process');
+        Route::get('/user/attendance-process',AttendanceProcess::class)->name('attendance-process');
+        Route::get('/user/swipe-management-for-hr',SwipeManagementForHr::class)->name('swipe-management-for-hr');
+        Route::get('/user/hr-manual-override',HrManualOverride::class)->name('hr-manual-override');
+        Route::get('/user/edit-attendance-exception-page/{id}', EditAttendanceExceptionPage::class)->name('edit-attendance-exception-page');
+        Route::get('/user/edit-shift-override/{id}', EditShiftOverride::class)->name('edit-shift-override');
+        Route::get('/user/shift-override', ShiftOverrideHr::class)->name('shift-override');
+        Route::get('/user/attendance-exception', AttendanceExceptionForDisplay::class)->name(name: 'attendance-exception');
+        Route::get('/user/create-attendance-exception',CreateAttendanceExceptionPage::class)->name('create-attendance-exception');
+        Route::get('/user/attendance-lock-configuration',AttendanceLockConfiguration::class)->name('attendance-lock-configuration');
+        Route::get('/user/create-lock-configuration', CreateNewLockConfigurationPage::class)->name('create-new-lock-configuration-page');
 
         //HR Leave-SetUp Submodule Routes
         Route::get('/user/holidayList', HrHolidayList::class)->name('holidayList');
+        Route::get('/user/employee-weekday-chart', EmployeeWeekDayChart::class)->name('employee-weekday-chart');
+        Route::get('/user/create-employee-weekday-chart', CreateEmployeeWeekDayChart::class)->name('create-employee-weekday-chart');
         Route::get('/user/leave/setup/leave-type-reviewer', LeaveTypeReviewer::class)->name('leave-type-reviewer');
         Route::get('/user/employee-weekday-chart', EmployeeWeekDayChart::class)->name('employee-weekday-chart');
         Route::get('/user/shift-rotation-calendar', ShiftRotationCalendar::class)->name('shift-rotation-calendar');
 
         //extra routes
         Route::get('/review-pending-regularisation-for-hr/{id}/{emp_id}', RegularisationPendingForHr::class)->name('review-pending-regularisation-for-hr');
+        Route::get('/employee-data-update/{action}', EmployeeDataUpdate::class)->name('employee.data.update');
+        Route::get('/user/employee-separation', EmployeeSeparation::class)->name('employee-separation');
 
         //Reports
         Route::get('/user/reports/', ReportsManagement::class)->name('reports');
+
+        //Payroll
+        Route::get('/user/salary-revision', SalaryRevision::class)->name('salary-revision');
+        Route::get('/user/employee-salary', EmployeeSalary::class)->name('employee-salary');
+        Route::get('/user/employee-salary-component', EmployeeSalaryCommonComponent::class)->name('employee-salary-component');
+        Route::get('/user/stop-salaries', StopSalaries::class)->name('stop-salaries');
+        Route::get('/user/hold-salaries', HoldSalaries::class)->name('hold-salaries');
+        Route::get('/user/employee-salary-history', SalaryRevisionHistory::class)->name('employee-salary-history');
+        Route::get('/user/salary-revision-list', SalaryRevisionList::class)->name('salary-revision-list');
+        Route::get('/user/salary-revision-analytics', SalaryRevisionAnalytics::class)->name('salary-revision-analytics');
+        Route::get('/user/addorview-salary-revision', AddOrViewSalaryRevision::class)->name('addorview-salary-revision');
+        Route::get('/user/loans', Loans::class)->name('loans');
+        Route::get('/user/release-salary', ReleaseSalary::class)->name('release-salary');
+        Route::get('/user/employee-lop-days', EmployeeLopDays::class)->name('employee-lop-days');
+        Route::get('/user/payroll-salary', PayrollSalary::class)->name('payroll-salary');
     });
 });
-

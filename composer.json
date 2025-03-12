@@ -8,6 +8,7 @@
         "php": "^8.1",
         "asantibanez/livewire-charts": "^4.1",
         "barryvdh/laravel-dompdf": "^3.1",
+        "graphp/graphviz": "^0.2.2",
         "guzzlehttp/guzzle": "^7.2",
         "intervention/image": "3.11",
         "jenssegers/agent": "^2.6",
@@ -20,6 +21,7 @@
         "phpoffice/phpspreadsheet": "^1.29",
         "spatie/simple-excel": "*",
         "torann/geoip": "^3.0",
+        "twilio/sdk": "^8.3",
         "vinkla/hashids": "^11.0"
     },
     "require-dev": {

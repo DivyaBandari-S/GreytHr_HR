@@ -256,16 +256,17 @@
     <div class="col-md-4 d-flex text-end" >
         @foreach($allSalaryDetails as $salary)
             <div>
-                <button class="cancel-btn" wire:click.prevent="downloadPdf('{{ $salary->month_of_sal }}')" id="printBtn">
-                    <i class="fas fa-print" style="color: blue;"></i> Print
-                </button>
-                <div id="payslipContainer" style="display: none;"></div>
+            <button wire:click="downloadytd" class="cancel-btn pdf-download btn-primary px-3 rounded" style="display: inline-block;">
+                <i class="fas fa-download"></i> Download
+            </button>
             </div>
         @endforeach
     </div>
+    
 </div>
 
 @foreach((array)$selectedEmployeeId as $employeeId)
+
                       
                       <!-- Blade Template -->
                       <table class="table centered-table custom-table-bg mt-3" style="width:90%; font-size:12px;background:none;border-radius:5px; border: 1px solid #ddd;">
@@ -529,7 +530,7 @@
     </div>
 </td>
 @foreach($salaryData as $data)
-<td style="width: 100px;text-align:center;border-right:1px solid  #c5bfbf;color:#1f6881;font-weight:700">{{ $data['net_pay'] }}</td>
+<td style="width: 100px;text-align:center;border-right:1px solid  #c5bfbf;color:#1f6881;font-weight:700;">{{ $data['net_pay'] }}</td>
 @endforeach
 </tr>
 
@@ -548,7 +549,7 @@
                         </div>
                     </td>
                     @foreach($salaryData as $data)
-                    <td style="width: 100px;text-align:center">{{ $data['working_days'] }}</td>
+                    <td style="width: 100px;text-align:center;border-right: 1px solid #c5bfbf;">{{ $data['working_days'] }}</td>
                     @endforeach
                 </tr>
                 <tr class="days_row" style="background-color: #e9f0f8;font-weight:500;">
@@ -562,14 +563,16 @@
                             </div>
                         </div>
                     </td>
-                 
+                    @foreach($salaryData as $data)
+                    <td style="width: 100px;border-right: 1px solid #c5bfbf;">30</td>
+                    @endforeach
                 </tr>
 
                 <!-- Add more rows here as needed -->
             </tbody>
         </table>
     </div>
-                      
+     
 @endforeach                      
 @endif
 </div>

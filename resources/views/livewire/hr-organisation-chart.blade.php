@@ -159,6 +159,12 @@
             margin-right: 20px; 
              /* Add some space between the search container and export button */
         }
+        .normalTextSmall {
+    color: var(--label-color);
+    font-weight: 500;
+    font-size: 0.65rem;
+    text-align: start;
+}
         .fa-filter {
                 margin-left: 10px; 
                 /* Space between funnel icon and previous element */
@@ -202,6 +208,68 @@
     color: white;
     transition: background-color 0.3s;
 }
+.searchContainer {
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    box-shadow: 2px 0 5px 0 #ccc;
+    padding: 12px 15px;
+    width: 250px;
+    margin-top: 15px;
+    display:none;
+}
+.selected-employee-box {
+            border: 1px solid #007bff;
+            /* Border color */
+            padding: 5px 10px;
+            /* Adjust padding for a smaller box */
+            border-radius: 5px;
+            /* Rounded corners */
+            font-size: 14px;
+            /* Smaller font size */
+            color: #333;
+            /* Text color */
+            width: 300px;
+            /* Fixed width for rectangular shape */
+            height: 50px;
+            /* Fixed height for a smaller box */
+            display: flex;
+            /* Use flexbox for positioning */
+            align-items: center;
+            /* Center items vertically */
+            justify-content: space-between;
+            /* Space between items */
+            margin-top: 10px;
+            /* Adds some space from the top */
+        }
+
+        .selected-employee-box {
+            margin-left: 15px;
+            /* Space between circle and text */
+        }
+
+        
+        
+
+
+
+       
+
+        .selected-employee-box .close-btn {
+            position: absolute;
+            /* Absolute positioning */
+            right: 5px;
+            /* Position from the right edge */
+            top: 1px;
+            /* Position from the top edge */
+            background: transparent;
+            /* Transparent background */
+            border: none;
+            /* Remove default border */
+            cursor: pointer;
+            /* Change cursor on hover */
+        }
+     
 
 /* Background color for zoom in button */
 .zoom-in-btn {
@@ -227,12 +295,13 @@
 }
 .cancel-btn1{
     background-color: #fff;
-    color: rgb(2, 17, 79);
+    color:#306cc6 ;
     font-weight: 500;
     border-radius: 5px;
     padding: 6px 12px;
     font-size: 5px;
     border: none;
+    border: 1px solid #306cc6;
 }
 
 .flowchart {
@@ -343,7 +412,36 @@
             margin-top: 10px;
             width: 30px; /* Fixed width for the container */
         }
-      
+        .search-container {
+        display: flex;
+        align-items: center;
+        border: 2px solid #ccc;
+        border-radius: 20px;
+        overflow: hidden;
+        width: 300px;
+    }
+
+    .search-icon {
+        background-color: #d0d7e5;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 10px;
+        border-radius: 50%;
+        width: 25px;
+        height: 25px;
+    }
+
+    .search-input {
+        border: none;
+        padding: 10px;
+        flex-grow: 1;
+        outline: none;
+    }
+
+    .search-input::placeholder {
+        color: #888;
+    }
 </style>
 @if (session()->has('message'))
    <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -364,7 +462,7 @@
 @endif
     
         <div class="button-container">
-          <button type="button"class="cancel-btn1"wire:click="assigntoplevelmanager">Assign&nbsp;Top&nbsp;Level&nbsp;Manager</button>
+          <button type="button"class="cancel-btn1"wire:click="assigntoplevelmanager">Assign Top Level Manager</button>
           <button type="button"class="cancel-btn1"wire:click="masstransfer">Mass&nbsp;&nbsp;Transfer</button>
           <button class="submit-btn"wire:click="openAssignManagerPopup">Assign&nbsp;&nbsp;Manager</button>
         </div>
@@ -373,53 +471,272 @@
         <div class="modal" tabindex="-1" role="dialog" style="display: block;">
                     <div class="modal-dialog modal-dialog-centered" role="document">
                         <div class="modal-content">
-                            <div class="modal-header" style="background-color: rgb(2, 17, 79); height: 50px">
+                            <div class="modal-header">
                                 <h5 style="padding: 5px; color: white; font-size: 15px;" class="modal-title"><b>Mass Transfer</b></h5>
                                 <button type="button" class="btn-close btn-primary" data-dismiss="modal" aria-label="Close" wire:click="closeMassTransferDialog" style="background-color: white; height:10px;width:10px;" >
                                 </button>
                             </div>
-                            <div class="modal-body" style="max-height:300px;overflow-y:auto">
+                            <div class="modal-body"style="max-height:1000px;overflow-y:auto">
                             
-                            <label for="employeeDropdown">Select Manager:</label>
-                                        <select id="employeeDropdown" class="form-control" wire:model="selectedMassTransferManager"wire:change="updateselectedMassTransferManager">
-                                                <option value="">Select Manager:</option>
-                                                @foreach ($managers as $employee)
-                                                
-                                                    <option value="{{ $employee->manager_id}}">
-                                                        {{ ucwords(strtolower($employee->first_name)) }} {{ ucwords(strtolower($employee->last_name)) }} ({{ $employee->manager_id }})
-                                                    </option>
-                                                
-                                                @endforeach
-                                            </select>
-                                            
-                                            @if($selectedMassTransferManager)
-                                              <p>List of people working under <span style="font-weight:500;">{{ucwords(strtolower($managerDetails->first_name))}}&nbsp;{{ucwords(strtolower($managerDetails->last_name))}}({{$managerDetails->emp_id}})</span></p>
-                                              @foreach($employeeForMassTransfer as $employee)
-                                                    <div class="node employee"style="margin-top:10px;">
-                                                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR1YjmQy7iBycLxXrdwvrl38TG9G_LxSHC1eg&s" alt="Profile Picture" class="profile-picture">
-                                                        <div style="display:flex;flex-direction:column;">
-                                                            <span class="profile-name">{{ucwords(strtolower($employee->first_name))}}&nbsp;{{ucwords(strtolower($employee->last_name))}}
-                                                            <span class="tooltip">{{ ucwords(strtolower($employee->first_name)) }} {{ ucwords(strtolower($employee->last_name)) }}</span>
-                                                            </span>
-                                                            <span class="profile-job-title">{{$employee->job_title}}</span>
-                                                            <span class="profile-job-title"><div class="emp-id">Emp ID-{{$employee->emp_id}}</div></span>
+                                      
+                            <div class="row">
+                                    <div class="form-group col-md-4 mb-2">
+                                            <label for="employeeType" wire:click="searchForManagerTransfer" style="cursor:pointer;">Transfer from:</label>
+                                            <div class="searchContainer" style="<?php echo ($searchFromManagerTransfer == 1) ? 'display: block;' : ''; ?>">
+                                                <!-- Content for the search container -->
+                                                <div class="row mb-2 py-0 px-2">
+                                                    <div class="row m-0 p-0 d-flex align-items-center justify-content-between">
+                                                        <div class="col-md-10 p-0 m-0">
+                                                            <div class="input-group">
+                                                                <input wire:model="searchTerm" wire:change="updatesearchTerm" id="searchInput" type="text"
+                                                                    class="form-control placeholder-small" placeholder="Search...." aria-label="Search"
+                                                                    aria-describedby="basic-addon1">
+                                                                <div class="input-group-append searchBtnBg d-flex align-items-center">
+                                                                    <button type="button" class="search-btn">
+                                                                        <i class="ph-magnifying-glass ms-2"></i>
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col m-0 p-0 d-flex justify-content-end">
+                                                            <button wire:click="closeEmployeeBoxForMassTransfer" type="button" class="close rounded px-1 py-0"
+                                                                aria-label="Close">
+                                                                <span aria-hidden="true" class="closeIcon"><i class="ph-x"></i></span>
+                                                            </button>
                                                         </div>
                                                     </div>
-                                              @endforeach
+                                                </div>
+
+                                                <!-- Your Blade file -->
+                                                <div class="scrollApplyingTO">
+                                                    @if(!empty($managers) && $managers->isNotEmpty())
+                                                    @foreach($managers as $employee)
+                                                    <div class="d-flex gap-3 align-items-center" style="cursor: pointer;"
+                                                        wire:click="updateselectedEmployeeForManager('{{ $employee->emp_id }}')">
+                                                        @if($employee['image'] && $employee['image'] !== 'null')
+                                                        <div class="employee-profile-image-container">
+                                                            <img class="navProfileImg rounded-circle" src="data:image/jpeg;base64,{{ $employee->image }}">
+
+                                                        </div>
+                                                        @else
+                                                        @if($employee['gender'] == 'Female')
+                                                        <div class="employee-profile-image-container">
+                                                            <img src="{{ asset('images/female-default.jpg') }}"
+                                                                class="employee-profile-image-placeholder rounded-circle" height="35px" width="35px"
+                                                                alt="Default Image">
+                                                        </div>
+                                                        @elseif($employee['gender'] == 'Male')
+                                                        <div class="employee-profile-image-container">
+                                                            <img src="{{ asset('images/male-default.png') }}"
+                                                                class="employee-profile-image-placeholder rounded-circle" height="35px" width="35px"
+                                                                alt="Default Image">
+                                                        </div>
+                                                        @else
+                                                        <div class="employee-profile-image-container">
+                                                            <img src="{{ asset('images/user.jpg') }}"
+                                                                class="employee-profile-image-placeholder rounded-circle" height="35px" width="35px"
+                                                                alt="Default Image">
+                                                        </div>
+                                                        @endif
+                                                        @endif
+                                                        <div class="d-flex flex-column mt-2 mb-2">
+                                                            <span class="ellipsis mb-0">{{ ucwords(strtolower($employee['first_name'])) }}
+                                                                {{ ucwords(strtolower($employee['last_name'])) }}</span>
+                                                            <span class="mb-0 normalTextSmall"> #{{ $employee['emp_id'] }} </span>
+                                                        </div>
+                                                    </div>
+                                                    @endforeach
+                                                    @else
+                                                    <p class="mb-0 normalTextValue text-muted m-auto text-center" style="font-size:12px;">No employees
+                                                        found.</p>
+                                                    @endif
+                                                </div>
                                             
-                                              <label for="employeeDropdown">Assign New Manager:</label>
-                                        <select id="employeeDropdown" class="form-control" wire:model="selectedMassTransferNewManager"wire:change="updateselectedMassTransferNewManager">
-                                                <option value="">Select Manager:</option>
-                                                @foreach ($newAssignManager as $employee)
+                                            </div>
+                                            @if(!empty($selectedEmployeeId))
                                                 
-                                                    <option value="{{ $employee->manager_id}}">
-                                                        {{ ucwords(strtolower($employee->first_name)) }} {{ ucwords(strtolower($employee->last_name)) }} ({{ $employee->manager_id }})
-                                                    </option>
+                                                            @php
+                                                                function getRandomLateColor() {
+                                                                    $colors = ['#FFD1DC', '#D2E0FB', '#ADD8E6', '#E6E6FA', '#F1EAFF', '#FFC5C5'];
+                                                                            return $colors[array_rand($colors)];
+                                                                    }
+                                                            @endphp         
+                                                            <div class="row m-0 p-0">
+                                                                <div class="col p-0 m-0">
+                                                                    @if($searchEmployee==0)
+                                                                    <div class="selected-employee-box position-relative gap-4">
+                                                                        <button type="button" class="close-btn-for-selected-employee" wire:click="clearSelectedEmployee">
+                                                                            &times; <!-- This will render a cross (×) symbol -->
+                                                                        </button>
+                                                                            <div class="gap-1" style="display: flex; align-items: center;">
+                                                                                <div class="thisCircle" style="border: 2px solid {{ getRandomLateColor() }};" data-toggle="tooltip"
+                                                                                    data-placement="top"
+                                                                                    title="{{ ucwords(strtolower($selectedEmployeeFirstName)) }} {{ ucwords(strtolower($selectedEmployeeLastName)) }}">
+                                                                                    <span class="initials">
+                                                                                        {{ strtoupper(substr(trim($selectedEmployeeFirstName), 0, 1)) }}{{ strtoupper(substr(trim($selectedEmployeeLastName), 0, 1)) }}
+                                                                                    </span>
+                                                                                </div>
+                                                                                <div class="employee-info">
+                                                                                    <span class="employee-info-name"data-toggle="tooltip"
+                                                                                    data-placement="top"
+                                                                                    title="{{ ucwords(strtolower($selectedEmployeeFirstName)) }} {{ ucwords(strtolower($selectedEmployeeLastName)) }}">{{ ucwords(strtolower($selectedEmployeeFirstName)) }}&nbsp;{{ ucwords(strtolower($selectedEmployeeLastName)) }}</span>
+                                                                                    {{ $selectedEmployeeId }}
+                                                                                </div>
+                                                                            </div>    
+                                                                    </div>
+                                                                    @endif
+                                                                </div>
+                                                            </div>
+                                                    @endif
+                                            </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="form-group col-md-4 mb-2">
+                                                @if (!empty($SubordinateEmployees))
+                                                    <div class="mt-2" style="width:100%;">
+                                                        <table class="swipes-table mt-2 border">
+                                                            <tr style="background-color: #f6fbfc;">
+                                                                <th style="width:50%;font-size: 11px; text-align:start;padding:5px 10px;color:#778899;font-weight:500;white-space:nowrap;">Employee Name</th>
+                                                                <th style="width:50%;font-size: 11px; text-align:start;padding:5px 10px;color:#778899;font-weight:500;white-space:nowrap;">Employee Number</th>
+                                                            </tr>
+                                                    
+                                                            
+                                                            
+                                                            @foreach ($SubordinateEmployees as $emp)
+                                                            <tr style="border:1px solid #ccc;">
+                                                                <td style="width:50%;font-size: 10px; color:  #778899;text-align:start;padding:5px 10px;white-space:nowrap;">
+                                                                <label class="custom-checkbox">
+                                                                        <input type="checkbox" name="employeeCheckbox[]" class="employee-swipes-checkbox" wire:model="EmployeeId" wire:change="updateEmployeeId" value="{{ $emp->emp_id }}">
+                                                                        <span class="checkmark"></span>
+                                                                        {{ucwords(strtolower($emp->first_name))}} {{ucwords(strtolower($emp->last_name))}}
+                                                                    </label> 
+                                                                </td>
+                                                                <td style="width:50%;font-size: 10px;color:#778899;text-align:start;padding:5px 32px">{{$emp->emp_id}}</td>
+                                                            </tr>
+                                                            @endforeach
+                                                        </table>
+                                                    </div>
+                                                 @else   
+                                                  
+                                                   <img src="{{ asset('images/no-reportee-image.png') }}" style="margin-top:50px;" height="400" width="400">
+                                                 @endif  
+                                                </div>   
+                                            </div>
+                                            <div class="row">
+                                    <div class="form-group col-md-4 mb-2">
+                                            <label for="employeeType" wire:click="searchforSecondEmployee" style="cursor:pointer;">Transfer to:</label>
+                                            <div class="searchContainer" style="<?php echo ($searchSecondEmployee == 1) ? 'display: block;' : ''; ?>">
+                                                <!-- Content for the search container -->
+                                                <div class="row mb-2 py-0 px-2">
+                                                    <div class="row m-0 p-0 d-flex align-items-center justify-content-between">
+                                                        <div class="col-md-10 p-0 m-0">
+                                                            <div class="input-group">
+                                                                <input wire:model="searchTerm" wire:change="updatesearchTerm" id="searchInput" type="text"
+                                                                    class="form-control placeholder-small" placeholder="Search...." aria-label="Search"
+                                                                    aria-describedby="basic-addon1">
+                                                                <div class="input-group-append searchBtnBg d-flex align-items-center">
+                                                                    <button type="button" class="search-btn">
+                                                                        <i class="ph-magnifying-glass ms-2"></i>
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col m-0 p-0 d-flex justify-content-end">
+                                                            <button wire:click="closeEmployeeBoxForMassTransfer" type="button" class="close rounded px-1 py-0"
+                                                                aria-label="Close">
+                                                                <span aria-hidden="true" class="closeIcon"><i class="ph-x"></i></span>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Your Blade file -->
+                                                <div class="scrollApplyingTO">
+                                                    @if(!empty($managers) && $managers->isNotEmpty())
+                                                    @foreach($managers as $employee)
+                                                    <div class="d-flex gap-3 align-items-center" style="cursor: pointer;"
+                                                        wire:click="updateselectedEmployeeForManager2nd('{{ $employee->emp_id }}')">
+                                                        @if($employee['image'] && $employee['image'] !== 'null')
+                                                        <div class="employee-profile-image-container">
+                                                            <img class="navProfileImg rounded-circle" src="data:image/jpeg;base64,{{ $employee->image }}">
+
+                                                        </div>
+                                                        @else
+                                                        @if($employee['gender'] == 'Female')
+                                                        <div class="employee-profile-image-container">
+                                                            <img src="{{ asset('images/female-default.jpg') }}"
+                                                                class="employee-profile-image-placeholder rounded-circle" height="35px" width="35px"
+                                                                alt="Default Image">
+                                                        </div>
+                                                        @elseif($employee['gender'] == 'Male')
+                                                        <div class="employee-profile-image-container">
+                                                            <img src="{{ asset('images/male-default.png') }}"
+                                                                class="employee-profile-image-placeholder rounded-circle" height="35px" width="35px"
+                                                                alt="Default Image">
+                                                        </div>
+                                                        @else
+                                                        <div class="employee-profile-image-container">
+                                                            <img src="{{ asset('images/user.jpg') }}"
+                                                                class="employee-profile-image-placeholder rounded-circle" height="35px" width="35px"
+                                                                alt="Default Image">
+                                                        </div>
+                                                        @endif
+                                                        @endif
+                                                        <div class="d-flex flex-column mt-2 mb-2">
+                                                            <span class="ellipsis mb-0">{{ ucwords(strtolower($employee['first_name'])) }}
+                                                                {{ ucwords(strtolower($employee['last_name'])) }}</span>
+                                                            <span class="mb-0 normalTextSmall"> #{{ $employee['emp_id'] }} </span>
+                                                        </div>
+                                                    </div>
+                                                    @endforeach
+                                                    @else
+                                                    <p class="mb-0 normalTextValue text-muted m-auto text-center" style="font-size:12px;">No employees
+                                                        found.</p>
+                                                    @endif
+                                                </div>
+                                            
+                                            </div>
+                                            @if(!empty($selectedEmployeeIdFor2ndManager))
                                                 
-                                                @endforeach
-                                            </select>
-                                              
-                                            @endif
+                                                            @php
+                                                                function getRandomAbsentColor() {
+                                                                    $colors = ['#FFD1DC', '#D2E0FB', '#ADD8E6', '#E6E6FA', '#F1EAFF', '#FFC5C5'];
+                                                                            return $colors[array_rand($colors)];
+                                                                    }
+                                                            @endphp         
+                                                            <div class="row m-0 p-0">
+                                                                <div class="col p-0 m-0">
+                                                                    @if($searchEmployee==0)
+                                                                    <div class="selected-employee-box position-relative gap-4">
+                                                                        <button type="button" class="close-btn-for-selected-employee" wire:click="clearSelectedEmployee">
+                                                                            &times; <!-- This will render a cross (×) symbol -->
+                                                                        </button>
+                                                                            <div class="gap-1" style="display: flex; align-items: center;">
+                                                                                <div class="thisCircle" style="border: 2px solid {{ getRandomAbsentColor() }};" data-toggle="tooltip"
+                                                                                    data-placement="top"
+                                                                                    title="{{ ucwords(strtolower($selectedEmployeeFirstNameFor2ndManager)) }} {{ ucwords(strtolower($selectedEmployeeLastNameFor2ndManager)) }}">
+                                                                                    <span class="initials">
+                                                                                        {{ strtoupper(substr(trim($selectedEmployeeFirstNameFor2ndManager), 0, 1)) }}{{ strtoupper(substr(trim($selectedEmployeeLastNameFor2ndManager), 0, 1)) }}
+                                                                                    </span>
+                                                                                </div>
+                                                                                <div class="employee-info">
+                                                                                    <span class="employee-info-name"data-toggle="tooltip"
+                                                                                    data-placement="top"
+                                                                                    title="{{ ucwords(strtolower($selectedEmployeeFirstNameFor2ndManager)) }} {{ ucwords(strtolower($selectedEmployeeLastNameFor2ndManager)) }}">{{ ucwords(strtolower($selectedEmployeeFirstNameFor2ndManager)) }}&nbsp;{{ ucwords(strtolower($selectedEmployeeLastNameFor2ndManager)) }}</span>
+                                                                                    {{ $selectedEmployeeIdFor2ndManager }}
+                                                                                </div>
+                                                                            </div>    
+                                                                    </div>
+                                                                    @endif
+                                                                </div>
+                                                            </div>
+                                                    @endif
+                                            </div>
+                                            </div>                
+                                            
+                                          
                             </div>
                             <div class="modal-footer">
                                     <button type="button"class="approveBtn btn-primary"wire:click="closeMassTransferDialog">Cancel</button>
@@ -480,31 +797,128 @@
                 <div class="modal-backdrop fade show blurred-backdrop"></div>  
         @endif
         @if($assignTopLevelManager==true)
-        <div class="modal" tabindex="-1" role="dialog" style="display: block;">
+        <div class="modal"tabindex="-1" role="dialog" style="display: block;">
                     <div class="modal-dialog modal-dialog-centered" role="document">
                         <div class="modal-content">
-                            <div class="modal-header" style="background-color: rgb(2, 17, 79); height: 50px">
-                                <h6 class="modal-title" id="assigntoplevelmanagerModalLabel" style="color:#666;font-weight:600;">Assign Top Level Manager</h6>
-                                <div style="width: 25px; height: 25px; border-radius: 50%; border:2px solid #666; display: flex; justify-content: center; align-items: center; position: relative;">
-                                    <button type="button" class="btn-close btn-primary"aria-label="Close" wire:click="closeAssignTopLevelManager" style="height:10px;width:10px;" >
-                                    </button>
-                                </div>
+                            <div class="modal-header">
+                                <h6 class="modal-title">Assign Top Level Manager</h6>
+                                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"
+                                wire:click="close">
+                                </button>
                             </div>
                             <div class="modal-body" style="max-height:300px;overflow-y:auto">
-                            <div class="form-group">
-                                 <label style="font-size:12px;color:#666;font-weight:400;">Select Managers</label>
-                                 <div id="manager-list" style="max-height: 200px; overflow-y: auto;">
-                                            @foreach ($managers as $m1)
-                                                <div class="checkbox">
-                                                    <label>
-                                                        <input type="checkbox" value="{{ $m1->manager_id }}"wire:model="selectedManagers"wire:change="updateselectedManagers('{{$m1->manager_id}}')">
-                                                        {{ ucwords(strtolower($m1->first_name)) }} {{ ucwords(strtolower($m1->last_name)) }} ({{ $m1->manager_id }})
-                                                    </label>
+                                <div class="row">
+                                    <div class="form-group col-md-4 mb-2">
+                                            <label for="employeeType" wire:click="searchforEmployee" style="cursor:pointer;">Employee:</label>
+                                            <div class="searchContainer" style="<?php echo ($searchEmployee == 1) ? 'display: block;' : ''; ?>">
+                                                <!-- Content for the search container -->
+                                                <div class="row mb-2 py-0 px-2">
+                                                    <div class="row m-0 p-0 d-flex align-items-center justify-content-between">
+                                                        <div class="col-md-10 p-0 m-0">
+                                                            <div class="input-group">
+                                                                <input wire:model="searchTerm" wire:change="updatesearchTerm" id="searchInput" type="text"
+                                                                    class="form-control placeholder-small" placeholder="Search...." aria-label="Search"
+                                                                    aria-describedby="basic-addon1">
+                                                                <div class="input-group-append searchBtnBg d-flex align-items-center">
+                                                                    <button type="button" class="search-btn">
+                                                                        <i class="ph-magnifying-glass ms-2"></i>
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col m-0 p-0 d-flex justify-content-end">
+                                                            <button wire:click="closeEmployeeBox" type="button" class="close rounded px-1 py-0"
+                                                                aria-label="Close">
+                                                                <span aria-hidden="true" class="closeIcon"><i class="ph-x"></i></span>
+                                                            </button>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                            @endforeach
-                                 </div>
-                       </div>
-                                
+
+                                                <!-- Your Blade file -->
+                                                <div class="scrollApplyingTO">
+                                                    @if(!empty($managers) && $managers->isNotEmpty())
+                                                    @foreach($managers as $employee)
+                                                    <div class="d-flex gap-3 align-items-center" style="cursor: pointer;"
+                                                        wire:click="updateselectedEmployeeForManager('{{ $employee->emp_id }}')">
+                                                        @if($employee['image'] && $employee['image'] !== 'null')
+                                                        <div class="employee-profile-image-container">
+                                                            <img class="navProfileImg rounded-circle" src="data:image/jpeg;base64,{{ $employee->image }}">
+
+                                                        </div>
+                                                        @else
+                                                        @if($employee['gender'] == 'Female')
+                                                        <div class="employee-profile-image-container">
+                                                            <img src="{{ asset('images/female-default.jpg') }}"
+                                                                class="employee-profile-image-placeholder rounded-circle" height="35px" width="35px"
+                                                                alt="Default Image">
+                                                        </div>
+                                                        @elseif($employee['gender'] == 'Male')
+                                                        <div class="employee-profile-image-container">
+                                                            <img src="{{ asset('images/male-default.png') }}"
+                                                                class="employee-profile-image-placeholder rounded-circle" height="35px" width="35px"
+                                                                alt="Default Image">
+                                                        </div>
+                                                        @else
+                                                        <div class="employee-profile-image-container">
+                                                            <img src="{{ asset('images/user.jpg') }}"
+                                                                class="employee-profile-image-placeholder rounded-circle" height="35px" width="35px"
+                                                                alt="Default Image">
+                                                        </div>
+                                                        @endif
+                                                        @endif
+                                                        <div class="d-flex flex-column mt-2 mb-2">
+                                                            <span class="ellipsis mb-0">{{ ucwords(strtolower($employee['first_name'])) }}
+                                                                {{ ucwords(strtolower($employee['last_name'])) }}</span>
+                                                            <span class="mb-0 normalTextSmall"> #{{ $employee['emp_id'] }} </span>
+                                                        </div>
+                                                    </div>
+                                                    @endforeach
+                                                    @else
+                                                    <p class="mb-0 normalTextValue text-muted m-auto text-center" style="font-size:12px;">No employees
+                                                        found.</p>
+                                                    @endif
+                                                </div>
+                                            
+                                            </div>
+                                            @if(!empty($selectedEmployeeId))
+                                                
+                                                            @php
+                                                                function getRandomAbsentColor() {
+                                                                    $colors = ['#FFD1DC', '#D2E0FB', '#ADD8E6', '#E6E6FA', '#F1EAFF', '#FFC5C5'];
+                                                                            return $colors[array_rand($colors)];
+                                                                    }
+                                                            @endphp         
+                                                            <div class="row m-0 p-0">
+                                                                <div class="col p-0 m-0">
+                                                                    @if($searchEmployee==0)
+                                                                    <div class="selected-employee-box position-relative gap-4">
+                                                                        <button type="button"class="close-btn-for-selected-employee" wire:click="clearSelectedEmployee">
+                                                                            &times; <!-- This will render a cross (×) symbol -->
+                                                                        </button>
+                                                                            <div class="gap-1" style="display: flex; align-items: center;">
+                                                                                <div class="thisCircle" style="border: 2px solid {{ getRandomAbsentColor() }};" data-toggle="tooltip"
+                                                                                    data-placement="top"
+                                                                                    title="{{ ucwords(strtolower($selectedEmployeeFirstName)) }} {{ ucwords(strtolower($selectedEmployeeLastName)) }}">
+                                                                                    <span class="initials">
+                                                                                        {{ strtoupper(substr(trim($selectedEmployeeFirstName), 0, 1)) }}{{ strtoupper(substr(trim($selectedEmployeeLastName), 0, 1)) }}
+                                                                                    </span>
+                                                                                </div>
+                                                                                <div class="employee-info">
+                                                                                    <span class="employee-info-name"data-toggle="tooltip"
+                                                                                    data-placement="top"
+                                                                                    title="{{ ucwords(strtolower($selectedEmployeeFirstName)) }} {{ ucwords(strtolower($selectedEmployeeLastName)) }}">{{ ucwords(strtolower($selectedEmployeeFirstName)) }}&nbsp;{{ ucwords(strtolower($selectedEmployeeLastName)) }}</span>
+                                                                                    {{ $selectedEmployeeId }}
+                                                                                </div>
+                                                                            </div>    
+                                                                    </div>
+                                                                    @endif
+                                                                </div>
+                                                            </div>
+                                                    @endif
+                                            </div>
+                                            </div>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="cancel-btn" style="border:1px solid rgb(2,17,79);"wire:click="closeAssignTopLevelManager">Close</button>
@@ -516,15 +930,13 @@
 
 
 
-        @endif      
+        @endif  
+          
         <div class="container">
         <div class="large-container"style="display:flex;flex-direction:row;">
             <!-- Content inside the large container -->
-                <div class="search-container">
-                    <input type="text" placeholder="Search" class="search-input">
-                    <button class="search-button"><i class="fa fa-search"></i></button>
-                </div>
-                <div style="margin-left:360px;">
+              
+                <div style="margin-left:680px;">
                         <label class="toggle-button">
                             <span class="vertical-arrow"style="color:white;">&#x21d5;</span> <!-- Vertical double-sided arrow -->
                             <span class="horizontal-arrow">&#x21d4;</span> <!-- Horizontal double-sided arrow -->
@@ -536,73 +948,7 @@
                 </div>        
         </div>
                     
-        <div class="large-container"style="display:flex;flex-direction:row;">
-            <!-- Content inside the large container -->
-            <div class="zoom-controls">
-                 <button wire:click="zoomIn" class="zoom-btn zoom-in-btn">+</button>
-                 <button wire:click="zoomOut" class="zoom-btn zoom-out-btn">-</button>
-            </div>        
-            <div class="flowchart" style="transform: scale({{ $scale }});">
-            <div class="higher-authorities">
-        <div class="node superadmin">
-            <img src="path/to/profile-picture.jpg" alt="Profile Picture" class="profile-picture">
-            <div style="display: flex; flex-direction: column; align-items: center;">
-                <span class="profile-name">Kamal Manohar Rao J</span>
-                <span class="profile-job-title">Emp ID: XSS-0001</span>
-            </div> 
-        </div>
-        <!-- Vertical line below the higher authority -->
-        <div class="line-for-higher-authority"></div>
-    </div>
-    
-    <!-- Connecting lines -->
-    <div class="lines">
-        <div class="line" style="left: 16%;"></div>
-        <div class="line" style="left: 30%;"></div>
-        <div class="line" style="left: 50%;"></div>
-        <div class="line" style="left: 68%;"></div>
-        <div class="line" style="left: 85%;"></div>
-    </div>
-    
-    <div class="lower-authorities"style="margin-bottom:-70px;">
-        <div class="node employee">
-            <img src="path/to/profile-picture.jpg" alt="Profile Picture" class="profile-picture">
-            <div style="display: flex; flex-direction: column; align-items: center;">
-                <span class="profile-name">Ch Pavan Kumar</span>
-                <span class="profile-job-title">Emp ID: XSS-0232</span>
-            </div>
-        </div>
-        <div class="node employee">
-            <img src="path/to/profile-picture.jpg" alt="Profile Picture" class="profile-picture">
-            <div style="display: flex; flex-direction: column; align-items: center;">
-                <span class="profile-name">B Swathi</span>
-                <span class="profile-job-title">Emp ID: XSS-0245</span>
-            </div>
-        </div>
-        <div class="node employee">
-            <img src="path/to/profile-picture.jpg" alt="Profile Picture" class="profile-picture">
-            <div style="display: flex; flex-direction: column; align-items: center;">
-                <span class="profile-name">Suryapal Rathore</span>
-                <span class="profile-job-title">Emp ID: XSS-0336</span>
-            </div>
-        </div>
-        <div class="node employee">
-            <img src="path/to/profile-picture.jpg" alt="Profile Picture" class="profile-picture">
-            <div style="display: flex; flex-direction: column; align-items: center;">
-                <span class="profile-name">Prabhu Kumar Y S</span>
-                <span class="profile-job-title">Emp ID: XSS-0341</span>
-            </div>
-        </div>
-        <div class="node employee">
-            <img src="path/to/profile-picture.jpg" alt="Profile Picture" class="profile-picture">
-            <div style="display: flex; flex-direction: column; align-items: center;">
-                <span class="profile-name">Meena Kachhipuram</span>
-                <span class="profile-job-title">Emp ID: XSS-0231</span>
-            </div>
-        </div>
-    </div>
-</div>   
-        </div>
+       @livewire('flowchart',['selectedEmployeeId'=>$selectedEmployeeId])
                      
         </div>
         

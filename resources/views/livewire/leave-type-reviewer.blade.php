@@ -1,4 +1,4 @@
-<div>
+<div >
     <div class="container-fluid px-1  rounded">
         <ul class="nav leave-grant-nav-tabs d-flex gap-3 py-1" id="myTab" role="tablist">
 

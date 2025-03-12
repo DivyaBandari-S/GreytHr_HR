@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Helpers\FlashMessageHelper;
+use App\Models\Company;
 use App\Models\EmpBankDetail;
 use App\Models\EmployeeDetails;
 use App\Models\LetterRequest;
@@ -24,6 +25,7 @@ class YtdReport extends Component
     public $requests;
     public $salaryRevision;
     public $allSalaryDetails;
+    public $empCompanyLogoUrl;
     public $empBankDetails;
 
     public $netPay;
@@ -302,6 +304,7 @@ class YtdReport extends Component
                 'end_date' => ($year + 1) . "-03-31",
             ];
         }
+        $this->empCompanyLogoUrl = $this->getEmpCompanyLogoUrl();
 
         // Reverse financial years for descending order
         $this->financialYears = array_reverse($this->financialYears);
@@ -498,6 +501,36 @@ class YtdReport extends Component
 
 
     public $selectedEmployeeImage;
+    private function getEmpCompanyLogoUrl()
+    {
+        // Get the current authenticated employee's company ID
+        if (auth()->check()) {
+            // Get the current authenticated employee's company ID
+            $empCompanyId = auth()->user()->company_id;
+            $employeeId = auth()->user()->emp_id;
+            $employeeDetails = DB::table('employee_details')
+                ->where('emp_id', $employeeId)
+                ->select('company_id') // Select only the company_id
+                ->first();
+
+            // Assuming you have a Company model with a 'company_logo' attribute
+            $companyIds = json_decode($employeeDetails->company_id);
+       
+            $company = DB::table('companies')
+                ->where('company_id', $companyIds)
+                ->where('is_parent', 'yes')
+                ->first();
+
+            // Return the company logo URL, or a default if company not found
+            return $company ? $company->company_logo : asset('user.jpg');
+        } elseif (auth()->guard('hr')->check()) {
+            $empCompanyId = auth()->guard('hr')->user()->company_id;
+
+            // Assuming you have a Company model with a 'company_logo' attribute
+            $company = Company::where('company_id', $empCompanyId)->first();
+            return $company ? $company->company_logo : asset('user.jpg');
+        }
+    }
     public function selectEmployee($empId)
     {
 
@@ -592,56 +625,7 @@ class YtdReport extends Component
     {
         $this->searchEmployee;
     }
-    public function downloadPdf($month)
-    {
-        
-        if (!$this->selectedEmployeeId) {
-            return response()->json(['error' => 'No Employee Selected'], 400);
-        }
-    
-        // Fetch employee salary details
-        $empSalaryDetails = EmpSalary::join('salary_revisions', 'emp_salaries.sal_id', '=', 'salary_revisions.id')
-            ->where('salary_revisions.emp_id', $this->selectedEmployeeId)
-            ->where('month_of_sal', 'like',  $month . '%')
-            ->first();
-    
-        if (!$empSalaryDetails) {
-            return response()->json(['error' => 'Salary details not found for selected employee'], 404);
-        }
-    
-        // Fetch employee personal & bank details
-        $employeeDetails = EmployeeDetails::select('employee_details.*', 'emp_departments.department')
-            ->leftJoin('emp_departments', 'employee_details.dept_id', '=', 'emp_departments.dept_id')
-            ->where('employee_details.emp_id', $this->selectedEmployeeId)
-            ->first();
-    
-        $salaryDivisions = $empSalaryDetails->calculateSalaryComponents($empSalaryDetails->salary);
-        $empBankDetails = EmpBankDetail::where('emp_id', $this->selectedEmployeeId)
-            ->where('id', $empSalaryDetails->bank_id)->first();
-    
-        // Debugging log (Check Laravel logs)
-        Log::info('Generating payslip for:', [
-            'Employee ID' => $this->selectedEmployeeId,
-            'Salary Details' => $salaryDivisions,
-            'Bank Details' => $empBankDetails
-        ]);
-    
-        // Pass data to PDF view
-        $pdf = Pdf::loadView('download-pdf', [
-            'employeeDetails' => $employeeDetails, // Pass employee details
-            'salaryRevision' => $salaryDivisions,  // Pass salary breakdown
-            'empBankDetails' => $empBankDetails,   // Pass bank details
-            'rupeesInText' => $this->convertNumberToWords($salaryDivisions['net_pay']), // Pass net pay in words
-            'salMonth' => Carbon::parse($month)->format('F Y') // Pass month formatted
-        ]);
-    
-        $name = Carbon::parse($month)->format('MY');
-    
-        // Return PDF as download
-        return response()->streamDownload(function () use ($pdf) {
-            echo $pdf->stream();
-        }, 'payslip-' . $name . '.pdf');
-    }
+
     
     public function cancel()
     {
@@ -650,36 +634,6 @@ class YtdReport extends Component
     public $rupeesInText;
     public $salMonth;
     public $month;
-    public function viewPdf($month)
-    {
-
-        $this->selectedEmployeeId;
-
-        $empSalaryDetails = EmpSalary::join('salary_revisions', 'emp_salaries.sal_id', '=', 'salary_revisions.id')
-            ->where('salary_revisions.emp_id', $this->selectedEmployeeId)
-            ->where('month_of_sal', 'like',  $month . '%')
-            ->first();
-
-        if ($empSalaryDetails) {
-            $this->salaryDivisions = $empSalaryDetails->calculateSalaryComponents($empSalaryDetails->salary);
-            $this->empBankDetails = EmpBankDetail::where('emp_id', $this->selectedEmployeeId)
-                ->where('id', $empSalaryDetails->bank_id)->first();
-            $this->employeePersonalDetails = EmpPersonalInfo::where('emp_id', $this->selectedEmployeeId)->first();
-            $this->rupeesInText = $this->convertNumberToWords($this->salaryDivisions['net_pay']);
-        } else {
-            $this->salaryDivisions = [];
-        }
-
-        $this->salMonth = Carbon::parse($month)->format('F Y');
-      
-        $this->month = $empSalaryDetails->month_of_sal;
-
-
-
-
-        // Emit event to open modal
-        $this->showPopup = true;
-    }
 
 
         private function calculateNetPay()
@@ -829,7 +783,13 @@ class YtdReport extends Component
         // dd($this->salaryData, $this->totals);
 
     }
-
+    public function clearSelection()
+    {
+        $this->selectedEmployeeId = '';
+        $this->selectedEmployeeFirstName = '';
+        $this->selectedEmployeeLastName = '';
+        $this->searchTerm = '';
+    }
 
     public function SelectedFinancialYear()
     {
@@ -881,6 +841,44 @@ class YtdReport extends Component
             'net_pay' => 0,
             'working_days' => 0,
         ];
+    }
+    public function downloadytd()
+    {
+      $this->selectedEmployeeId;
+      if( $this->selectedEmployeeId){
+       
+// $width = (842 + 595) / 2;  // Midpoint of A3 and A4 width
+            // $height = (1191 + 842) / 2; // Midpoint of A3 and A4 height
+            $width = 840;
+            $height = 1100;
+
+      
+
+                $pdf = Pdf::loadView('download-ytd-pdf', [
+                    'employees' => $this->employeeDetails,
+                    'empBankDetails' => $this->empBankDetails,
+                    'salaryData' => $this->salaryData,
+                    'salaryTotals' => $this->totals,
+                    'startDate' => $this->start_date,
+                    'endDate' => $this->end_date,
+                    'empCompanyLogoUrl' => $this->empCompanyLogoUrl,
+                ],)
+                
+                
+                    ->setPaper([0, 0, $width, $height]);
+               
+                return response()->streamDownload(function () use ($pdf) {
+                    echo $pdf->stream();
+                }, 'YTDPayslip-' . $this->start_date . '-' . $this->end_date . '.pdf');
+            
+      }
+
+
+            
+
+              
+
+      
     }
 
     public function render()
@@ -953,22 +951,16 @@ class YtdReport extends Component
                 ->where('employee_details.emp_id', $this->selectedEmployeeId)
                 ->first();
 
-            // Debugging output
-            Log::info('Fetched Letter Requests: ' . $this->requests->toJson());
+          
         } 
 
-        // Initialize the requests collection to prevent undefined errors
-        $this->requests = LetterRequest::all();
 
 
-
-        $query = EmployeeDocument::whereIn('employee_id', (array)$this->selectedEmployeeId)->orderBy('created_at', 'desc');
 
 
       
 
 
-        $this->documents = $query->get();
 
 
         return view('livewire.ytd-report', [
@@ -979,6 +971,7 @@ class YtdReport extends Component
             'combinedRequests' => $this->combinedRequests,
             'requests' => $this->requests,
             'salaryData' => $this->salaryData,
+            'empCompanyLogoUrl' => $this->empCompanyLogoUrl,
            
         ]);
     }

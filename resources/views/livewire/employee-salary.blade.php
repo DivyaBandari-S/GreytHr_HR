@@ -1,5 +1,9 @@
 <div>
     <style>
+        .bold-items {
+            font-weight: bold;
+        }
+
         .employeMain {
             padding: 20px;
         }
@@ -207,101 +211,6 @@
 
         }
 
-        .emp-table-values {
-            font-weight: bold;
-            width: 50%;
-
-        }
-
-        .detail-items {
-            display: flex;
-        }
-
-        .label-value {
-            width: 50%;
-            margin-right: 10px;
-        }
-
-
-
-        .revision-items {
-            cursor: pointer;
-            transition: background-color 0.3s ease-in-out;
-            border: 1px solid silver;
-            margin-bottom: 10px;
-            padding: 5px;
-            border-radius: 5px;
-        }
-
-        .revision-items.active {
-            background-color: #eff5f7;
-            color: black;
-            /* border-right: none; */
-        }
-
-        .salary-revision-history {
-            border: 1px solid silver;
-            padding: 10px;
-            background-color: #eff5f7;
-            border-radius: 5px;
-        }
-
-        .salary-revision-table {
-            /* border-collapse: separate; */
-            width: 100%;
-            border: 1px solid silver;
-            border-radius: 5px;
-
-        }
-
-
-        .salary-revision-table thead tr {
-            background-color: #e4e9f0;
-            color: #394657;
-        }
-
-        .salary-revision-table thead tr th {
-            text-align: end;
-            width: 20%;
-            padding: 10px;
-            font-weight: lighter;
-            font-size: 13px;
-        }
-
-        .salary-revision-table thead tr:first-child th:first-child {
-            width: 40%;
-            text-align: center;
-            font-weight: bold;
-        }
-
-        .salary-revision-table tbody tr:nth-child(odd) {
-            background-color: #f2f2f2;
-            /* Light gray background for odd rows */
-        }
-
-        .salary-revision-table tbody tr:nth-child(even) {
-            background-color: white;
-        }
-
-        .salary-revision-table tbody tr td {
-            text-align: end;
-            width: 20%;
-            padding: 10px;
-            font-weight: lighter;
-            font-size: 13px;
-        }
-
-        .salary-revision-table tbody tr td:first-child {
-            width: 40%;
-            text-align: left;
-            font-weight: lighter;
-            font-size: 13px;
-        }
-
-        textarea::placeholder {
-            font-size: 12px;
-            color: #eff5f7;
-        }
 
         .Employee_list tr th,
         .Employee_list tr td {
@@ -357,7 +266,22 @@
 
         }
     </style>
+    <div class="employeMain">
+        @if($isShowHelp)
+        <div class="help-section d-flex" style="padding: 10px;font-size:13px;background-color:#f5feff">
+            <div>
+                <p class="m-0">The <span class="bold-items"> Employee Salary </span> page allows you to filter employees and view their <span class="bold-items"> Salary Revision History</span>. Select the employee and click <span class="bold-items"> Revise Salary</span> to revise the salary of employees.</p>
+                <p  class="m-0">You can also <span class="bold-items">Compare the Salary</span> of an employee against their peers. Specify who the peers of an employee are by clicking on <span class="bold-items">Define Peers</span>. Click on <span class="bold-items"> Export Excel</span> to download the data in an Excel file. </p>
 
+            </div>
+            <span><button style="border: none;color:cornflowerblue;width:max-content;background-color:#f5feff;margin-left:15px;font-weight:bold" wire:click="toogleHelp">Hide Help </button></span>
+        </div>
+        @else
+        <div style="padding:10px;background-color:var(--light);text-align:end">
+            <span style="margin-left: auto;"><button style="background-color:white;padding:5px;border:none;font-size:11px;font-weight:bold;color:cornflowerblue;border-radius:5px" wire:click="toogleHelp">Show Help</button></span>
+        </div>
+        @endif
+    </div>
     @if($showPage1)
     <div class="employeMain">
         <div class="bg-white">
@@ -537,7 +461,8 @@
                             <tr>
                                 <td>{{ \Carbon\Carbon::parse($revisionData['revision_date'])->format('d M, Y') }}</td>
                                 <td>{{ \Carbon\Carbon::parse($revisionData['revision_date'])->format('M, Y') }}</td>
-                                <td > <p style="font-weight: bold;margin-bottom:0px">Rs {{number_format( $revisionData['revised_ctc'],2) }}</p>
+                                <td>
+                                    <p style="font-weight: bold;margin-bottom:0px">Rs {{number_format( $revisionData['revised_ctc'],2) }}</p>
                                     @if ($loop->last)
                                     <p>0.00% (Rs 0.00)</p>
                                     @else
@@ -633,154 +558,6 @@
             </div>
         </div>
         @endif
-    </div>
-    @else
-    <div class="employeMain">
-        <div class=" ">
-            <div class="col-md-8 bg-white">
-
-
-                <table class="emp-datails-table">
-                    <tbody>
-                        <tr>
-                            <td style="width: 50%;">
-
-                                <div class=" detail-items">
-                                    <div class=" text-end p-0 label-value"><label for=""> Join Date </label></div>
-                                    <div class=" emp-table-values ">getSelectedEmployees</div>
-                                </div>
-                            </td>
-                            <td style="width: 50%;">
-                                <div class="detail-items">
-
-                                    <div class=" text-end p-0 label-value"><label for="">Designation</label> </div>
-                                    <div class="emp-table-values ">{{$empDetails->job_role}} </div>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td style="width: 50%;">
-                                <div class="detail-items">
-                                    <div class="text-end p-0 label-value"><label for="">Experience</label> </div>
-                                    <div class="emp-table-values ">{{\App\Models\EmpSalaryRevision::calculateExperience($empDetails->hire_date)}}</div>
-                                </div>
-                            </td>
-                            <td style="width: 50%;">
-                                <div class="detail-items">
-                                    <div class="text-end p-0 label-value"><label for="">Department</label> </div>
-                                    <div class="emp-table-values">{{$empDetails->department}}</div>
-                                </div>
-                            </td>
-
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="mt-4">
-                <div class="col text-end">
-                    <button wire:click="selectRevision ('null',{{$selected_revised_ctc}},0,'','')" class="btn bg-primary text-white mb-2">Add New Revision</button>
-                    <button wire:click="showRevisedSalary" class="btn bg-white text-primary mb-2" style="border: 1px solid cornflowerblue ;">Back</button>
-                </div>
-                <div>
-                    <div class="row">
-                        <div class="col-md-2 ">
-                            <div class="list-group">
-                                @foreach($decryptedData as $revision)
-                                <div wire:click="selectRevision('{{ $revision['revision_date']}}',{{ $revision['current_ctc']}},{{ $revision['revised_ctc']}},'{{ $revision['remarks']}}','{{ $revision['revision_type']}}')"
-                                    class=" revision-items {{ $selectedDate == $revision['revision_date'] ? 'active' : '' }}">
-                                    <p class="m-0" style="font-size: 12px;font-weight:500">{{ \Carbon\Carbon::parse($revision['revision_date'])->format('M Y') }}</p>
-                                    <p class="m-0" style="font-size: 9px;">Effective: {{ \Carbon\Carbon::parse($revision['revision_date'])->format('d M Y') }}</p>
-
-                                </div>
-                                @endforeach
-                            </div>
-                        </div>
-                        <div class="col-md-10  salary-revision-history">
-                            <table class="salary-revision-table">
-                                <thead>
-                                    <tr>
-                                        <th>Salary Item</th>
-                                        <th>Current Salary</th>
-                                        <th>Revised Salary</th>
-                                        <th>Revision %</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>FULL BASIC</td>
-                                        <td>Rs {{$comparisionData['current']['basic']}}</td>
-                                        <td>Rs {{$comparisionData['revised']['basic']}}</td>
-                                        <td>{{$comparisionData['percentage_change']}} %</td>
-                                    </tr>
-                                    <tr>
-                                        <td>FULL HRA</td>
-                                        <td>Rs {{$comparisionData['current']['hra']}}</td>
-                                        <td>Rs {{$comparisionData['revised']['hra']}}</td>
-                                        <td>{{$comparisionData['percentage_change']}} %</td>
-                                    </tr>
-                                    <tr>
-                                        <td>FULL CONVEYANCE</td>
-                                        <td>Rs {{$comparisionData['current']['conveyance']}}</td>
-                                        <td>Rs {{$comparisionData['revised']['conveyance']}}</td>
-                                        <td>0 %</td>
-                                    </tr>
-                                    <tr>
-                                        <td>FULL DA</td>
-                                        <td>Rs {{$comparisionData['current']['da']}}</td>
-                                        <td>Rs {{$comparisionData['revised']['da']}}</td>
-                                        <td>0 %</td>
-                                    </tr>
-                                    <tr>
-                                        <td>FULL SPECIAL ALLOWANCE</td>
-                                        <td>Rs {{$comparisionData['current']['specialallowances']}}</td>
-                                        <td>Rs {{$comparisionData['revised']['specialallowances']}}</td>
-                                        <td>{{$comparisionData['percentage_change']}} %</td>
-                                    </tr>
-                                    <tr>
-                                        <td>MONTHLY CTC</td>
-                                        <td>Rs {{$comparisionData['current']['monthly_ctc']}}</td>
-                                        <td>Rs {{$comparisionData['revised']['monthly_ctc']}}</td>
-                                        <td>{{$comparisionData['percentage_change']}} %</td>
-                                    </tr>
-                                    <tr>
-                                        <td>ANNUAL CTC</td>
-                                        <td>Rs {{$comparisionData['current']['annual_ctc']}}</td>
-                                        <td><input wire:model="new_revised_ctc" wire:blur="getNewRevisedSalary" type="number" style="text-align: right;"></td>
-                                        <td class="d-flex" style="gap: 5px;">
-                                            <span><input wire:model="ctc_percentage" wire:blur="getPercentageRevisedSalary" type="text" style="text-align: left;"></span>
-                                            <span> %</span>
-
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <div class="p-5">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <label for="">Effective From:</label>
-                                        <input wire:model="effectiveDate" class="form-control" type="date">
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <label for="">Employee Remarks:</label>
-                                        <textarea wire:model="reason" placeholder="This will be  visible to Employee" class="form-control" name=""></textarea>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label for="">Notes: </label>
-                                        <textarea wire:model="notes" placeholder="This will be not visible to Employee" class="form-control" name=""></textarea>
-                                    </div>
-                                </div>
-                                <div class="text-center mt-4">
-                                    <button type="button" class="btn btn-primary " wire:click="saveSalaryRevision" @if(!$isNewRevised) disabled @endif>Save</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
     @endif
     @if($viewDetails)
@@ -905,7 +682,6 @@
     </div>
     <div class="modal-backdrop fade show"></div>
     @endif
-
 </div>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>

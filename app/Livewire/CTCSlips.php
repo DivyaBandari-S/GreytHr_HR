@@ -16,16 +16,18 @@ use App\Models\EmpPersonalInfo;
 use App\Models\EmpSalary;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
+use DateTime;
 use Illuminate\Support\Facades\DB;
 
 class CTCSlips extends Component
 {
     use WithFileUploads;
     public $requests;
+  
     public $salaryRevision;
     public $allSalaryDetails;
     public $empBankDetails;
-
+    public $selectedMonth, $salaryMonth;
     public $netPay;
     public $net_pay;
     public $showPopup = false;
@@ -71,6 +73,7 @@ class CTCSlips extends Component
     public $selectedPerson = null;
     public $cc_to;
     public $peoples;
+    public $options = []; 
     public $filteredPeoples;
     public $selectedPeopleNames = [];
     public $selectedPeople = [];
@@ -254,7 +257,25 @@ class CTCSlips extends Component
 
 
    
- 
+    public function generateMonths()
+    {
+        $this->options = []; // Reset options before generating new ones
+    
+        $currentYear = date('Y');
+        $lastMonth = date('n'); // Current month (1-12)
+    
+        for ($year = $currentYear; $year >= $currentYear - 1; $year--) {
+            $startMonth = ($year == $currentYear) ? $lastMonth : 12;
+            $endMonth = 1; // Always end at January
+    
+            for ($month = $startMonth; $month >= $endMonth; $month--) {
+                $monthPadded = sprintf('%02d', $month);
+                $dateObj = DateTime::createFromFormat('!m', $monthPadded);
+                $monthName = $dateObj->format('F');
+                $this->options["$year-$monthPadded"] = "$monthName $year";
+            }
+        }
+    }
 
 
     public function mount()
@@ -314,6 +335,8 @@ class CTCSlips extends Component
             return;
         }
 
+        $this->options = []; // Initialize to avoid null
+        $this->generateMonths();
         // Fetch all emp_id values where company_id matches the logged-in user's company_id
         $this->employeeIds = EmployeeDetails::whereJsonContains('company_id', $firstCompanyID)->pluck('emp_id')->toArray();
 
@@ -686,7 +709,13 @@ class CTCSlips extends Component
         $this->selectedEmployeeLastName = '';
         $this->searchTerm = '';
     }
-
+    public function clearSelection()
+    {
+        $this->selectedEmployeeId = '';
+        $this->selectedEmployeeFirstName = '';
+        $this->selectedEmployeeLastName = '';
+        $this->searchTerm = '';
+    }
 
 
     public function removeSelectedEmployee()
@@ -696,7 +725,13 @@ class CTCSlips extends Component
         $this->selectedEmployeeLastName = null;
         $this->selectedEmployeeImage = null;
     }
-
+    public function changeMonth()
+    {
+        $this->selectedEmployeeId;
+        $this->getSalaryDetails();
+        $this->generateMonths(); // Refresh month options if necessary
+    }
+    
     public function render()
     {
         $loggedInEmpID = auth()->guard('hr')->user()->emp_id;
@@ -733,15 +768,37 @@ class CTCSlips extends Component
         // Determine if there are people found
         $peopleFound = $this->employees->count() > 0;
         $this->requests = collect();
+        $options = [];
+        $options = [];
         if (!empty($this->selectedEmployeeId)) {
          
             $this->allSalaryDetails = $this->getSalaryDetails();
-
+            $options = [];
             $this->selectedEmployeeId ;
             $empSalaryDetails = EmpSalary::join('salary_revisions', 'emp_salaries.sal_id', '=', 'salary_revisions.id')
             ->where('salary_revisions.emp_id', $this->selectedEmployeeId)
-           
+            ->where('month_of_sal', 'like', $this->selectedMonth . '%')
             ->first();
+            $currentYear = date('Y');
+
+
+            $lastMonth = date('n');
+    
+     
+          
+            for ($year = $currentYear; $year >= $currentYear - 1; $year--) {
+                $startMonth = ($year == $currentYear) ? $lastMonth : 12; // Start from the current month or December
+                $endMonth = ($year == $currentYear - 1) ? 1 : 1; // End at January
+    
+                for ($month = $startMonth; $month >= $endMonth; $month--) {
+                    // Format the month to always have two digits
+                    $monthPadded = sprintf('%02d', $month); // Adds leading zero to single-digit months
+                    $dateObj = DateTime::createFromFormat('!m', $monthPadded);
+                    $monthName = $dateObj->format('F');
+                    $options["$year-$monthPadded"] = "$monthName $year";
+                }
+            }
+    
          
     if ($empSalaryDetails) {
         $this->salaryDivisions = $empSalaryDetails->calculateSalaryComponents($empSalaryDetails->salary);
@@ -754,28 +811,16 @@ class CTCSlips extends Component
     }
 
 
+
             $this->employeeDetails = EmployeeDetails::select('employee_details.*', 'emp_departments.department')
                 ->leftJoin('emp_departments', 'employee_details.dept_id', '=', 'emp_departments.dept_id')
                 ->leftJoin('emp_personal_infos', 'employee_details.emp_id', '=', 'emp_personal_infos.emp_id')
                 ->where('employee_details.emp_id', $this->selectedEmployeeId)
                 ->first();
 
-            // Debugging output
-            Log::info('Fetched Letter Requests: ' . $this->requests->toJson());
+          
         } 
 
-        // Initialize the requests collection to prevent undefined errors
-        $this->requests = LetterRequest::all();
-
-
-
-        $query = EmployeeDocument::whereIn('employee_id', (array)$this->selectedEmployeeId)->orderBy('created_at', 'desc');
-
-
-      
-
-
-        $this->documents = $query->get();
 
 
         return view('livewire.c-t-c-slips', [
@@ -785,6 +830,7 @@ class CTCSlips extends Component
             'records' => $this->records,
             'combinedRequests' => $this->combinedRequests,
             'requests' => $this->requests,
+            'options' =>$options
            
         ]);
     }

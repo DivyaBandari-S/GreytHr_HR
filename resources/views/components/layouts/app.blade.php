@@ -15,6 +15,11 @@
     <!-- Include Flatpickr CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+            mermaid.initialize({ startOnLoad: true });
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gojs/2.1.39/go.js"></script>
     <script src="https://unpkg.com/phosphor-icons"></script>
     <link rel="stylesheet" href="{{ asset('css/employee.css?v=' . filemtime(public_path('css/employee.css'))) }}">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
@@ -28,7 +33,7 @@
     <body>
         <section id="main">
             @livewire('main-layout')
-            <div> {{ $slot }} </div>
+            <div class="main__body " style="overflow: auto; height: calc(100vh - 84px);background-color: #f3f3f3;"> {{ $slot }} </div>
         </section>
 
 

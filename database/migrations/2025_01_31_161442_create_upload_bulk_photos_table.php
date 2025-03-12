@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('upload_bulk_photos', function (Blueprint $table) {
             $table->id();
-            $table->string('status')->default('Completed');
+            $table->string('status')->nullable();
             $table->dateTime('uploaded_at')->nullable();
             $table->string('uploaded_by');
             $table->binary('zip_file')->nullable();

@@ -19,7 +19,7 @@
                         <div class="row d-flex align-items-center">
     <div class="col-10">
         <p class="main-text mb-0">
-        The Payslip page displays the payslips of employees. This is the same view as seen by the employees on the Employee Self Service portal. The Lock & Publish button appears on this page if the Payslips are not yet released on the portal. Click this button to lock the Payroll and allow employees to view their Payslip
+        The Accounts JV page enables you to generate, cancel and export JVs. Click Generate JV to generate a fresh JV. If you make any changes to the Payroll after the JV is generated, you can click Cancel JV to cancel the JV. Once canceled, the Generate JV button displays again.
         </p>
     </div>
     <div class="col-2 text-end">
@@ -141,128 +141,194 @@
                     @if(!empty($selectedEmployeeId && $selectedEmployeeFirstName))
                     <div class="row mt-3 p-0 d-flex ">
     <div class="col-md-10 d-flex justify-content-end">
-    @foreach($allSalaryDetails as $salary)
-        <button class="cancel-btn" wire:click.prevent="downloadPdf('{{$salary->month_of_sal}}')" >
+    @if($allSalaryDetails )
+        <button class="cancel-btn" wire:click.prevent="downloadPdf('{{$allSalaryDetails->month_of_sal}}')" >
             <i class="fas fa-download" style="color: blue;"></i> Download
         </button>
-        @endforeach
+        @endif
     </div>
+    <div class="col-md-2 ml-4">
+            <select class="dropdown-salary bg-white px-3 py-1" wire:model="selectedMonth" wire:change="changeMonth">
+            @foreach($options as $value => $label)
+        <option value="{{ $value }}" {{ $selectedMonth == $value ? 'selected' : '' }} style="background-color: #fff; color: #333; font-size: 13px;">
+            {{ $label }}
+        </option>
+    @endforeach
+            </select>
+        </div>
 </div>
+
 
 
     @foreach((array)$selectedEmployeeId as $employeeId)
-                      
-<!-- Blade Template -->
-<table class="table centered-table custom-table-bg mt-3" style="width:90%; font-size:12px;background:none;border-radius:5px">
-<tbody class="payslip-body" style="border-radius:5px">
-  <tr class="payslip-row">
-    <td class="data" style="width:50%;">
-      <span style="color:#778899;">Employee No:</span> {{ $employeeDetails->emp_id }}
-    </td>
-    <td class="data" style="width:50%;">
-      <span style="color:#778899;">Name:</span> {{ ucwords(strtolower($employeeDetails->first_name)) }} {{ ucwords(strtolower($employeeDetails->last_name)) }}
-    </td>
-  </tr>
-  <tr class="payslip-row">
-    <td class="data" style="width:50%;">
-      <span style="color:#778899;">Bank:</span> {{ $empBankDetails->bank_name ?? 'N/A' }}
-    </td>
-    <td class="data" style="width:50%;">
-      <span style="color:#778899;">Bank Account No:</span> {{ $empBankDetails->account_number ?? 'N/A' }}
-    </td>
-  </tr>
-  <tr class="payslip-row">
-    <td class="data" style="width:50%;">
-      <span style="color:#778899;">Joining Date:</span> {{ \Carbon\Carbon::parse($employeeDetails->hire_date)->format('d M Y') }}
-    </td>
-    <td class="data" style="width:50%;">
-      <span style="color:#778899;">PF No:</span> {{ $employeeDetails->pf_no ?? 'N/A' }}
-    </td>
-  </tr>
-</tbody>
+        @if(isset($employeeDetails))  
+        @if(!empty($salaryDivisions))
+            <!-- Employee Details Table -->
+            <table class="table centered-table custom-table-bg mt-3" style="width:90%; font-size:12px;background:none;border-radius:5px">
+                <tbody class="payslip-body" style="border-radius:5px">
+                    <tr class="payslip-row">
+                        <td class="data" style="width:50%;">
+                            <span style="color:#778899;">Employee No:</span> {{ $employeeDetails->emp_id }}
+                        </td>
+                        <td class="data" style="width:50%;">
+                            <span style="color:#778899;">Name:</span> {{ ucwords(strtolower($employeeDetails->first_name)) }} {{ ucwords(strtolower($employeeDetails->last_name)) }}
+                        </td>
+                    </tr>
+                    <tr class="payslip-row">
+                        <td class="data" style="width:50%;">
+                            <span style="color:#778899;">Bank:</span> {{ $empBankDetails->bank_name ?? 'N/A' }}
+                        </td>
+                        <td class="data" style="width:50%;">
+                            <span style="color:#778899;">Bank Account No:</span> {{ $empBankDetails->account_number ?? 'N/A' }}
+                        </td>
+                    </tr>
+                    <tr class="payslip-row">
+                        <td class="data" style="width:50%;">
+                            <span style="color:#778899;">Joining Date:</span> {{ \Carbon\Carbon::parse($employeeDetails->hire_date)->format('d M Y') }}
+                        </td>
+                        <td class="data" style="width:50%;">
+                            <span style="color:#778899;">PF No:</span> {{ $employeeDetails->pf_no ?? 'N/A' }}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
 
-</table>
+            <br>
+
+            <!-- Earnings & Deductions Table -->
+            <table class="table table-bordered earnings-table" style="background:none">
+                <thead class="pay-slips" style="background:none">
+                    <tr class="earnings-header" style="background:none">
+                        <th class="col-earnings">Earnings</th>
+                        <th class="col-inr text-end">INR</th>
+                        <th class="col-earnings">Deductions</th>
+                        <th class="col-inr text-end">INR</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="earnings-row">
+                        <td class="earnings-label">BASIC</td>
+                        <td class="earnings-value">₹{{ number_format($salaryDivisions['basic'],2) }}</td>
+                        <td class="deductions-label">PF</td>
+                        <td class="deductions-value">₹{{ number_format($salaryDivisions['pf'], 2) }}</td>
+                    </tr>
+                    <tr class="earnings-row">
+                        <td class="earnings-label">HRA</td>
+                        <td class="earnings-value">₹{{ number_format($salaryDivisions['hra'], 2) }}</td>
+                        <td class="deductions-label">PROF TAX</td>
+                        <td class="deductions-value">₹{{ number_format($salaryDivisions['professional_tax'], 2) }}</td>
+                    </tr>
+                    <tr class="earnings-row">
+                        <td class="earnings-label">CONVEYANCE</td>
+                        <td class="earnings-value">₹{{ number_format($salaryDivisions['conveyance'], 2) }}</td>
+                        <td class="deductions-label"></td>
+                        <td class="deductions-value"></td>
+                    </tr>
+                    <tr class="earnings-row">
+                        <td class="earnings-label">MEDICAL ALLOWANCE</td>
+                        <td class="earnings-value">₹{{ number_format($salaryDivisions['medical_allowance'], 2) }}</td>
+                        <td class="deductions-label"></td>
+                        <td class="deductions-value"></td>
+                    </tr>
+                    <tr class="earnings-row">
+                        <td class="earnings-label">SPECIAL ALLOWANCE</td>
+                        <td class="earnings-value">₹{{ number_format($salaryDivisions['special_allowance'], 2) }}</td>
+                        <td class="deductions-label"></td>
+                        <td class="deductions-value"></td>
+                    </tr>
+                    <tr class="earnings-row">
+                        <td class="earnings-label"><strong>Total Earnings</strong></td>
+                        <td class="earnings-value"><strong>₹{{ number_format($salaryDivisions['earnings'],2) }}</strong></td>
+                        <td class="deductions-label"><strong>Total Deductions</strong></td>
+                        <td class="deductions-value"><strong>₹{{ number_format($salaryDivisions['total_deductions'],2) }}</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- Net Pay Section -->
+            <div class="pay" style="width:80%; margin-left: 90px;">
+                <button class="btn mt-5" style="background: #3a87ad; color: white; border-radius: 5px; height: 20px; display: flex; justify-content: center; align-items: center; padding: 0 10px; font-size: 12px; border: none;">
+                    Net Pay
+                </button>
+                <h5 style="margin-top:5px">INR ₹{{ number_format($salaryDivisions['earnings'], 2) }}</h5>
+                <p>(Rupees {{ $rupeesInText }} only)</p>
+            </div>
+        @else
+        <div class="d-flex justify-content-center align-items-center" style="width: 100%;  margin: auto;margin-top:5px">
+    <div class="alert alert-info text-start mt-2" style="width: 80%;font-size:12px;margin-left:50px">Salary is on hold for this month    {{ !empty($selectedMonth) ? \Carbon\Carbon::parse($selectedMonth . '-01')->format('F Y') : 'N/A' }}     <br> <button class="btn btn-primary" style="font-size:12px" wire:click="PayrollRequest">
+ Lock & Release
+</button></div>
 
 
+</div>
+@if($showModal)
+    <div class="modal fade show d-block" tabindex="-1" style="background: rgba(0, 0, 0, 0.5)">
+        <div class="modal-dialog">
+        @if (session('warning'))
+    <div class="alert alert-warning">
+        {{ session('warning') }}
+    </div>
+@endif
 
-<br>
+            <div class="modal-content">
+           
+      
+          
+                <div class="modal-body text-center mt-2">
+    <p class="d-flex align-items-center justify-content-center">
+        <span class="me-2">
+            <img src="{{ asset('images/icon-info.gif') }}" alt="Info Icon">
+        </span>
+        <span class="fw-bold mt-2">
+            You are about to Lock & Publish payroll for all the employees for <strong>{{ \Carbon\Carbon::parse($selectedMonth . '-01')->format('F Y') }}</strong>.
+        </span>
+    </p>
+    
+    <p class="d-flex align-items-start justify-content-start ml-2">Do you still want to proceed?</p>
 
 
-<table class="table table-bordered earnings-table" style="background:none">
-  <thead  class="pay-slips" style="background:none">
-    <tr class="earnings-header" style="background:none">
-      <th class="col-earnings">Earnings</th>
-      <th class="col-inr text-end">INR</th>
-      <th class="col-earnings">Deductions</th>
-      <th class="col-inr text-end">INR</th>
-    </tr>
-  </thead>
-  <tbody>
- 
-    <tr class="earnings-row">
-      <td class="earnings-label">BASIC</td>
-      <td class="earnings-value">₹{{number_format($salaryDivisions['basic'],2)}}</td>
-      <td class="deductions-label">PF</td>
-      <td class="deductions-value">₹{{ number_format($salaryDivisions['pf'], 2) }}</td>
-    </tr>
-    <tr class="earnings-row">
-      <td class="earnings-label">HRA</td>
-      <td class="earnings-value">{{ number_format($salaryDivisions['hra'], 2) }}</td>
-      <td class="deductions-label">₹PROF TAX</td>
-      <td class="deductions-value">{{ number_format($salaryDivisions['professional_tax'], 2) }}</td>
-    </tr>
-    <tr class="earnings-row">
-      <td class="earnings-label">CONVEYANCE</td>
-      <td class="earnings-value">₹{{ number_format($salaryDivisions['conveyance'], 2) }}</td>
-      <td class="deductions-label"></td>
-      <td class="deductions-value"></td>
-    </tr>
-    <tr class="earnings-row">
-      <td class="earnings-label">MEDICAL ALLOWANCE</td>
-      <td class="earnings-value">₹{{ number_format($salaryDivisions['medical_allowance'], 2) }}</td>
-      <td class="deductions-label"></td>
-      <td class="deductions-value"></td>
-    </tr>
-    <tr class="earnings-row">
-      <td class="earnings-label">SPECIAL ALLOWANCE</td>
-      <td class="earnings-value">₹{{ number_format($salaryDivisions['special_allowance'], 2) }}</td>
-      <td class="deductions-label"></td>
-      <td class="deductions-value"></td>
-    </tr>
-    <tr class="earnings-row">
-      <td class="earnings-label"><strong>Total Earnings</strong></td>
-      <td class="earnings-value"><strong>₹{{number_format($salaryDivisions['earnings'],2)}}</strong></td>
-      <td class="deductions-label"><strong>Total Deductions</strong></td>
-      <td class="deductions-value"><strong>₹{{number_format($salaryDivisions['total_deductions'],2)}}</strong></td>
-    </tr>
-   
-  </tbody>
-</table>
-<div class="pay" style="width:80%;   margin-left: 90px;">
-<button class="btn mt-5" style=" background: #3a87ad; color: white; border-radius: 5px;  height: 20px;  display: flex;  justify-content: center;  align-items: center; 
-        padding: 0 10px; 
-        font-size: 12px; 
-        border: none;">
-        Net Pay
-    </button>
-    <h5 style="margin-top:5px">INR ₹{{ number_format($salaryDivisions['earnings'], 2) }}</h5>
-    <p>(Rupees {{ $rupeesInText }} only)</p>
+    <div class="form-check w-100 mt-2">
+    <input class="form-check-input" type="checkbox" id="sendPayslipNotification" wire:model.defer="sendPayslipNotification">
+    <label class="form-check-label mt-4" for="sendPayslipNotification">
+        Lock & Publish {{ \Carbon\Carbon::parse($selectedMonth . '-01')->format('F Y') }} payroll <strong>with</strong> payslip release notification for all employees
+    </label>
 </div>
 
 
 
+    <div class="alert alert-info mt-3">
+        <strong>Note:</strong> You can send mail, SMS, and Mobile Notifications about the payslip release to employees.
+    </div>
+</div>
 
+                <div class="modal-footer">
+                    <button class="btn submit-btn" wire:click="closeModal">Cancel</button>
+                    <button class="btn cancel-btn" wire:click="validateAndPublish">Confirm & Publish</button>
+                </div>
+            </div>
+        </div>
+    </div>
+@endif
 
-
-  
-
-        @endforeach
         @endif
+        @endif
+    @endforeach
+
+@endif
+
+       
+      
                  
 
  
 
 </div>
 </div>
+<script>
+    Livewire.on('refreshComponent', () => {
+        location.reload(); // Refresh without full page reload
+    });
+</script>
+
 </div>
 

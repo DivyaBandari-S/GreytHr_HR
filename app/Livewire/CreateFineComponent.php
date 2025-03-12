@@ -55,7 +55,7 @@ class CreateFineComponent extends Component
     {
         if ($id) {
             // Fetch the fine for editing
-            $fine = DamageDetails::findOrFail($id);
+            $fine = FineAndDamage::findOrFail($id);
             $this->viewMode = $viewMode;
         
             $this->fineId = $fine->id;

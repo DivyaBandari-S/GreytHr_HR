@@ -11,13 +11,13 @@ use Laravel\Sanctum\HasApiTokens;
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
-
+     protected $table = 'jobs_users';
     /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
      */
-    protected $primaryKey = 'user_id'; 
+    protected $primaryKey = 'user_id';
     public $incrementing = false;
     protected $fillable = [
         'user_id',
@@ -79,6 +79,6 @@ class User extends Authenticatable
         'education' => 'array',
         'languages' => 'array',
     ];
-    
-    
+
+
 }
