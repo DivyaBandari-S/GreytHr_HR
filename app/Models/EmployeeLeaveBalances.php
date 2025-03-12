@@ -14,6 +14,7 @@ class EmployeeLeaveBalances extends Model
     // Fields that can be mass-assigned
     protected $fillable = [
         'emp_id',
+        'hr_emp_id',
         'leave_scheme',
         'period',
         'status',
@@ -39,6 +40,10 @@ class EmployeeLeaveBalances extends Model
     public function employee()
     {
         return $this->belongsTo(EmployeeDetails::class, 'emp_id', 'emp_id');
+    }
+    public function HrEmployee()
+    {
+        return $this->belongsTo(HR::class, 'hr_emp_id', 'hr_emp_id');
     }
 
     /**
@@ -78,5 +83,5 @@ class EmployeeLeaveBalances extends Model
         // Ensure the last month rounds to the nearest whole number
         return round($totalGrantDays, 2);
     }
-    
+
 }

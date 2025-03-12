@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::create('employee_leave_balances', function (Blueprint $table) {
             $table->smallInteger('id')->autoIncrement();
-            $table->string('emp_id');
+            $table->string('emp_id',10);
+            $table->string('hr_emp_id',10)->nullable();length:
             $table->integer('batch_id')->nullable();
             $table->json('leave_policy_id')->nullable();
             $table->foreign('emp_id')->references('emp_id')->on('employee_details')->onDelete('cascade')->onUpdate('cascade');
@@ -28,6 +29,11 @@ return new class extends Migration
             $table->string('to_date')->nullable();
             $table->softDeletes();
             $table->timestamps();
+            $table->foreign('hr_emp_id')
+                ->references('hr_emp_id')
+                ->on('hr_employees')
+                ->onDelete('restrict')
+                ->onUpdate('cascade');
 
         });
     }
