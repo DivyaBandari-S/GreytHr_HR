@@ -1,6 +1,7 @@
 <?php
 
 use App\Livewire\AccountsJv;
+use App\Livewire\AddEditHrEmployees;
 use App\Livewire\AdminDashboard;
 use App\Livewire\AttendanceLockConfiguration;
 use App\Livewire\CompanyInfo;
@@ -99,6 +100,7 @@ use App\Livewire\PayrollSalary;
 use App\Livewire\LeaveApplyOnBehalf;
 use App\Livewire\QuickSalary;
 use App\Livewire\PayrollArrears;
+use App\Livewire\EditSignatory;
 use App\Livewire\Tasks;
 use App\Livewire\WeekendOverride;
 use App\Livewire\WhoIsInChartHr;
@@ -108,6 +110,13 @@ use App\Models\EmpResignations;
 use App\Models\Task;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Response;
+use App\Livewire\ClientRegistration;
+use App\Livewire\ClientSList;
+use App\Livewire\AddProjects;
+use App\Livewire\AssignProject;
+use App\Livewire\HrEmployeesList;
+use App\Livewire\ProjectsList;
+use App\Models\ClientProjects;
 
 /*
 |--------------------------------------------------------------------------
@@ -150,6 +159,20 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
         Route::get('/HelpDesk', HelpDesk::class)->name('HelpDesk');
         Route::get('/request', Requests::class)->name('request');
         Route::get('/user/tasks', Tasks::class)->name('tasks');
+        // Route::get('/user/client-registration', ClientRegistration::class)->name('client.create');
+        // Route for adding a new client
+Route::get('/user/client-registration', ClientRegistration::class)->name('client.create');
+Route::get('/hr-employees-list', HrEmployeesList::class)->name('hr-employees-list');
+Route::get('/add-edit-hr', AddEditHrEmployees::class)->name('add-edit-hr');
+
+// Route for editing an existing client
+Route::get('/user/client-registration/{clientId}', ClientRegistration::class)->name('client.edit');
+
+        Route::get('/letter-preview', LetterPreview::class);
+        Route::get('/clientList', ClientSList::class)->name('clientList.page');
+        Route::get('/projectList', ProjectsList::class)->name('project.list');
+        Route::get('/projects/create/{client_id}', AddProjects::class)->name('project.create');
+        Route::get('assign-project', AssignProject::class)->name('assign.project');
         Route::get('/taskfile/{id}', function ($id) {
             $file = Task::findOrFail($id);
 
@@ -206,6 +229,13 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
         Route::get('/user/add-damage-page/{id?}/{viewMode?}',CreateDamageComponent::class)->name('add-damage-page');
         Route::get('/user/damage-page',DamageComponent::class)->name('damage-page');
         Route::get('/user/flowchart/{selectedEmployeeId}',Flowchart::class)->name('flowchart');
+
+        Route::get('/user/generate-letter', GenerateLetters::class)->name('generate-letter');
+        Route::get('/letter/prepare', LetterPreparePage::class)->name('letter.prepare');
+        Route::get('/letter-preview', LetterPreview::class);
+        Route::get('/authorize-signatory', AuthorizeSignatory::class)->name('authorize-signatory.page');
+        Route::get('/signatories/create', CreateSignatory::class)->name('signatory.create');
+        Route::get('/signatory/edit/{id}', EditSignatory::class)->name('signatory.edit');
         //HR Leave-Main Submodule Routes
         Route::get('/user/hr-organisation-chart/{selectedEmployeeId?}', HrOrganisationChart::class)->name('hr-organisation-chart');
         Route::get('/user/employee-weekday-chart', EmployeeWeekDayChart::class)->name('employee-weekday-chart');

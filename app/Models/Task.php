@@ -21,9 +21,10 @@ class Task extends Model
         'followers',
         'subject',
         'description',
-        'file_path',
-        'file_name',
-        'mime_type',
+        // 'file_path',
+        // 'file_name',
+        // 'mime_type',
+        'file_paths',
         'status',
         'reminder_sent'
     ];
