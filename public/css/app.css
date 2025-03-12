@@ -3812,6 +3812,17 @@ input[type="date"]::before {
     align-items: center;
     justify-content: center;
     border: none;
+    color:#fff;
+}
+.close-btn-for-selected-employee
+{
+
+    position: absolute;
+    right: 5px;
+    top: 1px;
+    border: none;
+    background: transparent;
+    color:black;
 }
 .position-row {
     display: flex;

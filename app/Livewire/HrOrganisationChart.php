@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Helpers\FlashMessageHelper;
 use App\Models\EmployeeDetails;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 use Barryvdh\DomPDF\PDF as PDF;
@@ -16,12 +17,15 @@ class HrOrganisationChart extends Component
 {
     public $lower_authorities;
 
+    public $selectedPeople = [];
+    public $selectedEmployeeImage;
     public $selected_higher_authorities;
     public $unassigned_manager;
 
     public $selectedMassTransferManagerinString;
     public $assignTopLevelManager=false;
 
+    public $SubordinateEmployees;
     public $selected_higher_authority_emp_ids;
     public $selected_higher_authorities1;
 
@@ -33,6 +37,9 @@ class HrOrganisationChart extends Component
     public $shiftSummary;
     public $searching=1;
 
+    public $searchTerm = '';
+
+    public $searchTermForFirstEmployee= '';
     public $employeeForMassTransfer;
     public $notFound;
     public $search='';
@@ -44,24 +51,148 @@ class HrOrganisationChart extends Component
     public $massTransferDialog=false;
     public $managers;
 
-    public $scale = 1;
+    public $searchEmployee=0;
+
+    public $searchSecondEmployee=0;
+    public $scale = 0.5;
     public $selectedManagers=[];
     
+    public $EmployeeId=[];
+    public $selectedEmployeeIdFor2ndManager;
+    public $searchTermForManager='';
     public $managerDetails;
     public $selectedManager;
 
+    public $selectedEmployeeLastNameFor2ndManager;
+
+    public $selectedEmployeeFirstNameFor2ndManager;
+    public $searchFromManagerTransfer=0;
+    public $selectedEmployeeId;
     public $selectedMassTransferManager;
     public $primary_lower_authorities;
 
+    public $topEmployee;
+    public $subordinates;
     public $manager_id;
 
+    public $selectedEmployeeLastName;
+    public $selectedEmployeeFirstName;
     public $chartData;
-    public function mount()
+    public function mount($selectedEmployeeId=null)
     {
         // Initialize with any preselected employee IDs if necessary
         $this->shiftSummary = []; // Example: [1, 2, 3]
         $this->selectedManagers=[];
         $this->chartData = $this->fetchChartData();
+        $this->selectedEmployeeId=$selectedEmployeeId;
+        $this->selectedEmployeeFirstName=EmployeeDetails::where('emp_id',$this->selectedEmployeeId)->value('first_name');
+        $this->selectedEmployeeLastName=EmployeeDetails::where('emp_id',$this->selectedEmployeeId)->value('last_name');
+        $this->topEmployee = EmployeeDetails::where('job_role', 'Chairman')->orWhere('job_role', 'Director')->first();
+
+        // Fetch all employees working under the top-level employee
+        if ($this->topEmployee) {
+            $this->subordinates = EmployeeDetails::where('manager_id', $this->topEmployee->id)->get();
+        } else {
+            $this->subordinates = collect(); // Empty collection if no top-level employee
+        }
+        
+    }
+
+    public function clearSelectedEmployee()
+    {
+        $this->selectedEmployeeId='';
+        $this->selectedEmployeeFirstName='';
+        $this->selectedEmployeeLastName='';
+        $this->searchTerm='';
+    }
+    public function selectEmployee($empId)
+    {
+        
+        $this->selectedEmployeeId = $empId;
+        $this->selectedEmployeeFirstName = EmployeeDetails::where('emp_id', $empId)->value('first_name');
+        $this->selectedEmployeeLastName = EmployeeDetails::where('emp_id', $empId)->value('last_name');
+        $this->selectedEmployeeImage = EmployeeDetails::where('emp_id', $empId)->value('image');
+        $this->searchTerm='';
+    }
+    public function searchForManagerTransfer()
+    {
+      $this->searchFromManagerTransfer=1;
+
+    }
+    public function updateselectedEmployeeForManager($empId)
+    {
+    
+        $this->selectedEmployeeId=$empId;
+      
+        $this->selectedEmployeeFirstName= EmployeeDetails::where('emp_id',$empId)->value('first_name');
+        $this->selectedEmployeeLastName= EmployeeDetails::where('emp_id',$empId)->value('last_name');
+        $this->SubordinateEmployees=EmployeeDetails::where('manager_id',$this->selectedEmployeeId)->get();
+        $this->searchEmployee=0;
+    }
+
+    public function updateselectedEmployeeForManager2nd($empId)
+    {
+    
+        $this->selectedEmployeeIdFor2ndManager=$empId;
+      
+        $this->selectedEmployeeFirstNameFor2ndManager= EmployeeDetails::where('emp_id',$empId)->value('first_name');
+        $this->selectedEmployeeLastNameFor2ndManager= EmployeeDetails::where('emp_id',$empId)->value('last_name');
+        $this->searchSecondEmployee=0;
+    }
+
+    public function closeEmployeeBoxForMassTransfer()
+    {
+        $this->searchFromManagerTransfer=0;
+        $this->searchTerm='';
+        $this->managers=$this->getEmployeesByType();
+       
+       
+    }
+    public function closeEmployeeBox()
+    {
+        $this->searchFromManagerTransfer=0;
+        $this->searchTerm='';
+       
+       
+    }
+    // public function updatesearchTerm()
+    // {
+    //     $this->searchTerm= $this->searchTerm;
+    //     $this->searchforEmployee();
+       
+    // }
+    public function getEmployeesByType()
+    {
+        $managerIds = EmployeeDetails::select('manager_id')
+        ->distinct()
+        ->pluck('manager_id')
+        ->toArray();
+       
+        $query = EmployeeDetails::query();
+        // Example logic to fetch employees based on the selected type
+        $query->where('employee_status', 'active')->whereIn('emp_id',$managerIds);
+        if (!empty($this->searchTerm)) {
+            $query->where(function ($query) {
+                $query->where('first_name', 'like', '%' . $this->searchTerm . '%')
+                      ->orWhere('last_name', 'like', '%' . $this->searchTerm . '%')
+                      ->orWhere('emp_id', 'like', '%' . $this->searchTerm . '%');
+            });
+        }
+        elseif (!empty($this->searchTermForFirstEmployee)) {
+            $query->where(function ($query) {
+                $query->where('first_name', 'like', '%' . $this->searchTermForFirstEmployee . '%')
+                      ->orWhere('last_name', 'like', '%' . $this->searchTermForFirstEmployee . '%')
+                      ->orWhere('emp_id', 'like', '%' . $this->searchTermForFirstEmployee . '%');
+            });
+        }
+        
+        // Get the filtered employees
+        return $query->get();
+    
+    }
+    public function test()
+    {
+        dd('asdzfgchjm');
     }
     public function fetchChartData()
     {
@@ -72,6 +203,17 @@ class HrOrganisationChart extends Component
             'content' => 'This is a sample content for the HR Organisation Chart.'
         ];
     }
+
+    public function searchforEmployee()
+    {
+          $this->searchEmployee=1;
+       
+    }
+
+    public function searchforSecondEmployee()
+    {
+        $this->searchSecondEmployee=1;
+    }
     public function updateselectedMassTransferManager()
     {
         $this->selectedMassTransferManager=$this->selectedMassTransferManager;
@@ -80,26 +222,47 @@ class HrOrganisationChart extends Component
     {
         $this->selectedMassTransferNewManager=$this->selectedMassTransferNewManager;
     }
+    
+    public function updateEmployeeId()
+    {
+        $this->EmployeeId=$this->EmployeeId;
+    }
     public function checkMassTransfer()
     {
-        $employees=EmployeeDetails::where('manager_id',$this->selectedMassTransferManager)->pluck('emp_id')->toArray();
-        $manager = EmployeeDetails::where('emp_id',$this->selectedMassTransferNewManager)->first();
+        if(!empty($this->EmployeeId))
+        {
+            $employees=EmployeeDetails::whereIn('emp_id',$this->EmployeeId)->pluck('emp_id')->toArray();
+         
+        }
+        else
+        {
+            $employees=EmployeeDetails::where('manager_id',$this->selectedEmployeeId)->pluck('emp_id')->toArray();
+        
+        }
+       
+        $manager = EmployeeDetails::where('emp_id',$this->selectedEmployeeIdFor2ndManager)->first();
+  
         if ($manager) {
             $reportTo = ucwords(strtolower($manager->first_name)) . ' ' . ucwords(strtolower($manager->last_name));
    
             // Update the employee_details table
             EmployeeDetails::whereIn('emp_id', $employees)->update([
-                'manager_id' => $this->selectedMassTransferNewManager,
-                'report_to' => $reportTo
+                'manager_id' => $this->selectedEmployeeIdFor2ndManager,
             ]);
    
            
    
             // Optionally, provide feedback to the user
-            session()->flash('message', 'Employee Manager updated successfully.');
+            FlashMessageHelper::flashSuccess( 'Employee Manager updated successfully.');
+            $this->EmployeeId=[];
+            $this->selectedEmployeeId=null;
+            $this->selectedEmployeeIdFor2ndManager=null;
         } else {
             // Handle the case where the manager is not found
-            session()->flash('error', 'Manager not found.');
+            FlashMessageHelper::flashError( 'Manager not found.');
+            $this->EmployeeId=[];
+            $this->selectedEmployeeId=null;
+            $this->selectedEmployeeIdFor2ndManager=null;
         }
         $this->massTransferDialog=false;  
     }
@@ -221,12 +384,16 @@ class HrOrganisationChart extends Component
         $this->assignManagerPopup=false;
         $this->selectedEmployee='';
         $this->selectedManager='';
+      
 
 
     }
     public function closeAssignTopLevelManager()
     {
         $this->assignTopLevelManager=false;
+        
+        return redirect()->route('hr-organisation-chart',['selectedEmployeeId'=>$this->selectedEmployeeId]);
+         
     }
     public function masstransfer()
     {
@@ -244,11 +411,22 @@ class HrOrganisationChart extends Component
             $this->scale -= 0.1; // Decrease the scale
         }
     }
+    public function updatesearchTerm()
+    {
+        $this->searchTerm=$this->searchTerm;
+    }
+
+    public function updatesearchTermForFirstEmployee()
+    {
+        $this->searchTermForFirstEmployee=$this->searchTermForFirstEmployee;
+    }
 
     public function closeMassTransferDialog()
     {
         $this->massTransferDialog=false;
         $this->selectedMassTransferManager='';
+        $this->selectedEmployeeId=null;
+        $this->selectedEmployeeIdFor2ndManager=null;
         $this->selectedMassTransferNewManager='';
     }
         public function render()
@@ -309,11 +487,9 @@ class HrOrganisationChart extends Component
                 ->whereNotIn('e2.emp_id', $this->selectedMassTransferManagerinString)
                 ->get();
         }
-        $this->managers = DB::table('employee_details as e1')
-        ->join('employee_details as e2', 'e1.manager_id', '=', 'e2.emp_id')
-        ->select('e2.emp_id as manager_id', 'e2.first_name', 'e2.last_name')
-        ->distinct()
-        ->get();
+     
+        $this->managers = $this->getEmployeesByType();
+        
         $lower_authorities_ID=EmployeeDetails::where('manager_id',$higher_authorities_ID)->select('emp_id');
         return view('livewire.hr-organisation-chart',['HigherAuthorities'=>$higher_authorities,'UnAssignedManagerCount'=>$unassigned_manager_count]);
     }

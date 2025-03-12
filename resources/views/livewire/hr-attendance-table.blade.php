@@ -1392,6 +1392,7 @@ color: #fff;
     <div class="m-auto">
             <div class="table-container scrollable-table">
               <table>
+                <thead style="position: sticky;top:0px;">
                 <tr class="first-header-row" style="background-color:#ebf5ff;border-bottom: 1px solid #cbd5e1;">
                                        
                     <th class="date" style="font-weight:normal;font-size:12px;padding-top:16px; position: relative;color:#778899;border-right:1px solid #cbd5e1;">General&nbsp;Details{{$selectedEmployeeId}}</th>
@@ -1423,6 +1424,8 @@ color: #fff;
                     
 
                 </tr>
+                </thead>
+                <thead style="position: sticky;top:0px;">
                 <tr class="second-header-row" style="border-bottom: 1px solid #cbd5e1;">
                     <th class="date" style="font-weight:normal;font-size:12px;padding-top:16px;border-right:1px solid #cbd5e1;">Date</th>
 
@@ -1453,7 +1456,7 @@ color: #fff;
                     @endif
 
                 </tr>
-               
+                </thead>               
                 @php
                 use Carbon\Carbon;
 

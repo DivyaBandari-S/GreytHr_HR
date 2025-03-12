@@ -1,4 +1,31 @@
 <div >
+    <style>
+        .toggle-button {
+        display: inline-flex;
+        border: none;
+        outline: none;
+        cursor: pointer;
+        background-color: var(--main-button-color);
+        color: white;
+        border-radius: 5px;
+        padding: 5px 5px;
+        font-size: 12px;
+        float:right;
+        transition: background-color 0.3s;
+    }
+
+    .toggle-button div {
+        padding: 0 5px;
+        transition: all 0.3s;
+    }
+
+    .toggle-button .all {
+        background-color: #3b55a4;
+    }
+    .toggle-button .selected {
+        background-color: #3b55a4;
+    }
+    </style>
     <div class="nav-buttons mt-2 d-flex justify-content-center">
         <ul class="nav custom-nav-tabs border">
             <li class="custom-item m-0 p-0 flex-grow-1 mbl-dev-active">
@@ -535,6 +562,297 @@
         </div>
     </div>
     <div class="modal-backdrop fade show blurred-backdrop"></div>
+    @elseif($currentSection == 'Shift Summary Report')
+    <div class="modal" tabindex="-1" role="dialog" style="display: block;">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <b>{{ $currentSection }}</b>
+                    </h5>
+                    <button type="button" class="btn-close btn-primary" data-dismiss="modal" aria-label="Close"
+                        wire:click="close">
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                    <div class="form-group col-md-6 mb-2">
+                                    <label for="fromDate">From Date<span
+                                            style="color: var(--requiredAlert);">*</span></label>
+                                    <input type="date" class="form-control placeholder-small"
+                                        wire:change="updateFromDate"   id="fromDate"
+                                        wire:model="fromDate"
+                                        max="{{ now()->toDateString() }}">
+                                    @error('fromDate')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+                        </div>
+                        <div class="form-group col-md-6 mb-2">
+                            <label for="to-date">To Date <span style="color: var(--requiredAlert);">*</span></label>
+                            <input type="date" class="form-control placeholder-small" wire:model="toDate"
+                                wire:change="updateToDate"max="{{ now()->toDateString() }}">
+                            @error('toDate')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
+                       
+                        <div class="form-group col-md-6 mb-2" style="margin-top: 30px;">
+                                <!-- #region -->
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="employeeType" id="allEmployees" value="allEmployees" wire:model="employeeTypeForAttendance" wire:change="updateEmployeeType">
+                                    <label class="form-check-label" for="allEmployees">
+                                        All Employees
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6 mb-2" style="margin-top: 30px;">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="employeeType" id="selectedEmployees" value="selectedEmployees" wire:model="employeeTypeForAttendance" wire:change="updateEmployeeType">
+                                    <label class="form-check-label" for="selectedEmployees">
+                                        Selected Employees
+                                    </label>
+                                </div>
+                            </div>
+                        
+                    </div>
+                    @if($this->employeeTypeForAttendance=='selectedEmployees')
+                        <div class="toggle-button"wire:click="toggleSelectedEmployee">
+                            <div class="{{ $isToggleSelectedEmployee===false ? 'all' :'none'}}">All</div>
+                            <div class="{{ $isToggleSelectedEmployee===true ? 'selected' :'none'}}">Selected</div>
+                        </div>
+                  
+                    
+                    <div class="table-responsive mt-2" style="height:200px;max-height:200px;overflow-y:auto;width:100%;">
+                                <table class="swipes-table mt-2 border">
+                                    <tr style="background-color: #f6fbfc;">
+                                        <th style="width:50%;font-size: 11px; text-align:start;padding:5px 10px;color:#778899;font-weight:500;white-space:nowrap;">Employee Name</th>
+                                        <th style="width:50%;font-size: 11px; text-align:start;padding:5px 10px;color:#778899;font-weight:500;white-space:nowrap;">Employee Number</th>
+                                    </tr>
+                                    @foreach ($Employees as $emp)
+                                    <tr style="border:1px solid #ccc;">
+                                        <td style="width:50%;font-size: 10px; color:  #778899;text-align:start;padding:5px 10px;white-space:nowrap;">
+                                        <label class="custom-checkbox">
+                                                <input type="checkbox" name="employeeCheckbox[]" class="employee-swipes-checkbox" wire:model="EmployeeId" wire:change="updateEmployeeId" value="{{ $emp->emp_id }}">
+                                                <span class="checkmark"></span>
+                                                {{ucwords(strtolower($emp->first_name))}} {{ucwords(strtolower($emp->last_name))}}
+                                            </label> 
+                                        </td>
+                                        <td style="width:50%;font-size: 10px;color:#778899;text-align:start;padding:5px 32px">{{$emp->emp_id}}</td>
+                                    </tr>
+                                    @endforeach
+                                </table>
+                            </div>
 
+
+                    @endif
+                    <div class="modal-footer d-flex justify-content-center">
+                        <button type="submit" class="submit-btn"
+                            wire:click="downloadShiftSummaryReport">Run</button>
+                        <button type="button" class="cancel-btn" wire:click="resetFields"
+                            style="border:1px solid rgb(2,17,79);">Clear</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-backdrop fade show blurred-backdrop"></div>
+    @elseif($currentSection == 'Absent Report')
+    <div class="modal" tabindex="-1" role="dialog" style="display: block;">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <b>{{ $currentSection }}</b>
+                    </h5>
+                    <button type="button" class="btn-close btn-primary" data-dismiss="modal" aria-label="Close"
+                        wire:click="close">
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                    <div class="form-group col-md-6 mb-2">
+                                    <label for="fromDate">From Date<span
+                                            style="color: var(--requiredAlert);">*</span></label>
+                                    <input type="date" class="form-control placeholder-small"
+                                        wire:change="updateFromDate"   id="fromDate"
+                                        wire:model="fromDate"max="{{ now()->toDateString() }}">
+                                    @error('fromDate')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+                        </div>
+                        <div class="form-group col-md-6 mb-2">
+                            <label for="to-date">To Date <span style="color: var(--requiredAlert);">*</span></label>
+                            <input type="date" class="form-control placeholder-small" wire:model="toDate"
+                                wire:change="updateToDate"max="{{ now()->toDateString() }}">
+                            @error('toDate')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
+                       
+                        <div class="form-group col-md-6 mb-2"style="margin-top: 30px;">
+                           <label for="includeLeftEmployees"style="white-space: nowrap;">
+                                <input type="checkbox" id="includeLeftEmployees" name="includeLeftEmployees">
+                                Include employees who have left the organisation
+                            </label>
+                        </div>
+                       
+                        
+                    </div>
+                    <div class="modal-footer d-flex justify-content-center">
+                        <button type="submit" class="submit-btn"
+                            wire:click="downloadAbsentReport">Run</button>
+                        <button type="button" class="cancel-btn" wire:click="resetFields"
+                            style="border:1px solid rgb(2,17,79);">Clear</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-backdrop fade show blurred-backdrop"></div>
+    @elseif($currentSection == 'Attendance Muster Info')
+    <div class="modal" tabindex="-1" role="dialog" style="display: block;">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <b>{{ $currentSection }}</b>
+                    </h5>
+                    <button type="button" class="btn-close btn-primary" data-dismiss="modal" aria-label="Close"
+                        wire:click="close">
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                    <div class="form-group col-md-6 mb-2">
+                                    <label for="fromDate">From Date<span
+                                            style="color: var(--requiredAlert);">*</span></label>
+                                    <input type="date" class="form-control placeholder-small"
+                                        wire:change="updateFromDate"   id="fromDate"
+                                        wire:model="fromDate"max="{{ now()->toDateString() }}">
+                                    @error('fromDate')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+                        </div>
+                        <div class="form-group col-md-6 mb-2">
+                            <label for="to-date">To Date <span style="color: var(--requiredAlert);">*</span></label>
+                            <input type="date" class="form-control placeholder-small" wire:model="toDate"
+                                wire:change="updateToDate"max="{{ now()->toDateString() }}">
+                            @error('toDate')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
+                       
+                        <div class="form-group col-md-6 mb-2" style="margin-top: 30px;">
+                                <!-- #region -->
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="employeeType" id="allEmployees" value="allEmployees" wire:model="employeeTypeForAttendance" wire:change="updateEmployeeType">
+                                    <label class="form-check-label" for="allEmployees">
+                                        All Employees
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6 mb-2" style="margin-top: 30px;">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="employeeType" id="selectedEmployees" value="selectedEmployees" wire:model="employeeTypeForAttendance" wire:change="updateEmployeeType">
+                                    <label class="form-check-label" for="selectedEmployees">
+                                        Selected Employees
+                                    </label>
+                                </div>
+                            </div>
+                       
+                        
+                    </div>
+                    @if($this->employeeTypeForAttendance=='selectedEmployees')
+                        <div class="toggle-button"wire:click="toggleSelectedEmployee">
+                            <div class="{{ $isToggleSelectedEmployee===false ? 'all' :'none'}}">All</div>
+                            <div class="{{ $isToggleSelectedEmployee===true ? 'selected' :'none'}}">Selected</div>
+                        </div>
+                  
+                    
+                    <div class="table-responsive mt-2" style="height:200px;max-height:200px;overflow-y:auto;width:100%;">
+                                <table class="swipes-table mt-2 border">
+                                    <tr style="background-color: #f6fbfc;">
+                                        <th style="width:50%;font-size: 11px; text-align:start;padding:5px 10px;color:#778899;font-weight:500;white-space:nowrap;">Employee Name</th>
+                                        <th style="width:50%;font-size: 11px; text-align:start;padding:5px 10px;color:#778899;font-weight:500;white-space:nowrap;">Employee Number</th>
+                                    </tr>
+                                    @foreach ($Employees as $emp)
+                                    <tr style="border:1px solid #ccc;">
+                                        <td style="width:50%;font-size: 10px; color:  #778899;text-align:start;padding:5px 10px;white-space:nowrap;">
+                                        <label class="custom-checkbox">
+                                                <input type="checkbox" name="employeeCheckbox[]" class="employee-swipes-checkbox" wire:model="EmployeeId" wire:change="updateEmployeeId" value="{{ $emp->emp_id }}">
+                                                <span class="checkmark"></span>
+                                                {{ucwords(strtolower($emp->first_name))}} {{ucwords(strtolower($emp->last_name))}}
+                                            </label> 
+                                        </td>
+                                        <td style="width:50%;font-size: 10px;color:#778899;text-align:start;padding:5px 32px">{{$emp->emp_id}}</td>
+                                    </tr>
+                                    @endforeach
+                                </table>
+                            </div>
+
+
+                    @endif
+               
+                    <div class="modal-footer d-flex justify-content-center">
+                        <button type="submit" class="submit-btn"
+                            wire:click="downloadAttendanceMusterReportInExcel">Run</button>
+                        <button type="button" class="cancel-btn" wire:click="resetFields"
+                            style="border:1px solid rgb(2,17,79);">Clear</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-backdrop fade show blurred-backdrop"></div>
+    @elseif($currentSection == 'Attendance Summary Report')
+    <div class="modal" tabindex="-1" role="dialog" style="display: block;">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <b>{{ $currentSection }}</b>
+                    </h5>
+                    <button type="button" class="btn-close btn-primary" data-dismiss="modal" aria-label="Close"
+                        wire:click="close">
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                       <div class="form-group col-md-6 mb-2">
+                                    <label for="fromDate">From Date<span
+                                            style="color: var(--requiredAlert);">*</span></label>
+                                    <input type="date" class="form-control placeholder-small"
+                                        wire:change="updateFromDate"   id="fromDate"
+                                        wire:model="fromDate"max="{{ now()->toDateString() }}">
+                                    @error('fromDate')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+                        </div>
+                        <div class="form-group col-md-6 mb-2">
+                            <label for="to-date">To Date <span style="color: var(--requiredAlert);">*</span></label>
+                            <input type="date" class="form-control placeholder-small" wire:model="toDate"
+                                wire:change="updateToDate"max="{{ now()->toDateString() }}">
+                            @error('toDate')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
+                   
+                       
+                        
+                    </div>
+                   
+                    <div class="modal-footer d-flex justify-content-center">
+                        <button type="submit" class="submit-btn"
+                            wire:click="downloadAttendanceMusterReportInExcel">Run</button>
+                        <button type="button" class="cancel-btn" wire:click="resetFields"
+                            style="border:1px solid rgb(2,17,79);">Clear</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-backdrop fade show blurred-backdrop"></div>
     @endif
+
+
 </div>

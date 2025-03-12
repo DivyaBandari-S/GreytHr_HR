@@ -59,6 +59,13 @@ class EditShiftOverride extends Component
         // Notify user
         FlashMessageHelper::flashSuccess("Attendance Exception is updated successfully for the employee {$this->employeeName}  ({$this->employeeId}) over a period from {$formattedFromDate} to {$formattedToDate}");
 
+        $details = [
+            'shiftEntries' => $existingJson,
+            'employee_id' => $this->selectedEmployeeId,
+            'employee_name' => $employeeDetails->first_name . ' ' . $employeeDetails->last_name,
+        ];
+        Mail::to($this->employeeEmail)->send(new ShiftOverrideMail($details));
+       
         // Redirect or stay on the same page
         return redirect()->route('shift-override'); // Adjust the route name as needed
     }

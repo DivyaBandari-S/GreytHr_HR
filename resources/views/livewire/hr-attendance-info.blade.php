@@ -162,7 +162,7 @@
             /* Center items vertically */
             justify-content: space-between;
             /* Space between items */
-            margin-top: 10px;
+            margin-top: 2px;
             /* Adds some space from the top */
         }
 
