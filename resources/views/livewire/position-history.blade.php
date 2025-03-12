@@ -1,6 +1,6 @@
 <div>
-<div class="row" style="margin-top:-20px;">
-<ul class="nav custom-nav-tabs" role="tablist"  style="width:90%"  >
+<div style="margin-top: -20px;">
+<ul class="nav custom-nav-tabs" role="tablist" >
     <li class="nav-item" role="presentation">
         <a class="nav-link active custom-nav-link" id="simple-tab-0" data-bs-toggle="tab" href="#simple-tabpanel-0" role="tab" aria-controls="simple-tabpanel-0" aria-selected="true">Main</a>
     </li>

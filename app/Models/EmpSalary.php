@@ -11,7 +11,7 @@ class EmpSalary extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['sal_id', 'bank_id', 'salary', 'effective_date', 'remarks', 'month_of_sal','is_payslip'];
+    protected $fillable = ['sal_id', 'bank_id', 'salary', 'effective_date', 'remarks', 'month_of_sal','is_payslip','total_working_days,lop_days'];
     protected $appends = ['basic', 'hra', 'medical', 'special', 'conveyance', 'pf'];
 
     private $decodedSalary = null; // Cache decoded salary for repeated calculations
@@ -19,6 +19,8 @@ class EmpSalary extends Model
     /**
      * Set and encode salary before saving.
      */
+    
+
     public function setSalaryAttribute($value)
     {
         $decimalPlaces = strpos($value, '.') !== false ? strlen(substr(strrchr($value, "."), 1)) : 0;

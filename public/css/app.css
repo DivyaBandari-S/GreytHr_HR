@@ -1389,15 +1389,15 @@ a.custom-nav-link {
 }
 /* Custom tab styles */
 .custom-nav-tabs {
-    margin-top: 10px;
+
     background-color: #fff;
     border-radius: 5px;
     display: flex;
     font-weight: 500;
+    width:100%;
     text-align: center;
     color: var(--label-color);
-    padding: 0;
-    margin: 0;
+
     font-size: var(--normal-font-size);
 }
 
@@ -3812,6 +3812,17 @@ input[type="date"]::before {
     align-items: center;
     justify-content: center;
     border: none;
+    color:#fff;
+}
+.close-btn-for-selected-employee
+{
+
+    position: absolute;
+    right: 5px;
+    top: 1px;
+    border: none;
+    background: transparent;
+    color:black;
 }
 .position-row {
     display: flex;
@@ -6795,6 +6806,103 @@ select:focus {
 .bold-items {
     font-weight: bold;
 }
+
+.Employee-select-leave {
+    font-weight: 500;
+    font-size: var(--main-headings-font-size);
+    color: var(--main-heading-color);
+}
+
+.Employee-details-hr {
+    border: 1px solid rgb(80, 80, 218);
+    align-items: center;
+    border-radius: 30px;
+    padding: 5px 10px;
+    margin-bottom: 10px;
+}
+
+.Employee-details-img-details-hr {
+    width: fit-content;
+    align-items: center;
+}
+
+.Emp-name-leave-details {
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 0px;
+    color: var(--sub-heading-color);
+}
+
+.Emp-id-leave-details {
+    font-size: 10px;
+    color: var(--label-color);
+    margin-bottom: 0px;
+}
+
+.analytic-view-all-search-bar {
+    display: flex;
+    padding: 10px 0px;
+    justify-content: space-between;
+    /* Adjust spacing between items */
+    align-items: center;
+}
+
+.search-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.analytic-view-all-search-bar input[type="text"] {
+    width: 200px;
+    padding: 6px 28px 6px 10px;
+    /* Adjust padding for right space */
+    border: 1px solid #ccc;
+    border-radius: 18px;
+    position: relative;
+}
+
+.search-icon {
+    position: absolute;
+    right: 10px;
+    color: #666;
+    pointer-events: none;
+}
+
+.custom-border {
+    background-color: rgb(245, 246, 248);
+    margin-bottom: 10px;
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid aliceblue;
+    width: 260px;
+    margin-left: 5px;
+}
+
+.profile-image {
+    height: 32px;
+    width: 32px;
+    background-color: lightgray;
+    border-radius: 50%;
+}
+
+.employeType,
+.searchEmploye {
+    color: grey;
+}
+
+.employe_Type {
+    border: none;
+}
+
+.search-bar {
+    width: 40%;
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 20px;
+    border: 1px solid #ccc;
+}
+
 
 /* //Employee data upddate styles */
 .displayContnet {

@@ -5,6 +5,8 @@ namespace App\Livewire;
 use App\Models\AttendanceException;
 use App\Models\EmployeeDetails;
 use App\Models\HolidayCalendar;
+use App\Models\SwipeRecord;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Livewire\Component;
@@ -102,26 +104,31 @@ class CreateAttendanceExceptionPage extends Component
             'reason'=>$this->reason,
             
         ]);
-        if($this->status=='Holiday')
+        if($this->status=='Absent')
         {
                     
                         // Assuming you have a database connection already set up
                   // Assuming the necessary variables are set
-                
-        $empId = $this->selectedEmployeeId;  // Employee ID
+            $currentDate = Carbon::parse($this->from_date);
+            $toDate = Carbon::parse($this->to_date);
+            while($currentDate->lte($toDate))
+            {
+                $s1 = SwipeRecord::where('emp_id', $this->selectedEmployeeId)
+                 ->whereDate('created_at', $currentDate->toDateString())
+                 ->get();
+
+                if ($s1->isNotEmpty()) { // or if(!empty($s1))
+                    foreach ($s1 as $record) {
+                        $record->delete(); // Delete each record individually
+                    }
+                }   
+                $currentDate->addDay();
+            }
+  // Employee ID
               // To date
 
        
-              HolidayCalendar::create([
-                'emp_id' => $empId,
-                'day' => 'Monday',
-                'date' => 2024-12-11,
-                'month' => 'December',
-                'year' => 2024,
-                'festivals' => 'hr modified',
-            ]);
-
-       
+              
     
         }
         return redirect()->route('attendance-exception');

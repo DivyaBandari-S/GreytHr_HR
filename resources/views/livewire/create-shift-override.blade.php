@@ -321,5 +321,12 @@
         </div>
     
 </div>
+<div>
+    <!-- <form wire:submit.prevent="sendNotifications">
+        <textarea wire:model="messageContent" placeholder="Enter the message to send to employees with emergency contacts"></textarea>
+        <button type="submit">Send SMS</button>
+    </form> -->
 
+   
+</div>
 </div>

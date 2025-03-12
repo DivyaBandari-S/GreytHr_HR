@@ -1,4 +1,4 @@
-<div class="row">
+<div >
 <div class="position-absolute" wire:loading
         wire:target="searchData,NamesSearch,IDRequest,">
         <div class="loader-overlay">
@@ -63,7 +63,8 @@
                                             <div class="modal-body">
                                             <div class="row m-0">
     <div class="col " style="text-align: right; padding: 0;"> <!-- Align text to left -->
-        <img src="images/it-images/offboarding.png" style="display: block; margin-right: 0;height:100px" />
+    <img src="{{ asset('images/it-images/offboarding.png') }}" style="display: block; margin-right: 0; height:90px;" />
+
     </div>
 </div>
 
@@ -125,10 +126,11 @@
                                                                         <i style="text-align: center;" class="fa fa-search"></i>
                                                                     </button>
 
-                                                                    <button wire:click="closePeoples" type="button" class="close-btn rounded px-1 py-0" aria-label="Close" style="background-color: var(--main-button-color); height: 30px; width: 30px; margin-left: 5px; display: flex; align-items: center; justify-content: center;">
+                                                                </div>
+                                                                
+                                                                <button wire:click="closePeoples" type="button" class="close-btn rounded px-1 py-0" aria-label="Close" style="background-color: var(--main-button-color); height: 30px; width: 30px; margin-left: 5px; display: flex; align-items: center; justify-content: center;">
                                                                         <span aria-hidden="true" style="color: white; font-size: 24px; line-height: 0;">×</span>
                                                                     </button>
-                                                                </div>
                                                             </div>
 
                                                             @if ($peopleData->isEmpty())
@@ -281,12 +283,29 @@
     </div>
     @elseif ($searchData && $searchData->isEmpty())
     <tr>
-        <td colspan="8" style="text-align: center; border: none;">
-            <img style="width: 10em; margin: 20px;" 
-                 src="https://media.istockphoto.com/id/1357284048/vector/no-item-found-vector-flat-icon-design-illustration-web-and-mobile-application-symbol-on.jpg?s=612x612&w=0&k=20&c=j0V0ww6uBl1LwQLH0U9L7Zn81xMTZCpXPjH5qJo5QyQ=" 
+<td> 
+<div class="d-flex justify-content-center align-items-center mt-2">
+                <div class="card p-4 text-center">
+                <div class="no-data p-4 text-align-center justify-content-center align-items-center" style="width:700px;height:150px">  
+<img style="width: 10em; margin: 20px;" 
+            src="{{ asset('images/norecordstoshow.png') }}" 
                  alt="No items found">
-        </td>
+                 <p>No Record Found</p>
+                </div>
+            </div>
+        </div></td>
     </tr>
+    @else
+    <div class="d-flex justify-content-center align-items-center mt-2">
+                <div class="card p-4 text-center">
+                <div class="no-data p-4 text-align-center justify-content-center align-items-center" style="width:700px;height:260px">
+            <img style="width: 10em; margin: 20px;" 
+            src="{{ asset('images/norecordstoshow.png') }}" 
+                 alt="No items found">
+                 <p>No Record Found</p>
+     </div>
+     </div>
+     </div>
     @endif
 </div>
 
