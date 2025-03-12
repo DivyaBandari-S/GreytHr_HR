@@ -31,7 +31,6 @@ return new class extends Migration
             $table->text('reason')->nullable();
             $table->string('applied_by', 10)->nullable();
             $table->boolean('is_read')->default(false);
-
             // $table->enum('sick_leave', ['yes', 'no'])->default('no');
             // $table->enum('casual_leave', ['yes', 'no'])->default('no');
             $table->timestamps();
