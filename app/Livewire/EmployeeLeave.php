@@ -62,9 +62,7 @@ private function cleanString($string)
 
 public function generateReport()
 {
-    // $employeeId = auth()->guard('hr')->user()->emp_id;
-
-    // Fetch employee details
+   
     
     $this->validate([
         'fromDate' => 'required|date',
@@ -92,24 +90,9 @@ public function generateReport()
     })
     ->orderBy($this->orderBy === 'date' ? 'created_at' : $this->orderBy)
     ->get();
-    // dd($leaveRequests);
     
-        // Access emp_id of the first leave request
-        // $employeeId = $leaveRequests->first()->emp_id; // Or you can use $leaveRequests[0]->emp_id
-        // Now you can use $employeeId as needed
-
-    // $employeeId= $leaveRequests->emp_id;
     $employeeDetails = EmployeeDetails::where('emp_id', $this->selectedEmployee)->first();
-    // ->map(function ($leave) {
-    //     return [
-    //         'id' => $leave->id,
-    //         'emp_id' => $this->cleanString($leave->emp_id),
-    //         'leave_type' => $this->cleanString($leave->leave_type),
-    //         'created_at' => $this->cleanString($leave->created_at),
-    //         // Include other fields you need...
-    //     ];
-    // });
-    // dd($leaveRequests);
+  
 
 
 if ($this->exportFormat === 'pdf') {
@@ -227,32 +210,7 @@ if ($this->exportFormat === 'pdf') {
             $this->showContainer = false;
         }
     }
-    // public function closeEmployee(){
-    //     $this->showSearch = true;
-    // }
-//     public function showLeaveBalances($employeeId)
-// {
 
-//     $selectedEmployee = EmployeeDetails::find($employeeId);
-    
-//     // Ensure employee exists
-//     if (!$selectedEmployee) {
-//         return redirect()->back()->with('error', 'Employee not found.');
-//     }
-
-//     // Fetch leave balances for the employee
-//     $leaveBalances = EmployeeLeaveBalances::where('emp_id', $employeeId)->first();
-    
-//     // Fetch leave requests if needed
-//     $leaveRequests = LeaveRequest::where('emp_id', $employeeId)->get();
-
-//     // Pass the data to the view
-//     return view('livewire.employee-leave', [
-//         'selectedEmployee' => $selectedEmployee,
-//         'leaveBalances' => $leaveBalances,
-//         'leaveRequests' => $leaveRequests,
-//     ]);
-// }
 
 public static function getLeaveBalances($employeeId, $selectedYear)
     {
@@ -302,125 +260,125 @@ public static function getLeaveBalances($employeeId, $selectedYear)
             return null;
         }
     }
-    // public function showCasualLeave()
-    // {
-    //     Log::info('showCasualLeave method called.');
-    //     $this->activeTab= "CL";
+    public function showCasualLeave()
+    {
+        Log::info('showCasualLeave method called.');
+        $this->activeTab= "CL";
         
-    //     try {
-    //         $today = Carbon::now()->year;
-    //         $yearToFetch = $this->filterPeriodValue === 'current_year' ? $today - 1 : $today;
+        try {
+            $today = Carbon::now()->year;
+            $yearToFetch = $this->filterPeriodValue === 'current_year' ? $today - 1 : $today;
         
-    //         if (!$this->selectedEmployee) {
-    //             Log::warning('No employee selected.');
-    //             return;
-    //         }
+            if (!$this->selectedEmployee) {
+                Log::warning('No employee selected.');
+                return;
+            }
     
-    //         $this->leaveRequests = LeaveRequest::where('emp_id', $this->selectedEmployee)
-    //             ->where('leave_status', 2)
-    //             ->whereYear('created_at', $yearToFetch)
-    //             ->where('leave_type', 'Casual Leave')
-    //             ->get();
+            $this->leaveRequests = LeaveRequest::where('emp_id', $this->selectedEmployee)
+                ->where('leave_status', 2)
+                ->whereYear('created_at', $yearToFetch)
+                ->where('leave_type', 'Casual Leave')
+                ->get();
             
-    //         $this->monthlyCounts = array_fill(1, 12, 0); // Initialize array for 12 months
+            $this->monthlyCounts = array_fill(1, 12, 0); // Initialize array for 12 months
     
-    //         foreach ($this->leaveRequests as $request) {
-    //             $month = $request->created_at->format('n'); // Get the month (1-12)
-    //             $this->monthlyCounts[$month]++;
-    //         }
+            foreach ($this->leaveRequests as $request) {
+                $month = $request->created_at->format('n'); // Get the month (1-12)
+                $this->monthlyCounts[$month]++;
+            }
            
     
          
-    //         $this->dispatchBrowserEvent('update-chart', ['monthlyCounts' => $this->monthlyCounts]);
-    //         Log::info('Monthly Counts: ', $this->monthlyCounts);
+            $this->dispatchBrowserEvent('update-chart', ['monthlyCounts' => $this->monthlyCounts]);
+            Log::info('Monthly Counts: ', $this->monthlyCounts);
         
     
-    //     } catch (\Exception $e) {
-    //         Log::error('Error in showCasualLeave: ' . $e->getMessage() . ' Stack trace: ' . $e->getTraceAsString());
+        } catch (\Exception $e) {
+            Log::error('Error in showCasualLeave: ' . $e->getMessage() . ' Stack trace: ' . $e->getTraceAsString());
 
-    //         // You might also want to return a default value or error message
-    //         $this->monthlyCounts = array_fill(1, 12, 0); // Reset or handle the error accordingly
-    //     }
-    // }
-    // public function showLossOfPay()
-    // {
-    //     Log::info('showCasualLeave method called.');
-    //  $this->activeTab= "LOP";
+            // You might also want to return a default value or error message
+            $this->monthlyCounts = array_fill(1, 12, 0); // Reset or handle the error accordingly
+        }
+    }
+    public function showLossOfPay()
+    {
+        Log::info('showCasualLeave method called.');
+     $this->activeTab= "LOP";
         
-    //     try {
-    //         $today = Carbon::now()->year;
-    //         $yearToFetch = $this->filterPeriodValue === 'current_year' ? $today - 1 : $today;
+        try {
+            $today = Carbon::now()->year;
+            $yearToFetch = $this->filterPeriodValue === 'current_year' ? $today - 1 : $today;
         
-    //         if (!$this->selectedEmployee) {
-    //             Log::warning('No employee selected.');
-    //             return;
-    //         }
+            if (!$this->selectedEmployee) {
+                Log::warning('No employee selected.');
+                return;
+            }
     
-    //         $this->leaveRequests = LeaveRequest::where('emp_id', $this->selectedEmployee)
-    //             ->where('leave_status', 2)
-    //             ->whereYear('created_at', $yearToFetch)
-    //             ->where('leave_type', 'Loss Of Pay')
-    //             ->get();
+            $this->leaveRequests = LeaveRequest::where('emp_id', $this->selectedEmployee)
+                ->where('leave_status', 2)
+                ->whereYear('created_at', $yearToFetch)
+                ->where('leave_type', 'Loss Of Pay')
+                ->get();
             
-    //         $this->monthlyCounts = array_fill(1, 12, 0); // Initialize array for 12 months
+            $this->monthlyCounts = array_fill(1, 12, 0); // Initialize array for 12 months
     
-    //         foreach ($this->leaveRequests as $request) {
-    //             $month = $request->created_at->format('n'); // Get the month (1-12)
-    //             $this->monthlyCounts[$month]++;
-    //         }
+            foreach ($this->leaveRequests as $request) {
+                $month = $request->created_at->format('n'); // Get the month (1-12)
+                $this->monthlyCounts[$month]++;
+            }
            
     
          
-    //         $this->dispatchBrowserEvent('update-chart', ['monthlyCounts' => $this->monthlyCounts]);
-    //         Log::info('Monthly Counts: ', $this->monthlyCounts);
+            $this->dispatchBrowserEvent('update-chart', ['monthlyCounts' => $this->monthlyCounts]);
+            Log::info('Monthly Counts: ', $this->monthlyCounts);
         
     
-    //     } catch (\Exception $e) {
-    //         Log::error('Error in showCasualLeave: ' . $e->getMessage() . ' Stack trace: ' . $e->getTraceAsString());
+        } catch (\Exception $e) {
+            Log::error('Error in showCasualLeave: ' . $e->getMessage() . ' Stack trace: ' . $e->getTraceAsString());
 
-    //         // You might also want to return a default value or error message
-    //         $this->monthlyCounts = array_fill(1, 12, 0); // Reset or handle the error accordingly
-    //     }
-    // }
-    // public function showSickLeave()
-    // {
-    //     $this->activeTab= "SL";
+            // You might also want to return a default value or error message
+            $this->monthlyCounts = array_fill(1, 12, 0); // Reset or handle the error accordingly
+        }
+    }
+    public function showSickLeave()
+    {
+        $this->activeTab= "SL";
         
-    //     try {
-    //         $today = Carbon::now()->year;
-    //         $yearToFetch = $this->filterPeriodValue === 'current_year' ? $today - 1 : $today;
+        try {
+            $today = Carbon::now()->year;
+            $yearToFetch = $this->filterPeriodValue === 'current_year' ? $today - 1 : $today;
         
-    //         if (!$this->selectedEmployee) {
-    //             Log::warning('No employee selected.');
-    //             return;
-    //         }
+            if (!$this->selectedEmployee) {
+                Log::warning('No employee selected.');
+                return;
+            }
     
-    //         $this->leaveRequests = LeaveRequest::where('emp_id', $this->selectedEmployee)
-    //             ->where('leave_status', 2)
-    //             ->whereYear('created_at', $yearToFetch)
-    //             ->where('leave_type', 'Sick Leave')
-    //             ->get();
+            $this->leaveRequests = LeaveRequest::where('emp_id', $this->selectedEmployee)
+                ->where('leave_status', 2)
+                ->whereYear('created_at', $yearToFetch)
+                ->where('leave_type', 'Sick Leave')
+                ->get();
             
-    //         $this->monthlyCounts = array_fill(1, 12, 0); // Initialize array for 12 months
+            $this->monthlyCounts = array_fill(1, 12, 0); // Initialize array for 12 months
     
-    //         foreach ($this->leaveRequests as $request) {
-    //             $month = $request->created_at->format('n'); // Get the month (1-12)
-    //             $this->monthlyCounts[$month]++;
-    //         }
+            foreach ($this->leaveRequests as $request) {
+                $month = $request->created_at->format('n'); // Get the month (1-12)
+                $this->monthlyCounts[$month]++;
+            }
            
     
          
-    //         $this->dispatchBrowserEvent('update-chart', ['monthlyCounts' => $this->monthlyCounts]);
-    //         Log::info('Monthly Counts: ', $this->monthlyCounts);
+            $this->dispatchBrowserEvent('update-chart', ['monthlyCounts' => $this->monthlyCounts]);
+            Log::info('Monthly Counts: ', $this->monthlyCounts);
         
     
-    //     } catch (\Exception $e) {
-    //         Log::error('Error in showCasualLeave: ' . $e->getMessage() . ' Stack trace: ' . $e->getTraceAsString());
+        } catch (\Exception $e) {
+            Log::error('Error in showCasualLeave: ' . $e->getMessage() . ' Stack trace: ' . $e->getTraceAsString());
 
-    //         // You might also want to return a default value or error message
-    //         $this->monthlyCounts = array_fill(1, 12, 0); // Reset or handle the error accordingly
-    //     }
-    // }
+            // You might also want to return a default value or error message
+            $this->monthlyCounts = array_fill(1, 12, 0); // Reset or handle the error accordingly
+        }
+    }
     public function showLeaveType($leaveType)
 {
   
@@ -469,10 +427,10 @@ public static function getLeaveBalances($employeeId, $selectedYear)
     
     
     
-    // public function selectLeaveType($leaveType)
-    // {
-    //     $this->activeTab = $leaveType;
-    // }
+    public function selectLeaveType($leaveType)
+    {
+        $this->activeTab = $leaveType;
+    }
 
     public function render()
     {

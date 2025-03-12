@@ -1,7 +1,7 @@
-<div class="main__body " style="overflow: auto; height: calc(100vh - 70px);background:#f9f9f9;">
+<div >
 <div class="p-2 m-0 main-overview-container">
 
-    <div>
+    <div>a
         @if ($showHelp == false)
             <div class="row main-overview-help">
                 <div class="col-md-11 col-10 d-flex flex-column">

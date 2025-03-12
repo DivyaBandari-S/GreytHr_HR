@@ -1224,7 +1224,6 @@
     document.addEventListener('DOMContentLoaded', function() {
         const ctx = document.getElementById('leaveChart').getContext('2d');
         let leaveChart;
-        console.log(monthlyCounts);
 
         function renderChart(monthlyCounts) {
             if (leaveChart) {
