@@ -5,11 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class otherchapter extends Model
+class Otherchapter extends Model
 {
- 
+
     use HasFactory;
-    protected $fillable =[
+    protected $fillable = [
         'emp_id',
         'intrest_on_housing',
         'intrest_on_loan',

@@ -1,28 +1,20 @@
 <?php
 
 use App\Livewire\AccountsJv;
-use App\Livewire\AdminDashboard;
-use App\Livewire\AttendanceLockConfiguration;
-use App\Livewire\CompanyInfo;
-use App\Livewire\Dashboard;
-use App\Livewire\HrLogin;
-use App\Livewire\HomeDashboard;
 use App\Livewire\AddEmployeeDetails;
 use App\Livewire\AddOrViewSalaryRevision;
 use App\Livewire\AnalyticsHub;
 use App\Livewire\AnalyticsHubViewAll;
-use App\Livewire\AttendanceException;
 use App\Livewire\AttendanceExceptionForDisplay;
+use App\Livewire\AttendanceLockConfiguration;
 use App\Livewire\AttendanceMusterHr;
 use App\Livewire\AttendanceProcess;
-use App\Livewire\BankAccount;
-use App\Livewire\LetterPreview;
+use App\Livewire\AuthorizeSignatory;
+use App\Livewire\CompanyInfo;
 use App\Livewire\CreateAttendanceExceptionPage;
 use App\Livewire\CreateEmployeeWeekDayChart;
-use App\Livewire\CreateLockConfiguration;
-use App\Livewire\CreateLockConfigurationPage;
 use App\Livewire\CreateNewLockConfigurationPage;
-use App\Livewire\CreateShiftOverride;
+use App\Livewire\CreateSignatory;
 use App\Livewire\CTCSlips;
 use App\Livewire\EditAttendanceExceptionPage;
 use App\Livewire\EditShiftOverride;
@@ -30,109 +22,86 @@ use App\Livewire\EmpBulkPhotoUpload;
 use App\Livewire\EmpDocument;
 use App\Livewire\EmpLeaveGranterDetails;
 use App\Livewire\EmployeeAsset;
-use App\Livewire\GrantLeaveBalance;
-use App\Livewire\RegularisationPendingForHr;
-use App\Livewire\ResettlementProcessPage;
-use App\Livewire\UpdateEmployeeDetails;
-use App\Livewire\Resignationrequests;
+use App\Livewire\EmployeeDataUpdate;
 use App\Livewire\EmployeeDirectory;
 use App\Livewire\EmployeeLeave;
+use App\Livewire\EmployeeLopDays;
 use App\Livewire\EmployeeProfile;
-use App\Livewire\EmployeeSwipesForHr;
-use App\Livewire\EmployeeWeekDayChart;
 use App\Livewire\EmployeeSalary;
 use App\Livewire\EmployeeSalaryCommonComponent;
+use App\Livewire\EmployeeSeparation;
+use App\Livewire\EmployeeSwipesForHr;
+use App\Livewire\EmployeeWeekDayChart;
+use App\Livewire\EmpResettlement;
 use App\Livewire\Everyone;
 use App\Livewire\Feeds;
-use App\Livewire\HelpDesk;
 use App\Livewire\GenerateLetters;
+use App\Livewire\GrantLeaveBalance;
+use App\Livewire\HelpDesk;
 use App\Livewire\HoldSalaries;
+use App\Livewire\HomeDashboard;
 use App\Livewire\HrAttendanceInfo;
 use App\Livewire\HrAttendanceOverviewNew;
 use App\Livewire\HrHolidayList;
 use App\Livewire\HrLeaveCalendar;
 use App\Livewire\HrLeaveOverview;
+use App\Livewire\HrLogin;
 use App\Livewire\HrMainOverview;
 use App\Livewire\HrManualOverride;
 use App\Livewire\HrOrganisationChart;
-use App\Livewire\LeaveRecalculator;
+use App\Livewire\ItStatement;
+use App\Livewire\LeaveApplyOnBehalf;
 use App\Livewire\LeaveSettingPolicy;
 use App\Livewire\LeaveTypeReviewer;
 use App\Livewire\LetterPreparePage;
+use App\Livewire\LetterPreview;
+use App\Livewire\Loans;
 use App\Livewire\ParentDetails;
+use App\Livewire\PayrollArrears;
 use App\Livewire\PayrollOverview;
+use App\Livewire\PayrollSalary;
 use App\Livewire\Payslips;
 use App\Livewire\PfYtdReport;
 use App\Livewire\PositionHistory;
 use App\Livewire\PreviousEmployeement;
+use App\Livewire\RegularisationPendingForHr;
 use App\Livewire\ReimbursementStatement;
+use App\Livewire\ReleaseSalary;
 use App\Livewire\ReportsManagement;
 use App\Livewire\Requests;
+use App\Livewire\ResettlementProcessPage;
+use App\Livewire\Resignationrequests;
 use App\Livewire\SalaryRevision;
 use App\Livewire\SalaryRevisionAnalytics;
 use App\Livewire\SalaryRevisionHistory;
 use App\Livewire\SalaryRevisionList;
+use App\Livewire\SalarySlip;
 use App\Livewire\ShiftOverrideHr;
 use App\Livewire\ShiftRosterHr;
 use App\Livewire\ShiftRotationCalendar;
 use App\Livewire\StopSalaries;
 use App\Livewire\SwipeManagementForHr;
-use App\Livewire\AuthorizeSignatory;
-use App\Livewire\CreateSignatory;
-use App\Livewire\EmployeeDataUpdate;
-use App\Livewire\EmployeeLopDays;
-use App\Livewire\Loans;
-use App\Livewire\ReleaseSalary;
-use App\Livewire\EmployeeSeparation;
-use App\Livewire\EmpResettlement;
-use App\Livewire\ItStatement;
-use App\Livewire\SalarySlip;
-use App\Livewire\PayrollSalary;
-use App\Livewire\LeaveApplyOnBehalf;
-use App\Livewire\PayrollArrears;
 use App\Livewire\Tasks;
+use App\Livewire\UpdateEmployeeDetails;
 use App\Livewire\WhoIsInChartHr;
 use App\Livewire\YearEndProcess;
 use App\Livewire\YtdReport;
 use App\Models\EmpResignations;
 use App\Models\Task;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Response;
-
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
-*/
 
 // Route::get('/', function () {
 //     return view('welcome');
 // });
-
-Route::middleware(['checkauth'])->group(function () {
+Route::middleware(['guest'])->group(function () {
     Route::get('/hrlogin', HrLogin::class)->name('hrlogin');
 });
-Route::get('/file/{id}', function ($id) {
-    $file = EmpResignations::findOrFail($id);
-
-    return Response::make($file->signature, 200, [
-        'Content-Type' => $file->mime_type,
-        'Content-Disposition' => (strpos($file->mime_type, 'image') === false ? 'attachment' : 'inline') . '; filename="' . $file->file_name . '"',
-    ]);
-})->name('file.show');
-
-Route::middleware(['auth:hr', 'handleSession'])->group(function () {
+Route::middleware(['auth', 'auth.session'])->group(function () {
 
     Route::get('/', HomeDashboard::class)->name('home');
     // Group routes under the 'hr' prefix
     Route::prefix('hr')->group(function () {
-
-
         //home page routes
         Route::get('/add-employee-details/{employee?}', AddEmployeeDetails::class)->name('add-employee-details');
         Route::get('/update-employee-details', UpdateEmployeeDetails::class)->name('update-employee-details');
@@ -149,8 +118,8 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
             ]);
         })->name('files.showTask');
 
-       //company info
-       Route::get('company-info',CompanyInfo::class)->name('company_info');
+        //company info
+        Route::get('company-info', CompanyInfo::class)->name('company_info');
         //feeds
         Route::get('/hrFeeds', Feeds::class)->name('hrfeeds');
         Route::get('/everyone', Everyone::class)->name('everyone');
@@ -211,7 +180,7 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
 
         //HR Leave-Infomation Submodule Routes
         Route::get('/user/employee-leave', EmployeeLeave::class)->name('employee-leave');
-        Route::get('/user/apply-leave-behalf',LeaveApplyOnBehalf::class)->name('apply-leave-behalf');
+        Route::get('/user/apply-leave-behalf', LeaveApplyOnBehalf::class)->name('apply-leave-behalf');
         Route::get('/user/shift-roster-hr', ShiftRosterHr::class)->name(name: 'shift-roster-hr');
         Route::get('/user/attendance-info', HrAttendanceInfo::class)->name('attendance-info');
         Route::get('/user/attendance-muster-hr', AttendanceMusterHr::class)->name(name: 'attendance-muster-hr');
@@ -223,15 +192,15 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
         Route::get('/user/grant-summary', EmpLeaveGranterDetails::class)->name('grant-summary');
         Route::get('/user/leavePolicySettings', LeaveSettingPolicy::class)->name('leavePolicySettings');
         Route::get('/user/leaveYearEndProcess', YearEndProcess::class)->name('year-end-process');
-        Route::get('/user/attendance-process',AttendanceProcess::class)->name('attendance-process');
-        Route::get('/user/swipe-management-for-hr',SwipeManagementForHr::class)->name('swipe-management-for-hr');
-        Route::get('/user/hr-manual-override',HrManualOverride::class)->name('hr-manual-override');
+        Route::get('/user/attendance-process', AttendanceProcess::class)->name('attendance-process');
+        Route::get('/user/swipe-management-for-hr', SwipeManagementForHr::class)->name('swipe-management-for-hr');
+        Route::get('/user/hr-manual-override', HrManualOverride::class)->name('hr-manual-override');
         Route::get('/user/edit-attendance-exception-page/{id}', EditAttendanceExceptionPage::class)->name('edit-attendance-exception-page');
         Route::get('/user/edit-shift-override/{id}', EditShiftOverride::class)->name('edit-shift-override');
         Route::get('/user/shift-override', ShiftOverrideHr::class)->name('shift-override');
         Route::get('/user/attendance-exception', AttendanceExceptionForDisplay::class)->name(name: 'attendance-exception');
-        Route::get('/user/create-attendance-exception',CreateAttendanceExceptionPage::class)->name('create-attendance-exception');
-        Route::get('/user/attendance-lock-configuration',AttendanceLockConfiguration::class)->name('attendance-lock-configuration');
+        Route::get('/user/create-attendance-exception', CreateAttendanceExceptionPage::class)->name('create-attendance-exception');
+        Route::get('/user/attendance-lock-configuration', AttendanceLockConfiguration::class)->name('attendance-lock-configuration');
         Route::get('/user/create-lock-configuration', CreateNewLockConfigurationPage::class)->name('create-new-lock-configuration-page');
 
         //HR Leave-SetUp Submodule Routes
@@ -269,3 +238,14 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
         Route::get('/user/payroll/resttlement/process', ResettlementProcessPage::class)->name('resttelement-process');
     });
 });
+
+Route::get('/file/{id}', function ($id) {
+    $file = EmpResignations::findOrFail($id);
+
+    return Response::make($file->signature, 200, [
+        'Content-Type' => $file->mime_type,
+        'Content-Disposition' => (strpos($file->mime_type, 'image') === false ? 'attachment' : 'inline') . '; filename="' . $file->file_name . '"',
+    ]);
+})->name('file.show');
+
+
