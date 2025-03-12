@@ -510,14 +510,16 @@ class PayrollSalary extends Component
             ->latest('emp_salaries.month_of_sal') // Get latest salary by month
             ->select('emp_salaries.*', 'salary_revisions.*') // Ensure all columns are selected
             ->first();
-        $this->bankId = $lastSalary->bank_id;
-     $this->salaryMonth=$lastSalary->month_of_sal;
 
         // dd(  $this->bankId);
 
         $lastSalary = $lastSalary ? $lastSalary->toArray() : [];
         // dd($lastSalary );
         if ($lastSalary) {
+            // dd( $lastSalary);
+            $this->bankId = $lastSalary['bank_id'];
+            $this->salaryMonth=$lastSalary['month_of_sal'];
+
             $salaryComponents = EmpSalaryRevision::getFullAndActualSalaryComponents($lastSalary['salary'], $lastSalary['revised_ctc'], $lastSalary['total_working_days'], $lastSalary['lop_days']);
             $this->salaryComponents = $salaryComponents;
             // $salaryComponents = EmpSalaryRevision::getFullAndActualSalaryComponents(18000, 240000,30,3);

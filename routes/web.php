@@ -132,10 +132,12 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
         Route::get('/pfytdreport', PfYtdReport::class)->name('pfytdreport');
         Route::get('/reimbursement', ReimbursementStatement::class)->name('reimbursement');
         Route::get('/itstatement', ItStatement::class)->name('itstatement');
-
         //HR Payroll Submodule Routes->Payouts
         Route::get('/accountsjv', AccountsJv::class)->name('accountsjv');
         Route::get('/salaryslip', SalarySlip::class)->name('salaryslip');
+       //HR Payroll Submodule Routes->Verify
+       Route::get('/quicksalary', QuickSalary::class)->name('quicksalary');
+
 
         //HR Employee-Main Submodule Routes
         Route::get('/user/main-overview', HrMainOverview::class)->name('main-overview');
@@ -233,6 +235,8 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
         Route::get('/user/release-salary', ReleaseSalary::class)->name('release-salary');
         Route::get('/user/employee-lop-days', EmployeeLopDays::class)->name('employee-lop-days');
         Route::get('/user/payroll-salary', PayrollSalary::class)->name('payroll-salary');
+        Route::get('/user/final-settlement', FinalSettlement::class)->name('final-settlement');
+        Route::get('/user/final-settlement-stepper',FinalSettlementStepper::class)->name('final-settlement-stepper');
         Route::get('/user/payroll/arrears', PayrollArrears::class)->name('arrears');
         Route::get('/user/payroll/resttlement', EmpResettlement::class)->name('resttlement');
         Route::get('/user/payroll/resttlement/process', ResettlementProcessPage::class)->name('resttelement-process');

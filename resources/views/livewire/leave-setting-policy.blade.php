@@ -64,7 +64,7 @@
                                     <!-- Grant Days -->
                                     <div class="form-group mb-2">
                                         <label for="grantDays{{ $policy->id }}">Grant Days <span class="required">*</span></label>
-                                        <input type="number" id="grantDays{{ $policy->id }}" wire:model="leavePolicies.{{ $policy->id }}.grant_days" class="form-control" placeholder="6">
+                                        <input type="text" id="grantDays{{ $policy->id }}" wire:model="leavePolicies.{{ $policy->id }}.grant_days" class="form-control" placeholder="6">
                                     </div>
 
                                     <!-- Save Changes Button -->
@@ -107,7 +107,7 @@
 
                     <div class="form-group mb-2">
                         <label for="grant_days">Grant Days <span class="required">*</span></label>
-                        <input type="number" id="grant_days" wire:model="grant_days" class="form-control" placeholder="Enter number of days" wire:keydown.debounce.500ms="valdiateField('grant_days')">
+                        <input type="text" id="grant_days" wire:model="grant_days" class="form-control" placeholder="Enter number of days" wire:keydown.debounce.500ms="valdiateField('grant_days')">
                         @error('grant_days') <span class="text-danger">{{ $message }}</span> @enderror
                     </div>
 
