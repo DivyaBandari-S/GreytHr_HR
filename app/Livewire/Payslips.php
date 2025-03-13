@@ -112,7 +112,7 @@ class Payslips extends Component
     public $recentHires = [];
 
     public $employees;
-    public $employees;
+ 
 
 
     public $employeeDetails = [];
