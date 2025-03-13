@@ -15,7 +15,7 @@ return new class extends Migration
             $table->smallInteger('id')->autoIncrement();
             $table->string('emp_id',10);
             $table->string('hr_emp_id',10)->nullable();length:
-            $table->integer('batch_id',10)->nullable();
+            $table->integer('batch_id')->nullable();
             $table->json('leave_policy_id')->nullable();
             $table->foreign('emp_id')->references('emp_id')->on('employee_details')->onDelete('cascade')->onUpdate('cascade');
             $table->string('leave_scheme', 25)->default('General');

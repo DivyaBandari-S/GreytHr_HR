@@ -422,9 +422,9 @@ document.addEventListener('DOMContentLoaded', function() {
     if (typeof tabToggle === 'function') {
         tabToggle();
     }
-    
+
     // Update the scroll buttons if they exist
     if (scrollContainer) {
         updateButtons();
-    }a
+    }
 });
