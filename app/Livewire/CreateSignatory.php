@@ -5,6 +5,7 @@ namespace App\Livewire;
 use Livewire\Component;
 use App\Models\AuthorizedSignatory;
 use Livewire\WithFileUploads;
+use App\Helpers\FlashMessageHelper;
 
 class CreateSignatory extends Component
 {
@@ -32,7 +33,7 @@ class CreateSignatory extends Component
         'signature.image' => 'The file must be an image.',
         'signature.max' => 'Signature image size must be less than 1MB.',
     ];
-    public function updated($field)
+    public function validateInputChange($field)
     {
         
         $this->validateOnly($field);
@@ -57,7 +58,8 @@ class CreateSignatory extends Component
             'signature' => isset($signatureBinaryData) ? $signatureBinaryData : null, // Store the binary data
         ]);
 
-        session()->flash('message', 'Signatory added successfully.');
+        // session()->flash('message', 'Signatory added successfully.');
+        FlashMessageHelper::flashSuccess('Signatory added successfully.');
         return redirect()->route('authorize-signatory.page');
     }
 

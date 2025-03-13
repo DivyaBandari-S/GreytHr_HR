@@ -48,13 +48,13 @@
             margin-right: 10px; /* Adjusts space between buttons */
         }
         .export-to-excel-button{
-            border:1px solid  #0000FF;
+            border:1px solid  #306cc6;
             background-color: #fff;
-            color:#0000FF;
+            color:#306cc6;
         }
         .add-employee-button{
-            border:1px solid  #0000FF;
-            background-color: #0000FF;
+            border:1px solid  #306cc6;
+            background-color: #306cc6;
             color:#fff;
             border-radius:8px;
             padding: 5px 20px; /* Adds padding to the buttons */
@@ -90,6 +90,41 @@
                 font-size: 1.2rem; /* Increase the font size */
                 width: 150px;
         }
+        .dropdown-button-for-employee {
+    background-color: white; /* White background */
+    color: #333; /* Text color */
+    padding: 10px 15px; /* Space around text */
+    border: 1px solid #d1d1d1; /* Light border */
+    border-radius: 5px; /* Rounded corners */
+    font-size: 16px; /* Font size */
+    cursor: pointer; /* Pointer on hover */
+    display: flex; /* Flexbox for alignment */
+    align-items: center; /* Center items vertically */
+    margin-top: 40px;
+}
+.dropdown-content-for-employee {
+    display: none; /* Hidden by default */
+    position: absolute; /* Positioned absolutely */
+    background-color: white; /* White background */
+    min-width: 160px; /* Minimum width */
+    border: 1px solid #d1d1d1; /* Light border */
+    z-index: 1; /* On top of other elements */
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2); /* Shadow for dropdown */
+}
+.dropdown-content-for-employee {
+    display: block; /* Show on hover */
+}
+.dropdown-content-for-employee a {
+    color: #333; /* Text color */
+    padding: 12px 16px; /* Space around items */
+    text-decoration: none; /* No underline */
+    display: block; /* Block display */
+}
+
+/* Change background on hover */
+.dropdown-content-for-employee a:hover {
+    background-color: #f1f1f1; /* Light gray background on hover */
+}
     </style>
     @php
        $s1=0;
@@ -112,8 +147,8 @@
          <a href="{{ route('add-employee-details') }}" class="add-employee-button">Add Employee</a>
 
       </div>
-      <div style="margin-top:40px;">
-            <select name="category" wire:model="selectedCategory">
+      <div style="margin-top:40px;display:flex;flex-direction:row;gap:5px;margin-left:15px;">
+            <select name="category" wire:model="selectedCategory"style="width: 200px; padding-right: 30px;  border-radius: 5px; height: 35px;">
                             <option value="all">All</option>
                             <option value="none">None</option>
                             <option value="division">Division</option>
@@ -121,30 +156,39 @@
                             <option value="grade">Grade</option>
                             <option value="designation">Designation</option>
             </select>
-            <select name="employmentstatus" wire:model="selectedEmploymentStatus" wire:change="updateSelectedEmploymentStatus">
-                            <option value="all">All</option>
+            <select name="employmentstatus" wire:model="selectedEmploymentStatus" wire:change="updateSelectedEmploymentStatus"
+
+                style="width: 200px; padding-right: 30px;  border-radius: 5px; height: 35px;">
+
+                  <option value="all">All</option>
+
                             <option value="probation">Probation</option>
+
                             <option value="confirmed">Confirmed</option>
+
                             <option value="consultant">Consultant</option>
+
                             <option value="interns">Interns</option>
+
                             <option value="resigned">Resigned</option>
+
                             <option value="active">Active</option>
+
                             <option value="new_joinee">New Joinee</option>
+
             </select>
-            <select name="employmentfilter" wire:model="selectedEmploymentFilter" wire:change="updateselectedEmploymentFilter">
-                            <option value="all">All</option>
-                            <option value="current_employees">Current Employees</option>
-                            <option value="past_employees">Past Employees</option>
+            <select name="employmentfilter" wire:model="selectedEmploymentFilter" wire:change="updateselectedEmploymentFilter"
+                style="width: 200px; padding-right: 30px;  border-radius: 5px; height: 35px;">
+                <option value="all">All</option>
+                <option value="current_employees">Current Employees</option>
+                <option value="past_employees">Past Employees</option>
             </select>
-            <div class="dropdown">
-               <button onclick="myFunction()" class="dropbtn">Employee:All</button>
-               <div id="myDropdown" class="dropdown-content">
-                   <input type="text" placeholder="Search.." id="myInput" wire:click="searchFilters">
-                </div>
-            </div>
+            
+           
       </div>
-    <div class="row m-0 p-0">  
-    <div class="col-md-9 mb-6">    
+ 
+      
+     
     <div class="table-container"style="max-height:300px;overflow-y:auto;width:100%; margin:0;padding:0 10px;">  
       <table id="employee-table">
         <thead style="position:sticky;top:0;">
@@ -193,8 +237,10 @@
         </tbody>
      </table>
      </div>
-    </div>  
-    </div>  
-</div>
+   
+   
+         
+     
+            </div>
 
 

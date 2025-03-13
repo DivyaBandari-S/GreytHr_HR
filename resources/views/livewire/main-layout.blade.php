@@ -2,7 +2,7 @@
     <!-- start: SIDEBAR -->
     <section id="sidebar">
         <a href="#" class="brand">
-            <!-- <i class="ph-flame-fill"></ia> -->
+            <!-- <i class="ph-flame-fill"></i> -->
             <!-- <img src="{{ asset('images/user-group.png') }}" alt="" style="width: 1.3em;"> -->
         </a>
 
@@ -12,8 +12,8 @@
                 <ul class="sidebar__submenu">
                     <li class="title">Home</li>
                     <li><a href="{{route('home')}}">Home</a></li>
-                    <li><a href="/hr/HelpDesk">HelpDesk</a></li>
-                    <li><a href="/hr/request">Request</a></li>
+                    <li><a href="{{route('request')}}">Request</a></li>
+                    <li><a href="{{route('HelpDesk')}}">HelpDesk</a></li>
                 </ul>
             </li>
             <li>
@@ -105,13 +105,13 @@
                     <li>
                         <a href="#">Main<i class="ph-caret-right-fill"></i></a>
                         <ul class="sidebar__dropdown-menu">
-                            <li><a href="/hr/user/payroll-overview">Overview</a></li>
+                            <li><a href="">Overview</a></li>
                         </ul>
                     </li>
                     <li>
                         <a href="#">Information <i class="ph-caret-right-fill"></i></a>
                         <ul class="sidebar__dropdown-menu">
-                            <li><a href="/hr/user/employee-salary-history">Salary Revision History</a></li>
+                            <li><a href="/hr/user/employee-salary">Salary Revision History</a></li>
                             <li><a href="/hr/user/salary-revision-analytics">Salary Revision Analytics</a></li>
                         </ul>
                     </li>
@@ -122,11 +122,15 @@
                             <li><a href="/hr/user/loans">Loan</a></li>
                             <li><a href="/hr/user/salary-revision-list">Salary Revision</a></li>
                             <li><a href="/hr/income-tax">Income Tax</a></li>
+                            <li><a href="/hr/user/generate-letter">Salary</a></li>
+                            <li><a href="/user">Loan</a></li>
+                            <li><a href="/user">Salary Revision</a></li>
+                            <li><a href="/user">Income Tax</a></li>
                             <li><a href="/user">Reimbursement</a></li>
-                            <li><a href="/hr/user/employee-lop-days">Employee LOP Days</a></li>
-                            <li><a href="/hr/user/stop-salaries">Stop Salary Processing</a></li>
+                            <li><a href="/user">Employee LOP Days</a></li>
+                            <li><a href="/user">Stop Salary Processing</a></li>
                             <li><a href="/user">Arrears</a></li>
-                            <li><a href="/hr/user/release-salary">Release Salary</a></li>
+                            <li><a href="/user">Release Salary</a></li>
                             <li><a href="/user">Final Settlement</a></li>
                             <li><a href="/user">Resettlement</a></li>
                             <li><a href="/user">Overtime Register</a></li>
@@ -141,7 +145,7 @@
                     <li>
                         <a href="#">Verify <i class="ph-caret-right-fill"></i></a>
                         <ul class="sidebar__dropdown-menu">
-                            <li><a href="/hr/quicksalary">Quick Salary Statement</a></li>
+                            <li><a href="/home">Quick Salary Statement</a></li>
                             <li><a href="/home">Payroll Statement</a></li>
                             <li><a href="/home">Payroll Differences</a></li>
                         </ul>
@@ -149,23 +153,23 @@
                     <li>
                         <a href="#">Payout <i class="ph-caret-right-fill"></i></a>
                         <ul class="sidebar__dropdown-menu">
-                            <li><a href="/hr/accountsjv">Accounts JV</a></li>
+                            <li><a href="/home">Accounts JV</a></li>
                             <li><a href="/user">Bank Transfer</a></li>
                             <li><a href="/user">Cheque / Cash Statement</a></li>
-                            <li><a href="/hr/salaryslip">Payslips</a></li>
-                            <li><a href="/hr/user/hold-salaries">Hold Salary Payout</a></li>
+                            <li><a href="/user">Payslips</a></li>
+                            <li><a href="/user">Hold Salary Payout</a></li>
                         </ul>
                     </li>
                     <li>
                         <a href="#">Published Info <i class="ph-caret-right-fill"></i></a>
                         <ul class="sidebar__dropdown-menu">
-                            <li><a href="/hr/payslips">Payslip</a></li>
-                            <li><a href="/hr/ctcslips">CTC Payslip</a></li>
+                            <li><a href="/home">Payslip</a></li>
+                            <li><a href="/user">CTC Payslip</a></li>
                             <li><a href="/user">Reimbursement Payslip</a></li>
-                            <li><a href="/hr/ytdreport">YTD Summary</a></li>
-                            <li><a href="/hr/pfytdreport">PF YTD Statement</a></li>
-                            <li><a href="/hr/reimbursement">Reimbursement Statement</a></li>
-                            <li><a href="/hr/itstatement">IT Statement</a></li>
+                            <li><a href="/user">YTD Summary</a></li>
+                            <li><a href="/user">PF YTD Statement</a></li>
+                            <li><a href="/user">Reimbursement Statement</a></li>
+                            <li><a href="/user">IT Statement</a></li>
                             <li><a href="/user">Loan Statement</a></li>
                             <li><a href="/user">IT Declaration</a></li>
                             <li><a href="/user">FBP Declaration</a></li>
@@ -302,7 +306,22 @@
         <div class="main__top">
             <div class="main__top__title">
 
-                <h3><i class="fa-solid fa-bars menuIcon me-3" id="hamburgerMenu"></i> Admin Dashboard</h3>
+                <!-- <h3><i class="fa-solid fa-bars menuIcon me-3" id="hamburgerMenu"></i> Admin Dashboard</h3> -->
+                 <div class='row m-0'>
+                    <div class="col-2 p-0 menuIcon" id="hamburgerMenu">
+                        <input id="checkbox" type="checkbox">
+                        <label class="toggle" for="checkbox">
+                            <div id="bar1" class="bars"></div>
+                            <div id="bar2" class="bars"></div>
+                            <div id="bar3" class="bars"></div>
+                        </label>
+                    </div>
+                    <div class="col-10 m-auto pe-0">
+                        <h3>Admin Dashboard</h3>
+                    </div>
+
+                 </div>
+                
                 <!-- <div class="ribbon">
                     <span>Primary</span>
                 </div> -->
@@ -314,61 +333,7 @@
                 </ul>
             </div>
             <ul class="main__top__menu">
-                <!-- <li class="search">
-                    <a href="#">
-                        <i class="ph-magnifying-glass"></i>
-                    </a>
-                    <div class="main__dropdown">
-                        <form action="#">
-                            <input type="text" name="" placeholder="Search">
-                        </form>
-                        <span>Recent Search</span>
-                        <ul class="recent-search">
-                            <li>
-                                <a href="#">
-                                    <h5>Keyword</h5>
-                                    <p>Lorem ipsum dolor sit amet consectetur...</p>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#">
-                                    <h5>Keyword</h5>
-                                    <p>Lorem ipsum dolor sit amet consectetur...</p>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#">
-                                    <h5>Keyword</h5>
-                                    <p>Lorem ipsum dolor sit amet consectetur...</p>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#">
-                                    <h5>Keyword</h5>
-                                    <p>Lorem ipsum dolor sit amet consectetur...</p>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#">
-                                    <h5>Keyword</h5>
-                                    <p>Lorem ipsum dolor sit amet consectetur...</p>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#">
-                                    <h5>Keyword</h5>
-                                    <p>Lorem ipsum dolor sit amet consectetur...</p>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#">
-                                    <h5>Keyword</h5>
-                                    <p>Lorem ipsum dolor sit amet consectetur...</p>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                </li> -->
+                
                 <li class="notification">
                     <a href="#">
                         <i class="ph-bell"></i>
@@ -435,6 +400,12 @@
                 </li>
                 <li class="profile">
                     <a href="#">
+                        @if($companiesLogo && $companiesLogo->company_logo)
+                        <img class="clientImg" src="data:image/png;base64,{{ $companiesLogo->company_logo }}">
+                        @else
+                        <p>No logo available.</p>
+                        @endif
+
                         @if ($loginAdminDetails->image !== null && $loginAdminDetails->image != "null" && $loginAdminDetails->image != "Null" && $loginAdminDetails->image != "")
                         <img src="data:image/jpeg;base64,{{($loginAdminDetails->image)}} " alt="">
                         @else
@@ -474,6 +445,7 @@
             </ul>
         </div>
         <!-- end: MAIN TOP -->
+
 
 
         <!-- Logout Modal -->

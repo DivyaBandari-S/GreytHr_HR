@@ -8,6 +8,75 @@
         </div>
     </div>
 <style>
+
+.sidebar {
+        position: fixed;
+        top: 0;
+        right: -350px; /* Initially hidden */
+        width: 350px;
+        height: 100%;
+        background: white;
+        box-shadow: -2px 0 5px rgba(0,0,0,0.2);
+        transition: right 0.3s ease-in-out;
+        padding: 20px;
+        z-index: 1050;
+        border-radius: 10px 0 0 10px;
+    }
+    .sidebar.active {
+        right: 0;
+    }
+    .sidebar-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-weight: bold;
+    }
+    .sidebar-content {
+        margin-top: 15px;
+    }
+    .button-container {
+        display: flex;
+        justify-content: center; /* Centers buttons horizontally */
+        align-items: center; /* Aligns buttons vertically */
+        gap: 5px; /* Reduces the space between buttons */
+        margin-top: 20px; /* Adds spacing from elements above */
+    }
+
+    .apply-btn, .reset-btn {
+        padding: 8px 15px;
+        border-radius: 5px;
+        font-size: 14px;
+        cursor: pointer;
+        border: none;
+    }
+
+    .apply-btn {
+        background-color: #306cc6;
+        color: white;
+    }
+
+    .reset-btn {
+        border:1px solid #306cc6;
+        color: #306cc6;
+        background-color: #fff;
+       
+    }
+    .category-label {
+        display: block;
+        font-size: 14px;
+        font-weight: 500;
+        margin-bottom: 6px; /* Reduce vertical gap */
+        color: #333;
+    }
+
+    .custom-dropdown {
+        width: 100%;
+        padding: 6px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 14px;
+        margin-top: 0;
+    }
     .button-container-for-employee-swipes {
     display: flex;
     justify-content: center;
@@ -367,14 +436,14 @@ td {
             padding: 8px 30px;
         }
  .my-button.active-button {
-            background-color: rgb(2, 17, 79);
+            background-color: #306cc6;
             color: #FFFFFF;
-            border-color: rgb(2, 17, 79);
+            border-color: #306cc6;
         }
  .my-button.active-button:hover {
-            background-color: rgb(2, 17, 79);
+            background-color: #306cc6;
             color: #FFFFFF;
-            border-color: rgb(2, 17, 79);
+            border-color: #306cc6;
         }
         .apply-button {
             border-top-left-radius: 5px;
@@ -384,9 +453,9 @@ td {
         }
 
         .apply-button:hover {
-            border-color: rgb(2, 17, 79);
+            border-color: #306cc6;
             /* Change the border color to green on hover */
-            color: rgb(2, 17, 79);
+            color: #306cc6;
             /* Change the text color to green on hover */
         }
 .apply-button:active {
@@ -417,12 +486,22 @@ td {
             border-top-right-radius: 5px;
             border-bottom-right-radius: 5px;
         }
-
+        .door-sign-box {
+    background-color: #fff; /* Light gray background */
+    color: green; /* Dark text */
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 14px;
+    font-weight: bold;
+    display: inline-block;
+    margin-top: 5px;
+    margin-left: 10px;
+}
 </style>
     <body>
         <div>
             <div class="employee-swipes-fields d-flex align-items-center">
-                <div class="dropdown-container1-employee-swipes"style="margin-top:5px;">
+                <div class="dropdown-container1-employee-swipes"style="margin-top:-5px;">
                     <label for="start_date" style="color: #666;font-size:12px;">Select Date<span style="color: red;">*</span>:</label><br />
                     <input type="date" style="font-size: 12px;" id="start_date" wire:model="startDate" wire:change="updateDate"  max="{{ now()->toDateString() }}">
                       
@@ -452,8 +531,64 @@ td {
                     <div class="dropdown-container1-employee-swipes">
 
                         <button type="button" class="button2" data-toggle="modal" data-target="#exampleModalCenter" style="margin-top:30px;border-radius:5px;padding:5px;">
-                            <i class="fa-icon fas fa-filter" style="color:#666"></i>
+                            <i class="fa-icon fas fa-filter" style="color:#666"wire:click="toggleSidebar"></i>
                         </button>
+                        <div class="sidebar {{ $isOpen ? 'active' : '' }}">
+                                    <div class="sidebar-header">
+                                        <h6>Apply Filter</h6>
+                                        <button wire:click="closeSidebar" class="close-btn">×</button>
+                                    </div>
+
+                                    <!-- Filter Section -->
+                                    <div class="sidebar-content">
+                                            
+                                          
+                                            <label for="designation" class="designation-label">Designation:</label>
+                                            <select wire:model="selectedDesignation" wire:change="updateselectedDesignation" class="custom-dropdown">
+                                                <option value="">All</option>
+                                                <option value="software_engineer">Software Engineer</option>
+                                                <option value="senior_software_engineer">Sr. Software Engineer</option>
+                                                <option value="team_lead">Team Lead</option>
+                                                <option value="sales_head">Sales Head</option>
+                                            </select>
+                                           
+                                            <label for="department" class="department-label">Department:</label>
+                                            <select wire:model="selectedDepartment" wire:change="updateselectedDepartment" class="custom-dropdown">
+                                                <option value="">All</option>
+                                                <option value="information_technology">Information Techonology</option>
+                                                <option value="business_development">Business Development</option>
+                                                <option value="operations">Operations</option>
+                                                <option value="innovation">Innovation</option>
+                                                <option value="infrastructure">Infrastructure</option>
+                                                <option value="human_resources">Human Resource</option>
+                                            </select>
+                                           
+                                            <label for="location" class="location-label">Location:</label>
+                                            <select wire:model="selectedLocation" wire:change="updateselectedLocation" class="custom-dropdown">
+                                                <option value="Hyderabad">Hyderabad</option>
+                                                <option value="Udaipur">Udaipur</option>
+                                                <option value="Mumbai">Mumbai</option>
+                                                <option value="Remote">Remote</option>
+                                            </select>
+                                            <label for="swipe_status" class="swipe-status-label">Swipe Status:</label>
+                                            <select wire:model="selectedSwipeStatus" wire:change="updateselectedSwipeStatus" class="custom-dropdown">
+                                               @if($isPending==1&&$defaultApply==0) 
+
+                                                <option value="All">All</option>
+                                                <option value="mobile_sign_in">Mobile Sign In</option>
+                                                <option value="web_sign_in">Web Sign In</option>
+                                              @endif  
+                                                @if($isApply == 1 && $defaultApply == 1)
+                                                   <option value="door">Door Sign In</option>
+                                                @endif
+                                            </select>
+                                            
+                                    </div>
+                                    <div class="button-container">
+                                            <button wire:click="applyFilter" class="apply-btn">Apply</button>
+                                            <button wire:click="resetSidebar" class="reset-btn">Reset</button>
+                                    </div>
+                                </div>
 
                     </div>
                     <div class="button-container-for-employee-swipes">
@@ -476,7 +611,7 @@ td {
                                                 <th>In/Out</th>
                                                 <th>Received&nbsp;On</th>
                                                 <th>Door/Address</th>
-                                                <th>Status</th>
+                                               
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -488,7 +623,7 @@ td {
                                                             @foreach($swipe['swipe_log'] as $index =>$log)
                                                                 <tr>
                                                                         <td class="employee-swipes-name-and-id">
-                                                                                <input type="radio" name="selectedEmployee" value="{{ $swipe['employee']->emp_id }}-{{ $loop->index }}-{{ \Carbon\Carbon::parse($log->logDate)->format('H:i:s') }}" class="radio-button custom-radio-class"wire:model="selectedEmployeeId"
+                                                                                <input type="radio" name="selectedEmployee" value="{{ $swipe['employee']->emp_id }}-{{ $loop->index }}-{{ \Carbon\Carbon::parse($log->logDate)->format('H:i:s') }}-{{ $log->Direction }}" class="radio-button custom-radio-class"wire:model="selectedEmployeeId"
                         wire:change="handleEmployeeSelection" />
                                                                             <span style="width:100px; display: inline-block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" data-toggle="tooltip"
                                                                                     data-placement="top" title="{{ ucwords(strtolower($swipe['employee']->first_name)) }} {{ ucwords(strtolower($swipe['employee']->last_name)) }}">
@@ -513,7 +648,7 @@ td {
                                                                                     Door Swipe Out
                                                                                 @endif
                                                                         </td>
-                                                                        <td class="text-center">-</td>
+                                                                        
                                                                 </tr>
                                                             @endforeach    
                                                         @endforeach
@@ -530,8 +665,9 @@ td {
                                                         @foreach($SignedInEmployees as $swipe)
                                                         @foreach($swipe['swipe_log'] as $index => $log)
                                                                 <tr>
+                                                                
                                                                 <td class="employee-swipes-name-and-id">
-                                                                                <input type="radio" name="selectedEmployee" value="{{ $swipe['employee']->emp_id }}-{{ $loop->index }}-{{ $log->swipe_time }}-{{ $log->in_or_out }}" class="radio-button custom-radio-class"wire:model="selectedWebEmployeeId"
+                                                                                <input type="radio" name="selectedEmployee" value="{{ $swipe['employee']->emp_id }}-{{ $loop->index }}-{{ $log->swipe_time }}-{{ $log->in_or_out }}-{{ $log->sign_in_device }}" class="radio-button custom-radio-class"wire:model="selectedWebEmployeeId"
                         wire:change="handleEmployeeWebSelection" />
                                                                             <span style="width:100px; display: inline-block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" data-toggle="tooltip"
                                                                                     data-placement="top" title="{{ ucwords(strtolower($swipe['employee']->first_name)) }} {{ ucwords(strtolower($swipe['employee']->last_name)) }}">
@@ -573,13 +709,22 @@ td {
                                                                         
                                                                     </td>
                                                                     <td style="white-space:nowrap;">
-                                                                            @if ($log->in_or_out === 'IN')
+                                                                            
+                                                                            @if ($log->in_or_out === 'IN' && ($log->sign_in_device==='Laptop/Desktop'||$log->sign_in_device==='Laptop'))
+                                                                                Web Sign In  
+                                                                            @elseif ($log->in_or_out === 'IN' && $log->sign_in_device==='Mobile')
+                                                                                Mobile Sign In  
+                                                                            @elseif ($log->in_or_out === 'OUT' && ($log->sign_in_device==='Laptop/Desktop'||$log->sign_in_device==='Laptop'))
+                                                                                Web Sign Out  
+                                                                            @elseif ($log->in_or_out === 'OUT' && $log->sign_in_device==='Mobile')
+                                                                                Mobile Sign Out  
+                                                                            @elseif ($log->in_or_out === 'IN')
                                                                                 Web Sign In
                                                                             @elseif ($log->in_or_out === 'OUT')
                                                                                 Web Sign Out
-                                                                            @endif
+                                                                            @endif    
                                                                     </td>
-                                                                    <td class="text-center">-</td>
+                                                                    
                                                                 </tr>
                                                             @endforeach  
                                                         @endforeach 
@@ -602,6 +747,36 @@ td {
                     <div class="green-section-employee-swipes p-2">
                         <img src="https://cdn-icons-png.flaticon.com/512/2055/2055568.png"
                             class="container-employee-swipes-right-image">
+                       
+                        
+                                @if($doorSignIn=='in')
+                                <div class="door-sign-box">
+                                     Door Sign In
+                                </div>     
+                                
+                                @elseif($doorSignIn=='out')
+                                <div class="door-sign-box">
+                                     Door Sign Out
+                                </div> 
+                                    
+                                @elseif($webSwipeDirection=='OUT'&& $signInDevice=='Laptop/Desktop')
+                                <div class="door-sign-box">
+                                     Web Sign Out
+                                </div>   
+                                @elseif($webSwipeDirection=='IN'&& $signInDevice=='Laptop/Desktop')
+                                <div class="door-sign-box">
+                                     Web Sign In
+                                </div> 
+                                @elseif($webSwipeDirection=='OUT'&& $signInDevice=='Mobile')
+                                <div class="door-sign-box">
+                                     Mobile Sign Out
+                                </div>   
+                                @elseif($webSwipeDirection=='IN'&& $signInDevice=='Mobile')
+                                <div class="door-sign-box">
+                                     Mobile Sign In
+                                </div>
+                                @endif   
+                        
                         <h6>Swipe-in Time</h6>
                         @if($swipeTime)
                           <p>{{$swipeTime}}</p>

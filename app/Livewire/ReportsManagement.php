@@ -2,8 +2,11 @@
 
 namespace App\Livewire;
 
+use App\Exports\AttendanceMusterReportExport;
+use App\Exports\ShiftSummaryExport;
 use App\Helpers\FlashMessageHelper;
 use App\Models\AddFavoriteReport;
+use DatePeriod;
 use Livewire\Component;
 use Carbon\Carbon;
 use App\Models\EmployeeDetails;
@@ -14,7 +17,12 @@ use Illuminate\Support\Facades\DB;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Log;
 use App\Helpers\LeaveHelper;
-
+use App\Models\HolidayCalendar;
+use App\Models\SwipeRecord;
+use DateInterval;
+use DateTime;
+use Maatwebsite\Excel\Facades\Excel;
+use Spatie\SimpleExcel\SimpleExcelWriter;
 
 class ReportsManagement extends Component
 {
@@ -28,17 +36,52 @@ class ReportsManagement extends Component
     public $sortBy;
     public $transactionType = 'all';
     public $leaveBalance = [];
+
+    public $selection = 'all';
+    public $EmployeeId=[];
+    public $employeesForSelection;
     public $filteredEmployees;
     public $searching = 0;
     public $notFound;
+
+    public $formattedWorkHrsMinutes;
+    public $excessHrsMinutes;
+    public $holiday;
     public $employees;
     public $search;
 
+    public $isToggleSelectedEmployee=false;
+
+    public $isToggleSelectedEmployeeForAttendanceMuster=false;
+    public $offDayCount = 0;
+
+    public $workingDayCount = 0;
+
+    public $reportOutputType;
+    public $totalDayCount = 0;
+    public $employeeTypeForAttendance;
+
+    public $employeeTypeForAttendanceMuster;
     public function updateLeaveType()
     {
         $this->leaveType = $this->leaveType;
+       
     }
 
+    public function updateEmployeeId()
+    {
+       $this->EmployeeId=$this->EmployeeId;
+    }
+
+    public function toggleSelectedEmployee()
+    {
+        $this->isToggleSelectedEmployee=!$this->isToggleSelectedEmployee;
+    }
+
+    public function toggleSelectedEmployeeForAttendanceMuster()
+    {
+        $this->isToggleSelectedEmployeeForAttendanceMuster=!$this->isToggleSelectedEmployeeForAttendanceMuster;
+    }
     public function  updateSortBy()
     {
         $this->sortBy = $this->sortBy;
@@ -48,11 +91,17 @@ class ReportsManagement extends Component
         $this->transactionType = $event;
     }
 
-    public function  updateEmployeeType($event)
+    public function updatereportOutputType()
     {
-
-        $this->employeeType = $event;
+        $this->reportOutputType=$this->reportOutputType;
     }
+    
+
+   public function toggleSelection($selection)
+   {
+       $this->selection = $selection; // Update the selection state
+   }
+
 
     public function close()
     {
@@ -81,9 +130,11 @@ class ReportsManagement extends Component
         $this->resetErrorBag($propertyName); // Clear errors for the updated property
     }
 
-    public function mount()
-    {
+    public function mount() {
+        $this->employeeTypeForAttendance='allEmployees';
+        $this->employeeTypeForAttendanceMuster='allEmployees';
         $this->getReportsData();
+
     }
 
     public function getReportsData()
@@ -109,6 +160,9 @@ class ReportsManagement extends Component
         $this->leaveBalance = [];
         $this->employeeType = 'active';
         $this->sortBy = 'newest_first';
+        $this->employeeTypeForAttendance='allEmployees';
+        $this->EmployeeId=[];
+        $this->employeesForSelection='all';
     }
 
     public function toggleStarred($id)
@@ -269,6 +323,8 @@ class ReportsManagement extends Component
                             'manager_id' => $managerId,
                             'manager_first_name' => $managerFirstName,
                             'manager_last_name' => $managerLastName,
+                            'manager_first_name' => $managerFirstName,
+                            'manager_last_name' => $managerLastName,
                         ];
                     })
                 ];
@@ -299,6 +355,274 @@ class ReportsManagement extends Component
         }
     }
 
+    public function downloadAttendanceMusterReportInExcel()
+{ 
+    Log::info('Starting downloadAttendanceMusterReportInExcel function');
+
+    if ($this->fromDate && $this->toDate) {
+        $fromDate = Carbon::parse($this->fromDate);
+        $toDate = Carbon::parse($this->toDate);
+        if(!empty($this->EmployeeId))
+        {
+            $employees = EmployeeDetails::whereIn('emp_id',$this->EmployeeId)->whereNotIn('employee_status', ['terminated', 'resigned'])->get();    
+        }
+        else
+        {
+            $employees = EmployeeDetails::whereNotIn('employee_status', ['terminated', 'resigned'])->get();    
+        }
+        Log::info('Date range provided: from ' . $fromDate->format('Y-m-d') . ' to ' . $toDate->format('Y-m-d'));
+
+        return Excel::download(new AttendanceMusterReportExport($this->fromDate, $this->toDate,$employees), 'attendance_muster_report.xlsx');
+    } else {
+        Log::info('No date range provided, generating empty report');
+        return Excel::download(new AttendanceMusterReportExport(null, null,null), 'attendance_muster_report.xlsx');
+    }
+
+    
+}
+    public function getDatesAndWeeknames()
+    {
+        try
+        {
+
+        
+                $fromDate = Carbon::parse($this->fromDate);
+                $toDate = Carbon::parse($this->toDate);
+
+                $period = new DatePeriod(
+                    new DateTime($fromDate->toDateString()),
+                    new DateInterval('P1D'),
+                    (new DateTime($toDate->toDateString()))->modify('+1 day')
+                );
+
+                $datesAndWeeknames = [];
+
+                foreach ($period as $date) {
+                    $datesAndWeeknames[] = [
+                        'date' => $date->format('Y-m-d'),
+                        'weekname' => $date->format('D') // D gives the day of the week in short form (Mon, Tue, etc.)
+                    ];
+                }
+
+                return $datesAndWeeknames;
+        }catch (\Exception $e) {
+            Log::error('Error updating selected year: ' . $e->getMessage());
+            session()->flash('error', 'An error occurred while updating the selected year. Please try again.');
+        }
+    }
+
+    
+    public function downloadShiftSummaryReport()
+{
+    // Log the start of the method execution
+    Log::info('Welcome to Download Shift Summary Report started.');
+
+    // Validate input dates
+    Log::info('Validating dates.', ['fromDate' => $this->fromDate, 'toDate' => $this->toDate]);
+    $this->validate([
+        'fromDate' => 'required|date',
+        'toDate' => 'required|date',
+    ], [
+        'fromDate.required' => 'From Date is required.',
+        'toDate.required' => 'To Date is required.',
+    ]);
+
+    // Log validated dates
+    Log::info('Validated Dates', ['fromDate' => $this->fromDate, 'toDate' => $this->toDate]);
+
+    try {
+        // Retrieve employees
+        Log::info('Retrieving employees.');
+        if (!empty($this->EmployeeId)) {
+            $employees1 = EmployeeDetails::select(
+                'employee_details.emp_id',
+                'employee_details.first_name',
+                'employee_details.last_name',
+                'employee_details.shift_type',
+                'employee_details.employee_status',
+                'company_shifts.shift_start_time',
+                'company_shifts.shift_end_time',
+                'company_shifts.shift_name'
+            )
+            ->whereIn('employee_details.emp_id', $this->EmployeeId)
+            ->join('company_shifts', 'employee_details.shift_type', '=', 'company_shifts.shift_name')
+            ->get();
+        } else {
+            $employees1 = EmployeeDetails::select(
+                'employee_details.emp_id',
+                'employee_details.first_name',
+                'employee_details.last_name',
+                'employee_details.shift_type',
+                'employee_details.employee_status',
+                'company_shifts.shift_start_time',
+                'company_shifts.shift_end_time',
+                'company_shifts.shift_name'
+            )
+            ->join('company_shifts', 'employee_details.shift_type', '=', 'company_shifts.shift_name')
+            ->get();
+        }
+
+        // Log number of employees retrieved
+        Log::info('Employees Retrieved', ['count' => $employees1->count()]);
+
+        // Initialize counters
+        $this->offDayCount = 0;
+        $this->workingDayCount = 0;
+        
+        // Log before processing dates
+        Log::info('Processing dates and weeknames.');
+        $datesAndWeeknames = $this->getDatesAndWeeknames();
+
+        foreach ($datesAndWeeknames as $daw) {
+            if ($daw['weekname'] == 'Sat' || $daw['weekname'] == 'Sun') {
+                $this->offDayCount++;
+            } else {
+                $this->workingDayCount++;
+            }
+        }
+
+        $this->totalDayCount = $this->offDayCount + $this->workingDayCount;
+
+        // Log the computed day counts
+        Log::info('Day Counts Computed', [
+            'totalDayCount' => $this->totalDayCount,
+            'workingDayCount' => $this->workingDayCount,
+            'offDayCount' => $this->offDayCount,
+        ]);
+
+        // Prepare data for report
+        $data = [];
+        Log::info('Preparing data for report.');
+
+        foreach ($employees1 as $s1) {
+            if ($s1['shift_type'] == 'ES' || $s1['shift_type'] == 'AS' || $s1['shift_type'] == 'GS') {
+                $data[] = [
+                    'emp_id' => $s1['emp_id'],
+                    'name' => ucwords(strtolower($s1['first_name'])) . ' ' . ucwords(strtolower($s1['last_name'])),
+                    'total_days' => $this->totalDayCount,
+                    'work_days' => $this->workingDayCount,
+                    'off_day' => $this->offDayCount,
+                    'shift_schedule' => Carbon::parse($s1['shift_start_time'])->format('H:i a') . ' to ' . Carbon::parse($s1['shift_end_time'])->format('H:i a'),
+                    'employee_status' => $s1['employee_status'],
+                ];
+            }
+        }
+
+        // Log the data that is about to be written to the file
+        Log::info('Data prepared for export', ['rowCount' => count($data)]);
+
+        // Export data using Maatwebsite Excel
+      
+        Log::info('Exporting as XLSX.');
+        return Excel::download(new ShiftSummaryExport($data, $this->fromDate, $this->toDate), 'shift_summary_report.xlsx');
+      
+
+      
+       
+       
+    } catch (\Exception $e) {
+        // Log any error that occurs
+        Log::error('Error generating shift summary report', ['error' => $e->getMessage()]);
+
+        // Return an error response
+        return response()->json(['error' => 'Error generating the report. Please try again later.'], 500);
+    }
+}
+
+
+public function downloadAbsentReport()
+{
+    $this->validate([
+        'fromDate' => 'required|date',
+        'toDate' => 'required|date',
+    ], [
+        'fromDate.required' => 'From Date is required.',
+        'toDate.required' => 'To Date is required.',
+    ]);
+    $employees = EmployeeDetails::where('employee_status','active')->get();
+    foreach ($employees as $employee) {
+        $empId = $employee['emp_id'];
+        $approvedLeaveRequests = LeaveRequest::join('employee_details', 'leave_applications.emp_id', '=', 'employee_details.emp_id')
+        ->where('leave_applications.status', 2)
+        ->where('leave_applications.emp_id', $empId)
+        ->get(['leave_applications.*', 'employee_details.first_name', 'employee_details.last_name']);
+        $subquery = SwipeRecord::select(DB::raw('MIN(id) as min_id'))
+        ->where('in_or_out', 'IN')
+        ->groupBy(DB::raw('DATE(created_at)'));
+        $swipeRecords = SwipeRecord::whereIn('id', function ($query) use ($subquery) {
+            $query->fromSub($subquery, 'sub');
+        })
+        ->select('emp_id', DB::raw('DATE(created_at) as swipe_date'))
+        ->get();
+    // Fetch swipe records for this employee
+    $startOfMonth = Carbon::now()->startOfMonth();
+    $endOfMonth = Carbon::now()->endOfMonth();
+    
+        $startDate = new DateTime($this->fromDate);
+        $endDate = new DateTime($this->toDate);    
+        $leaveDates = $approvedLeaveRequests->flatMap(function ($leaveRequest) {
+            $fromDate = Carbon::parse($leaveRequest->from_date);
+            $toDate = Carbon::parse($leaveRequest->to_date);
+
+            // Generate an array of dates within the range
+            $dates = [];
+            while ($fromDate <= $toDate) {
+                $dates[] = $fromDate->format('Y-m-d');
+                $fromDate->addDay();
+            }
+            return $dates;
+        })->unique();
+        $holidays = HolidayCalendar::pluck('date')->map(function($date) {
+            return Carbon::parse($date)->format('Y-m-d'); // Ensure dates are in 'Y-m-d' format
+        })->toArray();
+    // $swipeDates = $swipeRecords->map->format('Y-m-d')->unique();
+   
+    // Get all dates in the current month (or any range you want to cover)
+    $datesInMonth = collect();
+    $startOfMonth = Carbon::parse($startDate);
+    $endOfMonth = Carbon::parse($endDate);
+    $date = $startOfMonth->copy();
+    $missingData = [];
+    while ($date <= $endOfMonth) {
+        if (!in_array($date->format('Y-m-d'), $leaveDates->toArray()) &&
+            !in_array($date->format('Y-m-d'), $holidays)&& 
+            !$date->isWeekend()) {
+            $datesInMonth->push($date->format('Y-m-d'));
+        }
+        $date->addDay();
+    }
+    foreach ($datesInMonth as $date) {
+        foreach ($this->selectedEmployees as $empId) {
+            // Check if the date and employee ID are not present in swipe records
+            if (!$swipeRecords->contains(function ($record) use ($date, $empId) {
+                return $record->swipe_date === $date && $record->emp_id === $empId;
+            })) {
+                // If not present, add to the missing data list
+                $missingData[] = [$empId, $date];
+            }
+        }
+    }
+     }
+     $filePath = storage_path('app/absent_employees.xlsx');
+
+    // Create the Excel file
+    $writer = SimpleExcelWriter::create($filePath);
+
+    // Add a header row
+    $writer->addRow(['Emp ID', 'Absent Date']);
+
+    // Add the data rows
+    foreach ($missingData as $row) {
+        $writer->addRow($row);
+    }
+    // Close the writer to ensure the file is saved
+    $writer->close();
+
+    // Return the file as a download response
+    return response()->download($filePath, 'absent_employees.xlsx');
+   
+    
+}
     public function downloadNegativeLeaveBalanceReport()
     {
         $this->validate([
@@ -1250,6 +1574,15 @@ class ReportsManagement extends Component
         }
     }
 
+    public function updateEmployeeType()
+    {
+        // Your logic here when the employee type changes
+        // For example, you can log the change or perform some action
+        
+        Log::info('Employee type changed to: ' . $this->employeeTypeForAttendance);
+    }
+
+
     public function leaveBalanceAsOnADayReport()
     {
         $this->validate([
@@ -2172,34 +2505,42 @@ class ReportsManagement extends Component
 
     public function render()
     {
-        // For Leave Balance On Day
-
-
-        $this->employees = EmployeeDetails::whereNotIn('employee_details.employee_status', ['terminated', 'resigned'])
-            ->select('emp_id', 'first_name', 'last_name')->get();
-        if ($this->searching == 1) {
-            $nameFilter = $this->search; // Assuming $this->search contains the name filter
-            $this->filteredEmployees = $this->employees->filter(function ($employee) use ($nameFilter) {
-                return stripos($employee->first_name, $nameFilter) !== false ||
-                    stripos($employee->last_name, $nameFilter) !== false ||
-                    stripos($employee->emp_id, $nameFilter) !== false ||
-                    stripos($employee->job_title, $nameFilter) !== false ||
-                    stripos($employee->city, $nameFilter) !== false ||
-                    stripos($employee->state, $nameFilter) !== false;
-            });
-
-
-
-            if ($this->filteredEmployees->isEmpty()) {
-                $this->notFound = true; // Set a flag indicating that the name was not found
-            } else {
-                $this->notFound = false;
-            }
-        } else {
-            $this->filteredEmployees = $this->employees;
+         // For Leave Balance On Day
+        if($this->isToggleSelectedEmployee==true)
+        {
+            $this->employeesForSelection = EmployeeDetails::whereIn('emp_id',$this->EmployeeId)->orderBy('first_name')->get();
         }
+        else
+        {
+            $this->employeesForSelection = EmployeeDetails::whereNotIn('employee_status',['resigned','terminated'])->orderBy('first_name')->get();
+        }
+          
+         $this->employees = EmployeeDetails::whereNotIn('employee_details.employee_status', ['terminated', 'resigned'])
+         ->select('emp_id', 'first_name', 'last_name')->get();
+         if ($this->searching == 1) {
+             $nameFilter = $this->search; // Assuming $this->search contains the name filter
+             $this->filteredEmployees = $this->employees->filter(function ($employee) use ($nameFilter) {
+                 return stripos($employee->first_name, $nameFilter) !== false ||
+                     stripos($employee->last_name, $nameFilter) !== false ||
+                     stripos($employee->emp_id, $nameFilter) !== false ||
+                     stripos($employee->job_title, $nameFilter) !== false ||
+                     stripos($employee->city, $nameFilter) !== false ||
+                     stripos($employee->state, $nameFilter) !== false;
+             });
+           
+ 
+ 
+             if ($this->filteredEmployees->isEmpty()) {
+                 $this->notFound = true; // Set a flag indicating that the name was not found
+             } else {
+                 $this->notFound = false;
+             }
+         } else {
+             $this->filteredEmployees = $this->employees;
+         }
         return view('livewire.reports-management', [
-            'reportsGallery' => $this->reportsGallery
+            'reportsGallery' => $this->reportsGallery,
+            'Employees'=>$this->employeesForSelection,
         ]);
     }
 }

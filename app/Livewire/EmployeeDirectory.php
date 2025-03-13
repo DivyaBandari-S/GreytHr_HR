@@ -2,10 +2,12 @@
 
 namespace App\Livewire;
 
+use App\Exports\EmployeeDirectoryExport;
 use App\Models\EmployeeDetails;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Livewire\Component;
+use Maatwebsite\Excel\Facades\Excel;
 use Spatie\SimpleExcel\SimpleExcelWriter;
 
 class EmployeeDirectory extends Component
@@ -26,6 +28,7 @@ class EmployeeDirectory extends Component
 
     public $employeeFilter;
 
+    public $selectedOption = 'all'; 
     public $employeeStatus;
 
    
@@ -50,6 +53,11 @@ class EmployeeDirectory extends Component
             session()->flash('error', 'An error occurred while updating the employment filter. Please try again later.');
         }
     }
+
+    public function updateSelected($option)
+    {
+        $this->selectedOption = $option;
+    }
     public function hideHelp()
     {
    
@@ -73,26 +81,7 @@ class EmployeeDirectory extends Component
     public function exportToExcel()
     {
         try {
-            $this->records_excel = EmployeeDetails::get();
-    
-            $data[] = ['emp_id', 'emp_name', 'join_date', 'status', 'Phone No.', 'Email', 'Extension No.'];
-    
-            foreach ($this->records_excel as $er) {
-                $data[] = [
-                    $er['emp_id'],
-                    $er['first_name'] . ' ' . $er['last_name'],
-                    $er['hire_date'],
-                    $er['job_title'],
-                    $er['mobile_number'],
-                    $er['email']
-                ];
-            }
-    
-            $filePath = storage_path('app/Total_no_of_employees.xlsx');
-    
-            SimpleExcelWriter::create($filePath)->addRows($data);
-    
-            return response()->download($filePath, 'Total_no_of_employees.xlsx');
+            return Excel::download(new EmployeeDirectoryExport, 'employee_directory_export.xlsx');
         } catch (\Exception $e) {
             Log::error('Error in exportToExcel method: ' . $e->getMessage());
             session()->flash('error', 'An error occurred while exporting to Excel. Please try again later.');

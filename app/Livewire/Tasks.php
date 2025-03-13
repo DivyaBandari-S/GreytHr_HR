@@ -235,14 +235,13 @@ class Tasks extends Component
         'newComment' => 'required|string|word_count:500|max:3000',
         'description' => 'required|string|min:3',
         'newDueDate' => 'required|date|after_or_equal:today',
+        'file_paths.*' => 'nullable|file|mimes:xls,csv,xlsx,pdf,jpeg,png,jpg,gif,zip|max:1024',
     ];
     protected $messages = [
         'newComment.required' => 'Comment is required.',
         'newComment.word_count' => 'Comment must not exceed 500 words.',
-        'image.image' => 'File must be an image.',
-        'image.max' => 'Image size must not exceed 2MB.',
-        'file_path.mimes' => 'File must be a document of type: pdf, xls, xlsx, doc, docx, txt, ppt, pptx, gif, jpg, jpeg, png.',
-        'file_path.max' => 'Document size must not exceed 2MB.',
+        'file_paths.*.max' => 'Your file is larger than 1 MB. Please select a file of up to 1 MB only.',
+        'file_paths.*.mimes' => 'Please upload a file of type: xls, csv, xlsx, pdf, jpeg, png, jpg, gif.',
         'description.required' => 'Description is required.',
         'description.min' => 'Description must be at least 3 characters.',
         'newDueDate' => 'DueDate is Required',
@@ -250,6 +249,92 @@ class Tasks extends Component
         'newDueDate.after_or_equal' => 'The Due Date must be today or later.',
 
     ];
+    public $errorMessageValidation;
+    public $showViewImageDialog = false;
+    public function closeViewFile()
+    {
+        $this->showViewFileDialog = false;
+    }
+    public function showViewFile()
+    {
+     
+      
+        $this->showViewFileDialog = true;
+    }
+
+    public function showViewImage()
+    {
+      
+        $this->showViewImageDialog = true;
+    }
+    public function closeViewImage()
+    {
+        $this->showViewImageDialog = false;
+    }
+    public function downloadImage($taskId)
+    {
+        $task = $this->records->firstWhere('id', $taskId);
+
+    if (!$task) {
+        return response()->json(['message' => 'Task not found'], 404);
+    }
+
+    
+        $fileDataArray = is_string($task->file_paths)
+            ? json_decode($task->file_paths, true)
+            : $task->file_paths;
+
+        // Filter images
+        $images = array_filter(
+            $fileDataArray,
+            fn($fileData) => strpos($fileData['mime_type'], 'image') !== false,
+        );
+            // If only one image, provide direct download
+    if (count($images) === 1) {
+        $image = reset($images); // Get the single image
+        $base64File = $image['data'];
+        $mimeType = $image['mime_type'];
+        $originalName = $image['original_name'];
+ 
+        // Decode base64 content
+        $fileContent = base64_decode($base64File);
+ 
+        // Return the image directly
+        return response()->stream(
+            function () use ($fileContent) {
+                echo $fileContent;
+            },
+            200,
+            [
+                'Content-Type' => $mimeType,
+                'Content-Disposition' => 'attachment; filename="' . $originalName . '"',
+            ]
+        );
+    }
+
+        // Create a zip file for the images
+        if (count($images) > 1) {
+        $zipFileName = 'images.zip';
+        $zip = new \ZipArchive();
+        $zip->open(storage_path($zipFileName), \ZipArchive::CREATE | \ZipArchive::OVERWRITE);
+
+        foreach ($images as $image) {
+            $base64File = $image['data'];
+            $mimeType = $image['mime_type'];
+            $extension = explode('/', $mimeType)[1];
+            $imageName = uniqid() . '.' . $extension;
+
+            $zip->addFromString($imageName, base64_decode($base64File));
+        }
+
+        $zip->close();
+
+        // Return the zip file as a download
+        return response()->download(storage_path($zipFileName))->deleteFileAfterSend(true);
+    }
+      // If no images, return an appropriate response
+      return response()->json(['message' => 'No images found'], 404);
+}
     public function boot()
     {
         // Register custom validation rule for word count
@@ -659,6 +744,7 @@ class Tasks extends Component
 
     public $maxFollowers = 5;
     public $validationFollowerMessage = '';
+    public  $file_paths = [];
 
 
     public function submit()
@@ -679,34 +765,40 @@ class Tasks extends Component
                 // FlashMessageHelper::flashError('You can only select up to 5 followers.');
                 return;
             }
+            $filePaths = $this->file_paths ?? [];
+        
 
-            // Validate and store the uploaded file
-            $this->validate([
-                'file_path' => 'nullable|file|mimes:xls,csv,xlsx,pdf,jpeg,png,jpg,gif|max:40960', // Adjust max size as needed
+            // Validate file uploads
+            $validator = Validator::make($filePaths, [
+                'file_paths.*' => 'required|file|mimes:xls,csv,xlsx,pdf,jpeg,png,jpg,gif|max:1024',
+            ], [
+                'file_paths.*.required' => 'You must upload at least one file.',
+                'file_paths.*.max' => 'Your file is larger than 1 MB. Please select a file of up to 1 MB only.',
+                'file_paths.*.mimes' => 'Invalid file type. Only xls, csv, xlsx, pdf, jpeg, png, jpg, gif are allowed.',
             ]);
-            $fileContent = null;
-            $mimeType = null;
-            $fileName = null;
-
-            // Store the file as binary data
-            if ($this->file_path) {
-                $fileContent = file_get_contents($this->file_path->getRealPath());
-                if ($fileContent === false) {
-                    FlashMessageHelper::flashError('Failed to read the uploaded file.');
-                    return;
-                }
-
-                // Check if the file content is too large
-                if (strlen($fileContent) > 16777215) { // 16MB for MEDIUMBLOB
-                    // session()->flash('error', 'File size exceeds the allowed limit.');
-                    FlashMessageHelper::flashError('File size exceeds the allowed limit.');
-                    return;
-                }
-
-
-                $mimeType = $this->file_path->getMimeType();
-                $fileName = $this->file_path->getClientOriginalName();
+            if ($validator->fails()) {
+                return response()->json($validator->errors(), 422);
             }
+
+            // Store files
+            $fileDataArray = [];
+            if ($filePaths) {
+               
+              
+                foreach ($filePaths as $file) {
+                    $fileContent = file_get_contents($file->getRealPath());
+                    $mimeType = $file->getMimeType();
+                    $base64File = base64_encode($fileContent);
+                    $fileDataArray[] = [
+                        'data' => $base64File,
+                        'mime_type' => $mimeType,
+                        'original_name' => $file->getClientOriginalName(),
+                    ];
+                }
+               
+            }
+            // Validate and store the uploaded file
+           
 
             $employeeId = auth()->guard('hr')->user()->emp_id;
 
@@ -726,9 +818,7 @@ class Tasks extends Component
                 'followers' => $this->followers,
                 'subject' => $this->subject,
                 'description' => $this->description,
-                'file_path' => $fileContent,
-                'file_name' => $fileName,
-                'mime_type' => $mimeType,
+                'file_paths' => json_encode($fileDataArray),
                 'status' => 10,
             ]);
 
@@ -886,16 +976,7 @@ class Tasks extends Component
     }
     public $recordId;
     public $viewrecord;
-    public function showViewFile($recordId)
-    {
-        $this->$recordId = $recordId;
-        $this->viewrecord = Task::find($recordId);
-        $this->showViewFileDialog = true;
-    }
-    public function closeViewFile()
-    {
-        $this->showViewFileDialog = false;
-    }
+   
 
     public function close()
     {
@@ -1093,44 +1174,7 @@ class Tasks extends Component
             ->get();
     }
 
-    public function downloadImage()
-    {
-        if ($this->viewrecord && !empty($this->viewrecord->file_path)) {
-            $fileData = $this->viewrecord->file_path;
-
-            // Determine the MIME type and file extension based on the data URL prefix
-            $mimeType = 'application/octet-stream'; // Fallback MIME type
-            $fileExtension = 'bin'; // Fallback file extension
-
-            // Check the file's magic number or content to determine MIME type and file extension
-            if (strpos($fileData, "\xFF\xD8\xFF") === 0) {
-                $mimeType = 'image/jpeg';
-                $fileExtension = 'jpg';
-            } elseif (strpos($fileData, "\x89PNG\r\n\x1A\n") === 0) {
-                $mimeType = 'image/png';
-                $fileExtension = 'png';
-            } elseif (strpos($fileData, "GIF87a") === 0 || strpos($fileData, "GIF89a") === 0) {
-                $mimeType = 'image/gif';
-                $fileExtension = 'gif';
-            } else {
-                return abort(415, 'Unsupported Media Type');
-            }
-
-            $fileName = 'image-' . $this->viewrecord->id . '.' . $fileExtension;
-            return response()->stream(
-                function () use ($fileData) {
-                    echo $fileData;
-                },
-                200,
-                [
-                    'Content-Type' => $mimeType,
-                    'Content-Disposition' => 'attachment; filename="' . $fileName . '"',
-                ]
-            );
-        }
-
-        return abort(404, 'Image not found');
-    }
+   
 
     public function render()
     {
