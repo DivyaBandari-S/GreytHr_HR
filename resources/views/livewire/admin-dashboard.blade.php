@@ -1,7 +1,7 @@
 <!-- start: MAIN -->
 <section>
     <!-- start: MAIN BODY -->
-    <div a>
+    <div >
         <section class="tab-section">
             <div class="container-fluid">
                 <div class="tab-pane">
@@ -63,7 +63,7 @@
 
                             <div class="container-sec">
                                 <div class="d-flex justify-content-between align-items-center">
-                                    <h5 class="fw-bold">My Favourites</h5>
+                                    <h5 class="fw-bold" style="font-size: 18px">My Favourites</h5>
                                     <div class="navigation">
                                         <button id="prev" disabled>&larr;</button>
                                         <button id="next">&rarr;</button>
@@ -206,7 +206,7 @@
                                 <div class="col-md-4">
                                     <div class="card-stat">
                                         <div class="background-stat">
-                                            <p>New Employee(s)</p>
+                                            <p>New Employee</p>
                                         </div>
                                         <div class="logo-stat">
                                             <p class="logo-svg-stat">
@@ -311,7 +311,7 @@
                                         <p class="fs12">01 Nov 2024 to 28 Feb 2025</p>
                                     </div>
                                 </div>
-                                <div class="table-responsive">
+                                <div class="table-responsive p-0">
                                     <table class="table fs12">
                                         <thead class="table-secondary">
                                             <tr>
@@ -410,7 +410,7 @@
                             <div class="col-md-6">
                                 <p class="fw-bold">Employee Status</p>
                             </div>
-                            <div class="col-md-6 text-end">
+                            <div class="col-md-6 text-end mb-3">
                                 <button class="btn btn-outline-primary btn-sm"><i class="fa-regular fa-calendar"></i> This Week</button>
                             </div>
                         </div>
@@ -497,12 +497,12 @@
                     <div class="row m-0 mt-3">
 
                         <div class="col-md-6 ps-0">
-                            <div class="border m-0 rounded row">
+                            <div class="border m-0 rounded row mb-3">
                                 <div class="m-0 mt-3 row">
                                     <div class="col-md-6">
                                         <p class="fw-bold">Employees</p>
                                     </div>
-                                    <div class="col-md-6 text-end">
+                                    <div class="col-md-6 text-end mb-3">
                                         <button class="btn btn-outline-primary btn-sm">View All</button>
                                     </div>
                                 </div>
@@ -511,7 +511,7 @@
                                     <div class="col-md-6">
                                         <p class="mb-0 fw-bold fs14">Name</p>
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-6 text-end">
                                         <p class="mb-0 fw-bold fs14">Department</p>
                                     </div>
                                 </div>
@@ -519,93 +519,55 @@
                                 <div class="row m-0 mt-3">
                                     
                                     <div class="m-0 mb-3 p-2 row border-bottom">
-                                        <div class="col-md-1 p-0 m-auto">
-                                            <p class="mb-0">
-                                                <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-24.jpg" style="width: 2em; border-radius: 50%;" />
-                                            </p>
-                                        </div>
-                                        <div class="col-md-11 p-0">
-                                            <div class="m-0 row">
-                                                <div class="col-md-6 p-0">
-                                                    <p class="fw-bold mb-0 fs14">Daniel Esbella</p>
-                                                    <p class="fs12 mb-0">UI/UX Designer</p>
-                                                </div>
-                                                <div class="col-md-6 p-0 m-auto">
-                                                    <p class="mb-0 fs14"><span class="badge text-bg-success">Finance</span></p>
-                                                </div>
+                                        <div style="display: flex; align-items: center;">
+                                            <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-24.jpg" 
+                                                style="width: 2em; height: 2em; border-radius: 50%; margin-right: 8px;" />
+                                            <div style="display: flex; flex-direction: column;">
+                                                <p style="font-weight: bold; margin: 0; font-size: 14px;">Daniel Esbella</p>
+                                                <p style="margin: 0; font-size: 12px; color: #666;">UI/UX Designer</p>
                                             </div>
+                                            <span style="background-color: #1E7E34; color: white; font-size: 12px; font-weight: bold; padding: 2px 8px; border-radius: 5px; margin-left: auto;">
+                                                Finance
+                                            </span>
                                         </div>
                                     </div>
                                     <div class="m-0 mb-3 p-2 row border-bottom">
-                                        <div class="col-md-1 p-0 m-auto">
-                                            <p class="mb-0">
-                                                <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-24.jpg" style="width: 2em; border-radius: 50%;" />
-                                            </p>
-                                        </div>
-                                        <div class="col-md-11 p-0">
-                                            <div class="m-0 row">
-                                                <div class="col-md-6 p-0">
-                                                    <p class="fw-bold mb-0 fs14">Daniel Esbella</p>
-                                                    <p class="fs12 mb-0">UI/UX Designer</p>
-                                                </div>
-                                                <div class="col-md-6 p-0 m-auto">
-                                                    <p class="mb-0 fs14"><span class="badge text-bg-success">Finance</span></p>
-                                                </div>
+                                        <div style="display: flex; align-items: center;">
+                                            <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-24.jpg" 
+                                                style="width: 2em; height: 2em; border-radius: 50%; margin-right: 8px;" />
+                                            <div style="display: flex; flex-direction: column;">
+                                                <p style="font-weight: bold; margin: 0; font-size: 14px;">Daniel Esbella</p>
+                                                <p style="margin: 0; font-size: 12px; color: #666;">UI/UX Designer</p>
                                             </div>
+                                            <span style="background-color: #1E7E34; color: white; font-size: 12px; font-weight: bold; padding: 2px 8px; border-radius: 5px; margin-left: auto;">
+                                                Finance
+                                            </span>
                                         </div>
                                     </div>
                                     <div class="m-0 mb-3 p-2 row border-bottom">
-                                        <div class="col-md-1 p-0 m-auto">
-                                            <p class="mb-0">
-                                                <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-24.jpg" style="width: 2em; border-radius: 50%;" />
-                                            </p>
-                                        </div>
-                                        <div class="col-md-11 p-0">
-                                            <div class="m-0 row">
-                                                <div class="col-md-6 p-0">
-                                                    <p class="fw-bold mb-0 fs14">Daniel Esbella</p>
-                                                    <p class="fs12 mb-0">UI/UX Designer</p>
-                                                </div>
-                                                <div class="col-md-6 p-0 m-auto">
-                                                    <p class="mb-0 fs14"><span class="badge text-bg-success">Finance</span></p>
-                                                </div>
+                                        <div style="display: flex; align-items: center;">
+                                            <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-24.jpg" 
+                                                style="width: 2em; height: 2em; border-radius: 50%; margin-right: 8px;" />
+                                            <div style="display: flex; flex-direction: column;">
+                                                <p style="font-weight: bold; margin: 0; font-size: 14px;">Daniel Esbella</p>
+                                                <p style="margin: 0; font-size: 12px; color: #666;">UI/UX Designer</p>
                                             </div>
+                                            <span style="background-color: #1E7E34; color: white; font-size: 12px; font-weight: bold; padding: 2px 8px; border-radius: 5px; margin-left: auto;">
+                                                Finance
+                                            </span>
                                         </div>
                                     </div>
                                     <div class="m-0 mb-3 p-2 row border-bottom">
-                                        <div class="col-md-1 p-0 m-auto">
-                                            <p class="mb-0">
-                                                <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-24.jpg" style="width: 2em; border-radius: 50%;" />
-                                            </p>
-                                        </div>
-                                        <div class="col-md-11 p-0">
-                                            <div class="m-0 row">
-                                                <div class="col-md-6 p-0">
-                                                    <p class="fw-bold mb-0 fs14">Daniel Esbella</p>
-                                                    <p class="fs12 mb-0">UI/UX Designer</p>
-                                                </div>
-                                                <div class="col-md-6 p-0 m-auto">
-                                                    <p class="mb-0 fs14"><span class="badge text-bg-success">Finance</span></p>
-                                                </div>
+                                        <div style="display: flex; align-items: center;">
+                                            <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-24.jpg" 
+                                                style="width: 2em; height: 2em; border-radius: 50%; margin-right: 8px;" />
+                                            <div style="display: flex; flex-direction: column;">
+                                                <p style="font-weight: bold; margin: 0; font-size: 14px;">Daniel Esbella</p>
+                                                <p style="margin: 0; font-size: 12px; color: #666;">UI/UX Designer</p>
                                             </div>
-                                        </div>
-                                    </div>
-                                    <div class="m-0 mb-3 p-2 row border-bottom">
-                                        <div class="col-md-1 p-0 m-auto">
-                                            <p class="mb-0">
-                                                <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-24.jpg" style="width: 2em; border-radius: 50%;" />
-                                            </p>
-                                        </div>
-                                        <div class="col-md-11 p-0">
-                                            <div class="m-0 row">
-                                                <div class="col-md-6 p-0">
-                                                    <p class="fw-bold mb-0 fs14">Daniel Esbella</p>
-                                                    <p class="fs12 mb-0">UI/UX Designer</p>
-                                                </div>
-                                                <div class="col-md-6 p-0 m-auto">
-                                                    <p class="mb-0 fs14"><span class="badge text-bg-success">Finance</span></p>
-                                                </div>
-                                            </div>
+                                            <span style="background-color: #1E7E34; color: white; font-size: 12px; font-weight: bold; padding: 2px 8px; border-radius: 5px; margin-left: auto;">
+                                                Finance
+                                            </span>
                                         </div>
                                     </div>
                                 </div>
@@ -619,13 +581,13 @@
                                     <div class="col-md-6">
                                         <p class="fw-bold">Clock-In/Out</p>
                                     </div>
-                                    <div class="col-md-6 text-end">
+                                    <div class="col-md-6 text-end mb-3">
                                         <button class="btn btn-outline-primary btn-sm"><i class="fa-regular fa-calendar"></i> This Week</button>
                                     </div>
                                 </div>
 
                                 <div class="row m-0 mt-3">
-                                    <div class="border m-0 mb-3 p-2 rounded-2 row">
+                                    <!-- <div class="border m-0 mb-3 p-2 rounded-2 row">
                                         <div class="col-md-1 p-0 m-auto">
                                             <p class="mb-0">
                                                 <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-24.jpg" style="width: 2em; border-radius: 50%;" />
@@ -641,60 +603,66 @@
                                                     <p class="mb-0 fs14"><i class="fa-regular fa-clock me-2" style="vertical-align: middle;"></i> <span class="badge text-bg-success">09 : 06</span></p>
                                                 </div>
                                             </div>
+                                        </div>
+                                    </div> -->
+                                    <div class="m-0 mb-3 p-2 row border">
+                                        <div style="display: flex; align-items: center;">
+                                            <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-24.jpg" 
+                                                style="width: 2em; height: 2em; border-radius: 50%; margin-right: 8px;" />
+                                            <div style="display: flex; flex-direction: column;">
+                                                <p style="font-weight: bold; margin: 0; font-size: 14px;">Daniel Esbella</p>
+                                                <p style="margin: 0; font-size: 12px; color: #666;">UI/UX Designer</p>
+                                            </div>
+                                            <i class="fa-regular fa-clock me-2" style="vertical-align: middle; margin-left: auto"></i>
+                                            <span class="badge text-bg-success" style="margin-left: auto;">09 : 06</span>
                                         </div>
                                     </div>
-                                    <div class="border m-0 mb-3 p-2 rounded-2 row">
-                                        <div class="col-md-1 p-0 m-auto">
-                                            <p class="mb-0">
-                                                <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-24.jpg" style="width: 2em; border-radius: 50%;" />
-                                            </p>
-                                        </div>
-                                        <div class="col-md-11 p-0">
-                                            <div class="m-0 row">
-                                                <div class="col-md-6 p-0">
-                                                    <p class="fw-bold mb-0 fs14">Daniel Esbella</p>
-                                                    <p class="fs12 mb-0">UI/UX Designer</p>
-                                                </div>
-                                                <div class="col-md-6 text-end p-0 m-auto">
-                                                    <p class="mb-0 fs14"><i class="fa-regular fa-clock me-2" style="vertical-align: middle;"></i> <span class="badge text-bg-success">09 : 06</span></p>
-                                                </div>
+                                    <div class="m-0 mb-3 p-2 row border">
+                                        <div style="display: flex; align-items: center;">
+                                            <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-24.jpg" 
+                                                style="width: 2em; height: 2em; border-radius: 50%; margin-right: 8px;" />
+                                            <div style="display: flex; flex-direction: column;">
+                                                <p style="font-weight: bold; margin: 0; font-size: 14px;">Daniel Esbella</p>
+                                                <p style="margin: 0; font-size: 12px; color: #666;">UI/UX Designer</p>
                                             </div>
+                                            <i class="fa-regular fa-clock me-2" style="vertical-align: middle; margin-left: auto"></i>
+                                            <span class="badge text-bg-success" style="margin-left: auto;">09 : 06</span>
                                         </div>
                                     </div>
-                                    <div class="border m-0 mb-3 p-2 rounded-2 row">
-                                        <div class="col-md-1 p-0 m-auto">
-                                            <p class="mb-0">
-                                                <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-24.jpg" style="width: 2em; border-radius: 50%;" />
-                                            </p>
-                                        </div>
-                                        <div class="col-md-11 p-0">
-                                            <div class="m-0 row">
-                                                <div class="col-md-6 p-0">
-                                                    <p class="fw-bold mb-0 fs14">Daniel Esbella</p>
-                                                    <p class="fs12 mb-0">UI/UX Designer</p>
-                                                </div>
-                                                <div class="col-md-6 text-end p-0 m-auto">
-                                                    <p class="mb-0 fs14"><i class="fa-regular fa-clock me-2" style="vertical-align: middle;"></i> <span class="badge text-bg-success">09 : 06</span></p>
-                                                </div>
+                                    <div class="m-0 mb-3 p-2 row border">
+                                        <div style="display: flex; align-items: center;">
+                                            <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-24.jpg" 
+                                                style="width: 2em; height: 2em; border-radius: 50%; margin-right: 8px;" />
+                                            <div style="display: flex; flex-direction: column;">
+                                                <p style="font-weight: bold; margin: 0; font-size: 14px;">Daniel Esbella</p>
+                                                <p style="margin: 0; font-size: 12px; color: #666;">UI/UX Designer</p>
                                             </div>
+                                            <i class="fa-regular fa-clock me-2" style="vertical-align: middle; margin-left: auto"></i>
+                                            <span class="badge text-bg-success" style="margin-left: auto;">09 : 06</span>
                                         </div>
                                     </div>
-                                    <div class="border m-0 mb-3 p-2 rounded-2 row">
-                                        <div class="col-md-1 p-0 m-auto">
-                                            <p class="mb-0">
-                                                <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-24.jpg" style="width: 2em; border-radius: 50%;" />
-                                            </p>
-                                        </div>
-                                        <div class="col-md-11 p-0">
-                                            <div class="m-0 row">
-                                                <div class="col-md-6 p-0">
-                                                    <p class="fw-bold mb-0 fs14">Daniel Esbella</p>
-                                                    <p class="fs12 mb-0">UI/UX Designer</p>
-                                                </div>
-                                                <div class="col-md-6 text-end p-0 m-auto">
-                                                    <p class="mb-0 fs14"><i class="fa-regular fa-clock me-2" style="vertical-align: middle;"></i> <span class="badge text-bg-success">09 : 06</span></p>
-                                                </div>
+                                    <div class="m-0 mb-3 p-2 row border">
+                                        <div style="display: flex; align-items: center;">
+                                            <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-24.jpg" 
+                                                style="width: 2em; height: 2em; border-radius: 50%; margin-right: 8px;" />
+                                            <div style="display: flex; flex-direction: column;">
+                                                <p style="font-weight: bold; margin: 0; font-size: 14px;">Daniel Esbella</p>
+                                                <p style="margin: 0; font-size: 12px; color: #666;">UI/UX Designer</p>
                                             </div>
+                                            <i class="fa-regular fa-clock me-2" style="vertical-align: middle; margin-left: auto"></i>
+                                            <span class="badge text-bg-success" style="margin-left: auto;">09 : 06</span>
+                                        </div>
+                                    </div>
+                                    <div class="m-0 mb-3 p-2 row border">
+                                        <div style="display: flex; align-items: center;">
+                                            <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-24.jpg" 
+                                                style="width: 2em; height: 2em; border-radius: 50%; margin-right: 8px;" />
+                                            <div style="display: flex; flex-direction: column;">
+                                                <p style="font-weight: bold; margin: 0; font-size: 14px;">Daniel Esbella</p>
+                                                <p style="margin: 0; font-size: 12px; color: #666;">UI/UX Designer</p>
+                                            </div>
+                                            <i class="fa-regular fa-clock me-2" style="vertical-align: middle; margin-left: auto"></i>
+                                            <span class="badge text-bg-success" style="margin-left: auto;">09 : 06</span>
                                         </div>
                                         <div class="border m-0 mt-2 py-3 rounded row">
                                             <div class="col-md-4">
@@ -711,23 +679,18 @@
                                             </div>
                                         </div>
                                     </div>
+                                    
                                     <p class="fw-bold fs14 p-0">Late</p>
-                                    <div class="border m-0 mb-3 p-2 rounded-2 row">
-                                        <div class="col-md-1 p-0 m-auto">
-                                            <p class="mb-0">
-                                                <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-24.jpg" style="width: 2em; border-radius: 50%;" />
-                                            </p>
-                                        </div>
-                                        <div class="col-md-11 p-0">
-                                            <div class="m-0 row">
-                                                <div class="col-md-6 p-0">
-                                                    <p class="fw-bold mb-0 fs14">Daniel Esbella</p>
-                                                    <p class="fs12 mb-0">UI/UX Designer</p>
-                                                </div>
-                                                <div class="col-md-6 text-end p-0 m-auto">
-                                                    <p class="mb-0 fs14"><i class="fa-regular fa-clock me-2" style="vertical-align: middle;"></i> <span class="badge text-bg-danger">09 : 06</span></p>
-                                                </div>
+                                    <div class="m-0 mb-3 p-2 row border">
+                                        <div style="display: flex; align-items: center;">
+                                            <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-24.jpg" 
+                                                style="width: 2em; height: 2em; border-radius: 50%; margin-right: 8px;" />
+                                            <div style="display: flex; flex-direction: column;">
+                                                <p style="font-weight: bold; margin: 0; font-size: 14px;">Daniel Esbella</p>
+                                                <p style="margin: 0; font-size: 12px; color: #666;">UI/UX Designer</p>
                                             </div>
+                                            <i class="fa-regular fa-clock me-2" style="vertical-align: middle; margin-left: auto"></i>
+                                            <span class="badge text-bg-danger" style="margin-left: auto;">09 : 06</span>
                                         </div>
                                     </div>
                                 </div>
@@ -987,20 +950,16 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <div class="input-group flex-nowrap">
+        <div class="input-group flex-nowrap mb-3">
             <span class="input-group-text" id="addon-wrapping"><i class="fa-solid fa-magnifying-glass"></i></span>
             <input type="text" class="form-control" placeholder="Search here" aria-label="Username" aria-describedby="addon-wrapping">
         </div>
-        <div class="row m-0">
-            <p class="mt-1x">
-                <span class="chipTextFav">All</span>
-                <span class="chipTextFav">My Favourites</span>
-                <span class="chipTextFav">Employee</span>
-                <span class="chipTextFav">Payroll</span>
-                <span class="chipTextFav">Leave</span>
-                <span class="chipTextFav">Other</span>
-            </p>
-        </div>
+            <span class="badge text-bg-light chipinAddForm">All</span>
+            <span class="badge text-bg-light chipinAddForm">My Favourites</span>
+            <span class="badge text-bg-light chipinAddForm">Employee</span>
+            <span class="badge text-bg-light chipinAddForm">Payroll</span>
+            <span class="badge text-bg-light chipinAddForm">Leave</span>
+            <span class="badge text-bg-light chipinAddForm">Other</span>
         <div class="row m-0">
             <div class="col-md-3">
                 <div class="blue-bg pt-3 ps-3 pe-3 rounded-3 mb-3">

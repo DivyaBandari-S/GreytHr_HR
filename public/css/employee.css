@@ -297,7 +297,7 @@ body {
 	background-image: linear-gradient(225deg, rgba(40, 99, 151, 0.2) 0%, rgba(40, 99, 151, 0.2) 16.667%, rgba(20, 84, 131, 0.2) 16.667%, rgba(20, 84, 131, 0.2) 33.334%, rgba(30, 92, 141, 0.2) 33.334%, rgba(30, 92, 141, 0.2) 50.001%, rgba(59, 114, 172, 0.2) 50.001%, rgba(59, 114, 172, 0.2) 66.668%, rgba(69, 122, 182, 0.2) 66.668%, rgba(69, 122, 182, 0.2) 83.335%, rgba(49, 107, 162, 0.2) 83.335%, rgba(49, 107, 162, 0.2) 100.002%), linear-gradient(180deg, rgba(40, 99, 151, 0.2) 0%, rgba(40, 99, 151, 0.2) 16.667%, rgba(20, 84, 131, 0.2) 16.667%, rgba(20, 84, 131, 0.2) 33.334%, rgba(30, 92, 141, 0.2) 33.334%, rgba(30, 92, 141, 0.2) 50.001%, rgba(59, 114, 172, 0.2) 50.001%, rgba(59, 114, 172, 0.2) 66.668%, rgba(69, 122, 182, 0.2) 66.668%, rgba(69, 122, 182, 0.2) 83.335%, rgba(49, 107, 162, 0.2) 83.335%, rgba(49, 107, 162, 0.2) 100.002%), linear-gradient(270deg, rgba(40, 99, 151, 0.2) 0%, rgba(40, 99, 151, 0.2) 16.667%, rgba(20, 84, 131, 0.2) 16.667%, rgba(20, 84, 131, 0.2) 33.334%, rgba(30, 92, 141, 0.2) 33.334%, rgba(30, 92, 141, 0.2) 50.001%, rgba(59, 114, 172, 0.2) 50.001%, rgba(59, 114, 172, 0.2) 66.668%, rgba(69, 122, 182, 0.2) 66.668%, rgba(69, 122, 182, 0.2) 83.335%, rgba(49, 107, 162, 0.2) 83.335%, rgba(49, 107, 162, 0.2) 100.002%), linear-gradient(270deg, rgb(36, 17, 207), rgb(64 142 198));
 }
 #main .main__top .main__top__title h3 {
-	font-size: 1.25rem;
+	font-size: 0.9rem;
 	font-weight: 600;
 	color: var(--white);
 	margin-bottom: .5rem;
@@ -943,7 +943,7 @@ body {
 	/* font-weight: bold; */
 	display: inline-block;
 	border-radius: 5px 0 0 5px;
-	left: 30px;
+	left: 40px;
   }
   
   .ribbon::after {
@@ -964,6 +964,11 @@ body {
 		max-width: 220px !important;
 	}
 }
+@media (max-width: 991px) and (min-width: 768px) {
+	.container-sec {
+		max-width: 578px !important;
+	}
+  }
 
   
   .container-sec {
@@ -1096,7 +1101,7 @@ body {
 .card-stat {
 	position: relative;
 	/* width: 200px; */
-	height: 200px;
+	height: 160px;
 	background: lightgrey;
 	border-radius: 30px;
 	overflow: hidden;
@@ -1108,7 +1113,8 @@ body {
   .background-stat {
 	position: absolute;
 	inset: 0;
-	background: radial-gradient(circle at 100% 107%, #ff89cc 0%, #9cb8ec 30%, #00ffee 60%, #62c2fe 100%);
+	/* background: radial-gradient(circle at 100% 107%, #ff89cc 0%, #9cb8ec 30%, #00ffee 60%, #62c2fe 100%); */
+	background-image: linear-gradient(90deg, rgb(43, 77, 130),rgb(40, 144, 172));
   }
   .background-stat p{
 	font-size: 16px;
@@ -1333,4 +1339,77 @@ body {
 		display: none;
 	}
 }
+
+	/* From Uiverse.io by Yaya12085 */ 
+  #checkbox {
+	display: none;
+  }
   
+  .toggle {
+	position: relative;
+	width: 30px;
+	height: 30px;
+	cursor: pointer;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	justify-content: center;
+	gap: 4px;
+	transition-duration: .5s;
+  }
+  
+  .bars {
+	width: 100%;
+	height: 2px;
+	background-color: #ffffff;
+	border-radius: 4px;
+  }
+  
+  #bar2 {
+	transition-duration: .8s;
+  }
+  
+  #bar1 {
+	width: 50%;
+  }
+  
+  #bar2 {
+	width: 75%;
+  }
+  
+  #checkbox:checked + .toggle .bars {
+	position: absolute;
+	transition-duration: .5s;
+  }
+  
+  #checkbox:checked + .toggle #bar2 {
+	transform: scaleX(0);
+	transition-duration: .1s;
+  }
+  
+  #checkbox:checked + .toggle #bar1 {
+	width: 100%;
+	transform: rotate(45deg);
+	transition-duration: .5s;
+  }
+  
+  #checkbox:checked + .toggle #bar3 {
+	width: 100%;
+	transform: rotate(-45deg);
+	transition-duration: .5s;
+  }
+  
+  #checkbox:checked + .toggle {
+	transition-duration: .5s;
+	transform: rotate(180deg);
+  }
+
+  .chipinAddForm {
+	border: 1px solid;
+    padding: 7px 10px;
+    font-size: 12px;
+    font-weight: 500;
+    border-radius: 50px;
+    margin-bottom: 10px;
+  }
+  a
