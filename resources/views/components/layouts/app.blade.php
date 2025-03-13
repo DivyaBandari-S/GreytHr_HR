@@ -4,6 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="{{ asset('images/hr_new_blue.png') }}">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ $title ?? 'Hr Xpert' }}</title>
 
@@ -44,6 +45,15 @@
 </head>
 
 <body>
+    @guest
+        {{ $slot }}
+    @else
+        <section id="main">
+            @livewire('main-layout')
+            <div class="main__body " style="overflow: auto; height: calc(100vh - 84px);background-color: #f3f3f3;">
+                {{ $slot }} </div>
+        </section>
+    @endguest
     <script src="{{ asset('js/admin-dash.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -56,15 +66,6 @@
             document.body.classList.toggle('sidebar-toggled');
         }
     </script>
-    @guest
-        {{ $slot }}
-    @else
-        <section id="main">
-            @livewire('main-layout')
-            <div class="main__body " style="overflow: auto; height: calc(100vh - 84px);background-color: #f3f3f3;">
-                {{ $slot }} </div>
-        </section>
-    @endguest
     @livewireScripts
 </body>
 
