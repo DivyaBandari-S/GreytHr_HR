@@ -85,6 +85,7 @@ use App\Livewire\Loans;
 use App\Livewire\ReleaseSalary;
 use App\Livewire\EmployeeSeparation;
 use App\Livewire\EmpResettlement;
+use App\Livewire\IncomeTax;
 use App\Livewire\ItStatement;
 use App\Livewire\SalarySlip;
 use App\Livewire\PayrollSalary;
@@ -169,7 +170,7 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
         Route::get('/salaryslip', SalarySlip::class)->name('salaryslip');
        //HR Payroll Submodule Routes->Verify
        Route::get('/quicksalary', QuickSalary::class)->name('quicksalary');
-    
+       Route::get('/income-tax', IncomeTax::class)->name('income-tax');
 
         //HR Employee-Main Submodule Routes
         Route::get('/user/main-overview', HrMainOverview::class)->name('main-overview');

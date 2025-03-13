@@ -111,7 +111,7 @@ class Payslips extends Component
 
     public $recentHires = [];
 
-    public $employees=[];
+    public $employees;
 
 
     public $employeeDetails = [];
@@ -661,6 +661,7 @@ class Payslips extends Component
             ->where('month_of_sal', 'like',  $month . '%')
             ->where('emp_salaries.is_payslip', 1)
             ->first()->toArray();
+           
         
 
         if (!$empSalaryDetails) {
@@ -706,6 +707,7 @@ class Payslips extends Component
             'salMonth' => Carbon::parse($month)->format('F Y'), // Pass month formatted
           
         ]);
+   
 
         $name = Carbon::parse($month)->format('MY');
 

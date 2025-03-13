@@ -121,7 +121,7 @@
                             <li><a href="/hr/user/payroll-salary">Salary</a></li>
                             <li><a href="/hr/user/loans">Loan</a></li>
                             <li><a href="/hr/user/salary-revision-list">Salary Revision</a></li>
-                            <li><a href="/user">Income Tax</a></li>
+                            <li><a href="/hr/income-tax">Income Tax</a></li>
                             <li><a href="/user">Reimbursement</a></li>
                             <li><a href="/hr/user/employee-lop-days">Employee LOP Days</a></li>
                             <li><a href="/hr/user/stop-salaries">Stop Salary Processing</a></li>
