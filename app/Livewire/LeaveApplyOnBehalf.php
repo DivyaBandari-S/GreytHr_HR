@@ -140,22 +140,21 @@ class LeaveApplyOnBehalf extends Component
                 ->whereNotNull('applied_by')
                 ->orderBy('created_at')
                 ->get();
-    
+
             // Process each leave request
             foreach ($this->hrAppliedLeaveRequests as $leaveRequest) {
                 $createdAt = Carbon::parse($leaveRequest->created_at);
-    
+
                 // Check if the leave request is within this week using startOfWeek and endOfWeek
                 $startOfWeek = Carbon::now()->startOfWeek();
                 $endOfWeek = Carbon::now()->endOfWeek();
-    
+
                 if ($createdAt->between($startOfWeek, $endOfWeek)) {
                     $leaveRequest->formatted_created_at = $createdAt->format('l h:i A'); // e.g., "Wednesday 4:00 PM"
                 } else {
                     $leaveRequest->formatted_created_at = $createdAt->format('Y-m-d'); // e.g., "2025-03-06"
                 }
             }
-    
         } catch (\Exception $e) {
             // Log the exception message
             Log::error('Error while fetching or formatting leave requests: ' . $e->getMessage());
@@ -912,7 +911,8 @@ class LeaveApplyOnBehalf extends Component
                     'Casual Leave Probation' => 0,
                     'Marriage Leave' => 0,
                     'Maternity Leave' => 0,
-                    'Paternity Leave' => 0
+                    'Paternity Leave' => 0,
+                    'Earned Leave' =>0
                 ];
             } else {
                 // Get the leave balance per year based on the 'from_date' year
@@ -923,6 +923,7 @@ class LeaveApplyOnBehalf extends Component
                     'Marriage Leave' => EmployeeLeaveBalances::getLeaveBalancePerYear($employeeId, 'Marriage Leave', $fromDateYear),
                     'Maternity Leave' => EmployeeLeaveBalances::getLeaveBalancePerYear($employeeId, 'Maternity Leave', $fromDateYear),
                     'Paternity Leave' => EmployeeLeaveBalances::getLeaveBalancePerYear($employeeId, 'Paternity Leave', $fromDateYear),
+                    'Earned Leave' => EmployeeLeaveBalances::getLeaveBalancePerYear($employeeId, 'Earned Leave', $fromDateYear),
                 ];
             }
             // Return the balance for the specific leave type
@@ -1030,13 +1031,14 @@ class LeaveApplyOnBehalf extends Component
             case 'Marriage Leave':
                 $leaveBalanceKey = 'marriageLeaveBalance';
                 break;
+            case 'Earned Leave':
+                $leaveBalanceKey = 'earnedLeaveBalance';
+                break;
         }
-
         // Ensure the balance key is set and the year matches
         if ($leaveBalanceKey) {
             // Get the leave balance for the year extracted from from_date
             $leaveBalanceForYear = $leaveBalances[$fromDateYear][$leaveBalanceKey] ?? 0;
-
             // Check if there is enough leave balance for the specified year
             if ($calculatedNumberOfDays >= $leaveBalanceForYear) {
                 FlashMessageHelper::flashError('Insufficient leave balance for ' . $leave_type . ' for the year ' . $fromDateYear);
@@ -1139,11 +1141,15 @@ class LeaveApplyOnBehalf extends Component
                         'marriageLeaveBalance' => $allLeaveBalances['marriageLeaveBalance'] ?? '0'
                     ];
                     break;
+                case 'Earned Leave':
+                    $this->leaveBalances = [
+                        'earnedLeaveBalance' => $allLeaveBalances['earnedLeaveBalance'] ?? '0'
+                    ];
+                    break;
                 default:
                     $this->leaveBalances = [];
                     break;
             }
-
             $this->showNumberOfDays = true;
         } catch (\Exception $e) {
             // Flash an error message to the user

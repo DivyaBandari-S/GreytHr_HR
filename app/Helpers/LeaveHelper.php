@@ -85,7 +85,7 @@ class LeaveHelper
             // Fetch approved leave requests
             $selectedYear = (int) $selectedYear;
             $approvedLeaveRequests = LeaveRequest::where('emp_id', $employeeId)
-            ->where('category_type','Leave')
+                ->where('category_type', 'Leave')
                 ->where(function ($query) {
                     $query->where('leave_status', 2)
                         ->whereIn('cancel_status', [6, 5, 3, 4]);
@@ -97,7 +97,8 @@ class LeaveHelper
                     'Casual Leave',
                     'Maternity Leave',
                     'Marriage Leave',
-                    'Paternity Leave'
+                    'Paternity Leave',
+                    'Earned Leave'
                 ])
                 ->whereYear('to_date', '=', $selectedYear)
                 ->get();
@@ -108,6 +109,7 @@ class LeaveHelper
             $totalMaternityDays = 0;
             $totalMarriageDays = 0;
             $totalPaternityDays = 0;
+            $totalEarnedDays = 0;
 
             // Calculate the total number of days based on sessions for each approved leave request
             foreach ($approvedLeaveRequests as $leaveRequest) {
@@ -143,9 +145,11 @@ class LeaveHelper
                     case 'Paternity Leave': // Corrected the spelling
                         $totalPaternityDays += $days;
                         break;
+                    case 'Earned Leave': // Corrected the spelling
+                        $totalEarnedDays += $days;
+                        break;
                 }
             }
-
             return [
                 'totalCasualDays' => $totalCasualDays,
                 'totalCasualLeaveProbationDays' => $totalCasualLeaveProbationDays,
@@ -154,6 +158,7 @@ class LeaveHelper
                 'totalMaternityDays' => $totalMaternityDays,
                 'totalMarriageDays' => $totalMarriageDays,
                 'totalPaternityDays' => $totalPaternityDays,
+                'totalEarnedDays' => $totalEarnedDays
             ];
         } catch (\Exception $e) {
             // Log the error message or handle it as needed
@@ -237,5 +242,4 @@ class LeaveHelper
             'totalPaternityDays' => $totalPaternityDays,
         ];
     }
-
 }
