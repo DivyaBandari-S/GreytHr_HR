@@ -58,9 +58,8 @@ class EmployeeLeaveBalances extends Model
     {
         // Retrieve all records for the specific employee and year
         $balances = self::where('emp_id', $employeeId)
-            ->where('period', 'like', "%$year%")
-            ->get();
-
+        ->where('period', 'like', "%$year%")
+        ->get();
         // Initialize variables
         $totalGrantDays = 0;
 
@@ -68,7 +67,7 @@ class EmployeeLeaveBalances extends Model
         foreach ($balances as $balance) {
             // Decode JSON leave_policy_id column
             $leavePolicies = is_string($balance->leave_policy_id) ? json_decode($balance->leave_policy_id, true) : $balance->leave_policy_id;
-    
+
             if (is_array($leavePolicies)) {
                 foreach ($leavePolicies as $policy) {
                     // Check if the leave_name matches the specified leave name
@@ -83,5 +82,4 @@ class EmployeeLeaveBalances extends Model
         // Ensure the last month rounds to the nearest whole number
         return round($totalGrantDays, 2);
     }
-
 }

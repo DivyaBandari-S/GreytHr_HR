@@ -142,6 +142,7 @@
                                         <option value="Casual Leave Probation">Casual Leave Probation</option>
                                         @endif
                                         <option value="Loss of Pay">Loss of Pay</option>
+                                        <option value="Earned Leave">Earned Leave</option>
                                         <option value="Marriage Leave">Marriage Leave</option>
                                         @if($employeeGender && $employeeGender === 'FEMALE')
                                         <option value="Maternity Leave">Maternity Leave</option>
@@ -263,6 +264,10 @@
                                         @elseif($leave_type == 'Marriage Leave')
                                         <span class="sickLeaveBalance">
                                             {{ ($leaveBalances['marriageLeaveBalance'] ?? '0') }}
+                                        </span>
+                                        @elseif($leave_type == 'Earned Leave')
+                                        <span class="sickLeaveBalance">
+                                            {{ ($leaveBalances['earnedLeaveBalance'] ?? '0') }}
                                         </span>
                                         @endif
                                     </div>
