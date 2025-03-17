@@ -115,7 +115,7 @@ use Illuminate\Support\Facades\Route;
 Route::middleware(['guest'])->group(function () {
     Route::get('/hrlogin', HrLogin::class)->name('hrlogin');
 });
-Route::middleware(['auth', 'auth.session'])->group(function () {
+Route::middleware(['auth'])->group(function () {
 
     Route::get('/', HomeDashboard::class)->name('home');
     // Group routes under the 'hr' prefix

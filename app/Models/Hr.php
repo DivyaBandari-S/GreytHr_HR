@@ -16,6 +16,7 @@ class Hr extends Authenticatable
     const ROLE_SUPER_ADMIN = 2;
     protected $primaryKey = 'hr_emp_id';
     public $incrementing = false;
+    protected $keyType = 'string'; // Define it as a string key
     protected $table = 'hr_employees';
 
     protected $fillable = [
@@ -56,7 +57,8 @@ class Hr extends Authenticatable
         return $this->role == $role;
     }
 
-    public function getAdminFavModules(){
-        return $this->hasMany(AdminFavoriteModule::class, 'hr_emp_id','hr_emp_id');
+    public function getAdminFavModules()
+    {
+        return $this->hasMany(AdminFavoriteModule::class, 'hr_emp_id', 'hr_emp_id');
     }
 }
