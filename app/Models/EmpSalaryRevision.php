@@ -283,7 +283,7 @@ class EmpSalaryRevision extends Model
     {
         $working_days=$total_working_days- $lop_days;
 
-
+// dd($salary);
         if ($revised_ctc > 0) {
             $revised_monthly_ctc = floor($revised_ctc / 12);
         }
@@ -302,6 +302,7 @@ class EmpSalaryRevision extends Model
 
         $full_gross = floor($revised_monthly_ctc -  $full_epf);
         $actual_gross = floor($salary -  $actual_epf);
+        // dd( $actual_gross);
 
         $full_esi = 0;
         $actual_esi=0;

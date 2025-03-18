@@ -269,7 +269,6 @@
                                 @endif
                                 <div style="position: relative;">
 
-
                                     @if ($showSearch)
                                     <div class="analytic-view-all-search-bar">
                                         <div class="search-wrapper">
@@ -410,7 +409,7 @@
                     <div class="col-md-2">
                         <label for="">Notice Period </label>
                     </div>
-                    <div class="col-md-1">
+                    <div class="col-md-2">
                         <input value="0" min="0" wire:model="notice_period" max="500" class="form-control" type="number">
                     </div>
 
@@ -422,7 +421,7 @@
                     <div class="col-md-2">
                         <label for="">No of Days Served </label>
                     </div>
-                    <div class="col-md-1">
+                    <div class="col-md-2">
                         <input value="0" wire:model="served_days" min="0" max="500" class="form-control" type="number">
                     </div>
 
@@ -450,12 +449,12 @@
                         <tr>
                             <td>{{ $monthData['month'] }}</td>
                             <td>{{ $monthData['total_days'] }}</td>
-                            <td> <input class="form-control" wire:model="workingDaysData.monthly_data.{{ $index }}.paid_days" wire:input="getTotalWorkDays" name="workingDays[{{ $index }}]" type="number" style="width:100px;"></td>
+                            <td> <input placeholder="0" class="form-control" wire:model="workingDaysData.monthly_data.{{ $index }}.paid_days" wire:input="getTotalWorkDays" name="workingDays[{{ $index }}]" type="number" style="width:100px;"></td>
                         </tr>
                         @endforeach
                         <tr>
                             <td colspan="2">No. of Days Worked </td>
-                            <td> <input disabled class="form-control" value="{{$workingDaysData['total_paid_days'] }}" type="number" style="width:100px;"></td>
+                            <td> <input placeholder="0" disabled class="form-control" value="{{$workingDaysData['total_paid_days'] }}" type="number" style="width:100px;"></td>
                         </tr>
                     </table>
                 </div>
@@ -472,7 +471,7 @@
                         <td>{{ $leaveData['leave_type'] }}</td>
                         <td>{{ $leaveData['pending_leaves'] }}</td>
                         <td>
-                            <input class="form-control" wire:input="getTotalEncashDays"
+                            <input class="form-control" placeholder="0" wire:input="getTotalEncashDays"
                                 wire:model.lazy="leavesData.leave_data.{{ $index }}.encash"
                                 type="number" name="leavesEncash[{{ $index }}]" style="width:100px;">
                         </td>
@@ -481,7 +480,7 @@
                     <tr>
                         <td colspan="2">Total </td>
                         <td>
-                            <input disabled class="form-control"
+                            <input placeholder="0" disabled class="form-control"
                                 value="{{ $leavesData['total_encash'] }}"
                                 type="number" style="width:100px;">
                         </td>
@@ -552,13 +551,22 @@
 
             <!-- Navigation Buttons -->
             <div class="stepper-buttons">
-                @if($step > 1)
+                @if($step > 1 && $step < 8 )
                 <button wire:click="previousStep" class="btn bg-white text-primary border-primary ">Previous</button>
                 @endif
 
-                @if($step < 7)
+                   @if($step < 7)
                     <button wire:click="nextStep" class="btn bg-white text-primary border-primary ">Next</button>
                     @endif
+
+                    @if($step==7)
+                    <button wire:click="finishFinalStatement" class="btn bg-white text-primary border-primary">Finish</button>
+                    @endif
+
+                    @if($step==8)
+                    <button wire:click="viewSettlement" class="btn bg-white text-primary border-primary">View Settlement</button>
+                    @endif
+
                     <button onclick="window.history.back()" class="btn bg-white text-primary border-primary ">Cancel</button>
             </div>
         </div>
