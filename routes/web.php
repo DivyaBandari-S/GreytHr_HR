@@ -115,6 +115,7 @@ use App\Livewire\ClientSList;
 use App\Livewire\AddProjects;
 use App\Livewire\AssignProject;
 use App\Livewire\HrEmployeesList;
+use App\Livewire\HrProfile;
 use App\Livewire\ProjectsList;
 use App\Models\ClientProjects;
 
@@ -153,6 +154,7 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
 
 
         //home page routes
+        Route::get('/profile', HrProfile::class)->name('profile');
         Route::get('/add-employee-details/{employee?}', AddEmployeeDetails::class)->name('add-employee-details');
         Route::get('/update-employee-details', UpdateEmployeeDetails::class)->name('update-employee-details');
         Route::get('/resig-requests', Resignationrequests::class)->name('resig-requests');

@@ -467,7 +467,7 @@
                             </div>
                         </div>
                         <ul class="profile__menu">
-                            <li><a href="#"><i class="ph-user-circle-fill"></i> Edit profile</a></li>
+                            <li><a href="/hr/profile"><i class="ph-user-circle-fill"></i> Edit profile</a></li>
                             <li><a href="#"><i class="ph-gear-fill"></i> Settings</a></li>
                         </ul>
                     </div>
