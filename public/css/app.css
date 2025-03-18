@@ -3375,6 +3375,7 @@ input[type="date"]::before {
     background-color: #9cd5f8; /* Ensure dropdown menu has a hover effect */
     color: #000; /* Change text color on hover if needed */
     font-size: 10px;
+    width:100px;
 }
 
 .dp-info {
