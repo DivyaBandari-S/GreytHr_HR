@@ -30,8 +30,6 @@ return new class extends Migration
             $table->string('skills_required');
             $table->boolean('is_featured')->default(false);
             $table->boolean('is_active')->default(true);
-            $table->timestamps();
-
             // Additional Fields
             $table->string('application_link')->nullable(); // Link to the application page
             $table->string('job_type')->default('Full-time');
@@ -39,12 +37,7 @@ return new class extends Migration
             $table->text('responsibilities')->nullable(); // Job responsibilities
             $table->text('benefits')->nullable(); // Job benefits
             $table->text('application_instructions')->nullable();
-            $table->foreign('company_id')
-            ->references('company_id')
-            ->on('companies')
-            ->onDelete('restrict')
-            ->onUpdate('cascade');
-            // Instructions for applying
+            $table->timestamps();
         });
 
         $triggerSQL = <<<SQL

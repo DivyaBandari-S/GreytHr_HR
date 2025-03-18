@@ -1,6 +1,12 @@
 const allSidebarSubmenu = document.querySelectorAll('#sidebar .sidebar__submenu');
 const mainSection = document.querySelector('#main');
-const hamburgerMenu = document.querySelector('#hamburgerMenu');
+const hamburgerMenu = document.querySelector('.menuIcon');
+
+const checkbox = document.querySelector('#checkbox');
+// const mainSection = document.querySelector('#main');
+
+
+
 
 allSidebarSubmenu.forEach(item => {
     const a = item.previousElementSibling;
@@ -27,28 +33,62 @@ allSidebarSubmenu.forEach(item => {
 
 const menuIcon = document.querySelector('.menuIcon');
 
-hamburgerMenu.addEventListener('click', function() {
+checkbox.addEventListener('change', function () {
+    const isChecked = this.checked;
     const isAnySubmenuActive = [...allSidebarSubmenu].some(item => item.classList.contains('active'));
 
-    if (isAnySubmenuActive) {
-        // Close all submenus
+    if (isChecked) {
+        if (isAnySubmenuActive) {
+            // Close all submenus
+            allSidebarSubmenu.forEach(item => {
+                item.previousElementSibling.classList.remove('clicked');
+                item.classList.remove('active');
+            });
+            mainSection.classList.remove('openLeftSubMenu');
+        } else {
+            // Open the first submenu if none are active
+            if (allSidebarSubmenu.length > 0) {
+                const firstSubmenu = allSidebarSubmenu[0];
+                firstSubmenu.previousElementSibling.classList.add('clicked');
+                firstSubmenu.classList.add('active');
+                mainSection.classList.add('openLeftSubMenu');
+            }
+        }
+    } else {
+        // Close everything when checkbox is unchecked
         allSidebarSubmenu.forEach(item => {
             item.previousElementSibling.classList.remove('clicked');
             item.classList.remove('active');
         });
         mainSection.classList.remove('openLeftSubMenu');
-        menuIcon.classList.replace('fa-arrow-right', 'fa-bars'); // Change back to hamburger
-    } else {
-        // Open the first submenu if none are active
-        if (allSidebarSubmenu.length > 0) {
-            const firstSubmenu = allSidebarSubmenu[0];
-            firstSubmenu.previousElementSibling.classList.add('clicked');
-            firstSubmenu.classList.add('active');
-            mainSection.classList.add('openLeftSubMenu');
-            menuIcon.classList.replace('fa-bars', 'fa-arrow-right'); // Change to arrow icon
-        }
     }
 });
+
+// hamburgerMenu.addEventListener('click', function(event) {
+//     event.stopPropagation();
+//     const isAnySubmenuActive = [...allSidebarSubmenu].some(item => item.classList.contains('active'));
+
+//     if (isAnySubmenuActive) {
+//         // Close all submenus
+//         allSidebarSubmenu.forEach(item => {
+//             item.previousElementSibling.classList.remove('clicked');
+//             item.classList.remove('active');
+//         });
+//         mainSection.classList.remove('openLeftSubMenu');
+//         // menuIcon.classList.replace('fa-arrow-right', 'fa-bars'); // Change back to hamburger
+//     } else {
+//         // Open the first submenu if none are active
+//         if (allSidebarSubmenu.length > 0) {
+//             const firstSubmenu = allSidebarSubmenu[0];
+//             firstSubmenu.previousElementSibling.classList.add('clicked');
+//             firstSubmenu.classList.add('active');
+//             mainSection.classList.add('openLeftSubMenu');
+//             // menuIcon.classList.replace('fa-bars', 'fa-arrow-right'); // Change to arrow icon
+//         }
+//     }
+// });
+
+
 
 // SIDEBAR: DROPDOWN MENU
 const allSidebarDropdownMenu = document.querySelectorAll('#sidebar .sidebar__dropdown-menu')
@@ -382,7 +422,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (typeof tabToggle === 'function') {
         tabToggle();
     }
-    
+
     // Update the scroll buttons if they exist
     if (scrollContainer) {
         updateButtons();

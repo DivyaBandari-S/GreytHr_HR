@@ -20,7 +20,7 @@ return new class extends Migration
             $table->date('leaving_date');
             $table->date('settlement_date');
             $table->date('processed_on');
-            $table->date('net_pay',15);
+            $table->date('net_pay');
             $table->text('remarks');
             $table->tinyInteger('is_lock')->default(1);
             $table->tinyInteger('status')->default(1);

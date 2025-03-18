@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Helpers\FlashMessageHelper;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 
@@ -17,24 +18,11 @@ class LogOut extends Component
     public function confirmLogout()
     {
         try {
-            // List of guards
-            $guards = [  'hr',];
-
-            // Determine the authenticated guard and log out
-            foreach ($guards as $guard) {
-                if (Auth::guard($guard)->check()) {
-                    Auth::guard($guard)->logout();
-                    break; // Exit loop once logged out
-                }
-            }
-
+            Auth::logout();
             session()->invalidate();
-            session()->regenerateToken();
-            session()->flush(); // Clear session data
+            FlashMessageHelper::flashSuccess("You are logged out successfully!");
 
             // Flash success message
-            session()->flash('success', 'You are logged out successfully!');
-
             // Redirect to the login page
             return redirect()->route('hrlogin');
         } catch (\Exception $exception) {
@@ -53,5 +41,4 @@ class LogOut extends Component
     {
         return view('livewire.log-out');
     }
-
 }
