@@ -105,14 +105,14 @@
                     <li>
                         <a href="#">Main<i class="ph-caret-right-fill"></i></a>
                         <ul class="sidebar__dropdown-menu">
-                            <li><a href="">Overview</a></li>
+                        <li><a href="/hr/user/payroll-overview">Overview</a></li>
                         </ul>
                     </li>
                     <li>
                         <a href="#">Information <i class="ph-caret-right-fill"></i></a>
                         <ul class="sidebar__dropdown-menu">
-                            <li><a href="/hr/user/employee-salary">Salary Revision History</a></li>
-                            <li><a href="/hr/user/salary-revision-analytics">Salary Revision Analytics</a></li>
+                        <li><a href="/hr/user/employee-salary-history">Salary Revision History</a></li>
+                        <li><a href="/hr/user/salary-revision-analytics">Salary Revision Analytics</a></li>
                         </ul>
                     </li>
                     <li>
@@ -122,16 +122,16 @@
                             <li><a href="/hr/user/loans">Loan</a></li>
                             <li><a href="/hr/user/salary-revision-list">Salary Revision</a></li>
                             <li><a href="/hr/income-tax">Income Tax</a></li>
-                            <li><a href="/hr/user/generate-letter">Salary</a></li>
-                            <li><a href="/user">Loan</a></li>
-                            <li><a href="/user">Salary Revision</a></li>
+                        <li><a href="/hr/user/payroll-salary">Salary</a></li>
+                        <li><a href="/hr/user/loans">Loan</a></li>
+                        <li><a href="/hr/user/salary-revision-list">Salary Revision</a></li>
                             <li><a href="/user">Income Tax</a></li>
                             <li><a href="/user">Reimbursement</a></li>
-                            <li><a href="/user">Employee LOP Days</a></li>
-                            <li><a href="/user">Stop Salary Processing</a></li>
+                            <li><a href="/hr/user/employee-lop-days">Employee LOP Days</a></li>
+                            <li><a href="/hr/user/stop-salaries">Stop Salary Processing</a></li>
                             <li><a href="/user">Arrears</a></li>
-                            <li><a href="/user">Release Salary</a></li>
-                            <li><a href="/user">Final Settlement</a></li>
+                            <li><a href="/hr/user/release-salary">Release Salary</a></li>
+                            <li><a href="/hr/user/final-settlement">Final Settlement</a></li>
                             <li><a href="/user">Resettlement</a></li>
                             <li><a href="/user">Overtime Register</a></li>
                         </ul>
@@ -321,7 +321,7 @@
                     </div>
 
                  </div>
-                
+
                 <!-- <div class="ribbon">
                     <span>Primary</span>
                 </div> -->
@@ -333,7 +333,7 @@
                 </ul>
             </div>
             <ul class="main__top__menu">
-                
+
                 <li class="notification">
                     <a href="#">
                         <i class="ph-bell"></i>
