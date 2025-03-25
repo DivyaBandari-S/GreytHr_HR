@@ -1,7 +1,7 @@
 <!-- start: MAIN -->
 <section>
     <!-- start: MAIN BODY -->
-    <div >
+    <div>
         <section class="tab-section">
             <div class="container-fluid">
                 <div class="tab-pane">
@@ -39,120 +39,68 @@
                         </button> -->
                 </div>
                 <div class="tab-page active" data-tab-page="active">
-                    <h1 class="tab-page-title">Active</h1>
-                    <div class="row m-0 mb-4">
-                        <div class="col-md-7 m-auto " style="text-align: center;line-height:2;">
-
-                            <h4 style="background: linear-gradient(90deg, #0F3057, #045575); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Welcome Divya Bandari, your dashboard is ready!</h4>
-
-                            <p class="p-0 " style="color: #565656;font-size:12px;">Congratulations! Your affiliate dashboard is now ready for use. You have access to view profiles, requests, and job details. Get started and make the most out of your affiliate opportunities.</p>
-
-                        </div>
-
-                        <div class="col-md-5">
-
-                            <img src="{{ asset('images/admin_banner.png') }}" alt="Image Description" style="width: 100%;">
-
-                        </div>
-
-                    </div>
 
                     <div class="row m-0">
 
-                        <div class="col-md-8">
+                        <div class="col-md-8 sec-2">
 
                             <div class="container-sec">
                                 <div class="d-flex justify-content-between align-items-center">
-                                    <h5 class="fw-bold" style="font-size: 18px">My Favourites</h5>
+                                    <h5 class="fw-bold">My Favourites</h5>
                                     <div class="navigation">
                                         <button id="prev" disabled>&larr;</button>
                                         <button id="next">&rarr;</button>
                                     </div>
                                 </div>
+
                                 <div class="scroll-container" id="scrollContainer">
-                                    <div data-bs-toggle="modal" data-bs-target="#addFavModal" class="scroll-item blue-bg" style="width: 2em; text-align: center;">
+                                    <div wire:click="toggleContent" class="scroll-item blue-bg" style="width: 2em; text-align: center;">
                                         <i class="fa-solid fa-plus" style="padding-top: 4.5em;"></i>
                                     </div>
-                                    <div class="scroll-item blue-bg pt-3 ps-3 pe-3">
-                                        <div class="row m-0">
-                                            <div class="col-6 p-0">
-                                                <i class="fa-regular fa-user blue-bg-icon"></i>
-                                            </div>
-                                            <div class="col-6 p-0 text-end">
-                                                <i class="fa-solid fa-xmark closeIconFav"></i>
-                                            </div>
-                                        </div>
-                                        
-                                        <p>Update Employee Data</P>
-                                    </div>
+                                    <?php
+                                    // Initialize a counter to track the order of items
+                                    $counter = 0;
+                                    $maxItemsToShow = 10; // Number of items to show in the main container
 
-                                    <div class="scroll-item blue-bg pt-3 ps-3 pe-3">
-                                        <div class="row m-0">
-                                            <div class="col-6 p-0">
-                                                <i class="fa-regular fa-user blue-bg-icon"></i>
-                                            </div>
-                                            <div class="col-6 p-0 text-end">
-                                                <i class="fa-solid fa-xmark closeIconFav"></i>
-                                            </div>
-                                        </div>
-                                        <p>Update Employee Data</P>
-                                    </div>
-                                    <div class="scroll-item blue-bg pt-3 ps-3 pe-3">
-                                        <div class="row m-0">
-                                            <div class="col-6 p-0">
-                                                <i class="fa-regular fa-user blue-bg-icon"></i>
-                                            </div>
-                                            <div class="col-6 p-0 text-end">
-                                                <i class="fa-solid fa-xmark closeIconFav"></i>
-                                            </div>
-                                        </div>
-                                        <p>Update Employee Data</P>
-                                    </div>
+                                    // Check if $overviewItems is an array
+                                    if (is_array($overviewItems)) {
+                                        // Loop through your overview content list
+                                        foreach ($overviewItems as $contentList) {
+                                            // Ensure that the necessary keys exist
+                                            if (!isset($contentList['content']) || !isset($contentList['bgClass']) || !isset($contentList['iconClass'])) {
+                                                continue; // Skip if any of the required fields are missing
+                                            }
 
-                                    <div class="scroll-item orag-bg pt-3 ps-3 pe-3">
-                                        <div class="row m-0">
-                                            <div class="col-6 p-0">
-                                                <i class="fa-regular fa-user orag-bg-icon"></i>
-                                            </div>
-                                            <div class="col-6 p-0 text-end">
-                                                <i class="fa-solid fa-xmark closeIconFav"></i>
-                                            </div>
-                                        </div>
-                                        <p>Update Employee Data</P>
-                                    </div>
-                                    <div class="scroll-item orag-bg pt-3 ps-3 pe-3">
-                                        <div class="row m-0">
-                                            <div class="col-6 p-0">
-                                                <i class="fa-regular fa-user orag-bg-icon"></i>
-                                            </div>
-                                            <div class="col-6 p-0 text-end">
-                                                <i class="fa-solid fa-xmark closeIconFav"></i>
-                                            </div>
-                                        </div>
-                                        <p>Update Employee Data</P>
-                                    </div>
-                                    <div class="scroll-item orag-bg pt-3 ps-3 pe-3">
-                                        <div class="row m-0">
-                                            <div class="col-6 p-0">
-                                                <i class="fa-regular fa-user orag-bg-icon"></i>
-                                            </div>
-                                            <div class="col-6 p-0 text-end">
-                                                <i class="fa-solid fa-xmark closeIconFav"></i>
-                                            </div>
-                                        </div>
-                                        <p>Update Employee Data</P>
-                                    </div>
-                                    <div class="scroll-item orag-bg pt-3 ps-3 pe-3">
-                                        <div class="row m-0">
-                                            <div class="col-6 p-0">
-                                                <i class="fa-regular fa-user orag-bg-icon"></i>
-                                            </div>
-                                            <div class="col-6 p-0 text-end">
-                                                <i class="fa-solid fa-xmark closeIconFav"></i>
-                                            </div>
-                                        </div>
-                                        <p>Update Employee Data</P>
-                                    </div>
+                                            // Stop after 10 items across all categories (breaking both loops)
+                                            if ($counter >= $maxItemsToShow) {
+                                                break; // Exit the loop when the maximum number of items is reached
+                                            }
+
+                                            // Ensure content is a string (in case it's an array)
+                                            $content = is_array($contentList['content']) ? implode(' ', $contentList['content']) : $contentList['content'];
+                                            $route = ($contentList['route']); // Make sure route is properly escaped
+
+                                    ?>
+                                            <a href="<?php echo $route; ?>" class="scroll-item <?php echo ($contentList['bgClass']); ?> pt-3 ps-3 pe-3">
+                                                <div class="row m-0">
+                                                    <div class="col-6 p-0">
+                                                        <i class=" <?php echo ($contentList['iconClass']); ?> <?php echo ($contentList['bgClass']); ?>-icon"></i>
+                                                    </div>
+                                                    <div class="col-6 p-0 text-end">
+                                                        <i class="fa-solid fa-xmark closeIconFav"></i>
+                                                    </div>
+                                                </div>
+                                                <p><?php echo ($content); ?></p>
+                                            </a>
+                                    <?php
+                                            // Increment counter for the next item
+                                            $counter++;
+                                        }
+                                    } else {
+                                        // Handle case if $overviewItems is not an array (error or unexpected data)
+                                        echo 'No overview items available.';
+                                    }
+                                    ?>
                                 </div>
                             </div>
 
@@ -160,37 +108,14 @@
                                 <div class="col-md-4">
                                     <div class="card-stat">
                                         <div class="background-stat">
-                                            <p>Available Position</p>
+                                            <p>Total Employees</p>
                                         </div>
                                         <div class="logo-stat">
                                             <p class="logo-svg-stat">
                                                 24
                                             </p>
                                         </div>
-                                        <div class="box-stat box2-stat"> 
-                                            <span class="icon-stat">
-                                                <p>4</p>
-                                            </span>
-                                        </div>
-                                        <div class="box-stat box3-stat">
-                                            <span class="icon-stat">
-                                            </span>
-                                        </div>
-                                        <div class="box-stat box4-stat"></div>
-                                    </div>
-                                </div>
-
-                                <div class="col-md-4">
-                                    <div class="card-stat">
-                                        <div class="background-stat">
-                                            <p>Job Open</p>
-                                        </div>
-                                        <div class="logo-stat">
-                                            <p class="logo-svg-stat">
-                                                24
-                                            </p>
-                                        </div>
-                                        <div class="box-stat box2-stat"> 
+                                        <div class="box-stat box2-stat">
                                             <span class="icon-stat">
                                                 <p>4</p>
                                             </span>
@@ -213,7 +138,7 @@
                                                 24
                                             </p>
                                         </div>
-                                        <div class="box-stat box2-stat"> 
+                                        <div class="box-stat box2-stat">
                                             <span class="icon-stat">
                                                 <p>4</p>
                                             </span>
@@ -225,34 +150,7 @@
                                         <div class="box-stat box4-stat"></div>
                                     </div>
                                 </div>
-                                
-                            </div>
-
-                            <div class="row m-0">
-                                <div class="col-md-6">
-                                    <div class="card-stat">
-                                        <div class="background-stat">
-                                            <p>Total Employees</p>
-                                        </div>
-                                        <div class="logo-stat">
-                                            <p class="logo-svg-stat">
-                                                24
-                                            </p>
-                                        </div>
-                                        <div class="box-stat box2-stat"> 
-                                            <span class="icon-stat">
-                                                <p>4</p>
-                                            </span>
-                                        </div>
-                                        <div class="box-stat box3-stat">
-                                            <span class="icon-stat">
-                                            </span>
-                                        </div>
-                                        <div class="box-stat box4-stat"></div>
-                                    </div>
-                                </div>
-
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <div class="card-stat">
                                         <div class="background-stat">
                                             <p>Resignation Request(s)</p>
@@ -262,7 +160,7 @@
                                                 24
                                             </p>
                                         </div>
-                                        <div class="box-stat box2-stat"> 
+                                        <div class="box-stat box2-stat">
                                             <span class="icon-stat">
                                                 <p>4</p>
                                             </span>
@@ -274,8 +172,8 @@
                                         <div class="box-stat box4-stat"></div>
                                     </div>
                                 </div>
-                                
                             </div>
+
 
                             <!-- <div class="border m-0 rounded row mb-3">
                                 <div class="border-bottom m-0 mt-3 row">
@@ -292,120 +190,23 @@
 
                         </div>
 
-                        <div class="col-md-4">
-
-                            <div class="m-0 mb-3 row" style="background-color: #fcf2ff; border-radius: 10px;">
-                                <img class="ps-2" style="width: 10em" src="images/onboarding.png"/>
-                                <h4 class="ps-4">Onboarding Session</h4>
-                                <p class="ps-4 pink-color">Worried about setting up your account?</p>
-                                <p class="ps-4 pink-color">Let our product experts help you get started and resolve any of your product-related problems.</p>
-                                <p class="ps-4 pink-color">Hurry Up! Book your free 30-min onboarding call now!</p>
-                                <hr></hr>
-                                <a class="ps-4 text-primary mb-3" href="#">Get Guided By The Best!</a>
-                            </div>
-
-                            <div class="border mb-3 rounded row">
-                                <div class="border-bottom m-0 mt-3 row">
-                                    <div class="col-md-12">
-                                        <p class="fw-bold mb-0">Top 5 Leave Taker for CL</p>
-                                        <p class="fs12">01 Nov 2024 to 28 Feb 2025</p>
-                                    </div>
+                        <div class="col-md-4 sec-3">
+                            <div class="m-0 mb-3 row text-center" style="border-radius: 10px; border: 1px solid #ff3c6c;">
+                                <div class="row m-0 p-0 mb-3" style="border-radius: 10px;">
+                                    <img class="p-0" style="width: 100%; border-radius: 10px;" src="{{ asset('/images/hr_image.jpg') }}" />
                                 </div>
-                                <div class="table-responsive p-0">
-                                    <table class="table fs12">
-                                        <thead class="table-secondary">
-                                            <tr>
-                                                <th scope="col">ID</th>
-                                                <th scope="col">Name</th>
-                                                <th scope="col">Team</th>
-                                                <th scope="col">Priority</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td>PRO-001</td>
-                                                <td>Alok BD</td>
-                                                <td>
-                                                    <div class="avatar-list-stacked avatar-group-sm">
-                                                        <span class="avatar avatar-rounded">
-                                                            <img class="border border-white" src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-27.jpg" alt="img">
-                                                        </span>
-                                                        <span class="avatar avatar-rounded">
-                                                            <img class="border border-white" src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-30.jpg" alt="img">
-                                                        </span>
-                                                        <span class="avatar avatar-rounded">
-                                                            <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-14.jpg" alt="img">
-                                                        </span>
-                                                        <span class="avatar avatar-rounded">
-                                                            <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-29.jpg" alt="img">
-                                                        </span>
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <span class="badge text-bg-danger">High</span>
-                                                </td>
-                                            </tr>
-
-                                            <tr>
-                                                <td>PRO-002</td>
-                                                <td>T Akash</td>
-                                                <td>
-                                                    <div class="avatar-list-stacked avatar-group-sm">
-                                                        <span class="avatar avatar-rounded">
-                                                            <img class="border border-white" src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-27.jpg" alt="img">
-                                                        </span>
-                                                        <span class="avatar avatar-rounded">
-                                                            <img class="border border-white" src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-30.jpg" alt="img">
-                                                        </span>
-                                                        <span class="avatar avatar-rounded">
-                                                            <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-14.jpg" alt="img">
-                                                        </span>
-                                                        <span class="avatar avatar-rounded">
-                                                            <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-29.jpg" alt="img">
-                                                        </span>
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <span class="badge text-bg-danger">High</span>
-                                                </td>
-                                            </tr>
-
-                                            <tr>
-                                                <td>PRO-003</td>
-                                                <td>Akhil KC</td>
-                                                <td>
-                                                    <div class="avatar-list-stacked avatar-group-sm">
-                                                        <span class="avatar avatar-rounded">
-                                                            <img class="border border-white" src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-27.jpg" alt="img">
-                                                        </span>
-                                                        <span class="avatar avatar-rounded">
-                                                            <img class="border border-white" src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-30.jpg" alt="img">
-                                                        </span>
-                                                        <span class="avatar avatar-rounded">
-                                                            <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-14.jpg" alt="img">
-                                                        </span>
-                                                        <span class="avatar avatar-rounded">
-                                                            <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-29.jpg" alt="img">
-                                                        </span>
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <span class="badge text-bg-danger">High</span>
-                                                </td>
-                                            </tr>
-                                            
-                                        </tbody>
-                                    </table>
+                                <h4>Hello Meena</h4>
+                                <p class="fs12">Let our product experts help you get started and resolve any of your product-related problems.</p>
+                                <div class="m-0 mb-3">
+                                    <button class="btn btn-success btn-sm" href="#">Review it</button>
                                 </div>
-
-                                
                             </div>
 
                         </div>
 
                     </div>
 
-                    <div class="border m-0 rounded row">
+                    <div class="border m-0 rounded row empStatus">
                         <div class="border-bottom m-0 mt-3 row">
                             <div class="col-md-6">
                                 <p class="fw-bold">Employee Status</p>
@@ -496,8 +297,8 @@
 
                     <div class="row m-0 mt-3">
 
-                        <div class="col-md-6 ps-0">
-                            <div class="border m-0 rounded row mb-3">
+                        <div class="col-md-6 ps-0 empTab">
+                            <div class="border m-0 rounded row mb-3 empTab">
                                 <div class="m-0 mt-3 row">
                                     <div class="col-md-6">
                                         <p class="fw-bold">Employees</p>
@@ -517,10 +318,10 @@
                                 </div>
 
                                 <div class="row m-0 mt-3">
-                                    
+
                                     <div class="m-0 mb-3 p-2 row border-bottom">
                                         <div style="display: flex; align-items: center;">
-                                            <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-24.jpg" 
+                                            <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-24.jpg"
                                                 style="width: 2em; height: 2em; border-radius: 50%; margin-right: 8px;" />
                                             <div style="display: flex; flex-direction: column;">
                                                 <p style="font-weight: bold; margin: 0; font-size: 14px;">Daniel Esbella</p>
@@ -533,7 +334,7 @@
                                     </div>
                                     <div class="m-0 mb-3 p-2 row border-bottom">
                                         <div style="display: flex; align-items: center;">
-                                            <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-24.jpg" 
+                                            <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-24.jpg"
                                                 style="width: 2em; height: 2em; border-radius: 50%; margin-right: 8px;" />
                                             <div style="display: flex; flex-direction: column;">
                                                 <p style="font-weight: bold; margin: 0; font-size: 14px;">Daniel Esbella</p>
@@ -546,7 +347,7 @@
                                     </div>
                                     <div class="m-0 mb-3 p-2 row border-bottom">
                                         <div style="display: flex; align-items: center;">
-                                            <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-24.jpg" 
+                                            <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-24.jpg"
                                                 style="width: 2em; height: 2em; border-radius: 50%; margin-right: 8px;" />
                                             <div style="display: flex; flex-direction: column;">
                                                 <p style="font-weight: bold; margin: 0; font-size: 14px;">Daniel Esbella</p>
@@ -559,7 +360,7 @@
                                     </div>
                                     <div class="m-0 mb-3 p-2 row border-bottom">
                                         <div style="display: flex; align-items: center;">
-                                            <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-24.jpg" 
+                                            <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-24.jpg"
                                                 style="width: 2em; height: 2em; border-radius: 50%; margin-right: 8px;" />
                                             <div style="display: flex; flex-direction: column;">
                                                 <p style="font-weight: bold; margin: 0; font-size: 14px;">Daniel Esbella</p>
@@ -573,9 +374,103 @@
                                 </div>
 
                             </div>
+                            <div class="border mb-3 rounded row m-0">
+                                <div class="border-bottom m-0 mt-3 row">
+                                    <div class="col-md-12">
+                                        <p class="fw-bold mb-0">Top 5 Leave Taker for CL</p>
+                                        <p class="fs12">01 Nov 2024 to 28 Feb 2025</p>
+                                    </div>
+                                </div>
+                                <div class="table-responsive p-0">
+                                    <table class="table fs12">
+                                        <thead class="table-secondary">
+                                            <tr>
+                                                <th scope="col">ID</th>
+                                                <th scope="col">Name</th>
+                                                <th scope="col">Team</th>
+                                                <th scope="col">Priority</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>PRO-001</td>
+                                                <td>Alok BD</td>
+                                                <td>
+                                                    <div class="avatar-list-stacked avatar-group-sm">
+                                                        <span class="avatar avatar-rounded">
+                                                            <img class="border border-white" src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-27.jpg" alt="img">
+                                                        </span>
+                                                        <span class="avatar avatar-rounded">
+                                                            <img class="border border-white" src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-30.jpg" alt="img">
+                                                        </span>
+                                                        <span class="avatar avatar-rounded">
+                                                            <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-14.jpg" alt="img">
+                                                        </span>
+                                                        <span class="avatar avatar-rounded">
+                                                            <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-29.jpg" alt="img">
+                                                        </span>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <span class="badge text-bg-danger">High</span>
+                                                </td>
+                                            </tr>
+
+                                            <tr>
+                                                <td>PRO-002</td>
+                                                <td>T Akash</td>
+                                                <td>
+                                                    <div class="avatar-list-stacked avatar-group-sm">
+                                                        <span class="avatar avatar-rounded">
+                                                            <img class="border border-white" src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-27.jpg" alt="img">
+                                                        </span>
+                                                        <span class="avatar avatar-rounded">
+                                                            <img class="border border-white" src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-30.jpg" alt="img">
+                                                        </span>
+                                                        <span class="avatar avatar-rounded">
+                                                            <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-14.jpg" alt="img">
+                                                        </span>
+                                                        <span class="avatar avatar-rounded">
+                                                            <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-29.jpg" alt="img">
+                                                        </span>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <span class="badge text-bg-danger">High</span>
+                                                </td>
+                                            </tr>
+
+                                            <tr>
+                                                <td>PRO-003</td>
+                                                <td>Akhil KC</td>
+                                                <td>
+                                                    <div class="avatar-list-stacked avatar-group-sm">
+                                                        <span class="avatar avatar-rounded">
+                                                            <img class="border border-white" src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-27.jpg" alt="img">
+                                                        </span>
+                                                        <span class="avatar avatar-rounded">
+                                                            <img class="border border-white" src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-30.jpg" alt="img">
+                                                        </span>
+                                                        <span class="avatar avatar-rounded">
+                                                            <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-14.jpg" alt="img">
+                                                        </span>
+                                                        <span class="avatar avatar-rounded">
+                                                            <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-29.jpg" alt="img">
+                                                        </span>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <span class="badge text-bg-danger">High</span>
+                                                </td>
+                                            </tr>
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
-                        
-                        <div class="col-md-6 pe-0">
+
+                        <div class="col-md-6 pe-0 empTab2">
                             <div class="border m-0 rounded row">
                                 <div class="border-bottom m-0 mt-3 row">
                                     <div class="col-md-6">
@@ -607,7 +502,7 @@
                                     </div> -->
                                     <div class="m-0 mb-3 p-2 row border">
                                         <div style="display: flex; align-items: center;">
-                                            <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-24.jpg" 
+                                            <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-24.jpg"
                                                 style="width: 2em; height: 2em; border-radius: 50%; margin-right: 8px;" />
                                             <div style="display: flex; flex-direction: column;">
                                                 <p style="font-weight: bold; margin: 0; font-size: 14px;">Daniel Esbella</p>
@@ -619,7 +514,7 @@
                                     </div>
                                     <div class="m-0 mb-3 p-2 row border">
                                         <div style="display: flex; align-items: center;">
-                                            <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-24.jpg" 
+                                            <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-24.jpg"
                                                 style="width: 2em; height: 2em; border-radius: 50%; margin-right: 8px;" />
                                             <div style="display: flex; flex-direction: column;">
                                                 <p style="font-weight: bold; margin: 0; font-size: 14px;">Daniel Esbella</p>
@@ -631,7 +526,7 @@
                                     </div>
                                     <div class="m-0 mb-3 p-2 row border">
                                         <div style="display: flex; align-items: center;">
-                                            <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-24.jpg" 
+                                            <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-24.jpg"
                                                 style="width: 2em; height: 2em; border-radius: 50%; margin-right: 8px;" />
                                             <div style="display: flex; flex-direction: column;">
                                                 <p style="font-weight: bold; margin: 0; font-size: 14px;">Daniel Esbella</p>
@@ -643,7 +538,7 @@
                                     </div>
                                     <div class="m-0 mb-3 p-2 row border">
                                         <div style="display: flex; align-items: center;">
-                                            <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-24.jpg" 
+                                            <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-24.jpg"
                                                 style="width: 2em; height: 2em; border-radius: 50%; margin-right: 8px;" />
                                             <div style="display: flex; flex-direction: column;">
                                                 <p style="font-weight: bold; margin: 0; font-size: 14px;">Daniel Esbella</p>
@@ -655,7 +550,7 @@
                                     </div>
                                     <div class="m-0 mb-3 p-2 row border">
                                         <div style="display: flex; align-items: center;">
-                                            <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-24.jpg" 
+                                            <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-24.jpg"
                                                 style="width: 2em; height: 2em; border-radius: 50%; margin-right: 8px;" />
                                             <div style="display: flex; flex-direction: column;">
                                                 <p style="font-weight: bold; margin: 0; font-size: 14px;">Daniel Esbella</p>
@@ -679,11 +574,11 @@
                                             </div>
                                         </div>
                                     </div>
-                                    
+
                                     <p class="fw-bold fs14 p-0">Late</p>
                                     <div class="m-0 mb-3 p-2 row border">
                                         <div style="display: flex; align-items: center;">
-                                            <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-24.jpg" 
+                                            <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-24.jpg"
                                                 style="width: 2em; height: 2em; border-radius: 50%; margin-right: 8px;" />
                                             <div style="display: flex; flex-direction: column;">
                                                 <p style="font-weight: bold; margin: 0; font-size: 14px;">Daniel Esbella</p>
@@ -705,7 +600,7 @@
                     </div>
 
                     <div class="row m-0 mt-3">
-                        
+
                         <!-- <div class="col-md-6 ps-0">
                             <div class="border m-0 rounded row">
                                 <div class="border-bottom m-0 mt-3 row">
@@ -929,185 +824,80 @@
                                         </div>
                                     </div>
                                 </div>
-                                
+
                             </div>
                         </div>
                     </div>
                 </div>
-                
+
             </div>
         </section>
     </div>
 
 
 
-<!-- Modal -->
-<div class="modal fade" id="addFavModal" tabindex="-1" aria-labelledby="addFavModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg modal-dialog-scrollable">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="addFavModalLabel">Search</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <div class="input-group flex-nowrap mb-3">
-            <span class="input-group-text" id="addon-wrapping"><i class="fa-solid fa-magnifying-glass"></i></span>
-            <input type="text" class="form-control" placeholder="Search here" aria-label="Username" aria-describedby="addon-wrapping">
-        </div>
-            <span class="badge text-bg-light chipinAddForm">All</span>
-            <span class="badge text-bg-light chipinAddForm">My Favourites</span>
-            <span class="badge text-bg-light chipinAddForm">Employee</span>
-            <span class="badge text-bg-light chipinAddForm">Payroll</span>
-            <span class="badge text-bg-light chipinAddForm">Leave</span>
-            <span class="badge text-bg-light chipinAddForm">Other</span>
-        <div class="row m-0">
-            <div class="col-md-3">
-                <div class="blue-bg pt-3 ps-3 pe-3 rounded-3 mb-3">
-                    <div class="row m-0">
-                        <div class="col-6 p-0">
-                            <i class="fa-regular fa-user blue-bg-icon"></i>
-                        </div>
-                        <div class="col-6 p-0 text-end">
-                            <i class="fa-regular fa-star"></i>
-                        </div>
-                    </div>
-                    <p>Update Employee Data</P>
+    <!-- Modal -->
+    @if($showDynamicContent)
+    <div class="modal" id="logoutModal" tabindex="-1" style="display: block;">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header text-white">
+                    <h6 class="modal-title " id="logoutModalLabel" style="align-items: center;">Search</h6>
+                    <button type="button" class="btn-close" wire:click="toggleContent" style="cursor: pointer;"></button>
                 </div>
-            </div>
+                <div class="modal-body">
+                    <div class="input-group flex-nowrap">
+                        <span class="input-group-text"><i class="fa-solid fa-magnifying-glass"></i></span>
+                        <input type="text" class="form-control" wire:model.live="searchContent" placeholder="Search here">
+                    </div>
+                    <div class="row m-0 mb-3">
+                        <p class="mt-1x">
+                            <span class="chipTextFav {{ $categoryFilter === '' ? 'active' : '' }}" wire:click="setCategory('')">All</span>
+                            <span class="chipTextFav {{ $categoryFilter === 'favorites' ? 'active' : '' }}" wire:click="setCategory('favorites')">My Favourites</span>
+                            <span class="chipTextFav {{ $categoryFilter === 'employee' ? 'active' : '' }}" wire:click="setCategory('employee')">Employee</span>
+                            <span class="chipTextFav {{ $categoryFilter === 'payroll' ? 'active' : '' }}" wire:click="setCategory('payroll')">Payroll</span>
+                            <span class="chipTextFav {{ $categoryFilter === 'leave' ? 'active' : '' }}" wire:click="setCategory('leave')">Leave</span>
+                            <span class="chipTextFav {{ $categoryFilter === 'attendance' ? 'active' : '' }}" wire:click="setCategory('attendance')">Attendance</span>
+                            <span class="chipTextFav {{ $categoryFilter === 'other' ? 'active' : '' }}" wire:click="setCategory('other')">Other</span>
+                        </p>
 
-            <div class="col-md-3">
-                <div class="blue-bg pt-3 ps-3 pe-3 rounded-3 mb-3">
-                    <div class="row m-0">
-                        <div class="col-6 p-0">
-                            <i class="fa-regular fa-user blue-bg-icon"></i>
-                        </div>
-                        <div class="col-6 p-0 text-end">
-                            <i class="fa-regular fa-star"></i>
-                        </div>
                     </div>
-                    <p>Update Employee Data</P>
-                </div>
-            </div>
 
-            <div class="col-md-3">
-                <div class="blue-bg pt-3 ps-3 pe-3 rounded-3 mb-3">
-                    <div class="row m-0">
-                        <div class="col-6 p-0">
-                            <i class="fa-regular fa-user blue-bg-icon"></i>
-                        </div>
-                        <div class="col-6 p-0 text-end">
-                            <i class="fa-regular fa-star"></i>
-                        </div>
+                    <div class="row m-0" style="max-height:350px;overflow-y:auto;">
+                        <?php
+                        foreach ($this->overviewItems as $item) {
+                        ?>
+                            <div class="col-md-3 homeContainers d-flex flex-column">
+                                <div class="<?php echo $item['bgClass']; ?> pt-3 ps-3 pe-3 rounded-3 mb-3 flex-grow-1">
+                                    <div class="row m-0">
+                                        <div class="col-6 p-0">
+                                            <!-- Display the dynamic icon for each item -->
+                                            <i class="<?php echo $item['iconClass']; ?> <?php echo $item['bgClass']; ?>-icon"></i>
+                                        </div>
+                                        <div class="col-6 p-0 text-end" wire:click="getModuleName('{{ $item['content'] }}', '{{ $item['category'] }}')">
+                                            <i class="{{ $item['isStarred'] ? 'fa-solid active' : 'fa-regular' }} fa-star" style="cursor: pointer;"></i>
+                                        </div>
+                                    </div>
+                                    <p class="text-truncate" title="<?php echo htmlspecialchars(is_array($item['content']) ? implode(' ', $item['content']) : $item['content']); ?>">
+                                        <?php echo htmlspecialchars(is_array($item['content']) ? implode(' ', $item['content']) : $item['content']); ?>
+                                    </p>
+                                </div>
+                            </div>
+                        <?php
+                        }
+                        ?>
                     </div>
-                    <p>Update Employee Data</P>
-                </div>
-            </div>
 
-            <div class="col-md-3">
-                <div class="orag-bg pt-3 ps-3 pe-3 rounded-3 mb-3">
-                    <div class="row m-0">
-                        <div class="col-6 p-0">
-                            <i class="fa-regular fa-user orag-bg-icon"></i>
-                        </div>
-                        <div class="col-6 p-0 text-end">
-                            <i class="fa-regular fa-star"></i>
-                        </div>
-                    </div>
-                    <p>Update Employee Data</P>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="orag-bg pt-3 ps-3 pe-3 rounded-3 mb-3">
-                    <div class="row m-0">
-                        <div class="col-6 p-0">
-                            <i class="fa-regular fa-user orag-bg-icon"></i>
-                        </div>
-                        <div class="col-6 p-0 text-end">
-                            <i class="fa-regular fa-star"></i>
-                        </div>
-                    </div>
-                    <p>Update Employee Data</P>
-                </div>
-            </div>
 
-            <div class="col-md-3">
-                <div class="orag-bg pt-3 ps-3 pe-3 rounded-3 mb-3">
-                    <div class="row m-0">
-                        <div class="col-6 p-0">
-                            <i class="fa-regular fa-user orag-bg-icon"></i>
-                        </div>
-                        <div class="col-6 p-0 text-end">
-                            <i class="fa-regular fa-star"></i>
-                        </div>
-                    </div>
-                    <p>Update Employee Data</P>
                 </div>
-            </div>
-
-            <div class="col-md-3">
-                <div class="orag-bg pt-3 ps-3 pe-3 rounded-3 mb-3">
-                    <div class="row m-0">
-                        <div class="col-6 p-0">
-                            <i class="fa-regular fa-user orag-bg-icon"></i>
-                        </div>
-                        <div class="col-6 p-0 text-end">
-                            <i class="fa-regular fa-star"></i>
-                        </div>
-                    </div>
-                    <p>Update Employee Data</P>
-                </div>
-            </div>
-
-            <div class="col-md-3">
-                <div class="orag-bg pt-3 ps-3 pe-3 rounded-3 mb-3">
-                    <div class="row m-0">
-                        <div class="col-6 p-0">
-                            <i class="fa-regular fa-user orag-bg-icon"></i>
-                        </div>
-                        <div class="col-6 p-0 text-end">
-                            <i class="fa-regular fa-star"></i>
-                        </div>
-                    </div>
-                    <p>Update Employee Data</P>
-                </div>
-            </div>
-
-            <div class="col-md-3">
-                <div class="orag-bg pt-3 ps-3 pe-3 rounded-3 mb-3">
-                    <div class="row m-0">
-                        <div class="col-6 p-0">
-                            <i class="fa-regular fa-user orag-bg-icon"></i>
-                        </div>
-                        <div class="col-6 p-0 text-end">
-                            <i class="fa-regular fa-star"></i>
-                        </div>
-                    </div>
-                    <p>Update Employee Data</P>
-                </div>
-            </div>
-
-            <div class="col-md-3">
-                <div class="orag-bg pt-3 ps-3 pe-3 rounded-3 mb-3">
-                    <div class="row m-0">
-                        <div class="col-6 p-0">
-                            <i class="fa-regular fa-user orag-bg-icon"></i>
-                        </div>
-                        <div class="col-6 p-0 text-end">
-                            <i class="fa-regular fa-star"></i>
-                        </div>
-                    </div>
-                    <p>Update Employee Data</P>
+                <div class="modal-footer">
+                    <button type="button" class="cancel-btn" wire:click="toggleContent">Close</button>
                 </div>
             </div>
         </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
-      </div>
     </div>
-  </div>
-</div>
+    <div class="modal-backdrop fade show"></div>
+    @endif
     <!-- end: MAIN BODY -->
 
 </section>

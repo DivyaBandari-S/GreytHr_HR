@@ -121,8 +121,8 @@ body {
 	position: absolute;
 	top: 50%;
 	transform: translateY(-50%);
-	border: 8px solid;
-	border-color: transparent var(--white) transparent transparent;
+	border: 2px solid;
+	/* border-color: transparent var(--white) transparent transparent; */
 	right: -16px;
 	display: none;
 }
@@ -168,7 +168,33 @@ body {
 	padding: 1.25rem;
 	transition: all .2s;
 }
-#sidebar .sidebar__submenu.active {
+/* #sidebar .sidebar__submenu.active {
+	opacity: 1;
+	visibility: visible;
+
+} */
+.clicked::before {
+	content: "";
+    position: absolute;
+    top: 50%;
+    left: 0px;
+    width: 4px;
+    height: 32px;
+    transform: translateY(-50%);
+    background-color: var(--primary);
+    border-radius: var(--rounded-full);
+    transition-property: left;
+    transition-duration: var(--duration-150);
+    transition-delay: calc(var(--delay) + var(--duration-150));
+	border-color: #3f68b2 !important;
+ }
+.active-border-left {
+	border-left: 4px solid #007bff;
+    background-color: rgba(0, 123, 255, 0.1);
+    padding: 6px;
+    color: #000 !important;
+}
+#sidebar .sidebar__submenu.activeDiv {
 	opacity: 1;
 	visibility: visible;
 
@@ -738,7 +764,7 @@ body {
 }
 .tab-pane-item {
     height: 72px;
-    background-color: var(--primary);
+    background-color: #3f68b2;
     padding: 0 24px;
     border: none;
     border-radius: var(--rounded-xl) var(--rounded-xl) 0 0;
@@ -758,7 +784,7 @@ body {
     transition-delay: var(--delay);
 }
 .tab-pane-item.active {
-    color: var(--primary);
+    color: #3f68b2;
 }
 .tab-pane-item::after {
     content: "";
@@ -769,10 +795,10 @@ body {
     height: 100%;
     background-image: linear-gradient(
         to right,
-        var(--primary) calc(100% / 3),
+        #3f68b2 calc(100% / 3),
         var(--white) calc(100% / 3),
         var(--white) calc((100% / 3) * 2),
-        var(--primary) calc((100% / 3) * 2)
+        #3f68b2 calc((100% / 3) * 2)
     );
     z-index: -1;
     transition-property: left;
@@ -801,7 +827,7 @@ body {
     width: 4px;
     height: 32px;
     transform: translateY(-50%);
-    background-color: var(--primary);
+    background-color: #3f68b2;
     border-radius: var(--rounded-full);
     transition-property: left;
     transition-duration: var(--duration-150);
@@ -1052,7 +1078,7 @@ body {
     margin-bottom: 3em;
 }
 .pink-color {
-	color: #ff3c6c;
+	color: #3f68b2;
 }
 .chipTextFav {
 	border: 1px solid #000;
@@ -1412,4 +1438,3 @@ body {
     border-radius: 50px;
     margin-bottom: 10px;
   }
-  a

@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Helpers\FlashMessageHelper;
 use App\Models\AdminFavoriteModule;
+use App\Models\EmpDepartment;
 use App\Models\EmployeeDetails;
 use App\Models\EmpResignations;
 use App\Models\Hr;
@@ -41,6 +42,7 @@ class AdminDashboard extends Component
     public $overviewContentList = [];
 
     public $selectedAction = null;
+    public $dataEmp;
 
     public function setAction($action)
     {
@@ -66,6 +68,12 @@ class AdminDashboard extends Component
             // $this->loginEmployee = Hr::where('emp_id', $employeeId)->select('emp_id', 'employee_name')->first();
             $companyId = EmployeeDetails::where('emp_id', $employeeId)->value('company_id');
             //Hr Requests
+            $deptId = EmpDepartment::pluck('dept_id');
+            $this->dataEmp = EmployeeDetails::with('empDepartment')
+            ->whereIn('dept_id', $deptId)
+            ->whereJsonContains('company_id',$companyId)
+            ->inRandomOrder()
+            ->get()->take(5);
 
             $this->getHrRequests($companyId);
             $this->getEmployeesCount($companyId);
@@ -454,7 +462,7 @@ class AdminDashboard extends Component
         $this->show = true;
     }
 
-   
+
     public function render()
     {
         return view('livewire.admin-dashboard', [
