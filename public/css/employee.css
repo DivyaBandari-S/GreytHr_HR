@@ -907,7 +907,8 @@ body {
     background-size: cover;
 
     .bg-overlay{
-        background: linear-gradient(to right, rgb(65, 49, 156), rgb(75, 56, 179));
+        /* background: linear-gradient(to right, rgb(65, 49, 156), rgb(75, 56, 179)); */
+		background-image: repeating-linear-gradient(135deg, rgba(4, 229, 71,0.08) 0px, rgba(4, 229, 71,0.08) 1px,transparent 1px, transparent 9px),repeating-linear-gradient(45deg, rgba(4, 229, 71,0.08) 0px, rgba(4, 229, 71,0.08) 1px,transparent 1px, transparent 9px),linear-gradient(90deg, rgb(77, 18, 84),rgb(52, 161, 185));
         opacity: 0.9;
     }
 }
@@ -936,10 +937,14 @@ body {
         fill: #f2f2f7;
     }
 }
-
+.login-sec{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
 .auth-page-wrapper{
     .auth-page-content{
-        padding-bottom: 60px;
+        padding-bottom: 20px;
         position: relative;
         z-index: 2;
         width: 100%;
@@ -1003,7 +1008,7 @@ body {
 	padding: 20px;
 	/* background: #121212; */
 	position: relative;
-	background: linear-gradient(181deg, rgba(170, 74, 122, 0.1) -11%, rgba(197, 197, 197, 0.1) 27%), linear-gradient(0deg, rgba(255, 255, 255, 1), rgba(237, 237, 237, 0.1)), linear-gradient(0deg, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0.5));
+	background: linear-gradient(181deg, rgba(170, 74, 122, 0.1) -11%, rgba(255, 255, 255, 0.1) 27%), linear-gradient(0deg, rgba(255, 255, 255, 1), rgba(237, 237, 237, 0.1)), linear-gradient(0deg, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0.5));
 	backdrop-filter: blur( 10px );
 	-webkit-backdrop-filter: blur( 10px );
 	border-radius: 10px;

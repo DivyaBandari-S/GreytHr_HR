@@ -40,8 +40,8 @@
                     <div class="table-responsive p-0">
                         <table id="typeReviewer">
                             <thead class="bg-white">
-                                <tr colspan="4">
-                                    <th colspan="4 bg-white">Uploaded files</th>
+                                <tr colspan="5">
+                                    <th colspan="5 bg-white">Uploaded files</th>
                                 </tr>
                             </thead>
                             <thead>

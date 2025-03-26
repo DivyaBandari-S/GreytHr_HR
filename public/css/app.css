@@ -1857,7 +1857,21 @@ input {
     border: none;
     transition: all 0.3s ease;
 }
-
+.login-btn {
+    background-color: #3da4bb;
+    color: #fff;
+    border: 1px solid #3da4bb;
+    font-weight: 500;
+    border-radius: 5px;
+    padding: 6px 12px;
+    font-size: var(--normal-font-size);
+    border: none;
+    transition: all 0.3s ease;
+}
+.sign-in-heading{
+    font-size: 1.2rem;
+    color: #555;
+}
 .cancel-btn {
     background-color: white;
     color: var(--main-button-color);
@@ -4249,6 +4263,12 @@ input[type="date"]::before {
 }
 
 /* Hover effect for the button */
+.login-btn:hover {
+    background-color: #357ab8;
+    border-color: #357ab8;
+    opacity: 0.8;
+    box-shadow: 0 2px 2px rgba(53, 122, 184, 0.4);
+}
 .submit-btn:hover {
     background-color: #357ab8;
     border-color: #357ab8;
