@@ -112,12 +112,12 @@
                                         </div>
                                         <div class="logo-stat">
                                             <p class="logo-svg-stat">
-                                                24
+                                                {{ $activeEmployeesCount ?? 0 }}
                                             </p>
                                         </div>
                                         <div class="box-stat box2-stat">
                                             <span class="icon-stat">
-                                                <p>4</p>
+                                                <p></p>
                                             </span>
                                         </div>
                                         <div class="box-stat box3-stat">
@@ -135,12 +135,12 @@
                                         </div>
                                         <div class="logo-stat">
                                             <p class="logo-svg-stat">
-                                                24
+                                                {{ $newEmployees ?? 0 }}
                                             </p>
                                         </div>
                                         <div class="box-stat box2-stat">
                                             <span class="icon-stat">
-                                                <p>4</p>
+                                                <p></p>
                                             </span>
                                         </div>
                                         <div class="box-stat box3-stat">
@@ -157,12 +157,12 @@
                                         </div>
                                         <div class="logo-stat">
                                             <p class="logo-svg-stat">
-                                                24
+                                                {{ $hrRequestsCount ?? 0 }}
                                             </p>
                                         </div>
                                         <div class="box-stat box2-stat">
                                             <span class="icon-stat">
-                                                <p>4</p>
+                                                <p></p>
                                             </span>
                                         </div>
                                         <div class="box-stat box3-stat">
@@ -174,123 +174,20 @@
                                 </div>
                             </div>
 
-
-                            <!-- <div class="border m-0 rounded row mb-3">
-                                <div class="border-bottom m-0 mt-3 row">
-                                    <div class="col-md-6">
-                                        <p class="fw-bold">Employees By Department</p>
-                                    </div>
-                                    <div class="col-md-6 text-end">
-                                        <button class="btn btn-outline-primary btn-sm"><i class="fa-regular fa-calendar"></i> This Week</button>
-                                    </div>
-                                </div>
-                                <div id="employeeByDep"></div>
-                            </div> -->
-
-
                         </div>
 
                         <div class="col-md-4 sec-3">
-                            <div class="m-0 mb-3 row text-center" style="border-radius: 10px; border: 1px solid #ff3c6c;">
+                            <div class="m-0 mb-3 row text-center" style="border-radius: 10px; border: 1px solid #ccc;">
                                 <div class="row m-0 p-0 mb-3" style="border-radius: 10px;">
                                     <img class="p-0" style="width: 100%; border-radius: 10px;" src="{{ asset('/images/hr_image.jpg') }}" />
                                 </div>
-                                <h4>Hello Meena</h4>
+                                <h4>Hello {{ $loginEmployee->emp->first_name }} {{ $loginEmployee->emp->last_name }} </h4>
                                 <p class="fs12">Let our product experts help you get started and resolve any of your product-related problems.</p>
                                 <div class="m-0 mb-3">
-                                    <button class="btn btn-success btn-sm" href="#">Review it</button>
+                                    <button class="submit-btn" href="#">Review it</button>
                                 </div>
                             </div>
 
-                        </div>
-
-                    </div>
-
-                    <div class="border m-0 rounded row empStatus">
-                        <div class="border-bottom m-0 mt-3 row">
-                            <div class="col-md-6">
-                                <p class="fw-bold">Employee Status</p>
-                            </div>
-                            <div class="col-md-6 text-end mb-3">
-                                <button class="btn btn-outline-primary btn-sm"><i class="fa-regular fa-calendar"></i> This Week</button>
-                            </div>
-                        </div>
-
-                        <div class="m-0 mt-3 row">
-                            <div class="col-md-6">
-                                <p>Total Employee</p>
-                            </div>
-                            <div class="col-md-6 text-end">
-                                <p>154</p>
-                            </div>
-                        </div>
-
-                        <div class="m-0 px-4 row">
-                            <div class="p-0 progress-stacked">
-                                <div class="progress" role="progressbar" aria-label="Segment one" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100" style="width: 15%">
-                                    <div class="progress-bar"></div>
-                                </div>
-                                <div class="progress" role="progressbar" aria-label="Segment two" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" style="width: 30%">
-                                    <div class="progress-bar bg-success"></div>
-                                </div>
-                                <div class="progress" role="progressbar" aria-label="Segment three" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 20%">
-                                    <div class="progress-bar bg-info"></div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="m-0 mt-3 px-4 row">
-                            <div class="border col-md-6 pt-3">
-                                <p class="mb-0">Fulltime (48%)</p>
-                                <p class="fs-1 fw-bold mb-1">112</p>
-                            </div>
-                            <div class="border-bottom border-end border-top col-md-6 pt-3 text-end">
-                                <p class="mb-0">Contract (20%)</p>
-                                <p class="fs-1 fw-bold mb-1">112</p>
-                            </div>
-                        </div>
-
-                        <div class="m-0 px-4 row">
-                            <div class="border-bottom border-end border-start col-md-6 pt-3">
-                                <p class="mb-0">Probation (22%)</p>
-                                <p class="fs-1 fw-bold mb-1">112</p>
-                            </div>
-                            <div class="border-bottom border-end col-md-6 pt-3 text-end">
-                                <p class="mb-0">WFH (20%)</p>
-                                <p class="fs-1 fw-bold mb-1">112</p>
-                            </div>
-                        </div>
-
-                        <div class="row m-0 mt-3">
-                            <p class="mb-1">Top Performer</p>
-                            <div class="row m-0">
-                                <div class="row m-0 p-2 rounded-2 performerDiv">
-                                    <div class="col-md-1 p-0 m-auto">
-                                        <p class="mb-0">
-                                            <i class="fa-solid fa-award fs-3 me-3 perfColor" style="vertical-align: middle;"></i>
-                                            <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-24.jpg" style="width: 2em; border-radius: 50%;" />
-                                        </p>
-                                    </div>
-                                    <div class="col-md-11 p-0">
-                                        <div class="m-0 row">
-                                            <div class="col-md-6 p-0">
-                                                <p class="fw-bold mb-0 fs14">Daniel Esbella</p>
-                                                <p class="fs12 mb-0">IOS Developer</p>
-                                            </div>
-                                            <div class="col-md-6 text-end p-0">
-                                                <p class="mb-0 fs14">Performance</p>
-                                                <p class="fs12 fw-bold mb-0 perfColor">99%</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row m-0 my-3">
-                            <div class="d-grid gap-2">
-                                <button class="btn btn-outline-secondary btn-sm" type="button">View All</button>
-                            </div>
                         </div>
 
                     </div>
@@ -731,6 +628,17 @@
                     <h1 class="tab-page-title ms-3">In Review</h1>
                     <div class="row m-0 mb-3">
                         <div class="col-md-6 mb-3">
+                            <div class="border m-0 rounded row mb-3">
+                                <div class="border-bottom m-0 mt-3 row">
+                                    <div class="col-md-6">
+                                        <p class="fw-bold">Employees By Department</p>
+                                    </div>
+                                    <div class="col-md-6 text-end">
+                                        <button class="btn btn-outline-primary btn-sm"><i class="fa-regular fa-calendar"></i> This Week</button>
+                                    </div>
+                                </div>
+                                <div id="employeeByDep"></div>
+                            </div>
                             <div class="border m-0 rounded row">
                                 <div class="border-bottom m-0 mt-3 row">
                                     <div class="col-md-6">
@@ -783,8 +691,7 @@
                                 </div>
                             </div>
                         </div>
-
-                        <div class="col-md-6 mb-3">
+                        <div class="col-md-6">
                             <div class="border m-0 rounded row">
                                 <div class="border-bottom m-0 mt-3 row">
                                     <div class="col-md-6">
@@ -826,8 +733,96 @@
                                 </div>
 
                             </div>
+                            <div class="border m-0 rounded row empStatus">
+                                <div class="border-bottom m-0 mt-3 row">
+                                    <div class="col-md-6">
+                                        <p class="fw-bold">Employee Status</p>
+                                    </div>
+                                    <div class="col-md-6 text-end mb-3">
+                                        <button class="btn btn-outline-primary btn-sm"><i class="fa-regular fa-calendar"></i> This Week</button>
+                                    </div>
+                                </div>
+
+                                <div class="m-0 mt-3 row">
+                                    <div class="col-md-6">
+                                        <p>Total Employee</p>
+                                    </div>
+                                    <div class="col-md-6 text-end">
+                                    </div>
+                                </div>
+
+                                <div class="m-0 px-4 row">
+                                    <div class="p-0 progress-stacked">
+                                        <div class="progress" role="progressbar" aria-label="Segment one" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100" style="width: 15%">
+                                            <div class="progress-bar"></div>
+                                        </div>
+                                        <div class="progress" role="progressbar" aria-label="Segment two" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" style="width: 30%">
+                                            <div class="progress-bar bg-success"></div>
+                                        </div>
+                                        <div class="progress" role="progressbar" aria-label="Segment three" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 20%">
+                                            <div class="progress-bar bg-info"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="m-0 mt-3 px-4 row">
+                                    <div class="border col-md-6 pt-3">
+                                        <p class="mb-0">Fulltime (48%)</p>
+                                        <p class="fs-1 fw-bold mb-1">112</p>
+                                    </div>
+                                    <div class="border-bottom border-end border-top col-md-6 pt-3 text-end">
+                                        <p class="mb-0">Contract (20%)</p>
+                                        <p class="fs-1 fw-bold mb-1">112</p>
+                                    </div>
+                                </div>
+
+                                <div class="m-0 px-4 row">
+                                    <div class="border-bottom border-end border-start col-md-6 pt-3">
+                                        <p class="mb-0">Probation (22%)</p>
+                                        <p class="fs-1 fw-bold mb-1">112</p>
+                                    </div>
+                                    <div class="border-bottom border-end col-md-6 pt-3 text-end">
+                                        <p class="mb-0">WFH (20%)</p>
+                                        <p class="fs-1 fw-bold mb-1">112</p>
+                                    </div>
+                                </div>
+
+                                <div class="row m-0 mt-3">
+                                    <p class="mb-1">Top Performer</p>
+                                    <div class="row m-0">
+                                        <div class="row m-0 p-2 rounded-2 performerDiv">
+                                            <div class="col-md-1 p-0 m-auto">
+                                                <p class="mb-0">
+                                                    <i class="fa-solid fa-award fs-3 me-3 perfColor" style="vertical-align: middle;"></i>
+                                                    <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-24.jpg" style="width: 2em; border-radius: 50%;" />
+                                                </p>
+                                            </div>
+                                            <div class="col-md-11 p-0">
+                                                <div class="m-0 row">
+                                                    <div class="col-md-6 p-0">
+                                                        <p class="fw-bold mb-0 fs14">Daniel Esbella</p>
+                                                        <p class="fs12 mb-0">IOS Developer</p>
+                                                    </div>
+                                                    <div class="col-md-6 text-end p-0">
+                                                        <p class="mb-0 fs14">Performance</p>
+                                                        <p class="fs12 fw-bold mb-0 perfColor">99%</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row m-0 my-3">
+                                    <div class="d-grid gap-2">
+                                        <button class="btn btn-outline-secondary btn-sm" type="button">View All</button>
+                                    </div>
+                                </div>
+
+                            </div>
                         </div>
                     </div>
+
                 </div>
 
             </div>

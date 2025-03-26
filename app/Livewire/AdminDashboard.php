@@ -56,24 +56,24 @@ class AdminDashboard extends Component
         $this->activeTab = $tab;
     }
 
-
     public function mount()
     {
 
         try {
             $this->getContainerData();
+            $this->loginHRDetails();
             $this->setActiveTab($this->activeTab);
             $employeeId = auth()->guard('hr')->user()->emp_id;
-            // dd( $employeeId);
+
             // $this->loginEmployee = Hr::where('emp_id', $employeeId)->select('emp_id', 'employee_name')->first();
             $companyId = EmployeeDetails::where('emp_id', $employeeId)->value('company_id');
             //Hr Requests
             $deptId = EmpDepartment::pluck('dept_id');
             $this->dataEmp = EmployeeDetails::with('empDepartment')
-            ->whereIn('dept_id', $deptId)
-            ->whereJsonContains('company_id',$companyId)
-            ->inRandomOrder()
-            ->get()->take(5);
+                ->whereIn('dept_id', $deptId)
+                ->whereJsonContains('company_id', $companyId)
+                ->inRandomOrder()
+                ->get()->take(5);
 
             $this->getHrRequests($companyId);
             $this->getEmployeesCount($companyId);
@@ -88,10 +88,10 @@ class AdminDashboard extends Component
 
             // Count new employees for the current year
             $this->totalNewEmployees = EmployeeDetails::where('company_id', $companyId)
+                ->where('status', 1)
                 ->whereYear('hire_date', Carbon::now()->year)
                 ->get();
             $this->totalNewEmployeeCount = $this->totalNewEmployees->count();
-
             $departmentNames = [];
             // Check if $newEmployees is not empty
             if ($this->totalNewEmployees->isNotEmpty()) {
@@ -154,6 +154,12 @@ class AdminDashboard extends Component
             // Redirect the user back to the registration page or any other appropriate action
             return redirect()->back();
         }
+    }
+
+    public function loginHRDetails()
+    {
+        $user = auth()->guard('hr')->user();
+        $this->loginEmployee = Hr::with('emp')->where('emp_id', $user->emp_id)->first();
     }
     public function getHrRequests($companyIds)
     {
@@ -467,6 +473,7 @@ class AdminDashboard extends Component
     {
         return view('livewire.admin-dashboard', [
             'departmentCount' => $this->departmentCount,
+            'loginEmployee' => $this->loginEmployee
         ]);
     }
 }
