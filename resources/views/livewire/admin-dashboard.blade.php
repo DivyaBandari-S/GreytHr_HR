@@ -195,6 +195,60 @@
                     <div class="row m-0 mt-3">
 
                         <div class="col-md-6 ps-0 empTab">
+                            <div class="border mb-3 rounded row m-0">
+                                <div class="border-bottom m-0 mt-3 row">
+                                    <div class="col-md-12">
+                                        <p class="fw-bold mb-0">Top 5 Leave Takers for All Leave Types</p>
+                                        <p class="fs12">01 Nov 2024 to 28 Feb 2025</p>
+                                    </div>
+                                </div>
+                                <div class="table-responsive p-0">
+                                    <table class="table fs12 ">
+                                        <thead class="table-sec">
+                                            <tr>
+                                                <th scope="col">Employee Name</th>
+                                                <th scope="col">Designation</th>
+                                                <th scope="col">Total Leaves</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if($mappedLeaveData)
+                                            @foreach ($mappedLeaveData as $key => $value)
+                                            <tr>
+                                                <td>
+                                                    <div class="d-flex gap-2">
+                                                        @if($value['image'] && $value['image'] !=='null')
+                                                        <div class="employee-profile-img">
+                                                            <img class="rounded-circle" height="35" width="35" src="data:image/jpeg;base64,{{($value['image'])}} ">
+                                                        </div>
+                                                        @else
+                                                        <div class="employee-profile-img">
+                                                            <img src="{{ asset('images/user.jpg') }}" class=" rounded-circle" height="35" width="35" alt="Default Image">
+                                                        </div>
+                                                        @endif
+                                                        <div class="d-flex flex-column">
+                                                            <span class="normalText">
+                                                                {{ ucwords(strtolower($value['first_name'])) }} {{ ucwords(strtolower($value['last_name'])) }}
+                                                            </span>
+                                                            <span class="smallText">{{ $key }}</span>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>{{ $value['job_role'] }}</td>
+                                                <td>
+                                                    <span class="text-danger fw-bold">{{ $value['totalLeave'] }}</span>
+                                                </td>
+                                            </tr>
+                                            @endforeach
+                                            @else
+                                            <tr colspan="4">
+                                                <td>No data found</td>
+                                            </tr>
+                                            @endif
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
                             <div class="border m-0 rounded row mb-3 empTab">
                                 <div class="m-0 mt-3 row">
                                     <div class="col-md-6">
@@ -216,154 +270,49 @@
 
                                 <div class="row m-0 mt-3">
 
+                                    @if($dataEmp)
+                                    @foreach ($dataEmp as $employee)
                                     <div class="m-0 mb-3 p-2 row border-bottom">
                                         <div style="display: flex; align-items: center;">
-                                            <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-24.jpg"
-                                                style="width: 2em; height: 2em; border-radius: 50%; margin-right: 8px;" />
-                                            <div style="display: flex; flex-direction: column;">
-                                                <p style="font-weight: bold; margin: 0; font-size: 14px;">Daniel Esbella</p>
-                                                <p style="margin: 0; font-size: 12px; color: #666;">UI/UX Designer</p>
+                                            @if($employee->image && $employee->image !=='null')
+                                            <div class="employee-profile-img">
+                                                <img class="rounded-circle" height="35" width="35" src="data:image/jpeg;base64,{{($employee->image)}} ">
                                             </div>
-                                            <span style="background-color: #1E7E34; color: white; font-size: 12px; font-weight: bold; padding: 2px 8px; border-radius: 5px; margin-left: auto;">
-                                                Finance
+                                            @else
+                                            @if($employee->gender=='FEMALE')
+                                            <div class="employee-profile-img">
+                                                <img src="{{ asset('images/female-default.jpg') }}" class=" rounded-circle" height="35" width="35" alt="Default Image">
+                                            </div>
+                                            @elseif($employee->gender=='MALE')
+                                            <div class="employee-profile-img">
+                                                <img src="{{ asset('images/male-default.png') }}" class=" rounded-circle" height="35" width="35" alt="Default Image">
+                                            </div>
+                                            @else
+                                            <div class="employee-profile-img">
+                                                <img src="{{ asset('images/user.jpg') }}" class=" rounded-circle" height="35" width="35" alt="Default Image">
+                                            </div>
+                                            @endif
+                                            @endif
+                                            <div class="d-flex flex-column">
+                                                <p class="normalTextTruncated" title="{{ ucwords(strtolower( $employee->first_name)) }} {{ ucwords(strtolower($employee->last_name)) }}">{{ ucwords(strtolower( $employee->first_name)) }} {{ ucwords(strtolower($employee->last_name)) }}</p>
+                                                <p style="margin: 0; font-size: 12px; color: #666;">
+                                                    {{ preg_replace('/\bii\b/i', 'II', ucwords(strtolower($employee->job_role))) }}
+                                                </p>
+
+                                            </div>
+                                            <span class="deptDetails">
+                                                {{ ucwords(strtolower($employee->empDepartment->department)) }}
                                             </span>
                                         </div>
                                     </div>
-                                    <div class="m-0 mb-3 p-2 row border-bottom">
-                                        <div style="display: flex; align-items: center;">
-                                            <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-24.jpg"
-                                                style="width: 2em; height: 2em; border-radius: 50%; margin-right: 8px;" />
-                                            <div style="display: flex; flex-direction: column;">
-                                                <p style="font-weight: bold; margin: 0; font-size: 14px;">Daniel Esbella</p>
-                                                <p style="margin: 0; font-size: 12px; color: #666;">UI/UX Designer</p>
-                                            </div>
-                                            <span style="background-color: #1E7E34; color: white; font-size: 12px; font-weight: bold; padding: 2px 8px; border-radius: 5px; margin-left: auto;">
-                                                Finance
-                                            </span>
-                                        </div>
+                                    @endforeach
+                                    @else
+                                    <div>
+                                        <span>No data</span>
                                     </div>
-                                    <div class="m-0 mb-3 p-2 row border-bottom">
-                                        <div style="display: flex; align-items: center;">
-                                            <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-24.jpg"
-                                                style="width: 2em; height: 2em; border-radius: 50%; margin-right: 8px;" />
-                                            <div style="display: flex; flex-direction: column;">
-                                                <p style="font-weight: bold; margin: 0; font-size: 14px;">Daniel Esbella</p>
-                                                <p style="margin: 0; font-size: 12px; color: #666;">UI/UX Designer</p>
-                                            </div>
-                                            <span style="background-color: #1E7E34; color: white; font-size: 12px; font-weight: bold; padding: 2px 8px; border-radius: 5px; margin-left: auto;">
-                                                Finance
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <div class="m-0 mb-3 p-2 row border-bottom">
-                                        <div style="display: flex; align-items: center;">
-                                            <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-24.jpg"
-                                                style="width: 2em; height: 2em; border-radius: 50%; margin-right: 8px;" />
-                                            <div style="display: flex; flex-direction: column;">
-                                                <p style="font-weight: bold; margin: 0; font-size: 14px;">Daniel Esbella</p>
-                                                <p style="margin: 0; font-size: 12px; color: #666;">UI/UX Designer</p>
-                                            </div>
-                                            <span style="background-color: #1E7E34; color: white; font-size: 12px; font-weight: bold; padding: 2px 8px; border-radius: 5px; margin-left: auto;">
-                                                Finance
-                                            </span>
-                                        </div>
-                                    </div>
+                                    @endif
                                 </div>
 
-                            </div>
-                            <div class="border mb-3 rounded row m-0">
-                                <div class="border-bottom m-0 mt-3 row">
-                                    <div class="col-md-12">
-                                        <p class="fw-bold mb-0">Top 5 Leave Taker for CL</p>
-                                        <p class="fs12">01 Nov 2024 to 28 Feb 2025</p>
-                                    </div>
-                                </div>
-                                <div class="table-responsive p-0">
-                                    <table class="table fs12">
-                                        <thead class="table-secondary">
-                                            <tr>
-                                                <th scope="col">ID</th>
-                                                <th scope="col">Name</th>
-                                                <th scope="col">Team</th>
-                                                <th scope="col">Priority</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td>PRO-001</td>
-                                                <td>Alok BD</td>
-                                                <td>
-                                                    <div class="avatar-list-stacked avatar-group-sm">
-                                                        <span class="avatar avatar-rounded">
-                                                            <img class="border border-white" src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-27.jpg" alt="img">
-                                                        </span>
-                                                        <span class="avatar avatar-rounded">
-                                                            <img class="border border-white" src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-30.jpg" alt="img">
-                                                        </span>
-                                                        <span class="avatar avatar-rounded">
-                                                            <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-14.jpg" alt="img">
-                                                        </span>
-                                                        <span class="avatar avatar-rounded">
-                                                            <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-29.jpg" alt="img">
-                                                        </span>
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <span class="badge text-bg-danger">High</span>
-                                                </td>
-                                            </tr>
-
-                                            <tr>
-                                                <td>PRO-002</td>
-                                                <td>T Akash</td>
-                                                <td>
-                                                    <div class="avatar-list-stacked avatar-group-sm">
-                                                        <span class="avatar avatar-rounded">
-                                                            <img class="border border-white" src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-27.jpg" alt="img">
-                                                        </span>
-                                                        <span class="avatar avatar-rounded">
-                                                            <img class="border border-white" src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-30.jpg" alt="img">
-                                                        </span>
-                                                        <span class="avatar avatar-rounded">
-                                                            <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-14.jpg" alt="img">
-                                                        </span>
-                                                        <span class="avatar avatar-rounded">
-                                                            <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-29.jpg" alt="img">
-                                                        </span>
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <span class="badge text-bg-danger">High</span>
-                                                </td>
-                                            </tr>
-
-                                            <tr>
-                                                <td>PRO-003</td>
-                                                <td>Akhil KC</td>
-                                                <td>
-                                                    <div class="avatar-list-stacked avatar-group-sm">
-                                                        <span class="avatar avatar-rounded">
-                                                            <img class="border border-white" src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-27.jpg" alt="img">
-                                                        </span>
-                                                        <span class="avatar avatar-rounded">
-                                                            <img class="border border-white" src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-30.jpg" alt="img">
-                                                        </span>
-                                                        <span class="avatar avatar-rounded">
-                                                            <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-14.jpg" alt="img">
-                                                        </span>
-                                                        <span class="avatar avatar-rounded">
-                                                            <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-29.jpg" alt="img">
-                                                        </span>
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <span class="badge text-bg-danger">High</span>
-                                                </td>
-                                            </tr>
-
-                                        </tbody>
-                                    </table>
-                                </div>
                             </div>
                         </div>
 

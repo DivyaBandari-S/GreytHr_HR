@@ -3,11 +3,13 @@
 namespace App\Livewire;
 
 use App\Helpers\FlashMessageHelper;
+use App\Helpers\LeaveHelper;
 use App\Models\AdminFavoriteModule;
 use App\Models\EmpDepartment;
 use App\Models\EmployeeDetails;
 use App\Models\EmpResignations;
 use App\Models\Hr;
+use App\Models\LeaveRequest;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use Carbon\Carbon;
@@ -36,13 +38,15 @@ class AdminDashboard extends Component
     public $newEmployees;
     public $newEmployeedeparts;
     public $activeTab = 'summary';
-
+    public $mappedLeaveData =[];
     public $searchContent = '';
     public $overviewItems = [];
     public $overviewContentList = [];
 
     public $selectedAction = null;
     public $dataEmp;
+    public $topLeaveTakers;
+    public $groupedByEmpId;
 
     public function setAction($action)
     {
@@ -74,6 +78,57 @@ class AdminDashboard extends Component
                 ->whereJsonContains('company_id', $companyId)
                 ->inRandomOrder()
                 ->get()->take(5);
+
+            // Fetch employee ids with status 1 and matching company_id
+            $emp_ids = EmployeeDetails::where('status', 1)
+                ->whereJsonContains('company_id', $companyId)
+                ->pluck('emp_id');
+
+            // Initialize an empty array for the matching emp_ids
+            $data = [];
+
+            // Iterate through emp_ids to fetch matching leave takers
+            foreach ($emp_ids as $emp_id) {
+                $approvedLeaves = LeaveHelper::getApprovedLeaveDays($emp_id, '2025');
+                $data[$emp_id] =  $approvedLeaves;
+            }
+            // Initialize an array to store the top 5 highest leave days for each type
+            $topLeaveDays = [];
+            $top5LeaveDays = [];
+            // Iterate through each employee's leave data
+            foreach ($data as $emp_id => $leaveData) {
+                // Sort the leave data for each employee and get the top 5
+                $totalLeave = array_sum($leaveData);
+                // Only add to the array if the total leave days is greater than 0
+                if ($totalLeave > 0) {
+                    $topLeaveDays[$emp_id] = $totalLeave;
+                }
+            }
+            // Check if the array is populated
+            if (isset($topLeaveDays)) {
+                // Sort the total leave days in descending order to get the top 5 employees with the most leave days
+                arsort($topLeaveDays);
+                // Get the top 5 employees with the highest total leave days
+                $top5LeaveDays = array_slice($topLeaveDays, 0, 5);
+            } else {
+                $top5LeaveDays[] = [];
+            }
+
+            // Iterate through the leave data and get the employee details
+            foreach ($top5LeaveDays as $key => $value ) {
+                // Fetch the employee details based on emp_id
+                $employee = EmployeeDetails::where('emp_id', $key)->first();  // Assuming emp_id is unique
+                if ($employee) {
+                    // Map the employee details with the leave days
+                    $this->mappedLeaveData[$key] = [
+                        'totalLeave' => $value,
+                        'first_name' => $employee->first_name,
+                        'last_name' => $employee->last_name,
+                        'job_role' => $employee->job_role,
+                        'image' => $employee->image,
+                    ];
+                }
+            }
 
             $this->getHrRequests($companyId);
             $this->getEmployeesCount($companyId);
@@ -473,7 +528,9 @@ class AdminDashboard extends Component
     {
         return view('livewire.admin-dashboard', [
             'departmentCount' => $this->departmentCount,
-            'loginEmployee' => $this->loginEmployee
+            'loginEmployee' => $this->loginEmployee,
+            'topLeaveTakers' => $this->topLeaveTakers,
+            'mappedLeaveData' => $this->mappedLeaveData,
         ]);
     }
 }

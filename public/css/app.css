@@ -291,6 +291,25 @@ ul {
     margin-top: 8px;
 }
 /* admin dashboard */
+.normalTextTruncated{
+    color: var(--label-color);
+    font-weight: 500;
+    font-size: var(--normal-font-size);
+    max-width: 130px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    margin-bottom: 0;
+}
+.employee-profile-img img{
+    margin-right: 10px;
+}
+.deptDetails{
+    background-color: #dbf3e1; color: #1E7E34; font-size: var(--normal-font-size); font-weight: bold; padding: 2px 8px; border-radius: 5px; margin-left: auto;
+}
+table thead.table-sec th{
+    background-color: var(--main-table-heading-bg-color) !important;
+}
 .green-bg {
     display: flex;
     flex-direction: column;
