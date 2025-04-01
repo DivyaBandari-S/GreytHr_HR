@@ -45,7 +45,7 @@ return new class extends Migration
             $table->text('resignation_reason')->nullable();
             $table->string('extension',10)->nullable();
             $table->string('shift_type',10)->nullable();
-            $table->json('shift_entries')->nullable();
+            $table->json('shift_entries_from_hr')->nullable();
             // $table->string('shift_start_time')->nullable();
             // $table->string('shift_end_time')->nullable();
             $table->string('probation_Period',10)->default('30');

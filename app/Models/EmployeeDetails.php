@@ -50,7 +50,7 @@ class EmployeeDetails extends Authenticatable
         'extension',
         'experience',
         'shift_type',
-        'shift_entries',
+        'shift_entries_from_hr',
         // 'shift_start_time',
         // 'shift_end_time',
         'emp_domain',

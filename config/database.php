@@ -81,11 +81,11 @@ return [
         
         'sqlsrv' => [
             'driver' => 'sqlsrv',
-            'host' => env('SECOND_DB_HOST','localhost'),
-            'port' => env('SECOND_DB_PORT', '1433'),
-            'database' => env('SECOND_DB_DATABASE', 'forge'),
-            'username' => env('SECOND_DB_USERNAME', 'forge'),
-            'password' => env('SECOND_DB_PASSWORD', ''),
+            'host' => env('SQLSERVER_DB_HOST','localhost'),
+            'port' => env('SQLSERVER_DB_PORT', '1433'),
+            'database' => env('SQLSERVER_DB_DATABASE', 'forge'),
+            'username' => env('SQLSERVER_DB_USERNAME', 'forge'),
+            'password' => env('SQLSERVER_DB_PASSWORD', ''),
             'charset' => 'utf8',
             'prefix' => '',
             'prefix_indexes' => true,

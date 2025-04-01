@@ -2,6 +2,8 @@
 
 namespace App\Livewire;
 
+use App\Exports\AbsentEmployeesExport;
+use App\Exports\LateArrivalsExport;
 use App\Models\EmployeeDetails;
 use App\Models\LeaveRequest;
 use App\Models\SwipeRecord;
@@ -12,6 +14,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Maatwebsite\Excel\Facades\Excel;
 use Spatie\SimpleExcel\SimpleExcelWriter;
 
 class WhoIsInChartHr extends Component
@@ -188,13 +191,11 @@ class WhoIsInChartHr extends Component
                 $isLateBy10AM = $swipeTime->format('H:i') >= $shiftStartTime;
                 if($isLateBy10AM)
                 {
-                    $data[] = [$employee['emp_id'], ucwords(strtolower($employee['first_name'])) . ucwords(strtolower($employee['last_name'])), $employee['swipe_time'], $lateArrivalTime];
+                    $data[] = [$employee['emp_id'], ucwords(strtolower($employee['first_name'])) . ucwords(strtolower($employee['last_name'])), Carbon::parse($employee['swipe_time'])->format('H:i:s'), $lateArrivalTime];
                 }
             }
 
-            $filePath = storage_path('app/late_employees.xlsx');
-            SimpleExcelWriter::create($filePath)->addRows($data);
-            return response()->download($filePath, 'late_employees.xlsx');
+            return Excel::download(new LateArrivalsExport($data), 'late_employees.xlsx');
         } catch (\Exception $e) {
             Log::error('Error generating Excel report for late arrivals: ' . $e->getMessage());
             session()->flash('error', 'An error occurred while generating the Excel report. Please try again.');
@@ -350,75 +351,83 @@ class WhoIsInChartHr extends Component
    
     $this->selectedShift=$this->selectedShift;
    
-    $this->openshiftselectorforcheck=false;
+    $this->openshiftselector=false;
     
 }
     //This function will help us to get the details of employees who are absent in excel sheet
-    public function downloadExcelForAbsent()
-    {
-        try {
-            
-            $employees = EmployeeDetails::select('emp_id', 'first_name', 'last_name')->get();
+ 
 
-            if ($this->isdatepickerclicked == 0) {
-                $currentDate = now()->toDateString();
-            } else {
-                $currentDate = $this->from_date;
-            }
+        public function downloadExcelForAbsent()
+        {
+            try {
+                $employees = EmployeeDetails::select('emp_id', 'first_name', 'last_name')->get();
 
-            $approvedLeaveRequests = LeaveRequest::join('employee_details', 'leave_applications.emp_id', '=', 'employee_details.emp_id')
-                ->where('leave_applications.leave_status', 2)
-                ->whereIn('leave_applications.emp_id', $employees->pluck('emp_id'))
-                ->whereDate('from_date', '<=', $currentDate)
-                ->whereDate('to_date', '>=', $currentDate)
-                ->get(['leave_applications.*', 'employee_details.first_name', 'employee_details.last_name'])
-                ->map(function ($leaveRequest) {
-                    $fromDate = Carbon::parse($leaveRequest->from_date);
-                    $toDate = Carbon::parse($leaveRequest->to_date);
-                    $leaveRequest->number_of_days = $fromDate->diffInDays($toDate) + 1;
-                    return $leaveRequest;
-                });
+                if ($this->isdatepickerclicked == 0) {
+                    $currentDate = now()->toDateString();
+                } else {
+                    $currentDate = $this->from_date;
+                }
+
+                $approvedLeaveRequests = LeaveRequest::join('employee_details', 'leave_applications.emp_id', '=', 'employee_details.emp_id')
+                    ->where('leave_applications.leave_status', 2)
+                    ->whereIn('leave_applications.emp_id', $employees->pluck('emp_id'))
+                    ->whereDate('from_date', '<=', $currentDate)
+                    ->whereDate('to_date', '>=', $currentDate)
+                    ->get(['leave_applications.*', 'employee_details.first_name', 'employee_details.last_name'])
+                    ->map(function ($leaveRequest) {
+                        $fromDate = Carbon::parse($leaveRequest->from_date);
+                        $toDate = Carbon::parse($leaveRequest->to_date);
+                        $leaveRequest->number_of_days = $fromDate->diffInDays($toDate) + 1;
+                        return $leaveRequest;
+                    });
 
                 $employees1 = EmployeeDetails::leftJoin('emp_personal_infos', 'employee_details.emp_id', '=', 'emp_personal_infos.emp_id')
-                ->leftJoin('company_shifts', function ($join) {
-                    // Join with company_shifts on company_id and shift_type matching shift_name
-                    $join->on('company_shifts.company_id', '=', DB::raw("JSON_UNQUOTE(JSON_EXTRACT(employee_details.company_id, '$[0]'))"))
-                        ->on('company_shifts.shift_name', '=', 'employee_details.shift_type');
-                })
-                ->select(
-                    'employee_details.*',
-                    
-                    'company_shifts.shift_start_time',
-                    'company_shifts.shift_end_time',
-                    'company_shifts.shift_name'
-                )
-                ->whereNotIn('employee_details.emp_id', function ($query) use ($currentDate) {
-                    $query->select('emp_id')
-                        ->from('swipe_records')
-                        ->whereDate('created_at', $currentDate);
-                })
-                ->whereNotIn('employee_details.emp_id', $approvedLeaveRequests->pluck('emp_id'))
-                ->where('employee_details.employee_status', 'active')
-                ->orderBy('employee_details.first_name')
-                ->distinct('employee_details.emp_id')
-                ->get()->toArray();
-            $data = [
-                ['List of Absent Employees on ' . Carbon::parse($currentDate)->format('jS F, Y')],
-                ['Employee ID', 'Name','Shift_Start_Time'],
+                    ->leftJoin('company_shifts', function ($join) {
+                        // Join with company_shifts on company_id and shift_type matching shift_name
+                        $join->on('company_shifts.company_id', '=', DB::raw("JSON_UNQUOTE(JSON_EXTRACT(employee_details.company_id, '$[0]'))"))
+                            ->on('company_shifts.shift_name', '=', 'employee_details.shift_type');
+                    })
+                    ->select(
+                        'employee_details.*',
+                        'company_shifts.shift_start_time',
+                        'company_shifts.shift_end_time',
+                        'company_shifts.shift_name'
+                    )
+                    ->whereNotIn('employee_details.emp_id', function ($query) use ($currentDate) {
+                        $query->select('emp_id')
+                            ->from('swipe_records')
+                            ->whereDate('created_at', $currentDate);
+                    })
+                    ->whereNotIn('employee_details.emp_id', $approvedLeaveRequests->pluck('emp_id'))
+                    ->where('employee_details.employee_status', 'active')
+                    ->orderBy('employee_details.first_name')
+                    ->distinct('employee_details.emp_id')
+                    ->get()->toArray();
 
-            ];
-            foreach ($employees1 as $employee) {
-                $data[] = [$employee['emp_id'], ucwords(strtolower($employee['first_name'])). ' ' . ucwords(strtolower($employee['last_name'])),$employee['shift_start_time']];
+                $data = [
+                    ['List of Absent Employees on ' . Carbon::parse($currentDate)->format('jS F, Y')],
+                    ['Employee ID', 'Name', 'Shift_Start_Time'],
+                ];
+
+                foreach ($employees1 as $employee) {
+                    $data[] = [
+                        $employee['emp_id'],
+                        ucwords(strtolower($employee['first_name'])) . ' ' . ucwords(strtolower($employee['last_name'])),
+                        $employee['shift_start_time']
+                    ];
+                }
+
+                // Create a new export class
+                Excel::store(new AbsentEmployeesExport($data), 'absent_employees.xlsx', 'local');
+
+                $filePath = storage_path('app/absent_employees.xlsx');
+                return response()->download($filePath, 'absent_employees.xlsx');
+            } catch (\Exception $e) {
+                Log::error('Error generating Excel report for absent: ' . $e->getMessage());
+                session()->flash('error', 'An error occurred while generating the Excel report. Please try again.');
+                return redirect()->back();
             }
-            $filePath = storage_path('app/absent_employees.xlsx');
-            SimpleExcelWriter::create($filePath)->addRows($data);
-            return response()->download($filePath, 'absent_employees.xlsx');
-        } catch (\Exception $e) {
-            Log::error('Error generating Excel report for absent: ' . $e->getMessage());
-            session()->flash('error', 'An error occurred while generating the Excel report. Please try again.');
-            return redirect()->back();
         }
-    }
 
     //This function will help us to search about any particular employees
     public function searchFilters()
@@ -647,7 +656,7 @@ class WhoIsInChartHr extends Component
       
     )
     ->where(function ($query) {
-        $query->whereRaw("swipe_records.swipe_time > company_shifts.shift_start_time");
+        $query->whereRaw("TIME(swipe_records.swipe_time) > company_shifts.shift_start_time");
     })
     ->where('employee_details.employee_status', 'active')
     ->distinct('swipe_records.emp_id')
@@ -693,7 +702,7 @@ class WhoIsInChartHr extends Component
             )
             ->where(function ($query) {
                 // Comparing swipe_time with shift_start_time from company_shifts
-                $query->whereRaw("swipe_records.swipe_time <= company_shifts.shift_start_time");
+                $query->whereRaw("TIME(swipe_records.swipe_time) <= company_shifts.shift_start_time");
             })
             ->where('employee_details.employee_status', 'active')
             ->orderBy('swipe_records.swipe_time')

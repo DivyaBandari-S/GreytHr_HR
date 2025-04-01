@@ -89,6 +89,9 @@ use App\Livewire\EmployeeLopDays;
 use App\Livewire\Loans;
 use App\Livewire\ReleaseSalary;
 use App\Livewire\EmployeeSeparation;
+use App\Livewire\EmpResettlement;
+use App\Livewire\FinalSettlement;
+use App\Livewire\FinalSettlementStepper;
 use App\Livewire\Flowchart;
 use App\Livewire\ItStatement;
 use App\Livewire\SalarySlip;
@@ -202,7 +205,7 @@ Route::middleware(['auth:hr', 'handleSession'])->group(function () {
         Route::get('/user/add-fine-page/{id?}/{viewMode?}',CreateFineComponent::class)->name('add-fine-page');
         Route::get('/user/add-damage-page/{id?}/{viewMode?}',CreateDamageComponent::class)->name('add-damage-page');
         Route::get('/user/damage-page',DamageComponent::class)->name('damage-page');
-        Route::get('/user/flowchart/{selectedEmployeeId}',Flowchart::class)->name('flowchart');
+        Route::get('/user/flowchart/{selectedEmployeeId}/{selectedDesignation}',Flowchart::class)->name('flowchart');
         //HR Leave-Main Submodule Routes
         Route::get('/user/hr-organisation-chart/{selectedEmployeeId?}', HrOrganisationChart::class)->name('hr-organisation-chart');
         Route::get('/user/employee-weekday-chart', EmployeeWeekDayChart::class)->name('employee-weekday-chart');

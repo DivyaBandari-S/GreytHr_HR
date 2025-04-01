@@ -1,4 +1,4 @@
-<div>
+<div style="overflow-y: hidden;">
     <style>
         :root {
   --level-1: #f2feff;
@@ -325,6 +325,7 @@ body {
 
     </style>
 <div class="container">
+ 
             <div class="level-1 rectangle">
                  
                     @if(!empty($chairman->image) && ($chairman->image !== 'null'))

@@ -267,9 +267,19 @@
             @foreach($Swipes as $index=>$s1)
 
             @php
-            $swipeTime = \Carbon\Carbon::parse($s1->swipe_time);
-            $lateArrivalTime = $swipeTime->diff(\Carbon\Carbon::parse($s1->shift_start_time))->format('%H:%I:%S');
-            $isLateBy10AM = $swipeTime->format('H:i') > $s1->shift_start_time;
+                    $swipeTime = \Carbon\Carbon::parse($s1->swipe_time);
+                    $formattedSwipeTime = $swipeTime->format('H:i:s'); // Format separately
+                    $shiftStartTime = \Carbon\Carbon::parse($s1->shift_start_time);
+                    $lateArrivalTime = $shiftStartTime->diff($formattedSwipeTime)->format('%H:%I:%S');
+                    $isLateBy10AM = $swipeTime->format('H:i') > $s1->shift_start_time;
+
+                    // Log debugging details
+                    Log::info('Swipe Time: ' . $s1->swipe_time);
+                    Log::info('Shift Start Time: ' . $s1->shift_start_time);
+                    Log::info('Parsed Swipe Time: ' . $swipeTime->format('Y-m-d H:i:s'));
+                    Log::info('Parsed Shift Start Time: ' . $shiftStartTime->format('Y-m-d H:i:s'));
+                    Log::info('Late Arrival Time: ' . $lateArrivalTime);
+                    Log::info('Is Late By 10 AM: ' . ($isLateBy10AM ? 'Yes' : 'No'));
             @endphp
 
             @if($isLateBy10AM)
@@ -292,7 +302,7 @@
 
                 <br /><span class="text-muted" style="font-weight:normal;font-size:10px;">#{{$s1->emp_id}}</span>
               </td>
-              <td style="font-weight:700;font-size:10px;padding-left:12px;text-align: center;">{{$lateArrivalTime}}<br /><span class="text-muted" style="font-size:10px;font-weight:300;">{{$s1->swipe_time}}</span></td>
+              <td style="font-weight:700;font-size:10px;padding-left:12px;text-align: center;">{{$lateArrivalTime}}<br /><span class="text-muted" style="font-size:10px;font-weight:300;">{{\Carbon\Carbon::parse($s1->swipe_time)->format('H:i:s')}}</span></td>
               <td style="text-align:right;">
               <button class="arrow-btn" style="background-color:#fff;cursor:pointer;color:{{ in_array($index, $openAccordionForLateComers) ? '#3a9efd' : '#778899' }};border:1px solid {{ in_array($index, $openAccordionForLateComers) ? '#3a9efd' : '#778899'}}" wire:click="toggleAccordionForLate({{ $index }})">
                           <i class="fa fa-angle-{{ in_array($index, $openAccordionForLateComers) ? 'down' : 'up' }}"style="color:{{ in_array($index, $openAccordionForLateComers) ? '#3a9efd' : '#778899' }}"></i>

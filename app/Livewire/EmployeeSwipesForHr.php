@@ -519,7 +519,7 @@ class EmployeeSwipesForHr extends Component
 
 
             if ($this->isApply == 1 && $this->isPending == 0 && $this->defaultApply == 1) {
-                $title = 'First Door Swipe Data';
+                $title = 'For Door Swipe Data';
                 $headerColumns = ['Employee ID', 'Employee Name', 'Swipe Date', 'Swipe Time', 'Direction'];
                 $employeesInExcel = $this->processSwipeLogs($managedEmployees, $this->startDate);
                 foreach ($employeesInExcel as $employee) {
@@ -530,7 +530,7 @@ class EmployeeSwipesForHr extends Component
                                             ucwords(strtolower($employee['employee']->first_name)).' '.ucwords(strtolower($employee['employee']->last_name)),
                                             Carbon::parse($log->logDate)->format('jS F Y') ,
                                             Carbon::parse($log->logDate)->format('H:i:s'),
-                                            $log->Direction,
+                                            strtoupper($log->Direction),
                                         ];
                     }
                     
@@ -549,7 +549,7 @@ class EmployeeSwipesForHr extends Component
                                             ucwords(strtolower($employee['employee']->first_name)).' '.ucwords(strtolower($employee['employee']->last_name)),
                                             Carbon::parse($log->created_at)->format('jS F Y') ,
                                             Carbon::parse($log->swipe_time)->format('H:i:s'),
-                                            $log->in_or_out,
+                                            strtoupper($log->in_or_out),
                                         ];
                     }
                     
@@ -600,58 +600,60 @@ class EmployeeSwipesForHr extends Component
         $filteredData  = [];
         $today = $this->startDate;
         $normalizedIds = $managedEmployees->pluck('emp_id')->map(function ($id) {
-                    return str_replace('-', '', $id);
-                });
+            return str_replace('-', '', $id);
+        });
         $currentDate = Carbon::today();
         $month = $currentDate->format('n');
         $year = $currentDate->format('Y');
-        $authUser = Auth::user();
-        $userId = $authUser->emp_id;
         $tableName = 'DeviceLogs_' . $month . '_' . $year;
-       
+        
         try {
-         
+          
+              
+                // ✅ Local: Use Laravel SQLSRV connection
+                
                 if (DB::connection('sqlsrv')->getSchemaBuilder()->hasTable($tableName)) {
                     $externalSwipeLogs = DB::connection('sqlsrv')
                         ->table($tableName)
-                        ->select('UserId', 'logDate', 'Direction')
+                        ->select('UserId', 'logDate',DB::raw("CONVERT(VARCHAR(8), logDate, 108) AS logTime"), 'Direction')
                         ->whereIn('UserId', $normalizedIds)
                         ->whereRaw("CONVERT(DATE, logDate) = ?", $today)
+                        ->orderBy('logTime')
                         ->get();
-                        
+                    
+
                 } else {
                     $externalSwipeLogs = collect();
                 }
-            } catch (\Exception $e) {
-                $externalSwipeLogs = collect();
+           
+        } catch (\Exception $e) {
+            // ✅ Log the error for debugging
+            Log::error("Swipe Logs Error: " . $e->getMessage());
+            $externalSwipeLogs = collect();
+        }
+
+        foreach ($managedEmployees as $employee) {
+            $normalizedEmployeeId = str_replace('-', '', $employee->emp_id);
+            $employeeSwipeLog = $externalSwipeLogs->where('UserId', $normalizedEmployeeId);
+
+            if ($employeeSwipeLog->isNotEmpty()) {
+                $filteredData[] = [
+                    'employee' => $employee,
+                    'swipe_log' => $employeeSwipeLog,
+                ];
             }
+        }
 
-            foreach ($managedEmployees as $employee) {
-                $normalizedEmployeeId = str_replace('-', '', $employee->emp_id);
-                $employeeSwipeLog = $externalSwipeLogs->where('UserId', $normalizedEmployeeId);
-
-                if ($employeeSwipeLog->isNotEmpty()) {
-                    $filteredData[] = [
-                        'employee' => $employee,
-                        'swipe_log' => $employeeSwipeLog,
-                    ];
-                }
-            }
-
-            // **Check if search is empty**
-            if (!empty(trim($this->search))) {
-                $filteredData = array_filter($filteredData, function ($data) {
-                    return stripos($data['employee']->first_name, $this->search) !== false ||
-                        stripos($data['employee']->last_name, $this->search) !== false ||
-                        stripos($data['employee']->emp_id, $this->search) !== false;
-                });
-            }
-
-   
-
-        $swipeCardData = array_values($filteredData);
-        
-        return $swipeCardData;
+        // ✅ Search Filtering
+        if (!empty(trim($this->search))) {
+            $filteredData = array_filter($filteredData, function ($data) {
+                return stripos($data['employee']->first_name, $this->search) !== false ||
+                    stripos($data['employee']->last_name, $this->search) !== false ||
+                    stripos($data['employee']->emp_id, $this->search) !== false;
+            });
+        }
+      
+        return array_values($filteredData);
     }
 
 
