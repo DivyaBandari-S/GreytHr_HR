@@ -291,6 +291,29 @@ ul {
     margin-top: 8px;
 }
 /* admin dashboard */
+.text-bg-primary{
+    color: white;
+    background-color: var(--main-button-color);
+}
+.normalTextTruncated{
+    color: var(--main-table-heading-text-color);
+    font-weight: 500;
+    font-size: var(--normal-font-size);
+    max-width: 110px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    margin-bottom: 0;
+}
+.employee-profile-img img{
+    margin-right: 10px;
+}
+.deptDetails{
+    background-color: #dbf3e1; color: #1E7E34; font-size: var(--normal-font-size); font-weight: bold; padding: 2px 8px; border-radius: 5px; margin-left: auto;
+}
+table thead.table-sec th{
+    background-color: var(--main-table-heading-bg-color) !important;
+}
 .green-bg {
     display: flex;
     flex-direction: column;
@@ -665,6 +688,7 @@ ul {
 .feeds-main-content {
     height: 75vh;
     max-height: 75vh;
+    
     overflow-y: auto;
     scroll-behavior: smooth;
 }
@@ -1849,6 +1873,7 @@ input {
 .submit-btn {
     background-color: var(--main-button-color);
     color: #fff;
+    white-space: nowrap;
     border: 1px solid var(--main-button-color);
     font-weight: 500;
     border-radius: 5px;
@@ -1857,7 +1882,21 @@ input {
     border: none;
     transition: all 0.3s ease;
 }
-
+.login-btn {
+    background-color: #3da4bb;
+    color: #fff;
+    border: 1px solid #3da4bb;
+    font-weight: 500;
+    border-radius: 5px;
+    padding: 6px 12px;
+    font-size: var(--normal-font-size);
+    border: none;
+    transition: all 0.3s ease;
+}
+.sign-in-heading{
+    font-size: 1.2rem;
+    color: #555;
+}
 .cancel-btn {
     background-color: white;
     color: var(--main-button-color);
@@ -3375,6 +3414,7 @@ input[type="date"]::before {
     background-color: #9cd5f8; /* Ensure dropdown menu has a hover effect */
     color: #000; /* Change text color on hover if needed */
     font-size: 10px;
+    width:100px;
 }
 
 .dp-info {
@@ -4249,6 +4289,12 @@ input[type="date"]::before {
 }
 
 /* Hover effect for the button */
+.login-btn:hover {
+    background-color: #357ab8;
+    border-color: #357ab8;
+    opacity: 0.8;
+    box-shadow: 0 2px 2px rgba(53, 122, 184, 0.4);
+}
 .submit-btn:hover {
     background-color: #357ab8;
     border-color: #357ab8;
@@ -7935,4 +7981,44 @@ button.btn.btn-link.edit-icon {
 .empIdStyle {
     color: var(--label-color);
     font-size: 0.69rem;
+}
+
+/* ///// privacy policy and terms conditions */
+.privacy {
+    color: #39363f;
+    font-size: 28.5px;
+    margin: 0px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+.privacyContent {
+    margin: 10px 0px;
+    font-size: 14px;
+    font-family: 'Montserrat', sans-serif;
+    line-height: 20px;
+    color: var(--main-heading-color);
+}
+
+.privacycontentlinks {
+    color: var(--main-heading-color);
+    font-family: 'Montserrat', sans-serif;
+
+    /* text-decoration: none; */
+}
+
+.privacyheadings {
+    margin: 25px 0px;
+    color: #4d4d4d;
+    font-size: 24.5px;
+    font-weight: 600;
+    font-family: 'Montserrat', sans-serif;
+
+}
+
+.privacyLabelContent {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
 }

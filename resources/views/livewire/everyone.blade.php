@@ -736,10 +736,10 @@
                             <!-- Form content here -->
                             @endif
                             @else
-
+                            @foreach($posts as $post)
                             <!-- Post Container -->
                             <div id="post-container " class="feeds-main-content">
-                                @foreach($posts as $post)
+                               
                                 <div class="col-12 col-md-8 mt-2" id="post-{{ $post->id }}">
                                     <div class="post-card">
                                         <div class="row">
@@ -826,10 +826,10 @@
                 @endif
             </div>
         </div>
-    </div>
+   
+
+</div>
 @endforeach
-
-
 
 
 
