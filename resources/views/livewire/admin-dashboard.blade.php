@@ -227,7 +227,7 @@
                                                         </div>
                                                         @endif
                                                         <div class="d-flex flex-column">
-                                                            <span class="normalText">
+                                                            <span class="normalTextTruncated">
                                                                 {{ ucwords(strtolower($value['first_name'])) }} {{ ucwords(strtolower($value['last_name'])) }}
                                                             </span>
                                                             <span class="smallText">{{ $key }}</span>
@@ -328,99 +328,46 @@
                                 </div>
 
                                 <div class="row m-0 mt-3">
-                                    <!-- <div class="border m-0 mb-3 p-2 rounded-2 row">
-                                        <div class="col-md-1 p-0 m-auto">
-                                            <p class="mb-0">
-                                                <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-24.jpg" style="width: 2em; border-radius: 50%;" />
-                                            </p>
-                                        </div>
-                                        <div class="col-md-11 p-0">
-                                            <div class="m-0 row">
-                                                <div class="col-md-6 p-0">
-                                                    <p class="fw-bold mb-0 fs14">Daniel Esbella</p>
-                                                    <p class="fs12 mb-0">UI/UX Designer</p>
-                                                </div>
-                                                <div class="col-md-6 text-end p-0 m-auto">
-                                                    <p class="mb-0 fs14"><i class="fa-regular fa-clock me-2" style="vertical-align: middle;"></i> <span class="badge text-bg-success">09 : 06</span></p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div> -->
+                                    @if($swipes)
+                                    @foreach ($swipes as $swipe)
                                     <div class="m-0 mb-3 p-2 row border">
                                         <div style="display: flex; align-items: center;">
-                                            <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-24.jpg"
-                                                style="width: 2em; height: 2em; border-radius: 50%; margin-right: 8px;" />
-                                            <div style="display: flex; flex-direction: column;">
-                                                <p style="font-weight: bold; margin: 0; font-size: 14px;">Daniel Esbella</p>
-                                                <p style="margin: 0; font-size: 12px; color: #666;">UI/UX Designer</p>
+                                            @if($swipe->employee->image && $swipe->employee->image !=='null')
+                                            <div class="employee-profile-img">
+                                                <img class="rounded-circle" height="35" width="35" src="data:image/jpeg;base64,{{($swipe->employee->image)}} ">
                                             </div>
-                                            <i class="fa-regular fa-clock me-2" style="vertical-align: middle; margin-left: auto"></i>
-                                            <span class="badge text-bg-success" style="margin-left: auto;">09 : 06</span>
-                                        </div>
-                                    </div>
-                                    <div class="m-0 mb-3 p-2 row border">
-                                        <div style="display: flex; align-items: center;">
-                                            <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-24.jpg"
-                                                style="width: 2em; height: 2em; border-radius: 50%; margin-right: 8px;" />
-                                            <div style="display: flex; flex-direction: column;">
-                                                <p style="font-weight: bold; margin: 0; font-size: 14px;">Daniel Esbella</p>
-                                                <p style="margin: 0; font-size: 12px; color: #666;">UI/UX Designer</p>
+                                            @else
+                                            @if($swipe->employee->gender=='FEMALE')
+                                            <div class="employee-profile-img">
+                                                <img src="{{ asset('images/female-default.jpg') }}" class=" rounded-circle" height="35" width="35" alt="Default Image">
                                             </div>
-                                            <i class="fa-regular fa-clock me-2" style="vertical-align: middle; margin-left: auto"></i>
-                                            <span class="badge text-bg-success" style="margin-left: auto;">09 : 06</span>
-                                        </div>
-                                    </div>
-                                    <div class="m-0 mb-3 p-2 row border">
-                                        <div style="display: flex; align-items: center;">
-                                            <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-24.jpg"
-                                                style="width: 2em; height: 2em; border-radius: 50%; margin-right: 8px;" />
-                                            <div style="display: flex; flex-direction: column;">
-                                                <p style="font-weight: bold; margin: 0; font-size: 14px;">Daniel Esbella</p>
-                                                <p style="margin: 0; font-size: 12px; color: #666;">UI/UX Designer</p>
+                                            @elseif($swipe->employee->gender=='MALE')
+                                            <div class="employee-profile-img">
+                                                <img src="{{ asset('images/male-default.png') }}" class=" rounded-circle" height="35" width="35" alt="Default Image">
                                             </div>
-                                            <i class="fa-regular fa-clock me-2" style="vertical-align: middle; margin-left: auto"></i>
-                                            <span class="badge text-bg-success" style="margin-left: auto;">09 : 06</span>
-                                        </div>
-                                    </div>
-                                    <div class="m-0 mb-3 p-2 row border">
-                                        <div style="display: flex; align-items: center;">
-                                            <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-24.jpg"
-                                                style="width: 2em; height: 2em; border-radius: 50%; margin-right: 8px;" />
-                                            <div style="display: flex; flex-direction: column;">
-                                                <p style="font-weight: bold; margin: 0; font-size: 14px;">Daniel Esbella</p>
-                                                <p style="margin: 0; font-size: 12px; color: #666;">UI/UX Designer</p>
+                                            @else
+                                            <div class="employee-profile-img">
+                                                <img src="{{ asset('images/user.jpg') }}" class=" rounded-circle" height="35" width="35" alt="Default Image">
                                             </div>
-                                            <i class="fa-regular fa-clock me-2" style="vertical-align: middle; margin-left: auto"></i>
-                                            <span class="badge text-bg-success" style="margin-left: auto;">09 : 06</span>
-                                        </div>
-                                    </div>
-                                    <div class="m-0 mb-3 p-2 row border">
-                                        <div style="display: flex; align-items: center;">
-                                            <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-24.jpg"
-                                                style="width: 2em; height: 2em; border-radius: 50%; margin-right: 8px;" />
-                                            <div style="display: flex; flex-direction: column;">
-                                                <p style="font-weight: bold; margin: 0; font-size: 14px;">Daniel Esbella</p>
-                                                <p style="margin: 0; font-size: 12px; color: #666;">UI/UX Designer</p>
+                                            @endif
+                                            @endif
+                                            <div class="d-flex flex-column col">
+                                                <p class="mb-0 normalTextTruncated">{{ ucwords(strtolower($swipe->employee->first_name)) }} {{ ucwords(strtolower($swipe->employee->last_name)) }}</p>
+                                                <p class="smallText mb-0">{{ ucwords(strtolower($swipe->employee->job_role)) }}</p>
                                             </div>
-                                            <i class="fa-regular fa-clock me-2" style="vertical-align: middle; margin-left: auto"></i>
-                                            <span class="badge text-bg-success" style="margin-left: auto;">09 : 06</span>
-                                        </div>
-                                        <div class="border m-0 mt-2 py-3 rounded row">
-                                            <div class="col-md-4">
-                                                <p class="fs12 text-secondary mb-0">Clock in</p>
-                                                <p class="fs12 mb-0">10:30 AM</p>
+                                            <div class="col d-flex justify-content-center align-items-center">
+                                                <span class="normalText"> {{ $swipe->in_or_out }} </span>
                                             </div>
-                                            <div class="col-md-4 text-center">
-                                                <p class="fs12 text-secondary mb-0">Clock out</p>
-                                                <p class="fs12 mb-0">10:30 AM</p>
-                                            </div>
-                                            <div class="col-md-4 text-end">
-                                                <p class="fs12 text-secondary mb-0">Production</p>
-                                                <p class="fs12 mb-0">10:30 Hrs</p>
+                                            <div class="col d-flex justify-content-center align-items-center">
+                                                <span class="badge col" >{{ \Carbon\Carbon::parse($swipe->swipe_time)->format('H:i A') }}
+                                                </span>
                                             </div>
                                         </div>
                                     </div>
-
+                                    @endforeach
+                                    @else
+                                    <p class="fw-bold fs14 p-0">No Data Found</p>
+                                    @endif
                                     <p class="fw-bold fs14 p-0">Late</p>
                                     <div class="m-0 mb-3 p-2 row border">
                                         <div style="display: flex; align-items: center;">

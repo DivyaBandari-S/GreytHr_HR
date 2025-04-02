@@ -10,6 +10,7 @@ use App\Models\EmployeeDetails;
 use App\Models\EmpResignations;
 use App\Models\Hr;
 use App\Models\LeaveRequest;
+use App\Models\SwipeRecord;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use Carbon\Carbon;
@@ -38,7 +39,7 @@ class AdminDashboard extends Component
     public $newEmployees;
     public $newEmployeedeparts;
     public $activeTab = 'summary';
-    public $mappedLeaveData =[];
+    public $mappedLeaveData = [];
     public $searchContent = '';
     public $overviewItems = [];
     public $overviewContentList = [];
@@ -48,6 +49,7 @@ class AdminDashboard extends Component
     public $topLeaveTakers;
     public $groupedByEmpId;
 
+    public $swipes;
     public function setAction($action)
     {
         $this->selectedAction = $action;
@@ -79,57 +81,8 @@ class AdminDashboard extends Component
                 ->inRandomOrder()
                 ->get()->take(5);
 
-            // Fetch employee ids with status 1 and matching company_id
-            $emp_ids = EmployeeDetails::where('status', 1)
-                ->whereJsonContains('company_id', $companyId)
-                ->pluck('emp_id');
-
-            // Initialize an empty array for the matching emp_ids
-            $data = [];
-
-            // Iterate through emp_ids to fetch matching leave takers
-            foreach ($emp_ids as $emp_id) {
-                $approvedLeaves = LeaveHelper::getApprovedLeaveDays($emp_id, '2025');
-                $data[$emp_id] =  $approvedLeaves;
-            }
-            // Initialize an array to store the top 5 highest leave days for each type
-            $topLeaveDays = [];
-            $top5LeaveDays = [];
-            // Iterate through each employee's leave data
-            foreach ($data as $emp_id => $leaveData) {
-                // Sort the leave data for each employee and get the top 5
-                $totalLeave = array_sum($leaveData);
-                // Only add to the array if the total leave days is greater than 0
-                if ($totalLeave > 0) {
-                    $topLeaveDays[$emp_id] = $totalLeave;
-                }
-            }
-            // Check if the array is populated
-            if (isset($topLeaveDays)) {
-                // Sort the total leave days in descending order to get the top 5 employees with the most leave days
-                arsort($topLeaveDays);
-                // Get the top 5 employees with the highest total leave days
-                $top5LeaveDays = array_slice($topLeaveDays, 0, 5);
-            } else {
-                $top5LeaveDays[] = [];
-            }
-
-            // Iterate through the leave data and get the employee details
-            foreach ($top5LeaveDays as $key => $value ) {
-                // Fetch the employee details based on emp_id
-                $employee = EmployeeDetails::where('emp_id', $key)->first();  // Assuming emp_id is unique
-                if ($employee) {
-                    // Map the employee details with the leave days
-                    $this->mappedLeaveData[$key] = [
-                        'totalLeave' => $value,
-                        'first_name' => $employee->first_name,
-                        'last_name' => $employee->last_name,
-                        'job_role' => $employee->job_role,
-                        'image' => $employee->image,
-                    ];
-                }
-            }
-
+            $this->getTopLeaveTakers();
+            $this->getSignInOutData();
             $this->getHrRequests($companyId);
             $this->getEmployeesCount($companyId);
             // Count total employees
@@ -189,28 +142,125 @@ class AdminDashboard extends Component
             if ($e instanceof \Illuminate\Database\QueryException) {
                 // Handle database query exceptions
                 Log::error("Database error registering employee: " . $e->getMessage());
-                session()->flash('emp_error', 'Database connection error occurred. Please try again later.');
+                FlashMessageHelper::flashError('Database connection error occurred. Please try again later.');
             } elseif (strpos($e->getMessage(), 'Call to a member function store() on null') !== false) {
                 // Display a user-friendly error message for null image
-                session()->flash('emp_error', 'Please upload an image.');
+                FlashMessageHelper::flashError('Please upload an image.');
             } elseif ($e instanceof \Illuminate\Http\Client\RequestException) {
                 // Handle network request exceptions
                 Log::error("Network error registering employee: " . $e->getMessage());
-                session()->flash('emp_error', 'Network error occurred. Please try again later.');
+                FlashMessageHelper::flashError('Network error occurred. Please try again later.');
             } elseif ($e instanceof \PDOException) {
                 // Handle database connection errors
                 Log::error("Database connection error registering employee: " . $e->getMessage());
-                session()->flash('emp_error', 'Database connection error. Please try again later.');
+                FlashMessageHelper::flashError('Database connection error. Please try again later.');
             } else {
                 // Handle other generic exceptions
                 Log::error("Error registering employee: " . $e->getMessage());
-                session()->flash('emp_error', 'Failed to register employee. Please try again later.');
+                FlashMessageHelper::flashError('Failed to register employee. Please try again later.');
             }
             // Redirect the user back to the registration page or any other appropriate action
             return redirect()->back();
         }
     }
 
+    //get top 5 leavew takrs data
+    public function getTopLeaveTakers()
+    {
+        try {
+            $employeeId = auth()->guard('hr')->user()->emp_id;
+            $companyId = EmployeeDetails::where('emp_id', $employeeId)->value('company_id');
+            // Fetch employee ids with status 1 and matching company_id
+            $emp_ids = EmployeeDetails::where('status', 1)
+                ->whereJsonContains('company_id', $companyId)
+                ->pluck('emp_id');
+
+            // Initialize an empty array for the matching emp_ids
+            $data = [];
+
+            // Iterate through emp_ids to fetch matching leave takers
+            foreach ($emp_ids as $emp_id) {
+                $approvedLeaves = LeaveHelper::getApprovedLeaveDays($emp_id, '2025');
+                $data[$emp_id] =  $approvedLeaves;
+            }
+            // Initialize an array to store the top 5 highest leave days for each type
+            $topLeaveDays = [];
+            $top5LeaveDays = [];
+            // Iterate through each employee's leave data
+            foreach ($data as $emp_id => $leaveData) {
+                // Sort the leave data for each employee and get the top 5
+                $totalLeave = array_sum($leaveData);
+                // Only add to the array if the total leave days is greater than 0
+                if ($totalLeave > 0) {
+                    $topLeaveDays[$emp_id] = $totalLeave;
+                }
+            }
+            // Check if the array is populated
+            if (isset($topLeaveDays)) {
+                // Sort the total leave days in descending order to get the top 5 employees with the most leave days
+                arsort($topLeaveDays);
+                // Get the top 5 employees with the highest total leave days
+                $top5LeaveDays = array_slice($topLeaveDays, 0, 5);
+            } else {
+                $top5LeaveDays[] = [];
+            }
+
+            // Iterate through the leave data and get the employee details
+            foreach ($top5LeaveDays as $key => $value) {
+                // Fetch the employee details based on emp_id
+                $employee = EmployeeDetails::where('emp_id', $key)->first();  // Assuming emp_id is unique
+                if ($employee) {
+                    // Map the employee details with the leave days
+                    $this->mappedLeaveData[$key] = [
+                        'totalLeave' => $value,
+                        'first_name' => $employee->first_name,
+                        'last_name' => $employee->last_name,
+                        'job_role' => $employee->job_role,
+                        'image' => $employee->image,
+                    ];
+                }
+            }
+        } catch (\Exception $e) {
+            if ($e instanceof \Illuminate\Database\QueryException) {
+                // Handle database query exceptions
+                Log::error("Database error getting leaves of employee: " . $e->getMessage());
+                FlashMessageHelper::flashError('Database connection error occurred. Please try again later.');
+            } elseif (strpos($e->getMessage(), 'Call to a member function store() on null') !== false) {
+                // Display a user-friendly error message for null image
+                FlashMessageHelper::flashError('An error occured while getting leave data.');
+            } elseif ($e instanceof \Illuminate\Http\Client\RequestException) {
+                // Handle network request exceptions
+                Log::error("Network error registering employee: " . $e->getMessage());
+                FlashMessageHelper::flashError('Network error occurred. Please try again later.');
+            } elseif ($e instanceof \PDOException) {
+                // Handle database connection errors
+                Log::error("Database connection error registering employee: " . $e->getMessage());
+                FlashMessageHelper::flashError('Database connection error. Please try again later.');
+            } else {
+                // Handle other generic exceptions
+                Log::error("Error registering employee: " . $e->getMessage());
+                FlashMessageHelper::flashError('Failed to get leave data. Please try again later.');
+            }
+            // Redirect the user back to the registration page or any other appropriate action
+            return redirect()->back();
+        }
+    }
+
+    //get sign in and sign out data
+    public function getSignInOutData()
+    {
+        try {
+            $this->swipes = SwipeRecord::with('employee')
+                ->whereDate('created_at', today())
+                ->orderBy('emp_id') // Optional: ensure order by employee_id
+                ->orderBy('created_at', 'asc')  // Order by creation date to get the first swipe for each employee
+                ->get()
+                ->unique('emp_id');
+        } catch (\Exception  $e) {
+            Log::error("Database error getting leaves of employee: " . $e->getMessage());
+            FlashMessageHelper::flashError('An error occurred while getting swipe data. Please try again later.');
+        }
+    }
     public function loginHRDetails()
     {
         $user = auth()->guard('hr')->user();
@@ -259,6 +309,7 @@ class AdminDashboard extends Component
     public function toggleContent()
     {
         $this->showDynamicContent = !$this->showDynamicContent;
+        $this->setCategory('');
     }
 
     public $categoryFilter = '';
@@ -531,6 +582,7 @@ class AdminDashboard extends Component
             'loginEmployee' => $this->loginEmployee,
             'topLeaveTakers' => $this->topLeaveTakers,
             'mappedLeaveData' => $this->mappedLeaveData,
+            'swipes' => $this->swipes
         ]);
     }
 }
