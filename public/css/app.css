@@ -688,6 +688,7 @@ table thead.table-sec th{
 .feeds-main-content {
     height: 75vh;
     max-height: 75vh;
+    
     overflow-y: auto;
     scroll-behavior: smooth;
 }
@@ -3413,6 +3414,7 @@ input[type="date"]::before {
     background-color: #9cd5f8; /* Ensure dropdown menu has a hover effect */
     color: #000; /* Change text color on hover if needed */
     font-size: 10px;
+    width:100px;
 }
 
 .dp-info {

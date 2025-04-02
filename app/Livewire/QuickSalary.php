@@ -75,6 +75,7 @@ public $pftotals = [];
         $this->options = [];
         $this->selectedMonth = $this->selectedMonth ?? date('Y-m');
         $this->generateMonths();
+        $this->getSalaryDetails();
 
         // Fetch Employees under the same company
         $this->employees = EmployeeDetails::where('company_id', $companyID)
@@ -87,6 +88,13 @@ public $pftotals = [];
             ->orderBy('last_name')
             ->get();
     }
+    public function changeMonth()
+    {
+       
+        $this->generateMonths();
+        $this->getSalaryDetails();
+    }
+
     public function getSalaryDetails()
     {
         // Fetch salary details for all employees for the selected month
@@ -248,12 +256,6 @@ public $pftotals = [];
         ];
     }
 
-    public function changeMonth()
-    {
-        $this->getSalaryDetails();
-        $this->generateMonths();
-       
-    }
 
     
   
