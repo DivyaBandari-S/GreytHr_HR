@@ -1,4 +1,4 @@
-<div class="auth-page-wrapper pt-5">
+<div class="auth-page-wrapper">
     <!-- auth page bg -->
     <div class="auth-one-bg-position auth-one-bg" id="auth-particles">
         <div class="bg-overlay"></div>
@@ -16,7 +16,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
-                    <div class="text-center mt-sm-5 mb-4 text-white-50">
+                    <div class="text-center mt-sm-5 mb-2 text-white-50">
                         <div>
                             <a routerLink="/" class="d-inline-block auth-logo">
                                 <img src="{{ asset('images/hr_new_white.png') }}" alt="" style="width: 10em;">
@@ -49,10 +49,9 @@
 
                         <div class="card-body p-4">
                             <div class="text-center mt-2">
-                                <h5 class="text-primary">Welcome Back !</h5>
-                                <p class="text-muted">Sign in to continue to Hr Xpert.</p>
+                                <h5 class="sign-in-heading"><strong>Sign In</strong></h5>
                             </div>
-                            <div class="p-2 mt-4">
+                            <div class="p-2 mt-2">
                                 <form wire:submit.prevent="empLogin">
                                     @csrf
                                     @if ($error)
@@ -96,14 +95,14 @@
                                         </div>
                                     </div>
 
-                                    <div class="form-check">
+                                    <!-- <div class="form-check">
                                         <input class="form-check-input" type="checkbox" value=""
                                             id="auth-remember-check">
                                         <label class="form-check-label" for="auth-remember-check">Remember me</label>
-                                    </div>
+                                    </div> -->
 
-                                    <div class="mt-4">
-                                        <button class="btn btn-success w-100" data-bs-toggle="modal"
+                                    <div class="mt-4 login-sec">
+                                        <button class="login-btn px-4" data-bs-toggle="modal"
                                             data-bs-target="#loginLoader" type="submit" style="font-size: 12px;">Log
                                             In</button>
                                     </div>
@@ -125,11 +124,6 @@
                         <!-- end card body -->
                     </div>
                     <!-- end card -->
-
-                    <div class="mt-4 text-center">
-                        <p class="mb-0 fs12">Don't have an account ? <a routerLink="/auth/register"
-                                class="fw-semibold text-primary text-decoration-underline"> Signup </a> </p>
-                    </div>
 
                 </div>
             </div>

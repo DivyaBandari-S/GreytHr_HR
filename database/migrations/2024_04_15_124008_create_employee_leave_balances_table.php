@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('employee_leave_balances', function (Blueprint $table) {
             $table->smallInteger('id')->autoIncrement();
-            $table->string('emap_id', 10);
+            $table->string('emp_id', 10);
             $table->string('hr_emp_id', 10)->nullable();
             $table->integer('batch_id')->nullable(); // Removed invalid length parameter
             $table->json('leave_policy_id')->nullable();
@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('period', 25)->nullable();
             $table->string('periodicity', 25)->nullable();
             $table->string('granted_for_year', 10)->nullable();
-            $table->boolean('is_lapsed')->default(false);
+            $table->boolean('is_lapsed')->defaullt(false);
             $table->timestamp('lapsed_date')->nullable();
             $table->string('from_date', 25)->nullable();
             $table->string('to_date', 25)->nullable();

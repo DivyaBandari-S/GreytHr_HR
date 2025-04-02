@@ -55,8 +55,14 @@ class Hr extends Authenticatable
     {
         return $this->role == $role;
     }
+    // In User model
+    public function getEmpIdAttribute($value)
+    {
+        return $value;  // Just ensuring it returns the raw value
+    }
 
-    public function getAdminFavModules(){
-        return $this->hasMany(AdminFavoriteModule::class, 'hr_emp_id','hr_emp_id');
+    public function getAdminFavModules()
+    {
+        return $this->hasMany(AdminFavoriteModule::class, 'hr_emp_id', 'hr_emp_id');
     }
 }

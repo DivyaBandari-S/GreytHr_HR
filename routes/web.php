@@ -197,6 +197,7 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
         Route::get('/user/attendance-lock-configuration', AttendanceLockConfiguration::class)->name('attendance-lock-configuration');
         Route::get('/user/create-lock-configuration', CreateNewLockConfigurationPage::class)->name('create-new-lock-configuration-page');
         Route::get('/user/weekend-override',  WeekendOverride::class)->name('weekend-override');
+
         //HR Employee-Information Submodule Routes
         Route::get('/employee-profile', EmployeeProfile::class)->name('employee-profile');
         Route::get('/employee-asset', EmployeeAsset::class)->name('employee-asset');
@@ -214,30 +215,18 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
         Route::get('/user/damage-page', DamageComponent::class)->name('damage-page');
         Route::get('/user/flowchart/{selectedEmployeeId}', Flowchart::class)->name('flowchart');
 
+        //Employee-Admin sub modules
         Route::get('/user/generate-letter', GenerateLetters::class)->name('generate-letter');
         Route::get('/letter/prepare', LetterPreparePage::class)->name('letter.prepare');
         Route::get('/letter-preview', LetterPreview::class);
         Route::get('/authorize-signatory', AuthorizeSignatory::class)->name('authorize-signatory.page');
         Route::get('/signatories/create', CreateSignatory::class)->name('signatory.create');
         Route::get('/signatory/edit/{id}', EditSignatory::class)->name('signatory.edit');
+        Route::get('user/emp/admin/bulkphoto-upload', EmpBulkPhotoUpload::class)->name('emp-bulk-photo-upload');
+
+
         //HR Leave-Main Submodule Routes
         Route::get('/user/hr-organisation-chart/{selectedEmployeeId?}', HrOrganisationChart::class)->name('hr-organisation-chart');
-        Route::get('/user/employee-weekday-chart', EmployeeWeekDayChart::class)->name('employee-weekday-chart');
-        Route::get('/user/create-employee-weekday-chart', CreateEmployeeWeekDayChart::class)->name('create-employee-weekday-chart');
-        Route::get('/user/hr-attendance-overview', HrAttendanceOverviewNew::class)->name('attendance-overview');
-        Route::get('/user/who-is-in-chart-hr', WhoIsInChartHr::class)->name('who-is-in-chart-hr');
-        Route::get('/user/edit-attendance-exception-page/{id}', EditAttendanceExceptionPage::class)->name('edit-attendance-exception-page');
-        Route::get('/user/edit-shift-override/{id}', EditShiftOverride::class)->name('edit-shift-override');
-        Route::get('/user/shift-override', ShiftOverrideHr::class)->name('shift-override');
-        Route::get('/user/create-shift-override', CreateShiftOverride::class)->name('create-shift-override');
-        Route::get('/user/attendance-info', HrAttendanceInfo::class)->name('attendance-info');
-        Route::get('/review-pending-regularisation-for-hr/{id}/{emp_id}', RegularisationPendingForHr::class)->name('review-pending-regularisation-for-hr');
-        //HR Leave-Infomation Submodule Routes
-        Route::get('/user/employee-leave', EmployeeLeave::class)->name('employee-leave');
-
-        //HR Leave Related Routes
-        Route::get('/user/attendance-exception', AttendanceExceptionForDisplay::class)->name(name: 'attendance-exception');
-        //HR Leave-Main Submodule Routes
         Route::get('/user/leave-overview', HrLeaveOverview::class)->name('leave-overview');
         Route::get('/user/leave-overview/{month}/{leaveType?}', HrLeaveOverview::class)->name('leave-overview.month');
         Route::get('/leave-overview/{monthLeaveType?}', HrLeaveOverview::class)->name('leave-overview.monthLeaveType');
@@ -269,13 +258,15 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
         Route::get('/user/create-attendance-exception', CreateAttendanceExceptionPage::class)->name('create-attendance-exception');
         Route::get('/user/attendance-lock-configuration', AttendanceLockConfiguration::class)->name('attendance-lock-configuration');
         Route::get('/user/create-lock-configuration', CreateNewLockConfigurationPage::class)->name('create-new-lock-configuration-page');
+        Route::get('/user/edit-shift-override/{id}', EditShiftOverride::class)->name('edit-shift-override');
+        Route::get('/user/create-shift-override', CreateShiftOverride::class)->name('create-shift-override');
+        Route::get('/review-pending-regularisation-for-hr/{id}/{emp_id}', RegularisationPendingForHr::class)->name('review-pending-regularisation-for-hr');
 
         //HR Leave-SetUp Submodule Routes
         Route::get('/user/holidayList', HrHolidayList::class)->name('holidayList');
         Route::get('/user/employee-weekday-chart', EmployeeWeekDayChart::class)->name('employee-weekday-chart');
         Route::get('/user/create-employee-weekday-chart', CreateEmployeeWeekDayChart::class)->name('create-employee-weekday-chart');
         Route::get('/user/leave/setup/leave-type-reviewer', LeaveTypeReviewer::class)->name('leave-type-reviewer');
-        Route::get('/user/employee-weekday-chart', EmployeeWeekDayChart::class)->name('employee-weekday-chart');
         Route::get('/user/shift-rotation-calendar', ShiftRotationCalendar::class)->name('shift-rotation-calendar');
 
         //extra routes

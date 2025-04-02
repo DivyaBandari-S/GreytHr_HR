@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/x-icon" href="{{ asset('images/hr_new_blue.png') }}">
+    <link rel="icon" type="image/x-icon" href="{{ asset('images/hr_xpert_mini.png') }}">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ $title ?? 'Hr Xpert' }}</title>
 

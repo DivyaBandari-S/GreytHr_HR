@@ -485,7 +485,6 @@ class EmpBulkPhotoUpload extends Component
     }
 
 
-
     private function scanDirectoryForImages($dir, &$extractedFiles, $upload)
     {
         $files = scandir($dir);
