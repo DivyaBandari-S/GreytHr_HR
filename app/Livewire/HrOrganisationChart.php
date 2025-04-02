@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
+use Spatie\SimpleExcel\SimpleExcelWriter;
 
 class HrOrganisationChart extends Component
 {
@@ -63,8 +64,14 @@ class HrOrganisationChart extends Component
     public $managerDetails;
     public $selectedManager;
 
+    public $searchTermForAssignManager;
+    public $employees1;
     public $selectedEmployeeLastNameFor2ndManager;
 
+    public $isupdateFilter=0;
+    public $selectedDesignation;
+    public $isOpen=false;
+    public $employeesforassignedManager;
     public $selectedEmployeeFirstNameFor2ndManager;
     public $searchFromManagerTransfer=0;
     public $selectedEmployeeId;
@@ -98,6 +105,10 @@ class HrOrganisationChart extends Component
         
     }
 
+    public function closeSidebar()
+    {
+        $this->isOpen=false;
+    }
     public function clearSelectedEmployee()
     {
         $this->selectedEmployeeId='';
@@ -161,6 +172,43 @@ class HrOrganisationChart extends Component
     //     $this->searchforEmployee();
        
     // }
+    public function getEmployeesBySecondType()
+    {
+        
+        Log::info('Welcome to getEmployeesBySecondType Method'); 
+        $query = EmployeeDetails::query();
+        // Example logic to fetch employees based on the selected type
+       
+
+            $query->where('employee_status', 'active');
+        
+        
+        
+
+        if (!empty($this->searchTermForAssignManager)) {
+            $query->where(function ($query) {
+                $query->where('first_name', 'like', '%' . $this->searchTermForAssignManager . '%')
+                      ->orWhere('last_name', 'like', '%' . $this->searchTermForAssignManager . '%')
+                      ->orWhere('emp_id', 'like', '%' . $this->searchTermForAssignManager . '%');
+            });
+        }
+       Log::info('Employees For Assigned Manager:',$query->get()->toArray());
+        // Get the filtered employees
+        return $query->get();
+    
+    }
+
+    public function toggleSidebar()
+    {
+        $this->isOpen = !$this->isOpen; // Toggle sidebar visibility
+    }
+
+    public function updateselectedDesignation()
+    {
+       $this->selectedDesignation=$this->selectedDesignation;
+    }
+
+    
     public function getEmployeesByType()
     {
         $managerIds = EmployeeDetails::select('manager_id')
@@ -170,7 +218,13 @@ class HrOrganisationChart extends Component
        
         $query = EmployeeDetails::query();
         // Example logic to fetch employees based on the selected type
-        $query->where('employee_status', 'active')->whereIn('emp_id',$managerIds);
+       
+
+            $query->where('employee_status', 'active')->whereIn('manager_id',$managerIds);
+        
+        
+        
+
         if (!empty($this->searchTerm)) {
             $query->where(function ($query) {
                 $query->where('first_name', 'like', '%' . $this->searchTerm . '%')
@@ -190,6 +244,35 @@ class HrOrganisationChart extends Component
         return $query->get();
     
     }
+    public function getEmployeesByAsssignManagerType()
+    {
+        
+       
+        $query = EmployeeDetails::query();
+        // Example logic to fetch employees based on the selected type
+       
+
+            $query->where('employee_status', 'active');
+        
+        
+        
+
+        if (!empty($this->searchTerm)) {
+            $query->where(function ($query) {
+                $query->where('first_name', 'like', '%' . $this->searchTerm . '%')
+                      ->orWhere('last_name', 'like', '%' . $this->searchTerm . '%')
+                      ->orWhere('emp_id', 'like', '%' . $this->searchTerm . '%');
+            });
+          
+        }
+        
+        
+        // Get the filtered employees
+        return $query->get();
+    
+    }
+   
+
     public function test()
     {
         dd('asdzfgchjm');
@@ -271,35 +354,37 @@ class HrOrganisationChart extends Component
     
     public function exportContent()
     {
-        // Generate PDF
-        $content = '<h1>Hi</h1>';
-        $pdf = FacadePdf::loadHTML($content);
-        $pdfPath = storage_path('app/public/temp-exported.pdf');
-        $pdf->save($pdfPath);
-    
-        // Convert PDF to PNG (using external tool like pdftoppm or similar alternative)
-        // You can replace this with a similar approach to converting the PDF to an image using PHP
-        $pngPath = storage_path('app/public/hi-image.png');
-    
-        try {
-            // You might use an alternative method (e.g., external command) to convert PDF to image
-    
-            // For now, let's say we have a PDF-to-image tool that we can call
-            // This could be an external tool, or you could add custom logic here to convert
-    
-            $image = Image::make($pdfPath); // Here you would use a real method to convert PDF to image
-    
-            // Set the image format to PNG
-            $image->encode('png');
-            $image->save($pngPath);
-    
-            // Respond with the PNG image
-            return response()->download($pngPath)->deleteFileAfterSend(true);
-    
-        } catch (\Exception $e) {
-            Log::error("Image processing failed: " . $e->getMessage());
-            return response()->json(['error' => 'Image conversion failed'], 500);
-        }
+          // Sample organization chart data
+    $orgChart = [
+        ['Name' => 'CEO', 'Position' => 'Chief Executive Officer'],
+        ['Name' => 'CFO', 'Position' => 'Chief Financial Officer'],
+        ['Name' => 'CTO', 'Position' => 'Chief Technology Officer'],
+        ['Name' => 'CMO', 'Position' => 'Chief Marketing Officer'],
+        // Add more entries as needed
+    ];
+
+    // Create a new SimpleExcelWriter object
+    $writer = SimpleExcelWriter::factory(SimpleExcelWriter::XLSX);
+
+    // Add headers
+    $writer->addRow(['Name', 'Position']);
+
+    // Add data rows
+    foreach ($orgChart as $entry) {
+        $writer->addRow([$entry['Name'], $entry['Position']]);
+    }
+
+    // Save the file
+    $filename = 'organization_chart.xlsx';
+    $writer->save($filename);
+
+    // Output the file for download
+    header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    header('Content-Disposition: attachment; filename="' . $filename . '"');
+    readfile($filename);
+
+    // Clean up
+    unlink($filename);
     }
 
     public function updateselectedEmployee()
@@ -378,6 +463,9 @@ class HrOrganisationChart extends Component
     public function openAssignManagerPopup()
     {
         $this->assignManagerPopup=true;
+        $this->employees1=$this->getEmployeesBySecondType();
+       
+        
     }
     public function closeAssignManager()
     {
@@ -391,7 +479,8 @@ class HrOrganisationChart extends Component
     public function closeAssignTopLevelManager()
     {
         $this->assignTopLevelManager=false;
-        
+        $this->searchTerm='';
+       
         return redirect()->route('hr-organisation-chart',['selectedEmployeeId'=>$this->selectedEmployeeId]);
          
     }
@@ -419,6 +508,13 @@ class HrOrganisationChart extends Component
     public function updatesearchTermForFirstEmployee()
     {
         $this->searchTermForFirstEmployee=$this->searchTermForFirstEmployee;
+    }
+
+    public function updatesearchTermForAssignManager()
+    {
+     
+        $this->searchTermForAssignManager=$this->searchTermForAssignManager;
+        
     }
 
     public function closeMassTransferDialog()

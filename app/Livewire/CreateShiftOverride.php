@@ -238,7 +238,7 @@ class CreateShiftOverride extends Component
             // Fetch employee data for updating shift_entries_from_hr
             try {
                 $employee = DB::table('employee_details')->where('emp_id', $this->selectedEmployeeId)->first();
-                $this->existingJson = json_decode($employee->shift_entries ?? '{}', true);
+                $this->existingJson = json_decode($employee->shift_entries_from_hr ?? '{}', true);
 
                 // Log the existing JSON data
                 Log::debug('Existing shift entries', ['existingJson' => $this->existingJson]);
@@ -252,11 +252,11 @@ class CreateShiftOverride extends Component
 
                 DB::table('employee_details')
                     ->where('emp_id', $this->selectedEmployeeId)
-                    ->update(['shift_entries' => json_encode($this->existingJson)]);
+                    ->update(['shift_entries_from_hr' => json_encode($this->existingJson)]);
 
                 Log::info('Employee shift entries updated successfully', [
                     'emp_id' => $this->selectedEmployeeId,
-                    'shift_entries' => $this->existingJson
+                    'shift_entries_from_hr' => $this->existingJson
                 ]);
             } catch (\Exception $e) {
                 Log::error('Error updating employee shift entries', ['exception' => $e->getMessage()]);

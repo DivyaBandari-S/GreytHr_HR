@@ -25,7 +25,7 @@ use App\Mail\HelpDeskotification;
 use App\Models\Request;
 use Illuminate\Support\Facades\Log;
 use Livewire\WithFileUploads;
-use App\Helpers\FlashMessageHelper; 
+use App\Helpers\FlashMessageHelper;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Storage;
 use ZipArchive;
@@ -1030,8 +1030,8 @@ $this->forHR = HelpDesks::with('emp')
                 // Check if data is not empty before exporting
              
                     return Excel::download(new HelpDeskExport($this->forHR), 'helpdesk.xlsx');
-                } 
-            
+                }
+
         
         
         
