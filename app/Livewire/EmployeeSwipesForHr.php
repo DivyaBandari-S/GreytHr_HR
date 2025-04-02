@@ -98,8 +98,10 @@ class EmployeeSwipesForHr extends Component
                 ->where('created_at', '<', $today->copy()->endOfDay())
                 ->exists();
 
-            $agent = new AgentAgent();
-            $this->status = $userSwipesToday ? ($agent->isMobile() ? 'Mobile' : ($agent->isDesktop() ? 'Desktop' : '-')) : '-';
+            //$agent = new AgentAgent();
+            $agent = request()->header('User-Agent');
+
+            $this->status = $userSwipesToday ? (stripos($agent, 'mobile') !== false ? 'Mobile' : (stripos($agent, 'windows') !== false || stripos($agent, 'macintosh') !== false ? 'Laptop/Desktop' : '-')) : '-';
         } catch (\Exception $e) {
             Log::error('Error in mount method: ' . $e->getMessage());
             $this->status = 'Error';
@@ -493,10 +495,12 @@ class EmployeeSwipesForHr extends Component
       
        
         $this->selectedWebEmployeeId = $parts[0].'-'.$parts[1];
-        $this->swipeTime = $parts[3];
-        $this->webSwipeDirection=$parts[4];
-        $this->signInDevice=$parts[5];
+        $this->swipeTime = $parts[3].'-'.$parts[4].'-'.$parts[5];
+       
+        $this->webSwipeDirection=$parts[6];
+        $this->signInDevice=$parts[7];
         $this->webDeviceName=SwipeRecord::where('emp_id',$this->selectedWebEmployeeId)->where('in_or_out',$this->webSwipeDirection)->where('swipe_time',$this->swipeTime)->whereDate('created_at',$this->startDate)->value('device_name');
+       
         $this->webDeviceId=SwipeRecord::where('emp_id',$this->selectedWebEmployeeId)->where('in_or_out',$this->webSwipeDirection)->where('swipe_time',$this->swipeTime)->whereDate('created_at',$this->startDate)->value('device_id');
        
         // Construct the table name for SQL Server

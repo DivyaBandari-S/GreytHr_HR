@@ -679,7 +679,7 @@ td {
                                                                 
                                                                     <!-- Swipe Log Details -->
                                                                     <td>
-                                                                        {{ $log->swipe_time }}<br />
+                                                                        {{ \Carbon\Carbon::parse($log->swipe_time)->format('H:i:s') }}<br />
                                                                         <span class="text-muted employee-swipes-swipe-date">
                                                                             {{ \Carbon\Carbon::parse($log->created_at)->format('jS F, Y') }}
                                                                         </span>
@@ -702,7 +702,7 @@ td {
                                                                         @endif
                                                                     </td>
                                                                     <td>
-                                                                        {{ $log->swipe_time }}<br />
+                                                                        {{ \Carbon\Carbon::parse($log->swipe_time)->format('H:i:s') }}<br />
                                                                         <span class="text-muted employee-swipes-swipe-date">
                                                                             {{ \Carbon\Carbon::parse($log->created_at)->format('jS F, Y') }}
                                                                         </span>
@@ -779,7 +779,7 @@ td {
                         
                         <h6>Swipe-in Time</h6>
                         @if($swipeTime)
-                          <p>{{$swipeTime}}</p>
+                          <p>{{ substr($swipeTime, 8, 12) }}</p>
                         @elseif($doorSwipeTime) 
                           <p>{{$doorSwipeTime}}</p>
                         @else 
