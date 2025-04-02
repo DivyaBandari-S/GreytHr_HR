@@ -208,7 +208,6 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
         Route::get('/signatory/edit/{id}', EditSignatory::class)->name('signatory.edit');
         Route::get('user/emp/admin/bulkphoto-upload', EmpBulkPhotoUpload::class)->name('emp-bulk-photo-upload');
 
-
         //HR Leave-Main Submodule Routes
         Route::get('/user/hr-organisation-chart/{selectedEmployeeId?}', HrOrganisationChart::class)->name('hr-organisation-chart');
         Route::get('/user/leave-overview', HrLeaveOverview::class)->name('leave-overview');

@@ -291,11 +291,15 @@ ul {
     margin-top: 8px;
 }
 /* admin dashboard */
+.text-bg-primary{
+    color: white;
+    background-color: var(--main-button-color);
+}
 .normalTextTruncated{
-    color: var(--label-color);
+    color: var(--main-table-heading-text-color);
     font-weight: 500;
     font-size: var(--normal-font-size);
-    max-width: 130px;
+    max-width: 110px;
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
