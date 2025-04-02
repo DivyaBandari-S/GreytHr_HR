@@ -1,4 +1,4 @@
-<div>
+<div class="position-relative">
     <style>
         /* Calendar->Information->Employee leave styles start  */
 
@@ -333,7 +333,7 @@
                     <p class="employee-leave-start-para">Start searching to see specific employee details here</p>
                     <div class="d-flex mb-2">
                         <label style="margin-top: 7px;" for="">Employee Type:</label>
-                        <select class="Employee-select-leave" style="border: none; margin-left: 10px;"
+                        <select class="Employee-select-leave" style="border: none; margin-left: 10px; width: 195px;"
                             wire:model="employeeType" wire:change="filterEmployeeType">
                             <option value="active">Current Employees</option>
                             <option value="non-active">Past Employees</option>
@@ -354,7 +354,7 @@
                         </div>
                         @if ($selectedEmployee)
                         <div class="row" style="margin-top: 10px; margin-bottom: 10px;">
-                            <div class="col-md-4 col-6">
+                            <div class="col-md-6 col-6">
                                 <div class="d-flex Employee-details-hr">
                                     <div class="d-flex Employee-details-img-details-hr">
                                         @if ($selectedEmployeesDetails && $selectedEmployeesDetails->isNotEmpty())
@@ -614,8 +614,8 @@
                 <div class="tab-pane fade show {{ $activeTab === 'Overview' ? 'active' : '' }}" id="Overview"
                     role="tabpanel" aria-labelledby="Overview-tab" style="overflow-x: hidden;">
                     <div class="row  p-3">
-                        <div class="col-md-1"></div>
-                        <div class="col-md-9 Employee-leave-table-maindiv">
+                        {{-- <div class="col-md-1"></div> --}}
+                        <div class="col-md-12 Employee-leave-table-maindiv">
                             <p
                                 style="font-size: var(--normal-font-size); font-weight: 600; padding: 5px 5px; margin: 0px;">
                                 Scheme Name<span
@@ -632,7 +632,7 @@
                                         <th>Granted</th>
                                         <th>Availed</th>
                                         <th>Applied</th>
-                                        <th>Leave</th>
+                                        <th>Leave Deduction</th>
                                         <th>Lapsed</th>
                                         <th>Balance</th>
                                     </tr>
@@ -721,7 +721,7 @@
 
                             </table>
                         </div>
-                        <div class="col-md-1"></div>
+                        {{-- <div class="col-md-1"></div> --}}
                     </div>
                 </div>
 

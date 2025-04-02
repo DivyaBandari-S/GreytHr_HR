@@ -25,6 +25,7 @@ class HrHolidayList extends Component
     public $isModalOpen = false;
     public $selectAll = false;
     public $selectAll1 = false;
+    public $filterPeriodValue = 'this_year';
     public function openModal()
     {
         $this->isModalOpen = true;
@@ -32,7 +33,7 @@ class HrHolidayList extends Component
     }
 
     // Close the modal
-    public function close()
+    public function close() 
     {
        
         
@@ -151,6 +152,28 @@ class HrHolidayList extends Component
     }
 }
 
+
+public function filterPeriodChanged()
+{
+    // Get the current year and the previous year
+    $currentYear = date('Y');
+    $previousYear = $currentYear - 1;
+    $yearBeforePrevious=  $currentYear-2;
+
+    // Check the selected filter value
+    if ($this->filterPeriodValue == 'this_year') {
+        // Filter holidays for the current year
+        $this->holidays = HolidayCalendar::whereYear('date', $currentYear)->get();
+    } elseif ($this->filterPeriodValue == 'current_year') {
+        // Filter holidays for the previous year
+        $this->holidays = HolidayCalendar::whereYear('date', $previousYear)->get();
+    }
+    else{
+        $this->holidays = HolidayCalendar::whereYear('date', $yearBeforePrevious)->get();
+    }
+}
+
+
     
     
     public function saveHolidays()
@@ -223,7 +246,7 @@ class HrHolidayList extends Component
 
     public function mount()
     {
-        $this->holidays = HolidayCalendar::all();
+        $this->holidays = HolidayCalendar::whereYear('date', date('Y'))->get();
         // $this->showButtons = $this->holidays->isNotEmpty(); 
         $this->selectedHolidays = [];
 

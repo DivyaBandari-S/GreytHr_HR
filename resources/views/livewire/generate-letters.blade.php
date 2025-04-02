@@ -63,29 +63,37 @@
                 <div class="d-flex flex-wrap">
                     <div class="me-2">
                         <label>Letter Template:</label>
-                        <select class="form-select" wire:model="selectedTemplate" wire:change="onChange('selectedTemplate')">
+                        <select class="form-select" wire:model="selectedTemplate"
+                            wire:change="onChange('selectedTemplate')">
                             <option value="all">All</option>
                             <option value="Appointment Order">Appointment Order</option>
                             <option value="Confirmation Letter">Confirmation Letter</option>
                         </select>
                     </div>
 
-                   
+
 
                     <div class="me-2">
                         <label>Publish Status:</label>
-                        <select class="form-select" wire:model="selectedPublishStatus" wire:change="onChange('selectedPublishStatus')">
+                        <select class="form-select" wire:model="selectedPublishStatus"
+                            wire:change="onChange('selectedPublishStatus')">
                             <option value="all">All</option>
                             <option value="Published">Published</option>
                             <option value="Not Published">Not Published</option>
                         </select>
                     </div>
 
+                    <div class="me-2">
+                        <label>Search:</label>
+                        <input type="text" class="form-control" wire:model.debounce.500ms="searchTerm" wire:input="loadLetters" placeholder="Search something..">
+                    </div>
+                    
+
                 </div>
 
                 <!-- Buttons -->
                 <div class="d-flex">
-                    <button class="btn btn-outline-primary me-2">
+                    <button class="btn btn-outline-primary me-2"  wire:click="downloadExcel">
                         <i class="fas fa-download"></i>
                     </button>
                     <button class="btn btn-primary" wire:click="showPrepareLetter">Prepare A Letter</button>
@@ -94,11 +102,11 @@
 
             <!-- Table -->
             <div class="analytic-table-container mt-3">
-                <table class="analytic-table table-responsive" >
-                    <thead>
+                <table class="analytic-table table-responsive">
+                    <thead style="position: sticky; top: 0; background-color: #f8f9fa; z-index: 1;">
                         <tr>
                             <th>Letter Template</th>
-                            <th>Serial No</th>
+                            <th style="width: 140px;">Serial No</th>
                             <th>Employee</th>
                             <th>Prepared On</th>
                             <th>Prepared By</th>
@@ -116,25 +124,23 @@
                             } else {
                                 $preparedBy = 'Unknown';
                             }
-                            $letters = App\Models\GenerateLetter::orderBy('serial_no', 'desc')->get();
-
 
                         @endphp
 
                         @forelse($letters as $letter)
-                        @php
-                        // Decode the employees JSON field into an array
-                        $employees = json_decode($letter->employees, true); // true converts the JSON to an associative array
-                
-                        // Get the employee names
-                        $employeeNames = array_map(function($employee) {
-                            return $employee['name'];
-                        }, $employees);
-                    @endphp
-                       
+                            @php
+                                // Decode the employees JSON field into an array
+                                $employees = json_decode($letter->employees, true); // true converts the JSON to an associative array
+
+                                // Get the employee names
+                                $employeeNames = array_map(function ($employee) {
+                                    return $employee['name'];
+                                }, $employees);
+                            @endphp
+
                             <tr>
                                 <td class="analytic-grey-text"> {{ $letter->template_name }}</td>
-                                <td class="analytic-grey-text">{{ $letter->serial_no }}</td>
+                                <td class="analytic-grey-text" style="width: 140px;">{{ $letter->serial_no }}</td>
                                 <td class="analytic-grey-text">
                                     {{-- Display employee names (you can join multiple names if there are multiple employees) --}}
                                     {{ ucwords(strtolower(implode(', ', $employeeNames))) }}
@@ -150,7 +156,7 @@
                                         View
                                     </a> --}}
                                     <button class="btn btn-sm btn-secondary"
-                                        wire:click="viewLetter({{ $letter->id }})" >
+                                        wire:click="viewLetter({{ $letter->id }})">
                                         View
                                     </button>
 
@@ -175,9 +181,9 @@
                         @empty
                             <tr>
                                 <td colspan="7" class="text-center">
-                                    <img class="analytic-no-items-found"
-                                        src="https://media.istockphoto.com/id/1357284048/vector/no-item-found-vector-flat-icon-design-illustration-web-and-mobile-application-symbol-on.jpg?s=612x612&w=0&k=20&c=j0V0ww6uBl1LwQLH0U9L7Zn81xMTZCpXPjH5qJo5QyQ="
-                                        alt="No items found">
+                                    <img class="task-no-items-found" src="{{ asset('images/nodata.png') }}"
+                                    alt="No items found">
+                                <p>No Data Found</p>
                                 </td>
                             </tr>
                         @endforelse
@@ -186,82 +192,92 @@
 
 
 
-<!-- Modal Popup -->
-@if ($showLetterModal)
-    <div class="modal fade show d-block" tabindex="-1" role="dialog">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">{{ $letter->template_name ?? 'Letter' }}</h5>
-                    <button type="button" class="btn-close" wire:click="closeLetterModal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body" style="max-height: 400px; height: 400px; overflow-y: scroll;">
-                    @if ($letter->template_name == 'Appointment Order')
-                        <div class="container">
-                            <div class="header" style="text-align: center;">
-                                <p>Xsilica Software Solutions Pvt. Ltd.</p>
-                                <p>Unit No - 4, Kapil Kavuri Hub, 3rd floor, Nanakramguda, <br>
-                                Serilingampally, Ranga Reddy, Telangana-500032.</p>
-                            </div>
-                            <p style="text-align: left;">{{ now()->format('d M Y') }}</p>
-                            <p>To,<br>{{ $employeeName }}<br>
-                                Employee ID: {{ $employeeId }}<br>{{ $employeeAddress }}</p>
-                            <p class="text-center"><strong>Sub: Appointment Order</strong></p>
-                            <p><strong>Dear</strong> {{ $employeeName }},</p>
-                            <p>We are pleased to offer you the position of <strong>Software Engineer I</strong> at Xsilica Software Solutions Pvt. Ltd., as per the discussion we had with you. Below are the details of your appointment:</p>
-                            <ul>
-                                <li><strong>1. Start Date:</strong> 02 Jan 2023</li>
-                                <li><strong>2. Compensation:</strong> Rs. 2,40,000/-</li>
-                                <li><strong>3. Probation Period:</strong> Six calendar months from your joining date.</li>
-                                <li><strong>4. Confirmation of Employment:</strong> After probation.</li>
-                            </ul>
-                            <p><strong>We are excited to have you as a part of our team!</strong></p>
-                            <div class="signature">
-                                <p>Yours faithfully,</p>
-                                <p>For <strong>Xsilica Software Solutions Pvt. Ltd.</strong></p>
-                                <p style="font-size: 12px;"><strong>{{ $fullName }}</strong></p>
-                                @if ($signature)
-                                    <img src="data:image/jpeg;base64,{{ $signature }}" alt="Signature" style="width:150px; height:auto;">
-                                @endif
-                                <p style="font-size: 12px;"><strong>{{ $designation }}</strong></p>
+                <!-- Modal Popup -->
+                @if ($showLetterModal)
+                    <div class="modal fade show d-block" tabindex="-1" role="dialog">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">{{ $letter->template_name ?? 'Letter' }}</h5>
+                                    <button type="button" class="btn-close" wire:click="closeLetterModal"
+                                        aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body" style="max-height: 400px; height: 400px; overflow-y: scroll;">
+                                    @if ($letter->template_name == 'Appointment Order')
+                                        <div class="container">
+                                            <div class="header" style="text-align: center;">
+                                                <p>Xsilica Software Solutions Pvt. Ltd.</p>
+                                                <p>Unit No - 4, Kapil Kavuri Hub, 3rd floor, Nanakramguda, <br>
+                                                    Serilingampally, Ranga Reddy, Telangana-500032.</p>
+                                            </div>
+                                            <p style="text-align: left;">{{ now()->format('d M Y') }}</p>
+                                            <p>To,<br>{{ $employeeName }}<br>
+                                                Employee ID: {{ $employeeId }}<br>{{ $employeeAddress }}</p>
+                                            <p class="text-center"><strong>Sub: Appointment Order</strong></p>
+                                            <p><strong>Dear</strong> {{ $employeeName }},</p>
+                                            <p>We are pleased to offer you the position of <strong>Software Engineer
+                                                    I</strong> at Xsilica Software Solutions Pvt. Ltd., as per the
+                                                discussion we had with you. Below are the details of your appointment:
+                                            </p>
+                                            <ul>
+                                                <li><strong>1. Start Date:</strong> 02 Jan 2023</li>
+                                                <li><strong>2. Compensation:</strong> Rs. 2,40,000/-</li>
+                                                <li><strong>3. Probation Period:</strong> Six calendar months from your
+                                                    joining date.</li>
+                                                <li><strong>4. Confirmation of Employment:</strong> After probation.
+                                                </li>
+                                            </ul>
+                                            <p><strong>We are excited to have you as a part of our team!</strong></p>
+                                            <div class="signature">
+                                                <p>Yours faithfully,</p>
+                                                <p>For <strong>Xsilica Software Solutions Pvt. Ltd.</strong></p>
+                                                <p style="font-size: 12px;"><strong>{{ $fullName }}</strong></p>
+                                                @if ($signature)
+                                              
+                                                    <img src="data:image/jpeg;base64,{{ $signature }}"
+                                                        alt="Signature" style="width:150px; height:auto;">
+                                                @endif
+                                                <p style="font-size: 12px;"><strong>{{ $designation }}</strong></p>
+                                            </div>
+                                        </div>
+                                    @elseif ($letter->template_name == 'Confirmation Letter')
+                                        <div class="container">
+                                            <div class="header" style="text-align: center;">
+                                                <p>Xsilica Software Solutions Pvt. Ltd.</p>
+                                                <p>Unit No - 4, Kapil Kavuri Hub, 3rd floor, Nanakramguda, <br>
+                                                    Serilingampally, Ranga Reddy, Telangana-500032.</p>
+                                            </div>
+                                            <p style="text-align: left;">{{ now()->format('d M Y') }}</p>
+                                            <p>To,<br>{{ $employeeName }}<br>
+                                                Employee ID: {{ $employeeId }}<br>{{ $employeeAddress }}</p>
+                                            <p class="text-center"><strong>Sub: Confirmation Letter</strong></p>
+                                            <p><strong>Dear</strong> {{ $employeeName }},</p>
+                                            <p>Your employment with us is confirmed effective from
+                                                <strong>{{ now()->format('d M Y') }}</strong>.</p>
+                                            <div class="signature">
+                                                <p>Yours faithfully,</p>
+                                                <p>For <strong>Xsilica Software Solutions Pvt. Ltd.</strong></p>
+                                                <p style="font-size: 12px;"><strong>{{ $fullName }}</strong></p>
+                                                @if ($signature)
+                                                    <img src="data:image/jpeg;base64,{{ $signature }}"
+                                                        alt="Signature" style="width:150px; height:auto;">
+                                                @endif
+                                                <p style="font-size: 12px;"><strong>{{ $designation }}</strong></p>
+                                            </div>
+                                        </div>
+                                    @else
+                                        <p>Invalid template selected.</p>
+                                    @endif
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary"
+                                        wire:click="closeLetterModal">Close</button>
+                                </div>
                             </div>
                         </div>
-                    @elseif ($letter->template_name == 'Confirmation Letter')
-                   
-                        <div class="container">
-                            <div class="header" style="text-align: center;">
-                                <p>Xsilica Software Solutions Pvt. Ltd.</p>
-                                <p>Unit No - 4, Kapil Kavuri Hub, 3rd floor, Nanakramguda, <br>
-                                Serilingampally, Ranga Reddy, Telangana-500032.</p>
-                            </div>
-                            <p style="text-align: left;">{{ now()->format('d M Y') }}</p>
-                            <p>To,<br>{{ $employeeName }}<br>
-                                Employee ID: {{ $employeeId }}<br>{{ $employeeAddress }}</p>
-                            <p class="text-center"><strong>Sub: Confirmation Letter</strong></p>
-                            <p><strong>Dear</strong> {{ $employeeName }},</p>
-                            <p>Your employment with us is confirmed effective from <strong>{{ now()->format('d M Y') }}</strong>.</p>
-                            <div class="signature">
-                                <p>Yours faithfully,</p>
-                                <p>For <strong>Xsilica Software Solutions Pvt. Ltd.</strong></p>
-                                <p style="font-size: 12px;"><strong>{{ $fullName }}</strong></p>
-                                @if ($signature)
-                                    <img src="data:image/jpeg;base64,{{ $signature }}" alt="Signature" style="width:150px; height:auto;">
-                                @endif
-                                <p style="font-size: 12px;"><strong>{{ $designation }}</strong></p>
-                            </div>
-                        </div>
-                    @else
-                        <p>Invalid template selected.</p>
-                    @endif
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" wire:click="closeLetterModal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="modal-backdrop fade show"></div>
-@endif
+                    </div>
+                    <div class="modal-backdrop fade show"></div>
+                @endif
 
 
 

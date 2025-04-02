@@ -8,6 +8,7 @@ use App\Models\LeavePolicySetting;
 use App\Models\EmployeeDetails;
 use Livewire\Component;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -675,15 +676,16 @@ class EmpLeaveGranterDetails extends Component
                         }
                     }
 
+                    $logginId = Auth::guard('hr')->user()->hr_emp_id;
                     // If no duplicates, create or update the leave balance for this policy
                     if (!$isDuplicate) {
                         Log::info('From Date: ' . $this->from_date);
                         Log::info('To Date: ' . $this->to_date);
-
                         // If no duplicate, create or update the leave balance for this policy
                         EmployeeLeaveBalances::updateOrCreate(
                             [
                                 'emp_id' => $empId,
+                                'hr_emp_id' => $logginId,
                                 'batch_id' => $batchId,
                                 'period' => $period,
                                 'from_date' => $this->from_date, // Ensure this is coming from Livewire property

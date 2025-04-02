@@ -12,6 +12,7 @@ use App\Models\EmpSeparationDetails;
 use App\Models\LeaveRequest;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Livewire\Component;
 
 class FinalSettlementStepper extends Component
@@ -40,6 +41,8 @@ class FinalSettlementStepper extends Component
     public $assetDetails;
     public $lastPaidDate;
     public $remarks;
+    public $totalSalary;
+
 
 
 
@@ -347,7 +350,7 @@ class FinalSettlementStepper extends Component
         $next_month_start = null;
 
 
-        if ($this->step < 7) { // Adjust according to the number of steps
+        if ($this->step < 8) { // Adjust according to the number of steps
 
             // dd($this->selectedEmployee);
             if ($this->selectedEmployee == null) {
@@ -405,9 +408,57 @@ class FinalSettlementStepper extends Component
             $this->step--;
         }
     }
+    public function finishFinalStatement()
+    {
+        // dd( $this->workingDaysData);
+        $totalsalary = 0;
+
+        foreach ($this->workingDaysData['monthly_data'] as $payoutMonth) {
+
+            // dd($payoutMonth);
+
+            $month = Carbon::parse($payoutMonth['month'])->format('Y-m');
+
+            $salaryRevision = EmpSalaryRevision::where('emp_id', $this->selectedEmployee)
+                ->where('status', 1)
+                ->where('payout_month', '<=', $month)
+                ->orderBy('payout_month', 'desc') // Order by latest payout_month
+                ->first();
+            // dd( $salaryRevision);
+            $monthly_ctc = floor($salaryRevision->revised_ctc / 12);
+
+            // $fullSalary= $salaryRevision->revised_ctc;
+            $salary =  $monthly_ctc / 30 * $payoutMonth['paid_days'];
+            // dd($salaryRevision->revised_ctc,$payoutMonth['paid_days'],$salary);
+            // dump(   $salary);
+
+            $totalsalary += $salary;
+
+
+        }
+
+       $this->totalSalary=EmpSalaryRevision::getFullAndActualSalaryComponents( $totalsalary,$salaryRevision->revised_ctc,30,0);
+       $this->step++;
+    }
+
+    public function viewSettlement(){
+
+            // Generate PDF using the fetched data
+            $pdf = Pdf::loadView('download-settlement', [
+                // 'employees' =>  $this->employeeDetails,
+                // 'salaryRevision' =>  $this->salaryDivisions,
+                // 'empBankDetails' => $this->empBankDetails,
+                // 'rupeesInText' => $this->convertNumberToWords($this->salaryDivisions['net_pay']),
+                // 'salMonth' => Carbon::parse($this->selectedMonth)->format('F Y')
+            ]);
+            return response()->streamDownload(function () use ($pdf) {
+                echo $pdf->stream();
+            }, 'payslip.pdf');
+
+    }
+
     public function mount()
     {
-
         $this->getSeperatedEmployees();
     }
 
