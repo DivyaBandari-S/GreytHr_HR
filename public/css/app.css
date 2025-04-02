@@ -291,6 +291,29 @@ ul {
     margin-top: 8px;
 }
 /* admin dashboard */
+.text-bg-primary{
+    color: white;
+    background-color: var(--main-button-color);
+}
+.normalTextTruncated{
+    color: var(--main-table-heading-text-color);
+    font-weight: 500;
+    font-size: var(--normal-font-size);
+    max-width: 110px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    margin-bottom: 0;
+}
+.employee-profile-img img{
+    margin-right: 10px;
+}
+.deptDetails{
+    background-color: #dbf3e1; color: #1E7E34; font-size: var(--normal-font-size); font-weight: bold; padding: 2px 8px; border-radius: 5px; margin-left: auto;
+}
+table thead.table-sec th{
+    background-color: var(--main-table-heading-bg-color) !important;
+}
 .green-bg {
     display: flex;
     flex-direction: column;
@@ -1849,6 +1872,7 @@ input {
 .submit-btn {
     background-color: var(--main-button-color);
     color: #fff;
+    white-space: nowrap;
     border: 1px solid var(--main-button-color);
     font-weight: 500;
     border-radius: 5px;
@@ -1857,7 +1881,21 @@ input {
     border: none;
     transition: all 0.3s ease;
 }
-
+.login-btn {
+    background-color: #3da4bb;
+    color: #fff;
+    border: 1px solid #3da4bb;
+    font-weight: 500;
+    border-radius: 5px;
+    padding: 6px 12px;
+    font-size: var(--normal-font-size);
+    border: none;
+    transition: all 0.3s ease;
+}
+.sign-in-heading{
+    font-size: 1.2rem;
+    color: #555;
+}
 .cancel-btn {
     background-color: white;
     color: var(--main-button-color);
@@ -4249,6 +4287,12 @@ input[type="date"]::before {
 }
 
 /* Hover effect for the button */
+.login-btn:hover {
+    background-color: #357ab8;
+    border-color: #357ab8;
+    opacity: 0.8;
+    box-shadow: 0 2px 2px rgba(53, 122, 184, 0.4);
+}
 .submit-btn:hover {
     background-color: #357ab8;
     border-color: #357ab8;

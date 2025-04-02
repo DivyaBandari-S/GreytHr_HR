@@ -223,6 +223,7 @@
                         <ul class="sidebar__dropdown-menu">
                             <li><a href="/hr/user/leave-overview">Leave Overview</a></li>
                             <li><a href="/hr/user/hr-attendance-overview">Attendance Overview</a></li>
+                            <li><a href="/hr/user/hr-attendance-overview">Attendance DailyView</a></li>
                             <li><a href="/hr/user/leave-calendar">Leave Calendar</a></li>
                             <li><a href="/hr/user/who-is-in-chart-hr">Who is in?</a></li>
                         </ul>
@@ -232,7 +233,7 @@
                         <ul class="sidebar__dropdown-menu">
                             <li><a href="/hr/user/employee-leave">Employee Leave</a></li>
                             <li><a href="/hr/user/shift-roster-hr">Shift Roaster</a></li>
-                            <li><a href="/user">Employee Swipes</a></li>
+                            <li><a href="/hr/user/employee-swipes-for-hr">Employee Swipes</a></li>
                             <li><a href="/hr/user/attendance-muster-hr">Attendance Muster</a></li>
                             <li><a href="/hr/user/attendance-info">Attendance Info</a></li>
                         </ul>
@@ -246,10 +247,10 @@
                             <li><a href="/user">Assign Attendnace Scheme</a></li>
                             <li><a href="/user">Process Attendance</a></li>
                             <li><a href="/home">Attendance Period Finalisation</a></li>
-                            <li><a href="/user">Attendance Exception</a></li>
+                            <li><a href="/hr/user/attendance-exception">Attendance Exception</a></li>
                             <li><a href="/user">Lock Configuartion</a></li>
                             <li><a href="/user">Manual Override</a></li>
-                            <li><a href="/user">Shift Override</a></li>
+                            <li><a href="/hr/user/shift-override">Shift Override</a></li>
                             <li><a href="/hr/user/leave/admin/leaveRecalculator">Leave Recalculator</a></li>
                         </ul>
                     </li>

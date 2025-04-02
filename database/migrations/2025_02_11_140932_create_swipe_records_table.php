@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('swipe_records', function (Blueprint $table) {
             $table->smallInteger('id')->autoIncrement();
             $table->string('emp_id',10);
-            $table->string('swipe_time',50);
+            $table->timestamp('swipe_time');
             $table->string('in_or_out',10);
             $table->string('is_regularized',10)->nullable();
             $table->string('sign_in_device',100)->nullable();
