@@ -2,7 +2,10 @@
 
 namespace App\Livewire;
 
+use App\Exports\AbsentEmployeesExport;
+use App\Exports\AbsentEmployeesReportExport;
 use App\Exports\AttendanceMusterReportExport;
+use App\Exports\FamilyReportExport;
 use App\Exports\ShiftSummaryExport;
 use App\Helpers\FlashMessageHelper;
 use App\Models\AddFavoriteReport;
@@ -17,6 +20,10 @@ use Illuminate\Support\Facades\DB;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Log;
 use App\Helpers\LeaveHelper;
+use App\Models\Company;
+use App\Models\EmpParentDetails;
+use App\Models\EmpPersonalInfo;
+use App\Models\EmpSpouseDetails;
 use App\Models\HolidayCalendar;
 use App\Models\SwipeRecord;
 use DateInterval;
@@ -50,6 +57,8 @@ class ReportsManagement extends Component
     public $employees;
     public $search;
 
+    public $selectedEmployees=[];
+    public $currentDate;
     public $isToggleSelectedEmployee=false;
 
     public $isToggleSelectedEmployeeForAttendanceMuster=false;
@@ -131,6 +140,7 @@ class ReportsManagement extends Component
     }
 
     public function mount() {
+        $this->currentDate = now()->toDateString();
         $this->employeeTypeForAttendance='allEmployees';
         $this->employeeTypeForAttendanceMuster='allEmployees';
         $this->getReportsData();
@@ -140,6 +150,296 @@ class ReportsManagement extends Component
     public function getReportsData()
     {
         $this->reportsGallery = AddFavoriteReport::all();
+       
+    }
+    
+   
+
+public function downloadAbsentReportInExcel()
+{
+    Log::info('Starting downloadAbsentReportInExcel method.');
+
+    // Step 1: Get active employees
+    $this->selectedEmployees = EmployeeDetails::where('employee_status', 'active')->whereIn('emp_id',['XSS-0477','XSS-0479','XSS-0488'])->pluck('emp_id')->toArray();
+    Log::info('Selected employees:', ['selectedEmployees' => $this->selectedEmployees]);
+
+    $employees = EmployeeDetails::whereIn('emp_id', $this->selectedEmployees)->get();
+    Log::info('Fetched employee details:', ['count' => $employees->count()]);
+
+    $missingData = [];
+
+    foreach ($employees as $employee) {
+        $empId = $employee['emp_id'];
+        Log::info("Processing employee: {$empId}");
+        $startDate = new DateTime($this->fromDate);
+        $endDate = new DateTime($this->toDate);
+        // Step 2: Fetch approved leave requests
+        $approvedLeaveRequests = LeaveRequest::join('employee_details', 'leave_applications.emp_id', '=', 'employee_details.emp_id')
+            ->where('leave_applications.leave_status', 2)
+            ->where('leave_applications.emp_id', $empId)
+            ->where(function ($query) use ($startDate, $endDate) {
+                $query->whereBetween('leave_applications.from_date', [$startDate->format('Y-m-d'), $endDate->format('Y-m-d')])
+                      ->orWhereBetween('leave_applications.to_date', [$startDate->format('Y-m-d'), $endDate->format('Y-m-d')]);
+            })
+            ->get(['leave_applications.*', 'employee_details.first_name', 'employee_details.last_name']);
+
+        Log::info("Approved leave requests fetched for employee {$empId}:", ['count' => $approvedLeaveRequests->count()]);
+
+        // Step 3: Fetch swipe records (earliest 'IN' records per day)
+        $subquery = SwipeRecord::select(DB::raw('MIN(id) as min_id'))
+            ->whereIn('emp_id', $this->selectedEmployees)
+            ->where('in_or_out', 'IN')
+            ->whereBetween(DB::raw('DATE(created_at)'), [$startDate->format('Y-m-d'), $endDate->format('Y-m-d')])
+            ->groupBy(DB::raw('DATE(created_at)'));
+
+        $swipeRecords = SwipeRecord::whereIn('id', function ($query) use ($subquery) {
+                $query->fromSub($subquery, 'sub');
+            })
+            ->select('emp_id', DB::raw('DATE(created_at) as swipe_date'))
+            ->get();
+
+        Log::info("Swipe records fetched for employee {$empId}:", ['count' => $swipeRecords->count()]);
+
+        // Step 4: Define date range
+        $startDate = new DateTime($this->fromDate);
+        $endDate = new DateTime($this->toDate);
+        Log::info("Date range set from {$startDate->format('Y-m-d')} to {$endDate->format('Y-m-d')}");
+
+        // Step 5: Extract leave dates
+        $leaveDates = $approvedLeaveRequests->flatMap(function ($leaveRequest) {
+            $fromDate = Carbon::parse($leaveRequest->from_date);
+            $toDate = Carbon::parse($leaveRequest->to_date);
+            $dates = [];
+            while ($fromDate <= $toDate) {
+                $dates[] = $fromDate->format('Y-m-d');
+                $fromDate->addDay();
+            }
+            return $dates;
+        })->unique();
+
+        Log::info("Leave dates for employee {$empId}:", ['leaveDates' => $leaveDates]);
+
+        // Step 6: Fetch holidays
+        $holidays = HolidayCalendar::pluck('date')->map(function ($date) {
+            return Carbon::parse($date)->format('Y-m-d');
+        })->toArray();
+
+        Log::info("Holidays retrieved:", ['holidays' => $holidays]);
+
+        // Step 7: Collect all working days in the given range
+        $datesInMonth = collect();
+        $date = Carbon::parse($startDate);
+        while ($date <= $endDate) {
+            if (!in_array($date->format('Y-m-d'), $leaveDates->toArray()) &&
+                !in_array($date->format('Y-m-d'), $holidays) &&
+                !$date->isWeekend()) {
+                $datesInMonth->push($date->format('Y-m-d'));
+            }
+            $date->addDay();
+        }
+
+        Log::info("Working dates calculated:", ['datesInMonth' => $datesInMonth]);
+
+        // Step 8: Check for missing swipe records
+        foreach ($datesInMonth as $date) {
+            foreach ($this->selectedEmployees as $empId) {
+                if (!$swipeRecords->contains(function ($record) use ($date, $empId) {
+                    return $record->swipe_date === $date && $record->emp_id === $empId;
+                })) {
+                    $missingData[] = [$empId, $date];
+                }
+            }
+        }
+    }
+
+    Log::info("Final missing data for absent report:", ['missingData' => $missingData]);
+
+    if (empty($missingData)) {
+        Log::warning("No missing data found for absent report.");
+        return back()->with('error', 'No data available for export.');
+    }
+
+    // Step 9: Generate and download Excel report
+    return Excel::download(new AbsentEmployeesExport($missingData), 'absent_report_employees.xlsx');
+}
+
+    public function downloadFamilyDetailsReport()
+    {
+        
+        $rows = [];
+        $data = [
+            ['List of Family Details of Employees'],
+            ['Employee Number', 'Employee Name', 'Joined On',    'Company',    'Designation',    'Member Name',    'Relation', 'Date of Birth',    'Gender', 'Blood Group', 'Nationality', 'Profession'],
+ 
+        ];
+        $rows=$data;
+        $employees2=EmployeeDetails::where('employee_status','active')->get();
+        foreach ($employees2 as $employee) {
+
+            $selfData = [
+                $employee['emp_id'],
+                ucwords(strtolower($employee['first_name'])) . ' ' . ucwords(strtolower($employee['last_name'])),
+                isset($employee['hire_date']) ? \Carbon\Carbon::parse($employee['hire_date'])->format('jS F Y') : 'NA',
+                isset($employee['company_id']) ? Company::where('company_id', $employee['company_id'])->value('company_name') :'NA'
+                ,
+                isset($employee['job_role'])? $employee['job_role']:'NA',
+                ucwords(strtolower($employee['first_name'])) . ' ' . ucwords(strtolower($employee['last_name'])),
+                'self',
+                isset($employee['date_of_birth'])? EmpPersonalInfo::where('emp_id',$employee['emp_id'])->value('date_of_birth'):'NA',
+                isset($employee['gender'])? ucwords(strtolower($employee['gender'])):'NA',
+                isset($employee['blood_group']) ? EmpPersonalInfo::where('emp_id',$employee['emp_id'])->value('blood_group'):'NA',
+                isset($employee['nationality'])? EmpPersonalInfo::where('emp_id',$employee['emp_id'])->value('nationality'):'NA',
+                isset($employee['job_role'])? $employee['job_role']:'NA',
+            ];
+            
+            // Add the employee's own data row to the rows array
+            $rows[] = $selfData;
+            $parent_details_exists=EmpParentDetails::where('emp_id', $employee['emp_id'])->exists();
+            $employee_is_married=EmpSpouseDetails::where('emp_id', $employee['emp_id'])->exists();
+            $employee_has_children = DB::table('emp_spouse_details')->where('emp_id', $employee['emp_id'])
+            ->whereNotNull('children')
+            ->where('children', '!=', '[]')
+            ->exists();
+            $parentdetails=EmpParentDetails::where('emp_id', $employee['emp_id'])->first();  
+            $spouseDetails=EmpSpouseDetails::where('emp_id', $employee['emp_id'])->first();
+            if ($parent_details_exists) {
+                // Data row for the parent's details
+                $motherData = [
+                    $employee['emp_id'],
+                    ucwords(strtolower($employee['first_name'])) . ' ' . ucwords(strtolower($employee['last_name'])),
+                    isset($employee['hire_date']) ? \Carbon\Carbon::parse($employee['hire_date'])->format('jS F Y') : 'NA',
+                    isset($employee['company_id']) ? Company::where('company_id', $employee['company_id'])->value('company_name') :'NA',
+                    isset($employee['job_role']) ? $employee['job_role']:'NA',
+                    isset($parentdetails->mother_first_name) ? ucwords(strtolower($parentdetails->mother_first_name)) . ' ' . ucwords(strtolower($parentdetails->mother_last_name)):'NA',
+                    'mother',
+                    isset($parentdetails->mother_dob) ? \Carbon\Carbon::parse($parentdetails->mother_dob)->format('jS F Y'):'NA',
+                    'Female',
+                    isset($parentdetails->mother_blood_group) ? $parentdetails->mother_blood_group :'NA',
+                    isset($parentdetails->mother_nationality) ? $parentdetails->mother_nationality :'NA',
+                    isset($parentdetails->mother_occupation) ? ucwords(strtolower($parentdetails->mother_occupation)):'NA'
+                ];
+                $fatherData = [
+                    $employee['emp_id'],
+                    ucwords(strtolower($employee['first_name'])) . ' ' . ucwords(strtolower($employee['last_name'])),
+                    isset($employee['hire_date']) ? \Carbon\Carbon::parse($employee['hire_date'])->format('jS F Y') : 'NA',
+                    isset($employee['company_id']) ? Company::where('company_id', $employee['company_id'])->value('company_name') :'NA',
+                    isset($employee['job_role']) ? ucwords(strtolower($employee['job_role'])):'NA',
+                    ucwords(strtolower($parentdetails->father_first_name)) . ' ' . ucwords(strtolower($parentdetails->father_last_name)),
+                    'Father',
+                    \Carbon\Carbon::parse($parentdetails->father_dob)->format('jS F Y'),
+                    'Male',
+                    $parentdetails->father_blood_group,
+                    ucwords(strtolower($parentdetails->father_nationality)),
+                    ucwords(strtolower($parentdetails->father_occupation))
+                ];
+     
+                // Add the parent's details row to the rows array
+                $rows[] = $motherData;
+                $rows[]= $fatherData;
+            }
+            if ($employee_is_married) {
+                $spouseDetails = DB::table('emp_spouse_details')->where('emp_id', $employee['emp_id'])->first(); // Use first() instead of get() to get a single record
+                if ($spouseDetails) {
+                    // Data row for the parent's details
+                    if($spouseDetails->gender=='Female')
+                    {
+                            $spouseData = [
+                                $employee['emp_id'],
+                                $employee['first_name'] . ' ' . $employee['last_name'],
+                                isset($employee['hire_date']) ? \Carbon\Carbon::parse($employee['hire_date'])->format('jS F Y') : 'NA',
+                                isset($employee['company_id']) ? Company::where('company_id', $employee['company_id'])->value('company_name') :'NA',
+                                isset($employee['job_role']) ? $employee['job_role']:'NA',
+                                ucwords(strtolower($spouseDetails->name)),
+                                'wife',
+                                \Carbon\Carbon::parse($spouseDetails->dob)->format('jS F Y'),
+                                'Female',
+                                $spouseDetails->bld_group,
+                                ucwords(strtolower($spouseDetails->nationality)),
+                                ucwords(strtolower($spouseDetails->profession))
+                            ];
+                        }
+                        else
+                        {
+                            $spouseData = [
+                                $employee['emp_id'],
+                                $employee['first_name'] . ' ' . $employee['last_name'],
+                                isset($employee['hire_date']) ? \Carbon\Carbon::parse($employee['hire_date'])->format('jS F Y') : 'NA',
+                                isset($employee['company_id']) ? Company::where('company_id', $employee['company_id'])->value('company_name') :'NA',
+                                isset($employee['job_role']) ? $employee['job_role']:'NA',
+                                ucwords(strtolower($spouseDetails->name)),
+                                'Husband',
+                                \Carbon\Carbon::parse( $spouseDetails->dob)->format('jS F Y'),
+                                'Male',
+                                $spouseDetails->bld_group,
+                                ucwords(strtolower($spouseDetails->nationality)),
+                                ucwords(strtolower($spouseDetails->profession))
+                            ];
+                        }
+                       
+                       
+                       
+                    // Add the parent's details row to the rows array
+                    $rows[] = $spouseData;
+                    if ($employee_has_children) {
+                        $childrenDetails = DB::table('emp_spouse_details')->where('emp_id', $employee['emp_id'])->select('children')->first();
+                       
+                        $children = json_decode($childrenDetails->children, true);
+                       
+                        if (is_array($children)) {
+                         
+                            foreach ($children as $child) {
+                           
+                               if($child['gender']=='female'||$child['gender']=='Female'||$child['gender']=='FEMALE')
+                               {
+                                $childrenData = [
+                                    $employee['emp_id'],
+                                    $employee['first_name'] . ' ' . $employee['last_name'],
+                                    isset($employee['hire_date']) ? \Carbon\Carbon::parse($employee['hire_date'])->format('jS F Y') : 'NA',
+                                    isset($employee['company_id']) ? Company::where('company_id', $employee['company_id'])->value('company_name') :'NA',
+                                    isset($employee['job_role']) ? $employee['job_role']:'NA',
+                                    $child['name'],
+                                    'daughter',
+                                    isset($child['dob']) ? \Carbon\Carbon::parse( $child['dob'])->format('jS F Y'):'NA',
+                                    isset($child['gender'])? $child['gender']:'NA',
+                                    isset($child['blood_group']) ? $child['blood_group'] : 'NA', // Assuming blood group is not available for children
+                                    isset($child['nationality']) ? $child['nationality'] : 'NA', // Assuming nationality is not available for children
+                                    'NA'  // Assuming occupation is not applicable for children
+                                ];
+                               }
+                               else
+                               {
+                                        $childrenData = [
+                                            $employee['emp_id'],
+                                            $employee['first_name'] . ' ' . $employee['last_name'],
+                                            isset($employee['hire_date']) ? \Carbon\Carbon::parse($employee['hire_date'])->format('jS F Y') : 'NA',
+                                            isset($employee['company_id']) ? Company::where('company_id', $employee['company_id'])->value('company_name') :'NA',
+                                            isset($employee['job_role']) ? $employee['job_role']:'NA',
+                                            $child['name'],
+                                            'son',
+                                            isset($child['dob'] ) ? \Carbon\Carbon::parse( $child['dob'] )->format('jS F Y'):'NA',
+                                            isset($child['age'] ) ? $child['age']:'NA',
+                                            isset($child['school'] ) ? $child['school']:'NA',
+                                            isset($child['gender']) ? $child['gender']:'NA',
+                                            isset($child['blood_group']) ?  $child['blood_group'] :'NA', // Assuming blood group is not available for children
+                                            isset($child['nationality']) ? $child['nationality']:'NA', // Assuming nationality is not available for children
+                                            'NA'  // Assuming occupation is not applicable for children
+                                        ];
+                            }
+                                // Add the child's details row to the rows array
+                                $rows[] = $childrenData;
+                            }
+                        }
+                       
+                        }
+                   
+                   
+                }
+            }
+           
+        }
+        return Excel::download(new FamilyReportExport($rows), 'family_reports.xlsx');
+
+          
     }
     // Method to switch between tabs
     public function toggleSection($tab)

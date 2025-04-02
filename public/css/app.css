@@ -1872,6 +1872,7 @@ input {
 .submit-btn {
     background-color: var(--main-button-color);
     color: #fff;
+    white-space: nowrap;
     border: 1px solid var(--main-button-color);
     font-weight: 500;
     border-radius: 5px;

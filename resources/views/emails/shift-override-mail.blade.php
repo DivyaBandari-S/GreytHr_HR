@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Regularisation Rejection Mail</title>
+    <title>Shift Override Mail</title>
 </head>
 <body>
 
-    <h1>Shift Override Mail</h1>
+    <h6>Shift Override Mail</h6>
     <p>Your shift Timings has been mentioned for the following dates:</p>
     
     <div style="margin-bottom: 20px;">

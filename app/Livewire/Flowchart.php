@@ -6,6 +6,8 @@ use App\Models\EmployeeDetails;
 use Asantibanez\LivewireCharts\Models\TreeMapChartModel;
 use Illuminate\Support\Facades\Log;
 use Livewire\Component;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class Flowchart extends Component
 {
@@ -15,11 +17,15 @@ class Flowchart extends Component
     public $hierarchyData = [];
 
 
+    public $selectedDesignation;
     public $selectedEmployeeId;
     public $chairman;
+
+    public $isupdateFilter=0;
     public function mount($selectedEmployeeId)
     {
         $this->selectedEmployeeId=$selectedEmployeeId;
+       
         if(!empty($this->selectedEmployeeId))
         {
            
@@ -72,9 +78,12 @@ class Flowchart extends Component
 
     private function loadSubordinates($managerId)
     {
-        $employees = EmployeeDetails::where('manager_id', $managerId)
+        
+            $employees = EmployeeDetails::where('manager_id', $managerId)
             ->select('emp_id', 'first_name', 'last_name', 'job_role','image','gender')
             ->get();
+        
+       
 
         $subordinates = [];
         foreach ($employees as $employee) {
@@ -87,14 +96,14 @@ class Flowchart extends Component
         return $subordinates;
     }
 
-   
+    
 
    
     public function render()
     {
         
+
       
-        
         return view('livewire.flowchart', [
             'hierarchy' => $this->hierarchyData,
         ]);
