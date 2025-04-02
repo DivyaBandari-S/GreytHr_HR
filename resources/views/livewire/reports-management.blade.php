@@ -840,7 +840,9 @@
                         
                         
                     </div>
-
+                    @if ($employeeTypeForAttendance=='selectedEmployees')
+                    
+                    @endif
                     <div class="modal-footer d-flex justify-content-center">
                         <button type="submit" class="submit-btn"
                             wire:click="downloadFamilyDetailsReport">Run</button>

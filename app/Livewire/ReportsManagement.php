@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Exports\AbsentEmployeesExport;
 use App\Exports\AbsentEmployeesReportExport;
 use App\Exports\AttendanceMusterReportExport;
+use App\Exports\FamilyReportExport;
 use App\Exports\ShiftSummaryExport;
 use App\Helpers\FlashMessageHelper;
 use App\Models\AddFavoriteReport;
@@ -264,6 +265,7 @@ public function downloadAbsentReportInExcel()
 
     public function downloadFamilyDetailsReport()
     {
+        
         $rows = [];
         $data = [
             ['List of Family Details of Employees'],
@@ -435,9 +437,8 @@ public function downloadAbsentReportInExcel()
             }
            
         }
-        $filePath = storage_path('app/family_reports.xlsx');
-        SimpleExcelWriter::create($filePath)->addRows($rows);
-        return response()->download($filePath, 'family_reports.xlsx');
+        return Excel::download(new FamilyReportExport($rows), 'family_reports.xlsx');
+
           
     }
     // Method to switch between tabs

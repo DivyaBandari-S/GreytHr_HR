@@ -779,7 +779,7 @@ td {
                         
                         <h6>Swipe-in Time</h6>
                         @if($swipeTime)
-                          <p>{{ substr($swipeTime, 8, 12) }}</p>
+                          <p>{{ substr($swipeTime, 11, 8) }}</p>
                         @elseif($doorSwipeTime) 
                           <p>{{$doorSwipeTime}}</p>
                         @else 

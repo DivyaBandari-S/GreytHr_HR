@@ -492,7 +492,7 @@ class EmployeeSwipesForHr extends Component
       
         // $this->selectedWebEmployeeId=$this->selectedWebEmployeeId;
         $parts = explode('-', $this->selectedWebEmployeeId);
-      
+        
        
         $this->selectedWebEmployeeId = $parts[0].'-'.$parts[1];
         $this->swipeTime = $parts[3].'-'.$parts[4].'-'.$parts[5];
@@ -502,7 +502,7 @@ class EmployeeSwipesForHr extends Component
         $this->webDeviceName=SwipeRecord::where('emp_id',$this->selectedWebEmployeeId)->where('in_or_out',$this->webSwipeDirection)->where('swipe_time',$this->swipeTime)->whereDate('created_at',$this->startDate)->value('device_name');
        
         $this->webDeviceId=SwipeRecord::where('emp_id',$this->selectedWebEmployeeId)->where('in_or_out',$this->webSwipeDirection)->where('swipe_time',$this->swipeTime)->whereDate('created_at',$this->startDate)->value('device_id');
-       
+      
         // Construct the table name for SQL Server
       
         
