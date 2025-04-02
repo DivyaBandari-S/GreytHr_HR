@@ -291,3 +291,11 @@ Route::get('/file/{id}', function ($id) {
     ]);
 })->name('file.show');
  
+
+Route::get('/privacy-and-policy', function () {
+    return view('privacy_policy_view');
+});
+
+Route::get('/Terms&Services', function () {
+    return view('terms_services_view');
+});
