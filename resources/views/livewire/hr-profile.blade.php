@@ -57,6 +57,12 @@
         .setting-password-modal-input {
             font-size: var(--normal-font-size);
         }
+
+        .table th {
+            /* background-color: #f8f9fa; */
+            background-color: var(--main-table-heading-bg-color);
+            font-weight: 600;
+        }
     </style>
     <div>
         @if ($showHelp == false)
@@ -96,8 +102,8 @@
                     style="font-size: 14px;">Password</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {{ $activeTab === 'Login History' ? 'active' : '' }}" id="Login History-tab"
-                    data-bs-toggle="tab" href="#Login History" role="tab" aria-controls="Login History"
+                <a class="nav-link {{ $activeTab === 'Login History' ? 'active' : '' }}" id="LoginHistory-tab"
+                    data-bs-toggle="tab" href="#LoginHistory" role="tab" aria-controls="LoginHistory"
                     aria-selected="false" style="font-size: 14px;">Login History</a>
             </li>
         </ul>
@@ -251,50 +257,50 @@
                             <div class="form-group d-flex align-items-center mb-3">
                                 <label class="setting-password-modal-label me-3" for="oldPassword"
                                     style="width: 40%;">Current Password</label>
-                                    <div>
-                                        <input class="form-control setting-password-modal-input" type="password"
+                                <div>
+                                    <input class="form-control setting-password-modal-input" type="password"
                                         id="oldPassword" name="oldPassword" placeholder="Enter your current password"
-                                        wire:model.lazy="oldPassword">
-                                        @error('oldPassword')
+                                        wire:model.defer="oldPassword">
+                                    @error('oldPassword')
                                         <p class="pt-1 text-danger setting-password-error-msg">
                                             {{ str_replace('oldPassword', 'Password', $message) }}</p>
                                     @enderror
-                                    </div>
-                               
+                                </div>
+
                             </div>
-                          
+
 
                             <div class="form-group d-flex align-items-center mb-3">
                                 <label class="setting-password-modal-label me-3" for="newPassword"
                                     style="width: 40%;">New Password</label>
-                                    <div>
-                                        <input class="form-control setting-password-modal-input" type="password"
+                                <div>
+                                    <input class="form-control setting-password-modal-input" type="password"
                                         id="newPassword" name="newPassword" placeholder="Enter your new password"
-                                        wire:model.lazy="newPassword">
-                                        @error('newPassword')
+                                        wire:model.defer="newPassword">
+                                    @error('newPassword')
                                         <p class="pt-1 text-danger setting-password-error-msg">
                                             {{ str_replace('newPassword', 'Password', $message) }}</p>
                                     @enderror
-                                    </div>
-                               
+                                </div>
+
                             </div>
-                          
+
 
                             <div class="form-group d-flex align-items-center mb-3">
                                 <label class="setting-password-modal-label me-3" for="confirmNewPassword"
                                     style="width: 40%;">Confirm Password</label>
-                                    <div>
-                                        <input class="form-control setting-password-modal-input" type="password"
+                                <div>
+                                    <input class="form-control setting-password-modal-input" type="password"
                                         id="confirmNewPassword" name="confirmNewPassword"
-                                        placeholder="Confirm new password" wire:model.lazy="confirmNewPassword">
-                                        @error('confirmNewPassword')
+                                        placeholder="Confirm new password" wire:model.defer="confirmNewPassword">
+                                    @error('confirmNewPassword')
                                         <p class="pt-1 text-danger setting-password-error-msg">
                                             {{ str_replace('confirmNewPassword', 'Password', $message) }}</p>
                                     @enderror
-                                    </div>
-                               
+                                </div>
+
                             </div>
-                           
+
 
                             <div class="setting-password-submit-container text-center mt-3">
                                 <button class="submit-btn" type="submit" wire:loading.attr="disabled"
@@ -313,8 +319,51 @@
 
         </div>
 
-        <div class="tab-pane fade {{ $activeTab === 'Login History' ? 'show active' : '' }}" id="Login History"
-            role="tabpanel" aria-labelledby="Login History-tab">
+        <div class="tab-pane fade {{ $activeTab === 'Login History' ? 'show active' : '' }}" id="LoginHistory"
+            role="tabpanel" aria-labelledby="LoginHistory-tab">
+
+            <div class="container mt-4 p-0">
+                <div class="row text-center mb-3">
+                    <div class="col-md-3"><b
+                            style="font-size: 14px; color: var(--main-table-heading-text-color);">Last Login
+                            Date</b><br>{{ $lastLogin }}</div>
+                    <div class="col-md-3"><b
+                            style="font-size: 14px; color: var(--main-table-heading-text-color);">Last Login Failure
+                            Date</b><br>{{ $lastLoginFailure }}</div>
+                    <div class="col-md-3"><b
+                            style="font-size: 14px; color: var(--main-table-heading-text-color);">Password Changed
+                            Date</b><br>{{ $lastPasswordChanged }}</div>
+                </div>
+
+                <div class="table-responsive" style="width: 820px; margin-left: 10px;">
+                    <table class="table table-bordered">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Date</th>
+                                <th>IP Address</th>
+                            </tr>
+                        </thead>
+                        @if (!empty($loginHistory) && is_iterable($loginHistory))
+                            @foreach ($loginHistory as $history)
+                                <tr>
+                                    <td>{{ $history->date ?? '-' }}</td>
+                                    <td>{{ $history->ip_address ?? '-' }}</td>
+                                </tr>
+                            @endforeach
+                        @else
+                            <tr>
+                                <td colspan="2" class="text-center">No login history available</td>
+                            </tr>
+                        @endif
+
+                    </table>
+                </div>
+
+            </div>
+
+
+
+
 
         </div>
     </div>

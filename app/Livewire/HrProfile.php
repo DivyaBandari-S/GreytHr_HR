@@ -3,13 +3,15 @@
 namespace App\Livewire;
 
 use Livewire\Component;
-
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 use App\Models\EmployeeDetails;
 use App\Models\EmpPersonalInfo;
 use Illuminate\Support\Facades\Auth;
 use App\Helpers\FlashMessageHelper;
 use Livewire\WithFileUploads;
 use App\Models\Company;
+use App\Models\HrEmployee;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Hash;
 
@@ -37,10 +39,50 @@ class HrProfile extends Component
     public $oldPassword;
     public $newPassword;
     public $confirmNewPassword;
+    public $loginHistory;
+    public $lastLogin;
+    public $lastLoginFailure;
+    public $lastPasswordChanged;
 
     public function updatedImage()
     {
         $this->validateImageType();
+    }
+
+    public function fetchLoginHistory()
+    {
+        $userId = Auth::user()->emp_id;
+        // Fetch last login, last login failure, and last password changed dates
+        $this->lastLogin = DB::table('sessions')
+            ->where('user_id', $userId)
+            // ->where('type', 'login')
+            ->orderBy('created_at', 'desc')
+            ->value('created_at');
+        $this->lastLogin = $this->lastLogin ? Carbon::parse($this->lastLogin)->format('d M Y H:i:s') : 'N/A';
+        $this->lastLoginFailure = DB::table('sessions')
+            ->where('user_id', $userId)
+            // ->where('type', 'failure')
+            ->orderBy('created_at', 'desc')
+            ->value('created_at');
+        $this->lastLoginFailure = $this->lastLoginFailure ? Carbon::parse($this->lastLoginFailure)->format('d M Y H:i:s') : 'N/A';
+
+        $this->lastPasswordChanged = DB::table('hr_employees')
+            ->where('emp_id', $userId)
+            ->orderBy('updated_at', 'desc')
+            ->value('updated_at');
+        $this->lastPasswordChanged =  $this->lastPasswordChanged ? Carbon::parse($this->lastPasswordChanged)->format('d M Y H:i:s') : 'N/A';
+        // Fetch login history
+        $this->loginHistory = DB::table('sessions')
+            ->where('user_id', $userId)
+            ->whereDate('created_at', Carbon::today())
+            ->orderBy('created_at', 'desc')
+            ->get([
+                'ip_address',
+                'user_agent',
+                'device_type',
+                DB::raw("CONCAT_WS(', ', city,state_name,country,postal_code) as location"),
+                'created_at'
+            ])->toArray();
     }
 
     public function validateImageType()
@@ -216,7 +258,7 @@ class HrProfile extends Component
         try {
             // Validate only if image is uploaded
             if ($this->image) {
-                $this->validate($this->validationRules());
+                $this->validate($this->rules);
     
                 // Ensure an employee exists before updating
                 $employee = EmployeeDetails::where('emp_id', auth()->guard('hr')->user()->emp_id)->first();
@@ -268,6 +310,12 @@ class HrProfile extends Component
         ];
     }
 
+    public function mount()
+{
+    $this->fetchLoginHistory();
+}
+
+
     public function resetForm()
     {
         $this->resetErrorBag();
@@ -280,13 +328,13 @@ class HrProfile extends Component
     public function changePassword()
     {
         $this->isLoading = true; // Set loading state to true
-        $this->validate();
-
+     
+        $this->validate($this->passwordRules);
         try {
 
             $employeeId = auth()->guard('hr')->user()->emp_id;
-            $this->employeeDetails = EmployeeDetails::where('emp_id', $employeeId)->first();
-            $companyId = $this->employeeDetails->company_id;
+            $this->employeeDetails = HrEmployee::with('employeeDetails')->where('emp_id', $employeeId)->first();
+            $companyId = $this->employeeDetails->employeeDetails->company_id;
             // Fetch the company details using company_id
             $company = Company::where('company_id', $companyId)->first();
             $this->companyName = $company->company_name;
@@ -313,15 +361,19 @@ class HrProfile extends Component
         finally {
             $this->isLoading = false; // Set loading state to false after processing
         }
+        $this->activeTab = "Password";
     }
     public function updated($propertyName)
     {
-        if (in_array($propertyName, array_keys($this->rules))) {
+        if (array_key_exists($propertyName, $this->rules)) {
             $this->validateOnly($propertyName);
-        } elseif (in_array($propertyName, array_keys($this->passwordRules))) {
+        } elseif (array_key_exists($propertyName, $this->passwordRules)) {
+          
             $this->validateOnly($propertyName, $this->passwordRules);
+            $this->activeTab = "Password"; 
         }
     }
+    
     
 
 
