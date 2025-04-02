@@ -11,7 +11,6 @@ use App\Livewire\AttendanceExceptionForDisplay;
 use App\Livewire\AttendanceLockConfiguration;
 use App\Livewire\AttendanceMusterHr;
 use App\Livewire\AttendanceProcess;
-use App\Livewire\AuthorizeSignatory;
 use App\Livewire\ClientRegistration;
 use App\Livewire\ClientSList;
 use App\Livewire\CompanyInfo;
@@ -21,7 +20,7 @@ use App\Livewire\CreateEmployeeWeekDayChart;
 use App\Livewire\CreateFineComponent;
 use App\Livewire\CreateNewLockConfigurationPage;
 use App\Livewire\CreateShiftOverride;
-use App\Livewire\CreateSignatory;
+
 use App\Livewire\CTCSlips;
 use App\Livewire\DamageComponent;
 use App\Livewire\EditAttendanceExceptionPage;
@@ -31,17 +30,17 @@ use App\Livewire\EmpBulkPhotoUpload;
 use App\Livewire\EmpDocument;
 use App\Livewire\EmpLeaveGranterDetails;
 use App\Livewire\EmployeeAsset;
-use App\Livewire\EmployeeDataUpdate;
+
 use App\Livewire\EmployeeDirectory;
 use App\Livewire\EmployeeLeave;
-use App\Livewire\EmployeeLopDays;
+
 use App\Livewire\EmployeeProfile;
 use App\Livewire\EmployeeSalary;
 use App\Livewire\EmployeeSalaryCommonComponent;
-use App\Livewire\EmployeeSeparation;
+
 use App\Livewire\EmployeeSwipesForHr;
 use App\Livewire\EmployeeWeekDayChart;
-use App\Livewire\EmpResettlement;
+
 use App\Livewire\Everyone;
 use App\Livewire\Feeds;
 use App\Livewire\FinalSettlement;
@@ -63,26 +62,25 @@ use App\Livewire\HrLogin;
 use App\Livewire\HrMainOverview;
 use App\Livewire\HrManualOverride;
 use App\Livewire\HrOrganisationChart;
-use App\Livewire\ItStatement;
-use App\Livewire\LeaveApplyOnBehalf;
+
 use App\Livewire\LeaveSettingPolicy;
 use App\Livewire\LeaveTypeReviewer;
 use App\Livewire\LetterPreparePage;
 use App\Livewire\LetterPreview;
-use App\Livewire\Loans;
+
 use App\Livewire\ParentDetails;
-use App\Livewire\PayrollArrears;
+
 use App\Livewire\PayrollOverview;
-use App\Livewire\PayrollSalary;
+
 use App\Livewire\Payslips;
 use App\Livewire\PfYtdReport;
 use App\Livewire\PositionHistory;
 use App\Livewire\PreviousEmployeement;
 use App\Livewire\ProjectsList;
-use App\Livewire\QuickSalary;
+
 use App\Livewire\RegularisationPendingForHr;
 use App\Livewire\ReimbursementStatement;
-use App\Livewire\ReleaseSalary;
+
 use App\Livewire\ReportsManagement;
 use App\Livewire\Requests;
 use App\Livewire\ResettlementProcessPage;
@@ -91,12 +89,27 @@ use App\Livewire\SalaryRevision;
 use App\Livewire\SalaryRevisionAnalytics;
 use App\Livewire\SalaryRevisionHistory;
 use App\Livewire\SalaryRevisionList;
-use App\Livewire\SalarySlip;
+
 use App\Livewire\ShiftOverrideHr;
 use App\Livewire\ShiftRosterHr;
 use App\Livewire\ShiftRotationCalendar;
 use App\Livewire\StopSalaries;
 use App\Livewire\SwipeManagementForHr;
+use App\Livewire\AuthorizeSignatory;
+use App\Livewire\CreateSignatory;
+use App\Livewire\EmployeeDataUpdate;
+use App\Livewire\EmployeeLopDays;
+use App\Livewire\Loans;
+use App\Livewire\ReleaseSalary;
+use App\Livewire\EmployeeSeparation;
+use App\Livewire\EmpResettlement;
+use App\Livewire\IncomeTax;
+use App\Livewire\ItStatement;
+use App\Livewire\SalarySlip;
+use App\Livewire\PayrollSalary;
+use App\Livewire\LeaveApplyOnBehalf;
+use App\Livewire\QuickSalary;
+use App\Livewire\PayrollArrears;
 use App\Livewire\Tasks;
 use App\Livewire\UpdateEmployeeDetails;
 use App\Livewire\WeekendOverride;
@@ -166,6 +179,9 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
         //HR Payroll Submodule Routes->Payouts
         Route::get('/accountsjv', AccountsJv::class)->name('accountsjv');
         Route::get('/salaryslip', SalarySlip::class)->name('salaryslip');
+       //HR Payroll Submodule Routes->Verify
+       Route::get('/quicksalary', QuickSalary::class)->name('quicksalary');
+       Route::get('/income-tax', IncomeTax::class)->name('income-tax');
         //HR Payroll Submodule Routes->Verify
         Route::get('/quicksalary', QuickSalary::class)->name('quicksalary');
  

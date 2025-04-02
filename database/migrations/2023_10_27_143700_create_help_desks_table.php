@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('help_desks', function (Blueprint $table) {
             $table->id();
-            $table->string('request_id')->unique();
-            $table->string('emp_id');
+            $table->string('request_id',100)->unique();
+            $table->string('emp_id',10);
             $table->string('category');
             $table->string('mail');
             $table->string('distributor_name');

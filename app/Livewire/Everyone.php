@@ -234,22 +234,23 @@ $query->where('emp_id', $employeeId) // Employee's own posts
     public function submit()
     {
         $validatedData = $this->validate([
-            'category' => 'required|string',
-            'description' => 'required|string|min:100',
+            'category' => 'required|string|max:255',
+            'description' => 'required|string',
             'file_path' => 'nullable|file|mimes:jpeg,png,jpg,gif,svg|max:2048', // Only allow image files
         ]);
-    
+
         try {
             $fileContent = null;
             $mimeType = null;
             $fileName = null;
-    
+
+            // Process the uploaded image file
             if ($this->file_path) {
                 if (!in_array($this->file_path->getMimeType(), ['image/jpeg', 'image/png', 'image/gif', 'image/svg+xml'])) {
                     session()->flash('error', 'Only image files (jpeg, png, gif, svg) are allowed.');
                     return;
                 }
-    
+
                 $fileContent = file_get_contents($this->file_path->getRealPath());
                 $mimeType = $this->file_path->getMimeType();
                 $fileName = $this->file_path->getClientOriginalName();
@@ -263,23 +264,24 @@ $query->where('emp_id', $employeeId) // Employee's own posts
             $user = Auth::user();
             $employeeId = auth()->user()->emp_id;
             $employeeDetails = EmployeeDetails::where('emp_id', $employeeId)->first();
+             // Fetch the manager_id of the current employee
+             $managerId = $employeeDetails->manager_id;
     
-            // Fetch the manager_id of the current employee
-            $managerId = $employeeDetails->manager_id;
+             if (!$managerId) {
+                 FlashMessageHelper::flashError('Manager information not found for the current employee.');
+                 return;
+             }
+     
+             // Check if the authenticated employee is a manager
+             $isManager = DB::table('employee_details')
+                 ->where('manager_id', $employeeId)
+                 ->exists();
+     
+             $postStatus = $isManager ? 'Closed' : 'Pending';
+             $managerId = $isManager ? $employeeId : null;
+             $empId = $isManager ? null : $employeeId;
     
-            if (!$managerId) {
-                FlashMessageHelper::flashError('Manager information not found for the current employee.');
-                return;
-            }
-    
-            // Check if the authenticated employee is a manager
-            $isManager = DB::table('employee_details')
-                ->where('manager_id', $employeeId)
-                ->exists();
-    
-            $postStatus = $isManager ? 'Closed' : 'Pending';
-            $managerId = $isManager ? $employeeId : null;
-            $empId = $isManager ? null : $employeeId;
+           
     
             $hrDetails = Hr::where('hr_emp_id', $user->hr_emp_id)->first();
     
@@ -295,26 +297,15 @@ $query->where('emp_id', $employeeId) // Employee's own posts
                 'status' => $postStatus,
             ]);
     
-            // Log the description for debugging
-            Log::info('Description:', ['description' => $this->description]);
-            Log::info("Post data stored:", $validatedData);
-            // Send email notification to manager
-            $managerDetails = EmployeeDetails::where('emp_id', $employeeDetails->manager_id)->first();
-            if ($managerDetails && $managerDetails->email) {
-                $managerName = $managerDetails->first_name . ' ' . $managerDetails->last_name;
-                Mail::to($managerDetails->email)->send(new PostCreatedNotification($post, $employeeDetails, $managerName));
-            }
     
-            // Optionally, send email to HR
-            if ($hrDetails && $hrDetails->email) {
-                $managerName = $managerDetails->first_name . ' ' . $managerDetails->last_name;
-                Mail::to($hrDetails->email)->send(new PostCreatedNotification($post, $employeeDetails, $managerName));
-            }
-    
+            $this->dispatch('postSubmitted');
             // Reset form fields and redirect to posts page
-            $this->reset(['category', 'file_path']);
+            $this->reset(['category', 'description', 'file_path']);
+    
             FlashMessageHelper::flashSuccess('Post created successfully!');
-            // Update 'manager.posts' to the actual route name for the posts page
+           
+            $this->showFeedsDialog=false;
+             // Update 'manager.posts' to the actual route name for the posts page
     
         } catch (\Illuminate\Validation\ValidationException $e) {
             $this->setErrorBag($e->validator->getMessageBag());

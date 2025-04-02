@@ -1032,6 +1032,7 @@ $this->employees = EmployeeDetails::where('company_id', $companyId)->get();
         // Clear the input field after adding the comment
         $this->reset(['newComment']);
         $this->isSubmitting = false;
+        $this->dispatch('postSubmitted');
 
 
         $this->addcomments = Addcomment::with('employee')
@@ -1181,19 +1182,8 @@ $this->employees = EmployeeDetails::where('company_id', $companyId)->get();
                 'status' => $postStatus,
             ]);
     
-            // Send email notification to manager
-            $managerDetails = EmployeeDetails::where('emp_id', $employeeDetails->manager_id)->first();
-            if ($managerDetails && $managerDetails->email) {
-                $managerName = $managerDetails->first_name . ' ' . $managerDetails->last_name;
-
-                Mail::to($managerDetails->email)->send(new PostCreatedNotification($post, $employeeDetails, $managerName));
-            }
-            // Optionally, send email to HR
-            if ($hrDetails && $hrDetails->email) {
-                $managerName = $managerDetails->first_name . ' ' . $managerDetails->last_name;
-                Mail::to($hrDetails->email)->send(new PostCreatedNotification($post, $employeeDetails, $managerName));
-            }
-    
+           
+            return redirect()->to('/hr/hrFeeds');
     
             // Reset form fields and redirect to posts page
             $this->reset(['category', 'description', 'file_path']);
