@@ -112,6 +112,79 @@ class Feeds extends Component
     {
         $this->postType = $value;  // Update postType when the select changes
     }
+    protected $newCommentRules = [
+        'category' => 'required|string|max:255',
+        'description' => 'required|string|min:10',
+        'file_path' => 'nullable|file|mimes:jpeg,png,jpg,gif,svg|max:2048',
+    ];
+
+    protected $messages = [
+        'category.required' => 'Please select a category.',
+        'description.required' => 'Description is required.',
+        'description.min' => 'Description must be at least 10 characters.',
+        'file_path.mimes' => 'Only image files (jpeg, png, jpg, gif, svg) are allowed.',
+        'file_path.max' => 'File size must not exceed 2MB.',
+    ];
+ public function updated($propertyName)
+    {
+        $this->validateOnly($propertyName, $this->newCommentRules);
+    }
+    public function submit()
+    {
+        $this->validate($this->newCommentRules);
+
+        try {
+            $fileContent = null;
+            $mimeType = null;
+            $fileName = null;
+
+            if ($this->file_path) {
+                $fileContent = file_get_contents($this->file_path->getRealPath());
+                $mimeType = $this->file_path->getMimeType();
+                $fileName = $this->file_path->getClientOriginalName();
+    
+                if ($fileContent === false || strlen($fileContent) > 16777215) {
+                    session()->flash('error', 'File size exceeds the allowed limit or could not be read.');
+                    return;
+                }
+            }
+
+            $employeeId = Auth::user()->emp_id;
+            $employeeDetails = EmployeeDetails::where('emp_id', $employeeId)->first();
+            $managerId = $employeeDetails->manager_id ?? null;
+
+            if (!$managerId) {
+                session()->flash('error', 'Manager information not found.');
+                return;
+            }
+
+            $isManager = DB::table('employee_details')->where('manager_id', $employeeId)->exists();
+            $postStatus = $isManager ? 'Closed' : 'Pending';
+            $managerId = $isManager ? $employeeId : null;
+            $empId = $isManager ? null : $employeeId;
+
+            $hrDetails = Hr::where('hr_emp_id', Auth::user()->hr_emp_id)->first();
+
+            Post::create([
+                'hr_emp_id' => $hrDetails->hr_emp_id ?? '-',
+                'manager_id' => $managerId,
+                'emp_id' => $empId,
+                'category' => $this->category,
+                'description' => $this->description,
+                'file_path' => $fileContent,
+                'mime_type' => $mimeType,
+                'file_name' => $fileName,
+                'status' => $postStatus,
+            ]);
+            FlashMessageHelper::flashSuccess('Post created successfully.');
+
+            $this->reset(['category', 'description', 'file_path']);
+            $this->showFeedsDialog = false;
+
+        } catch (\Exception $e) {
+            session()->flash('error', 'An error occurred. Please try again.');
+        }
+    }
 
 
     // Array of options with the label and description
@@ -340,18 +413,7 @@ class Feeds extends Component
 
         'newComment' => 'required|string',
     ];
-    protected $newCommentRules = [
-        'category' => 'required',
-        'description' => 'required',
-        'file_path' => 'nullable|file|mimes:jpg,jpeg,png,pdf,doc,docx|max:40960',
 
-    ];
-    protected $messages = [
-        'category.required' => 'Category is required.',
-
-        'description.required' => 'Description is required.',
-
-    ];
 
     public function validateField($field)
     {
@@ -373,10 +435,7 @@ class Feeds extends Component
     }
 
 
-    public function updated($propertyName)
-    {
-        $this->validateOnly($propertyName);
-    }
+
 
     public function resetFields()
     {
@@ -1116,95 +1175,7 @@ $this->employees = EmployeeDetails::where('company_id', $companyId)->get();
     {
         return $this->belongsTo(EmployeeDetails::class, 'emp_id');
     }
-    public function submit()
-    {
-        $validatedData = $this->validate([
-            'category' => 'required|string|max:255',
-            'description' => 'required|string',
-            'file_path' => 'nullable|file|mimes:jpeg,png,jpg,gif,svg|max:2048', // Only allow image files
-        ]);
-
-        try {
-            $fileContent = null;
-            $mimeType = null;
-            $fileName = null;
-
-            // Process the uploaded image file
-            if ($this->file_path) {
-                if (!in_array($this->file_path->getMimeType(), ['image/jpeg', 'image/png', 'image/gif', 'image/svg+xml'])) {
-                    session()->flash('error', 'Only image files (jpeg, png, gif, svg) are allowed.');
-                    return;
-                }
-
-                $fileContent = file_get_contents($this->file_path->getRealPath());
-                $mimeType = $this->file_path->getMimeType();
-                $fileName = $this->file_path->getClientOriginalName();
-    
-                if ($fileContent === false || strlen($fileContent) > 16777215) {
-                    FlashMessageHelper::flashWarning('File size exceeds the allowed limit or could not be read.');
-                    return;
-                }
-            }
-    
-            $user = Auth::user();
-            $employeeId = auth()->user()->emp_id;
-            $employeeDetails = EmployeeDetails::where('emp_id', $employeeId)->first();
-             // Fetch the manager_id of the current employee
-             $managerId = $employeeDetails->manager_id;
-    
-             if (!$managerId) {
-                 FlashMessageHelper::flashError('Manager information not found for the current employee.');
-                 return;
-             }
-     
-             // Check if the authenticated employee is a manager
-             $isManager = DB::table('employee_details')
-                 ->where('manager_id', $employeeId)
-                 ->exists();
-     
-             $postStatus = $isManager ? 'Closed' : 'Pending';
-             $managerId = $isManager ? $employeeId : null;
-             $empId = $isManager ? null : $employeeId;
-    
-           
-    
-            $hrDetails = Hr::where('hr_emp_id', $user->hr_emp_id)->first();
-    
-            $post = Post::create([
-                'hr_emp_id' => $hrDetails->hr_emp_id ?? '-',
-                'manager_id' => $managerId,
-                'emp_id' => $empId,
-                'category' => $this->category,
-                'description' => $this->description,
-                'file_path' => $fileContent,
-                'mime_type' => $mimeType,
-                'file_name' => $fileName,
-                'status' => $postStatus,
-            ]);
-    
-           
-            return redirect()->to('/hr/hrFeeds');
-    
-            // Reset form fields and redirect to posts page
-            $this->reset(['category', 'description', 'file_path']);
-            FlashMessageHelper::flashSuccess('Post created successfully!');
-            $this->showFeedsDialog=false;
-             // Update 'manager.posts' to the actual route name for the posts page
-    
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            $this->setErrorBag($e->validator->getMessageBag());
-        } catch (\Exception $e) {
-            Log::error('Error creating post: ' . $e->getMessage(), [
-                'employee_id' => $employeeId ?? 'N/A',
-                'file_path_length' => isset($fileContent) ? strlen($fileContent) : null,
-            ]);
-            FlashMessageHelper::flashError('An error occurred while creating the post. Please try again.');
-        }
-    }
-    
-    
-    
-
+  
 
 
 

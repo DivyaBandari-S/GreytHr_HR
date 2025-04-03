@@ -118,15 +118,15 @@
                                                         </div>
 
                                                         @if($isNames)
-                                                        <div style="border-radius:5px; background-color:grey; padding:8px; width:330px; margin-top:10px; height:200px; overflow-y:auto;">
+                                                        <div style="border-radius:5px; background-color:grey; padding:8px; width:300px; margin-top:10px; height:200px; overflow-y:auto;">
                                                             <div class="input-group4" style="display: flex; align-items: center; width: 100%;">
                                                             <input wire:model="searchTerm" style="font-size: 10px; cursor: pointer; border-radius: 5px 0 0 5px; width: 250px; height: 30px; padding: 5px;" type="text" class="form-control" placeholder="Search for Emp.Name or ID" aria-label="Search" aria-describedby="basic-addon1">
-                                                                <div class="input-group-append" style="display: flex; align-items: center;">
+                                                               
                                                                     <button wire:click="filter" style="height: 30px; border-radius: 0 5px 5px 0; background-color: var(--main-button-color); color: #fff; border: none; padding: 0 10px;" class="btn" type="button">
                                                                         <i style="text-align: center;" class="fa fa-search"></i>
                                                                     </button>
 
-                                                                </div>
+                                                             
                                                                 
                                                                 <button wire:click="closePeoples" type="button" class="close-btn rounded px-1 py-0" aria-label="Close" style="background-color: var(--main-button-color); height: 30px; width: 30px; margin-left: 5px; display: flex; align-items: center; justify-content: center;">
                                                                         <span aria-hidden="true" style="color: white; font-size: 24px; line-height: 0;">×</span>
@@ -198,10 +198,7 @@
 
 
                                                                 </select>
-                                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                                                    class="bi bi-caret-down" viewBox="0 0 16 16" style="position: absolute; top: 50%; right: 10px; transform: translateY(-50%); pointer-events: none;align-items :center">
-                                                                    <path d="M3.204 5h9.592L8 10.481 3.204 5z" />
-                                                                </svg>
+
                                                             </div>
                                                         </div>
                                                         @error('priority') <span class="text-danger">{{ $message }}</span> @enderror
@@ -243,17 +240,16 @@
         @endif
         <div class="row align-items-start justify-content-start">
     <div class="col-12 col-md-3 align-items-center">
-        <div class="input-group request-input-group-container" style="margin-left:130px">
+        <div class="input-group request-input-group-container" style="margin-left:120px">
             <input  wire:model="activeSearch" type="text"
                 class="form-control request-search-input" placeholder="Search..." aria-label="Search">
-            <div class="input-group-append" style="margin-left:-10px">
+
                 <button wire:click="searchActiveHelpDesk" class="request-search-btn" type="button">
                     <i class="fa fa-search request-search-icon"></i>
                 </button>
-            </div>
+          
         </div>
     </div>
- 
     @if ($searchData && $searchData->isNotEmpty()) 
     <div class="row align-items-center justify-content-center">
         <table class="employee-requests-table table table-bordered table-striped mt-5">
@@ -268,45 +264,47 @@
                 </tr>
             </thead>
             <tbody class="table-body">
-            @foreach ($searchData->sortByDesc('created_at') as $index => $request)
+                @foreach ($searchData->sortByDesc('created_at') as $index => $request)
                     <tr class="body-row">
                         <td class="body-column">{{ $request->cc_to }}</td>
                         <td class="body-column">{{ $request->priority }}</td>
                         <td class="body-column">{{ $request->mail }}</td>
                         <td class="body-column">{{ $request->mobile }}</td>
-                        <td class="body-column">{{$request->status->status_name}}</td>
-                        <td class="body-column">{{\Carbon\Carbon::parse($request->last_working_day)->format('d-m-Y') }}</td>
+                        <td class="body-column">{{ $request->status ? $request->status->status_name : 'N/A' }}</td>
+                        <td class="body-column">{{ \Carbon\Carbon::parse($request->last_working_day)->format('d-m-Y') }}</td>
                     </tr>
                 @endforeach
             </tbody>
         </table>
     </div>
-    @elseif ($searchData && $searchData->isEmpty())
+@elseif ($searchData && $searchData->isEmpty())
     <tr>
-<td> 
-<div class="d-flex justify-content-center align-items-center mt-2">
+        <td colspan="6"> 
+            <div class="d-flex justify-content-center align-items-center mt-2">
                 <div class="card p-4 text-center">
-                <div class="no-data p-4 text-align-center justify-content-center align-items-center" style="width:700px;height:150px">  
-<img style="width: 10em; margin: 20px;" 
-            src="{{ asset('images/norecordstoshow.png') }}" 
-                 alt="No items found">
-                 <p>No Record Found</p>
+                    <div class="no-data p-4 text-align-center justify-content-center align-items-center" style="width:700px;height:150px">  
+                        <img style="width: 10em; margin: 20px;" 
+                             src="{{ asset('images/norecordstoshow.png') }}" 
+                             alt="No items found">
+                        <p>No Record Found</p>
+                    </div>
                 </div>
             </div>
-        </div></td>
+        </td>
     </tr>
-    @else
+@else
     <div class="d-flex justify-content-center align-items-center mt-2">
-                <div class="card p-4 text-center">
-                <div class="no-data p-4 text-align-center justify-content-center align-items-center" style="width:700px;height:260px">
-            <img style="width: 10em; margin: 20px;" 
-            src="{{ asset('images/norecordstoshow.png') }}" 
-                 alt="No items found">
-                 <p>No Record Found</p>
-     </div>
-     </div>
-     </div>
-    @endif
+        <div class="card p-4 text-center">
+            <div class="no-data p-4 text-align-center justify-content-center align-items-center" style="width:700px;height:260px">
+                <img style="width: 10em; margin: 20px;" 
+                     src="{{ asset('images/norecordstoshow.png') }}" 
+                     alt="No items found">
+                <p>No Record Found</p>
+            </div>
+        </div>
+    </div>
+@endif
+
 </div>
 
 
