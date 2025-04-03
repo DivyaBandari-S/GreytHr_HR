@@ -144,7 +144,7 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
         Route::get('/user/client-registration', ClientRegistration::class)->name('client.create');
         Route::get('/hr-employees-list', HrEmployeesList::class)->name('hr-employees-list');
         Route::get('/add-edit-hr', AddEditHrEmployees::class)->name('add-edit-hr');
- 
+
         // Route for editing an existing client
         Route::get('/user/client-registration/{clientId}', ClientRegistration::class)->name('client.edit');
  
@@ -297,7 +297,7 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
         Route::get('/user/payroll/resttlement/process', ResettlementProcessPage::class)->name('resttelement-process');
     });
 });
- 
+
 Route::get('/file/{id}', function ($id) {
     $file = EmpResignations::findOrFail($id);
  
