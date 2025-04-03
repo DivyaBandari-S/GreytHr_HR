@@ -359,7 +359,7 @@
                                                 <span class="normalText"> {{ $swipe->in_or_out }} </span>
                                             </div>
                                             <div class="col d-flex justify-content-center align-items-center">
-                                                <span class="badge col" >{{ \Carbon\Carbon::parse($swipe->swipe_time)->format('H:i A') }}
+                                                <span class="badge col" >{{ \Carbon\Carbon::parse($swipe->swipe_time) }}
                                                 </span>
                                             </div>
                                         </div>
