@@ -342,54 +342,43 @@
                                 </div>
 
                                 <div class="row m-0 mt-3">
-                                    @if ($swipes)
-                                        @foreach ($swipes as $swipe)
-                                            <div class="m-0 mb-3 p-2 row border">
-                                                <div style="display: flex; align-items: center;">
-                                                    @if ($swipe->employee->image && $swipe->employee->image !== 'null')
-                                                        <div class="employee-profile-img">
-                                                            <img class="rounded-circle" height="35" width="35"
-                                                                src="data:image/jpeg;base64,{{ $swipe->employee->image }} ">
-                                                        </div>
-                                                    @else
-                                                        @if ($swipe->employee->gender == 'FEMALE')
-                                                            <div class="employee-profile-img">
-                                                                <img src="{{ asset('images/female-default.jpg') }}"
-                                                                    class=" rounded-circle" height="35"
-                                                                    width="35" alt="Default Image">
-                                                            </div>
-                                                        @elseif($swipe->employee->gender == 'MALE')
-                                                            <div class="employee-profile-img">
-                                                                <img src="{{ asset('images/male-default.png') }}"
-                                                                    class=" rounded-circle" height="35"
-                                                                    width="35" alt="Default Image">
-                                                            </div>
-                                                        @else
-                                                            <div class="employee-profile-img">
-                                                                <img src="{{ asset('images/user.jpg') }}"
-                                                                    class=" rounded-circle" height="35"
-                                                                    width="35" alt="Default Image">
-                                                            </div>
-                                                        @endif
-                                                    @endif
-                                                    <div class="d-flex flex-column col">
-                                                        <p class="mb-0 normalTextTruncated">
-                                                            {{ ucwords(strtolower($swipe->employee->first_name)) }}
-                                                            {{ ucwords(strtolower($swipe->employee->last_name)) }}</p>
-                                                        <p class="smallText mb-0">
-                                                            {{ ucwords(strtolower($swipe->employee->job_role)) }}</p>
-                                                    </div>
-                                                    <div class="col d-flex justify-content-center align-items-center">
-                                                        <span class="normalText"> {{ $swipe->in_or_out }} </span>
-                                                    </div>
-                                                    <div class="col d-flex justify-content-center align-items-center">
-                                                        <span
-                                                            class="badge col">{{ \Carbon\Carbon::parse($swipe->swipe_time)->format('H:i A') }}
-                                                        </span>
-                                                    </div>
-                                                </div>
+                                    @if($swipes)
+                                    @foreach ($swipes as $swipe)
+                                    <div class="m-0 mb-3 p-2 row border">
+                                        <div style="display: flex; align-items: center;">
+                                            @if($swipe->employee->image && $swipe->employee->image !=='null')
+                                            <div class="employee-profile-img">
+                                                <img class="rounded-circle" height="35" width="35" src="data:image/jpeg;base64,{{($swipe->employee->image)}} ">
                                             </div>
-                                        @endforeach
+                                            @else
+                                            @if($swipe->employee->gender=='FEMALE')
+                                            <div class="employee-profile-img">
+                                                <img src="{{ asset('images/female-default.jpg') }}" class=" rounded-circle" height="35" width="35" alt="Default Image">
+                                            </div>
+                                            @elseif($swipe->employee->gender=='MALE')
+                                            <div class="employee-profile-img">
+                                                <img src="{{ asset('images/male-default.png') }}" class=" rounded-circle" height="35" width="35" alt="Default Image">
+                                            </div>
+                                            @else
+                                            <div class="employee-profile-img">
+                                                <img src="{{ asset('images/user.jpg') }}" class=" rounded-circle" height="35" width="35" alt="Default Image">
+                                            </div>
+                                            @endif
+                                            @endif
+                                            <div class="d-flex flex-column col">
+                                                <p class="mb-0 normalTextTruncated">{{ ucwords(strtolower($swipe->employee->first_name)) }} {{ ucwords(strtolower($swipe->employee->last_name)) }}</p>
+                                                <p class="smallText mb-0">{{ ucwords(strtolower($swipe->employee->job_role)) }}</p>
+                                            </div>
+                                            <div class="col d-flex justify-content-center align-items-center">
+                                                <span class="normalText"> {{ $swipe->in_or_out }} </span>
+                                            </div>
+                                            <div class="col d-flex justify-content-center align-items-center">
+                                                <span class="badge col" >{{ \Carbon\Carbon::parse($swipe->swipe_time) }}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @endforeach
                                     @else
                                         <p class="fw-bold fs14 p-0">No Data Found</p>
                                     @endif

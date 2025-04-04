@@ -17,13 +17,12 @@ return new class extends Migration
             $table->string('hr_emp_id', 10)->nullable();
             $table->integer('batch_id')->nullable(); // Removed invalid length parameter
             $table->json('leave_policy_id')->nullable();
-            $table->foreign('emp_id')->references('emp_id')->on('employee_details')->onDelete('cascade')->onUpdate('cascade');
             $table->string('leave_scheme', 25)->default('General');
             $table->string('status')->default('Granted');
             $table->string('period', 25)->nullable();
             $table->string('periodicity', 25)->nullable();
             $table->string('granted_for_year', 10)->nullable();
-            $table->boolean('is_lapsed')->defaullt(false);
+            $table->boolean('is_lapsed')->default(false);
             $table->timestamp('lapsed_date')->nullable();
             $table->string('from_date', 25)->nullable();
             $table->string('to_date', 25)->nullable();
@@ -34,6 +33,8 @@ return new class extends Migration
                 ->on('hr_employees')
                 ->onDelete('restrict')
                 ->onUpdate('cascade');
+            $table->foreign('emp_id')->references('emp_id')->on('employee_details')->onDelete('restrict')->onUpdate('cascade');
+
         });
     }
 

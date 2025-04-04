@@ -69,7 +69,7 @@
                                 style="width: 90px; height: 90px; border: 1px solid rgb(182, 147, 194); border-radius: 5px; margin-left: 20px;padding: 10px; background:rgb(234, 225, 237);cursor:pointer">
                                 <img src="{{ asset('images/postheader.jpeg') }}"
                                     style="width: 30px; height: 30px; margin-bottom: 20px;" alt="">
-                                <p style="font-size: 10px; font-weight: 600;margin-top:-5px">create <br >posts</p>
+                                <p style="font-size: 10px; font-weight: 600;margin-top:-5px">Create <br >Posts</p>
                             </div>
                             @if ($showKudosDialog)
                                 <div class="modal" tabindex="-1" role="dialog" style="display: block;">
@@ -517,29 +517,7 @@
                                 <span class="custom-radio-content ">Posts</span>
                             </label>
                         </div>
-                        @if ($isManager)
-                            <div class="post-requests">
-                                <label class="custom-radio-label">
-
-                                    <input type="radio" id="radio-emp" name="radio" value="post-requests"
-                                        data-url="/emp-post-requests" wire:click="handleRadioChange('post-requests')">
-
-                                    <div class="feed-icon-container" style="margin-left: 10px;">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12"
-                                            viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                            class="feather feather-file stroke-current text-purple-400 stroke-1"
-                                            style="width: 1rem; height: 1rem;">
-                                            <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path>
-                                            <polyline points="13 2 13 9 20 9"></polyline>
-                                        </svg>
-                                    </div>
-                                    <span class="custom-radio-button bg-blue"></span>
-                                    <span class="custom-radio-content ">Post Requests</span>
-                                </label>
-                            </div>
-                        @endif
-
+                       
 
                         <hr style="width: 100%;border-bottom: 1px solid grey;">
                         <div>
@@ -731,15 +709,15 @@
                             <img src="https://cdni.iconscout.com/illustration/premium/thumb/business-failure-7626119-6210566.png" alt="Empty Image" style="width: 300px; height: auto; display: block;margin-top:-90px">
                             <p class="text-feed">It feels empty here!</p>
                             <p class="text-xs">Your feed is still in making as there's no post to show.</p>
-                            <button style="background-color:rgb(2, 17, 79); width:110px; height:30px; border:1px solid grey; border-radius:5px; color:white;" wire:click="addFeeds">Create Post</button>
+                            <button style="background:#306cc6; width:110px; height:30px; border:1px solid grey; border-radius:5px; color:white;" wire:click="addFeeds">Create Post</button>
                             @if($showFeedsDialog)
                             <!-- Form content here -->
                             @endif
                             @else
-
+                            @foreach($posts as $post)
                             <!-- Post Container -->
                             <div id="post-container " class="feeds-main-content">
-                                @foreach($posts as $post)
+                               
                                 <div class="col-12 col-md-8 mt-2" id="post-{{ $post->id }}">
                                     <div class="post-card">
                                         <div class="row">
@@ -826,10 +804,10 @@
                 @endif
             </div>
         </div>
-    </div>
+   
+
+</div>
 @endforeach
-
-
 
 
 

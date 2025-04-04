@@ -89,6 +89,13 @@ class Requests extends Component
     {
         $this->showDetails = !$this->showDetails;
     }
+    protected $rules = [
+        'cc_to'=>'required',
+        'last_working_day' => 'required|date|after_or_equal:today',
+        'priority' => 'required|in:High,Medium,Low',
+        'mail' => 'required',
+        'mobile' => 'required', // Ensure mobile is exactly 10 digits
+    ];
     public function mount()
     {
         // Fetch unique requests with their categories
@@ -366,7 +373,10 @@ public function searchHelpDesk($searchTerm)
     {
         $this->isNames = !$this->isNames;
     }
-  
+    public function updated($field)
+    {
+        $this->validateOnly($field);
+    }
     
     public function searchActiveHelpDesk()
     {
@@ -519,17 +529,16 @@ public function searchHelpDesk($searchTerm)
  public function Offboarding()
     {
         $messages = [
+            'cc_to.required' => 'CC To is required.',
             'priority.required' => 'Priority is required.',
             'last_working_day.required' => 'Last working day date is required.',
             'last_working_day.after_or_equal' => 'Last working day must be today or a future date.',
+            'mail.required' => 'Email is required.',
+            'mobile.required' => 'Mobile number is required.',
         ];
         
-        // Validate input fields
-        $this->validate([
-            'last_working_day' => 'required|date|after_or_equal:' . now()->toDateString(),
-            'priority' => 'required|in:High,Medium,Low',
-        ], $messages);
-        
+        $this->validate($this->rules, $messages);
+
 
         // Validate file uploads
         $filePaths = $this->file_paths ?? [];

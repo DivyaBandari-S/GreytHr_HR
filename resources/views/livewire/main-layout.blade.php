@@ -119,10 +119,10 @@
                     <li>
                         <a href="#">Payroll Inputs <i class="ph-caret-right-fill"></i></a>
                         <ul class="sidebar__dropdown-menu">
-                        <li><a href="/hr/user/payroll-salary">Salary</a></li>
-                        <li><a href="/hr/user/loans">Loan</a></li>
-                        <li><a href="/hr/user/salary-revision-list">Salary Revision</a></li>
-                            <li><a href="/user">Income Tax</a></li>
+                            <li><a href="/hr/user/payroll-salary">Salary</a></li>
+                            <li><a href="/hr/user/loans">Loan</a></li>
+                            <li><a href="/hr/user/salary-revision-list">Salary Revision</a></li>
+                            <li><a href="/hr/income-tax">Income Tax</a></li>
                             <li><a href="/user">Reimbursement</a></li>
                             <li><a href="/hr/user/employee-lop-days">Employee LOP Days</a></li>
                             <li><a href="/hr/user/stop-salaries">Stop Salary Processing</a></li>
@@ -142,31 +142,31 @@
                     <li>
                         <a href="#">Verify <i class="ph-caret-right-fill"></i></a>
                         <ul class="sidebar__dropdown-menu">
-                            <li><a href="/home">Quick Salary Statement</a></li>
-                            <li><a href="/home">Payroll Statement</a></li>
-                            <li><a href="/home">Payroll Differences</a></li>
+                            <li><a href="/hr/quicksalary">Quick Salary Statement</a></li>
+                            <li><a href="/hr">Payroll Statement</a></li>
+                            <li><a href="/hr">Payroll Differences</a></li>
                         </ul>
                     </li>
                     <li>
                         <a href="#">Payout <i class="ph-caret-right-fill"></i></a>
                         <ul class="sidebar__dropdown-menu">
-                            <li><a href="/home">Accounts JV</a></li>
+                            <li><a href="/hr/accountsjv">Accounts JV</a></li>
                             <li><a href="/user">Bank Transfer</a></li>
                             <li><a href="/user">Cheque / Cash Statement</a></li>
-                            <li><a href="/user">Payslips</a></li>
+                            <li><a href="/hr/salaryslip">Payslips</a></li>
                             <li><a href="/user">Hold Salary Payout</a></li>
                         </ul>
                     </li>
                     <li>
                         <a href="#">Published Info <i class="ph-caret-right-fill"></i></a>
                         <ul class="sidebar__dropdown-menu">
-                            <li><a href="/home">Payslip</a></li>
-                            <li><a href="/user">CTC Payslip</a></li>
-                            <li><a href="/user">Reimbursement Payslip</a></li>
-                            <li><a href="/user">YTD Summary</a></li>
-                            <li><a href="/user">PF YTD Statement</a></li>
-                            <li><a href="/user">Reimbursement Statement</a></li>
-                            <li><a href="/user">IT Statement</a></li>
+                            <li><a href="/hr/payslips">Payslip</a></li>
+                            <li><a href="/hr/ctcslips">CTC Payslip</a></li>
+                            <li><a href="/hr">Reimbursement Payslip</a></li>
+                            <li><a href="/hr/ytdreport">YTD Summary</a></li>
+                            <li><a href="/hr/pfytdreport">PF YTD Statement</a></li>
+                            <li><a href="/hr/reimbursement">Reimbursement Statement</a></li>
+                            <li><a href="/hr/itstatement">IT Statement</a></li>
                             <li><a href="/user">Loan Statement</a></li>
                             <li><a href="/user">IT Declaration</a></li>
                             <li><a href="/user">FBP Declaration</a></li>
