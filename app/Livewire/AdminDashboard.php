@@ -12,6 +12,7 @@ use App\Models\Hr;
 use App\Models\LeaveRequest;
 use App\Models\SwipeRecord;
 use Illuminate\Support\Facades\DB;
+use App\Models\Task;
 use Livewire\Component;
 use Carbon\Carbon;
 use Exception;
@@ -50,6 +51,30 @@ class AdminDashboard extends Component
     public $groupedByEmpId;
 
     public $swipes;
+    public $tasksData = [];
+
+
+    public function loadChartData()
+    {
+        $totalTasks = Task::count();
+        $closed = Task::where('status', 11)->count();
+        $opened = Task::where('status', 10)->count();
+        $overdue = Task::where('status', 10)
+        ->whereDate('due_date', '<', now()) 
+        ->count();
+
+        $this->tasksData = [
+            'labels' => ['Opened', 'Closed', 'Overdue'],
+            'series' => $totalTasks > 0 ? [
+                round(($opened / $totalTasks) * 100, 2),
+                round(($closed / $totalTasks) * 100, 2),
+                round(($overdue / $totalTasks) * 100, 2),
+            ] : [0, 0, 0],
+            'totalTasks' => $totalTasks 
+        ];
+        Log::info($this->tasksData);
+        $this->render();
+    }
     public function setAction($action)
     {
         $this->selectedAction = $action;
@@ -138,6 +163,7 @@ class AdminDashboard extends Component
 
             $this->maleCount = $maleCount ?? 0;
             $this->femaleCount = $femaleCount ?? 0;
+            $this->loadChartData();
         } catch (\Exception $e) {
             if ($e instanceof \Illuminate\Database\QueryException) {
                 // Handle database query exceptions
