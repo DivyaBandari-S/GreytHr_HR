@@ -291,6 +291,12 @@ ul {
     margin-top: 8px;
 }
 /* admin dashboard */
+.badgeSign{
+    background-color: var(--main-button-color);
+    color: white;
+    display: flex;
+    border-radius: 5px;
+}
 .text-bg-primary{
     color: white;
     background-color: var(--main-button-color);

@@ -167,6 +167,97 @@ class LeaveHelper
         }
     }
 
+    public static function getApprovedLeaveDaysForRange($employeeId, $selectedYear)
+    {
+        try {
+            // Fetch approved leave requests for the specific employee, year, and date range
+            $selectedYear = (int) $selectedYear;
+            $approvedLeaveRequests = LeaveRequest::where('emp_id', $employeeId)
+                ->where('category_type', 'Leave')
+                ->where(function ($query) {
+                    $query->where('leave_status', 2)
+                        ->whereIn('cancel_status', [6, 5, 3, 4]);
+                })
+                ->whereIn('leave_type', [
+                    'Casual Leave Probation',
+                    'Loss Of Pay',
+                    'Sick Leave',
+                    'Casual Leave',
+                    'Maternity Leave',
+                    'Marriage Leave',
+                    'Paternity Leave',
+                    'Earned Leave'
+                ])
+                ->whereYear('to_date', '=', $selectedYear)
+                ->get();
+
+            $totalCasualDays = 0;
+            $totalCasualLeaveProbationDays = 0;
+            $totalSickDays = 0;
+            $totalLossOfPayDays = 0;
+            $totalMaternityDays = 0;
+            $totalMarriageDays = 0;
+            $totalPaternityDays = 0;
+            $totalEarnedDays = 0;
+
+            // Calculate the total number of days based on sessions for each approved leave request
+            foreach ($approvedLeaveRequests as $leaveRequest) {
+                $leaveType = $leaveRequest->leave_type;
+                $days = self::calculateNumberOfDays(
+                    $leaveRequest->from_date,
+                    $leaveRequest->from_session,
+                    $leaveRequest->to_date,
+                    $leaveRequest->to_session,
+                    $leaveRequest->leave_type
+                );
+
+                // Accumulate days based on leave type
+                switch ($leaveType) {
+                    case 'Casual Leave':
+                        $totalCasualDays += $days;
+                        break;
+                    case 'Sick Leave':
+                        $totalSickDays += $days;
+                        break;
+                    case 'Loss Of Pay':
+                        $totalLossOfPayDays += (int) $days;
+                        break;
+                    case 'Casual Leave Probation':
+                        $totalCasualLeaveProbationDays += $days;
+                        break;
+                    case 'Maternity Leave':
+                        $totalMaternityDays += $days;
+                        break;
+                    case 'Marriage Leave':
+                        $totalMarriageDays += $days;
+                        break;
+                    case 'Paternity Leave': // Corrected the spelling
+                        $totalPaternityDays += $days;
+                        break;
+                    case 'Earned Leave': // Corrected the spelling
+                        $totalEarnedDays += $days;
+                        break;
+                }
+            }
+    
+            // Return the accumulated leave days for each type
+            return [
+                'totalCasualDays' => $totalCasualDays,
+                'totalCasualLeaveProbationDays' => $totalCasualLeaveProbationDays,
+                'totalSickDays' => $totalSickDays,
+                'totalLossOfPayDays' => $totalLossOfPayDays,
+                'totalMaternityDays' => $totalMaternityDays,
+                'totalMarriageDays' => $totalMarriageDays,
+                'totalPaternityDays' => $totalPaternityDays,
+                'totalEarnedDays' => $totalEarnedDays
+            ];
+        } catch (\Exception $e) {
+            // Log the error message or handle it as needed
+            // FlashMessageHelper::flashError('An error occurred while fetching leave days. Please try again later.');
+            return null; // Return null or an empty array to indicate failure
+        }
+    }
+
     public static function getApprovedLeaveDaysOnSelectedDay($employeeId, $selectedYear)
     {
         // Fetch approved leave requests
