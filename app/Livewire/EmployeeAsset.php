@@ -18,6 +18,7 @@ use Maatwebsite\Excel\Facades\Excel;
 class EmployeeAsset extends Component
 {
     use WithFileUploads;
+    // Default to "Yes"
 
     public $searchTerm = '';
     public $employee;
@@ -646,6 +647,7 @@ public $showAssetDialog=false;
 public function addAsset()
 {
     $this->resetForm();
+    $this->warranty = 'Yes';
     $this->showAssetDialog = true;
 }
 public function removeSelectedEmployee()
@@ -684,61 +686,87 @@ public $purchase_date;
    
     public $mime_type;
     public $active;
+    public function updated($propertyName)
+    {
+        $this->validateOnly($propertyName, $this->rules(), $this->messages());
+    }
 
-public function saveAsset()
-{
-    $emp_id = $this->selectedPeople[0] ?? null; // or however you are managing selected people
-    
-    // Check if the selected person exists
-    $selectedPerson = EmployeeDetails::find($emp_id);
+    public function rules()
+    {
+        return [
+            'asset_type' => 'required|string|max:255',
+            'asset_status' => 'required|string|max:255',
+            'asset_details' => 'required|string',
+            'purchase_date' => 'required|date',
+            'brand' => 'nullable|string|max:255',
+            'model' => 'nullable|string|max:255',
+            'invoice_no' => $this->asset_id ? 'nullable|string|max:255' : 'nullable|string|max:255|unique:assets,invoice_no',
+            'original_value' => 'required|numeric|min:0',
+            'current_value' => 'required|numeric|min:0',
+            'warranty' => 'required|in:Yes,No',
+            'remarks' => 'nullable|string|max:500',
+        ];
+    }
 
-   $this->validate([
-        
-        'asset_type' => 'required|string|max:255',
-        'asset_status' => 'required|string|max:255',
-        'asset_details' => 'required|string',
-        'purchase_date' => 'required|date',
-        'brand' => 'nullable|string|max:255',
-        'model' => 'nullable|string|max:255',
-        'invoice_no' => $this->asset_id ? 'nullable|string|max:255' : 'nullable|string|max:255|unique:assets,invoice_no', // Skip unique validation on update
-        'original_value' => 'required|numeric|min:0',
-        'current_value' => 'required|numeric|min:0',
-        'warranty' => 'required|in:Yes,No',
-        'remarks' => 'nullable|string|max:500',
-       
-    ], [
-        
-        'asset_type.required' => 'Asset type is required.',
-        'asset_status.required' => 'Asset status is required.',
-        'asset_details.required' => 'Please provide asset details.',
-        'purchase_date.required' => 'Purchase date is required.',
-      
-      'invoice_no.unique' => ' Please provide a unique invoice number.',
-        'purchase_date.date' => 'Enter a valid date.',
-        'original_value.required' => 'Original value is required.',
-        'original_value.numeric' => 'Original value must be a number.',
-        'current_value.required' => 'Current value is required.',
-        'current_value.numeric' => 'Current value must be a number.',
-        'warranty.required' => 'Please specify if there is a warranty.',
-        
-    ]);
+    public function messages()
+    {
+        return [
+            'asset_type.required' => 'Asset type is required.',
+            'asset_status.required' => 'Asset status is required.',
+            'asset_details.required' => 'Please provide asset details.',
+            'purchase_date.required' => 'Purchase date is required.',
+            'purchase_date.date' => 'Enter a valid date.',
+            'invoice_no.unique' => 'Please provide a unique invoice number.',
+            'original_value.required' => 'Original value is required.',
+            'original_value.numeric' => 'Original value must be a number.',
+            'current_value.required' => 'Current value is required.',
+            'current_value.numeric' => 'Current value must be a number.',
+            'warranty.required' => 'Please specify if there is a warranty.',
+        ];
+    }
 
-    // Check if the selected person exists
-    if ($selectedPerson) {
-    
-        try {
-            if ($this->asset_id) {
-                // Update existing asset record
-                $asset = Asset::find($this->asset_id);
-                
-                if ($asset) {
-                    $asset->update([
+    public function saveAsset()
+    {
+        $emp_id = $this->selectedPeople[0] ?? null;
+        $selectedPerson = EmployeeDetails::find($emp_id);
+
+        $this->validate($this->rules(), $this->messages());
+
+        if ($selectedPerson) {
+            try {
+                if ($this->asset_id) {
+                    $asset = Asset::find($this->asset_id);
+                    if ($asset) {
+                        $asset->update([
+                            'emp_id' => $emp_id,
+                            'asset_type' => $this->asset_type,
+                            'asset_status' => $this->asset_status,
+                            'asset_details' => $this->asset_details,
+                            'purchase_date' => $this->purchase_date,
+                            'brand' => $this->brand,
+                            'model' => $this->model,
+                            'invoice_no' => $this->invoice_no,
+                            'original_value' => $this->original_value,
+                            'current_value' => $this->current_value,
+                            'warranty' => $this->warranty,
+                            'remarks' => $this->remarks,
+                        ]);
+
+                        session()->flash('success', 'Asset updated successfully!');
+                    } else {
+                        session()->flash('error', 'Asset not found.');
+                    }
+                } else {
+                    $lastAsset = Asset::latest('created_at')->first();
+                    $nextId = $lastAsset ? ((int)substr($lastAsset->asset_id, 4) + 1) : 1;
+                    $generatedAssetId = 'ASS-' . str_pad($nextId, 3, '0', STR_PAD_LEFT);
+
+                    Asset::create([
                         'emp_id' => $emp_id,
                         'asset_type' => $this->asset_type,
                         'asset_status' => $this->asset_status,
                         'asset_details' => $this->asset_details,
                         'purchase_date' => $this->purchase_date,
-                       
                         'brand' => $this->brand,
                         'model' => $this->model,
                         'invoice_no' => $this->invoice_no,
@@ -746,60 +774,23 @@ public function saveAsset()
                         'current_value' => $this->current_value,
                         'warranty' => $this->warranty,
                         'remarks' => $this->remarks,
-                      
-
+                        'asset_id' => $generatedAssetId,
                     ]);
 
-                    session()->flash('message', 'Asset record updated successfully.');
-                    session()->flash('success', 'Asset updated successfully!');
-                } else {
-                    session()->flash('error', 'Asset not found.');
+                    session()->flash('success', 'Asset added successfully!');
                 }
-            } else {
-           
-                // Dynamically generate a unique asset_id with "ASS-" prefix for a new asset
-                $lastAsset = Asset::latest('created_at')->first();
-                $nextId = $lastAsset ? ((int)substr($lastAsset->asset_id, 4) + 1) : 1;
-                $generatedAssetId = 'ASS-' . str_pad($nextId, 3, '0', STR_PAD_LEFT);
-           
-                // Create a new asset record
-                Asset::create([
-                    'emp_id' => $emp_id,
-                    'asset_type' => $this->asset_type,
-                    'asset_status' => $this->asset_status,
-                    'asset_details' => $this->asset_details,
-                    'purchase_date' => $this->purchase_date,
-                   
-                    'brand' => $this->brand,
-                    'model' => $this->model,
-                    'invoice_no' => $this->invoice_no,
-                    'original_value' => $this->original_value,
-                    'current_value' => $this->current_value,
-                    'warranty' => $this->warranty,
-                    'remarks' => $this->remarks,
-                 
-                    'asset_id' => $generatedAssetId,
-                  
-                ]);
-           
 
-                session()->flash('message', 'Asset record created successfully.');
-                session()->flash('success', 'Asset added successfully!');
+                $this->showAssetDialog = false;
                 $this->resetForm();
+            } catch (\Exception $e) {
+                Log::error('Asset save failed: ' . $e->getMessage());
+                session()->flash('error', 'Failed to save asset record. Please try again.');
             }
-
-            $this->showAssetDialog = false; // Close the dialog after saving
-            $this->resetForm(); // Reset form fields
-        } catch (\Exception $e) {
-            Log::error('Asset save failed: ' . $e->getMessage());
-            session()->flash('error', 'Failed to save asset record. Please try again.');
+        } else {
+            session()->flash('error', 'Selected person not found.');
         }
-    } else {
-        session()->flash('error', 'Selected person not found.');
     }
-}
 
-    
     
     public function render()
     {

@@ -48,41 +48,39 @@
                     <div class="row justify-content-center align-items-center mt-2 "  >
                 <div class="col-md-11 custom-container d-flex flex-column bg-white" >
     <div class="row justify-content-center mt-3 flex-column m-0 employee-details-main" >
-        <div class="col-md-10">
+        <div class="col-md-9">
             <div class="row " style="display:flex;">
                 <div class="col-md-11 m-0">
                     <p class="emp-heading" >Start searching to see specific employee details here</p>
                     <div class="col mt-3" style="display: flex;">
              
-             <p class="main-text mt-1">Employee Type:</p>
-            
-             <div class="dropdown mt-1">
-<button class="btn dropdown-toggle dp-info" type="button" data-bs-toggle="dropdown" style="font-size:12px">
-{{ ucfirst($selectedOption) }} 
-</button>
-<ul class="dropdown-menu" style="font-size:12px;">
-<li class="updated-dropdown">
- <a href="#" wire:click.prevent="updateSelected('all')" class="dropdown-item custom-info-item">All Employees</a>
-</li>
-<li class="updated-dropdown">
- <a href="#" wire:click.prevent="updateSelected('current')" class="dropdown-item custom-info-item">Current Employees</a>
-</li>
-<li class="updated-dropdown">
- <a href="#" wire:click.prevent="updateSelected('past')" class="dropdown-item custom-info-item">Resigned Employees</a>
-</li>
-<li class="updated-dropdown">
- <a href="#" wire:click.prevent="updateSelected('intern')" class="dropdown-item custom-info-item">Intern</a>
-</li>
-</ul>
+                        <p class="main-text mt-1">Employee Type:</p>
+                       
+                        <div class="dropdown mt-1">
+    <button class="btn dropdown-toggle dp-info" type="button" data-bs-toggle="dropdown" style="font-size:12px">
+     {{ ucfirst($selectedOption) }} 
+    </button>
+    <ul class="dropdown-menu" style="font-size:12px;">
+        <li class="updated-dropdown">
+            <a href="#" wire:click.prevent="updateSelected('all')" class="dropdown-item custom-info-item">All Employees</a>
+        </li>
+        <li class="updated-dropdown">
+            <a href="#" wire:click.prevent="updateSelected('current')" class="dropdown-item custom-info-item">Current Employees</a>
+        </li>
+        <li class="updated-dropdown">
+            <a href="#" wire:click.prevent="updateSelected('past')" class="dropdown-item custom-info-item">Resigned Employees</a>
+        </li>
+        <li class="updated-dropdown">
+            <a href="#" wire:click.prevent="updateSelected('intern')" class="dropdown-item custom-info-item">Intern</a>
+        </li>
+    </ul>
 </div>
 
+         
 
-
-           
-         </div>
-                 
-                  
-                    <div class="profile">
+                      
+                    </div>
+                   <div class="profile">
     <div class="col m-0">
         <div class="row d-flex align-items-center">
             <!-- Search Input -->
@@ -113,7 +111,7 @@
     placeholder="{{ $selectedEmployeeFirstName ? ucfirst(strtolower($selectedEmployeeFirstName)) . ' ' . ucfirst(strtolower($selectedEmployeeLastName)) : 'Search for an employee...' }}"
     type="text"
     class="form-control search-term"
-    style="padding-left: 50px; padding-right: 35px;" 
+    style="padding-left: 50px; padding-right: 35px;"   wire:click="searchforEmployee"
 />
 
 <!-- Display Close Icon if Employee is Selected -->

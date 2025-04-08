@@ -43,8 +43,7 @@
 </div>
 
                  
-
-                <div class="row justify-content-center align-items-center mt-2 "  >
+<div class="row justify-content-center align-items-center mt-2 "  >
                 <div class="col-md-11 custom-container d-flex flex-column bg-white" >
     <div class="row justify-content-center mt-3 flex-column m-0 employee-details-main" >
         <div class="col-md-9">
@@ -197,7 +196,7 @@
  
                 
         </div>
-    </div> 
+    </div>
   
  <div class="row">
  @if(!empty($selectedEmployeeId))
