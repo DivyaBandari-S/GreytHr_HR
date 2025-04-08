@@ -108,7 +108,7 @@
     wire:model.debounce.500ms="searchTerm"
     aria-label="{{ $selectedEmployeeFirstName ? ucfirst(strtolower($selectedEmployeeFirstName)) . ' ' . ucfirst(strtolower($selectedEmployeeLastName)) : 'Search for an employee...' }}"
     placeholder="{{ $selectedEmployeeFirstName ? ucfirst(strtolower($selectedEmployeeFirstName)) . ' ' . ucfirst(strtolower($selectedEmployeeLastName)) : 'Search for an employee...' }}"
-    type="text"
+    type="text"  wire:click="searchforEmployee"
     class="form-control search-term"
     style="padding-left: 50px; padding-right: 35px;"   wire:click="searchforEmployee"
 />
