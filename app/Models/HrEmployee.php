@@ -3,11 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Model;
 
 class HrEmployee extends Model
 {
-    use HasFactory;
+    use HasFactory, Notifiable;
 
     // Specify the table name if it's different from the default
     protected $table = 'hr_employees';

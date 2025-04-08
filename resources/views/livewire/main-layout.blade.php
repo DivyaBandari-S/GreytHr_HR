@@ -30,6 +30,7 @@
                 <ul class="sidebar__submenu">
                     <li class="title">Task</li>
                     <li><a href="/hr/user/tasks">Tasks</a></li>
+                    <li><a href="/hr/clientList">Clients</a></li>
                     {{-- <li><a href="#">Basic</a></li>
                     <li><a href="#">Input group</a></li>
                     <li><a href="#">Layout</a></li>
@@ -434,7 +435,7 @@
                             </div>
                         </div>
                         <ul class="profile__menu">
-                            <li><a href="#"><i class="ph-user-circle-fill"></i> Edit profile</a></li>
+                            <li><a href="/hr/profile"><i class="ph-user-circle-fill"></i> Edit profile</a></li>
                             <li><a href="#"><i class="ph-gear-fill"></i> Settings</a></li>
                         </ul>
                     </div>

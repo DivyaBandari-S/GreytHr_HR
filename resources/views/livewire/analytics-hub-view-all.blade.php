@@ -1,4 +1,4 @@
-<div class="main__body " style="overflow: auto; height: calc(100vh - 70px);background:#f9f9f9;">
+
 <div>
     <style>
         /* analytics hub view all styles started */
@@ -361,4 +361,4 @@
 
     </div>
 </div>
-</div>
+

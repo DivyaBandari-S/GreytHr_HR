@@ -476,7 +476,7 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link {{ $activeTab === 'ML' ? 'active' : '' }}"
-                            wire:click="showMarriageLeave" id="ML-tab" data-bs-toggle="tab" href="#ML"
+                             id="ML-tab" data-bs-toggle="tab" href="#ML"
                             role="tab" aria-controls="ML" aria-selected="false">ML</a>
                     </li>
                     <li class="nav-item">
@@ -903,7 +903,7 @@
                             </table>
                         </div>
 
-                        <div class="col-md-6">
+                        <div class="col-md-5">
                             <p
                                 style="font-size: var(--normal-font-size); font-weight: 600; padding: 5px 5px; margin: 0px;">
                                 Summary
@@ -1220,56 +1220,74 @@
 </div>
 
 
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const ctx = document.getElementById('leaveChart').getContext('2d');
-        let leaveChart;
+{{-- <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        let monthlyCounts = @json(array_values($monthlyCounts));
 
-        function renderChart(monthlyCounts) {
-            if (leaveChart) {
-                leaveChart.destroy(); // Destroy the previous instance of the chart
+        console.log("Monthly Counts from Blade:", monthlyCounts); // Debugging
+
+        let ctx = document.getElementById('leaveChart').getContext('2d');
+        let leaveChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                datasets: [{
+                    label: 'Leave Requests',
+                    data: monthlyCounts,
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
             }
+        });
+    });
+</script> --}}
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var ctx = document.getElementById('leaveChart').getContext('2d');
+        var leaveData = @json($monthlyCounts);
+        var backgroundColors = [
+            '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40', '#FFCD56',
+            '#C9CBCF', '#A4B3B6', '#6E7E8D', '#DA4167', '#3F88C5'
+        ];
 
-            leaveChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct',
-                        'Nov', 'Dec'
-                    ],
-                    datasets: [{
-                        label: 'Leave Requests',
-                        data: monthlyCounts,
-                        backgroundColor: [
-                            'rgba(255, 99, 132, 0.2)',
-                            'rgba(54, 162, 235, 0.2)',
-                            // Add more colors as needed...
-                        ],
-                        borderColor: [
-                            'rgba(255, 99, 132, 1)',
-                            'rgba(54, 162, 235, 1)',
-                            // Add more border colors as needed...
-                        ],
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    scales: {
-                        y: {
-                            beginAtZero: true
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                datasets: [{
+                    label: 'Leave Days per Month',
+                    data: Object.values(leaveData),
+                    backgroundColor: backgroundColors,
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Days of Leave'
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Months'
                         }
                     }
                 }
-            });
-        }
-
-        // Initial render with empty data
-        renderChart(Array(12).fill(0));
-
-        // Listen for the update-chart event
-        window.addEventListener('update-chart', event => {
-            const monthlyCounts = event.detail.monthlyCounts;
-            console.log(monthlyCounts); // Check if the data is being received correctly
-            renderChart(monthlyCounts);
+            }
         });
     });
 </script>
