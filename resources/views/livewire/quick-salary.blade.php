@@ -173,21 +173,25 @@
                 </tr>
             </thead>
             <tbody>
+                
                 @if (!empty($salaryData) && count($salaryData) > 0)
                     @foreach ($salaryData as $empId => $data)
                         <tr class="border">
-                            <td class="border px-4 py-2 font-bold">
-                                @php
-                                    $hireDate = $allSalaryDetails->firstWhere('emp_id', $empId)->hire_date ?? null;
-                                    echo $hireDate ? \Carbon\Carbon::parse($hireDate)->format('d-m-y') : 'N/A';
-                                @endphp
-                            </td>
-                            <td class="border px-4 py-2 font-bold">
-                                {{ $allSalaryDetails->firstWhere('emp_id', $empId)->total_working_days ?? 'N/A' }}
-                            </td>
-                            <td class="border px-4 py-2 font-bold">
-                                {{ $allSalaryDetails->firstWhere('emp_id', $empId)->lop_days ?? 'N/A' }}
-                            </td>
+                        @php
+    $employee = !empty($allSalaryDetails) && is_iterable($allSalaryDetails)
+        ? collect($allSalaryDetails)->firstWhere('emp_id', $empId)
+        : null;
+@endphp
+<td class="border px-4 py-2 font-bold">
+    {{ optional($employee)->hire_date ? \Carbon\Carbon::parse($employee->hire_date)->format('d-m-y') : 'N/A' }}
+</td>
+
+<td class="border px-4 py-2 font-bold">
+    {{ optional($employee)->total_working_days ?? 'N/A' }}
+</td>
+<td class="border px-4 py-2 font-bold">
+    {{ optional($employee)->lop_days ?? 'N/A' }}
+</td>
                             <td class="border px-4 py-2">{{ $data['salary']['basic'] ?? 0 }}</td>
                             <td class="border px-4 py-2">{{ $data['salary']['hra'] ?? 0 }}</td>
                             <td class="border px-4 py-2">{{ $data['salary']['conveyance'] ?? 0 }}</td>

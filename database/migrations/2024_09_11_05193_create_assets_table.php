@@ -13,13 +13,13 @@ return new class extends Migration
     {
         Schema::create('assets', function (Blueprint $table) {
             $table->smallInteger('id')->autoIncrement();
-            $table->string('emp_id');
+            $table->string('emp_id',10);
             $table->enum('asset_type', ['Laptop', 'Keyboard', 'Monitor','Mouse']); 
             $table->enum('active', ['Active', 'InActive'])->default('Active')->nullable();  
              $table->enum('asset_status', ['All','Available','Damaged','Decommissioned','Issued','Lost','Returned','Under Repair'])->default('All');
             $table->string('asset_details'); 
             $table->date('purchase_date'); 
-            $table->string('asset_id')->unique();
+            $table->string('asset_id',30)->unique();
             $table->string('brand')->nullable();
             $table->string('model')->nullable();
             $table->string('invoice_no')->unique()->nullable();

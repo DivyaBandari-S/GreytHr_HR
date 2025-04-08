@@ -264,7 +264,8 @@ class AccountsJv extends Component
         ->leftJoin('emp_personal_infos', 'employee_details.emp_id', '=', 'emp_personal_infos.emp_id')
         ->get();
         $this->salaryRevision = EmpSalaryRevision::all();
-    
+
+
         // Fetch salary details for all employees
         $empSalaryDetails = EmpSalary::join('salary_revisions', 'emp_salaries.sal_id', '=', 'salary_revisions.id')
             ->where('month_of_sal', 'like', $this->selectedMonth . '%')

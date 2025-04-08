@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('employee_documents', function (Blueprint $table) {
             $table->id();
-            $table->string('employee_id')->index(); // Employee ID
+            $table->string('employee_id',10)->index(); // Employee ID
             $table->string('document_name'); // Document Name
             $table->string('category'); // Category (e.g., Accounts & Statutory, Address, etc.)
             $table->text('description')->nullable(); // Description

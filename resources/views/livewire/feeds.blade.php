@@ -519,28 +519,7 @@
                                 <span class="custom-radio-content ">Posts</span>
                             </label>
                         </div>
-                        @if ($isManager)
-                            <div class="post-requests">
-                                <label class="custom-radio-label">
-
-                                    <input type="radio" id="radio-emp" name="radio" value="post-requests"
-                                        data-url="/emp-post-requests" wire:click="handleRadioChange('post-requests')">
-
-                                    <div class="feed-icon-container" style="margin-left: 10px;">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12"
-                                            viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                            class="feather feather-file stroke-current text-purple-400 stroke-1"
-                                            style="width: 1rem; height: 1rem;">
-                                            <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path>
-                                            <polyline points="13 2 13 9 20 9"></polyline>
-                                        </svg>
-                                    </div>
-                                    <span class="custom-radio-button bg-blue"></span>
-                                    <span class="custom-radio-content ">Post Requests</span>
-                                </label>
-                            </div>
-                        @endif
+                    
 
 
                         <hr style="width: 100%;border-bottom: 1px solid grey;">
@@ -774,61 +753,47 @@ $cardCommentsCount = $commentsCollection->groupBy('card_id')->map(function ($com
                 <div class="cards mb-4">
 
                     <div class="row m-0">
-                        <div class="col-md-4 mb-2" style="text-align: center;">
+                        <div class="col-md-3 mb-2" style="text-align: center;">
                             <img src="data:image/jpeg;base64,{{ $empCompanyLogoUrl }}"
                                 alt="Company Logo" style="width:120px">
                         </div>
                         <div class="col-md-4 group-events m-auto">
                             Group Events
                         </div>
-                        <div class=" col-md-3 group-events  m-auto">
-                            @if (isset($data['employee']->created_at) || isset($data['employee']->personalInfo->date_of_birth))
-                                {{-- Determine which date to use --}}
-                                @php
-                                    $currentDate = \Carbon\Carbon::now();
+                        <div class="col-md-4 group-events m-auto">
+    @if (!empty($data['employee']->created_at) || !empty($data['employee']->personalInfo->date_of_birth))
+        @php
+            // Get the current date
+            $currentDate = \Carbon\Carbon::now();
 
-                                    // Use created_at if available, otherwise use date_of_birth
-                                    $referenceDate = isset($data['employee']->created_at)
-                                        ? \Carbon\Carbon::parse(
-                                            $data['employee']->created_at,
-                                        )
-                                        : \Carbon\Carbon::parse(
-                                            $data['employee']->personalInfo->date_of_birth,
-                                        );
+            // Prefer created_at, otherwise use date_of_birth
+            $referenceDate = !empty($data['employee']->created_at) 
+                ? \Carbon\Carbon::parse($data['employee']->created_at)
+                : \Carbon\Carbon::parse($data['employee']->personalInfo->date_of_birth);
 
-                                    // Calculate the difference without considering the year
-                                    $ageMonths = $currentDate->diffInMonths(
-                                        $referenceDate->copy()->year($currentDate->year),
-                                    );
-                                    $ageDays = $currentDate->diffInDays(
-                                        $referenceDate->copy()->year($currentDate->year),
-                                    );
-                                    $ageHours = $currentDate->diffInHours(
-                                        $referenceDate->copy()->year($currentDate->year),
-                                    );
+            // Adjust the reference date to the current year for comparison
+            $adjustedDate = $referenceDate->copy()->year($currentDate->year);
 
-                                    // Determine the output based on the age
-                                    if ($ageMonths > 0) {
-                                        echo "{$ageMonths} month" .
-                                            ($ageMonths > 1 ? 's' : '') .
-                                            ' ago';
-                                    } elseif ($ageDays > 0) {
-                                        echo "{$ageDays} day" .
-                                            ($ageDays > 1 ? 's' : '') .
-                                            ' ago';
-                                    } else {
-                                        echo "{$ageHours} hour" .
-                                            ($ageHours > 1 ? 's' : '') .
-                                            ' ago';
-                                    }
-                                @endphp
-                            @endif
+            // If the adjusted date is in the future, subtract 1 year to keep it within the correct range
+            if ($adjustedDate->greaterThan($currentDate)) {
+                $adjustedDate->subYear();
+            }
 
-                        </div>
+            // Format reference date as d-m (e.g., 15-03)
+            $formattedDate = $referenceDate->format('d-m');
+
+            // Calculate the difference in human-readable format
+            $humanReadableDiff = $adjustedDate->diffForHumans();
+
+            // Output the result
+            echo " {$humanReadableDiff}";
+        @endphp
+    @endif
+</div>
                         <div class="col-md-1">
     <!-- Three Dots Button -->
     <button class="three-dots-btn"
-        style="border: none; background: none; font-size: 18px; cursor: pointer; margin-left: 10px;margin-top:10px"
+        style="border: none; background: none; font-size: 18px; cursor: pointer; margin-left: 5px;margin-top:10px"
         wire:click="toggleCardDropdown('{{ $data['employee']->emp_id }}')" wire:poll>
     &#8942; <!-- Unicode for vertical three dots -->
 </button>
@@ -2094,32 +2059,32 @@ style="width:120px">
 <div class="col-md-4 group-events m-auto">
 Group Events
 </div>
-<div class=" col-md-3 group-events m-auto">
-@if (isset($data['employee']->created_at) || isset($data['employee']->hire_date))
-{{-- Determine which date to use --}}
-@php
-$dateToUse = isset($data['employee']->created_at)
-    ? $data['employee']->created_at
-    : $data['employee']->hire_date;
-$dateToUse = \Carbon\Carbon::parse($dateToUse);
-$currentDate = \Carbon\Carbon::now();
+<div class="col-md-4 group-events m-auto">
+    @if (!empty($data['employee']->created_at) || !empty($data['employee']->hire_date))
+        @php
+            // Determine which date to use (prefer created_at, otherwise hire_date)
+            $dateToUse = $data['employee']->created_at ?? $data['employee']->hire_date;
+            $originalDate = \Carbon\Carbon::parse($dateToUse); // Keep the original date
+            $currentDate = \Carbon\Carbon::now();
 
-// Calculate the difference without considering the year
-$ageMonths = $currentDate->diffInMonths($dateToUse->copy()->year($currentDate->year));
-$ageDays = $currentDate->diffInDays($dateToUse->copy()->year($currentDate->year));
-$ageHours = $currentDate->diffInHours($dateToUse->copy()->year($currentDate->year));
+            // Set to the current year for comparison
+            $adjustedDate = $originalDate->copy()->year($currentDate->year);
 
-// Determine the output based on the age
-if ($ageMonths > 0) {
-    echo "{$ageMonths} month" . ($ageMonths > 1 ? 's' : '') . ' ago';
-} elseif ($ageDays > 0) {
-    echo "{$ageDays} day" . ($ageDays > 1 ? 's' : '') . ' ago';
-} else {
-    echo "{$ageHours} hour" . ($ageHours > 1 ? 's' : '') . ' ago';
-}
-@endphp
-@endif
+            // If adjustedDate is in the future, subtract 1 year
+            if ($adjustedDate->greaterThan($currentDate)) {
+                $adjustedDate->subYear();
+            }
 
+            // Format date as d-m
+            $formattedDate = $originalDate->format('d-m');
+
+            // Get human-readable difference
+            $humanReadableDiff = $adjustedDate->diffForHumans();
+
+            // Output the formatted result
+            echo " {$humanReadableDiff}";
+        @endphp
+    @endif
 </div>
 
 <div class="col-md-1">
@@ -2737,32 +2702,32 @@ style="width:120px">
 <div class="col-md-4 group-events  m-auto">
 Group Events
 </div>
-<div class="col-md-4 m-auto"
-style="font-size: 12px; font-weight: 100px; color: #9E9696; text-align: center;">
-@if (isset($data['employee']->created_at) || isset($data['employee']->hire_date))
-{{-- Determine which date to use --}}
-@php
-    $dateToUse = isset($data['employee']->created_at)
-        ? $data['employee']->created_at
-        : $data['employee']->hire_date;
-    $dateToUse = \Carbon\Carbon::parse($dateToUse);
-    $currentDate = \Carbon\Carbon::now();
+<div class="col-md-4 group-events m-auto">
+    @if (!empty($data['employee']->created_at) || !empty($data['employee']->hire_date))
+        @php
+            // Determine which date to use (prefer created_at, otherwise hire_date)
+            $dateToUse = $data['employee']->created_at ?? $data['employee']->hire_date;
+            $originalDate = \Carbon\Carbon::parse($dateToUse); // Keep the original date
+            $currentDate = \Carbon\Carbon::now();
 
-    // Calculate the difference without considering the year
-    $ageMonths = $currentDate->diffInMonths($dateToUse->copy()->year($currentDate->year));
-    $ageDays = $currentDate->diffInDays($dateToUse->copy()->year($currentDate->year));
-    $ageHours = $currentDate->diffInHours($dateToUse->copy()->year($currentDate->year));
+            // Set to the current year for comparison
+            $adjustedDate = $originalDate->copy()->year($currentDate->year);
 
-    // Determine the output based on the age
-    if ($ageMonths > 0) {
-        echo "{$ageMonths} month" . ($ageMonths > 1 ? 's' : '') . ' ago';
-    } elseif ($ageDays > 0) {
-        echo "{$ageDays} day" . ($ageDays > 1 ? 's' : '') . ' ago';
-    } else {
-        echo "{$ageHours} hour" . ($ageHours > 1 ? 's' : '') . ' ago';
-    }
-@endphp
-@endif
+            // If adjustedDate is in the future, subtract 1 year
+            if ($adjustedDate->greaterThan($currentDate)) {
+                $adjustedDate->subYear();
+            }
+
+            // Format date as d-m
+            $formattedDate = $originalDate->format('d-m');
+
+            // Get human-readable difference
+            $humanReadableDiff = $adjustedDate->diffForHumans();
+
+            // Output the formatted result
+            echo " {$humanReadableDiff}";
+        @endphp
+    @endif
 </div>
 </div>
 <div class="row m-0">
@@ -3382,20 +3347,20 @@ style="display: flex; gap: 10px; align-items: center;">
 
 
 
-<!-- <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
     integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous">
 </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
     integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+" crossorigin="anonymous">
-</script> -->
+</script>
 <script type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@^1/index.js"></script>
 
 @push('scripts')
-    <script>
-        Livewire.on('updateSortType', sortType => {
-            Livewire.emit('refreshComments', sortType);
-        });
-    </script>
+<script>
+    Livewire.on('updateSortType', sortType => {
+        Livewire.emit('refreshComments', sortType);
+    });
+</script>
 @endpush
 
 
@@ -3578,12 +3543,12 @@ style="display: flex; gap: 10px; align-items: center;">
     // Ensures the corresponding radio button is selected based on current URL
 </script>
 @push('scripts')
-    <script>
-        Livewire.on('commentAdded', () => {
-            // Reload comments after adding a new comment
-            Livewire.emit('refreshComments');
-        });
-    </script>
+<script>
+    Livewire.on('commentAdded', () => {
+        // Reload comments after adding a new comment
+        Livewire.emit('refreshComments');
+    });
+</script>
 @endpush
 <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -3846,33 +3811,35 @@ style="display: flex; gap: 10px; align-items: center;">
     });
 </script>
 @push('scripts')
-    <script src="dist/emoji-popover.umd.js"></script>
-    <link rel="stylesheet" href="dist/style.css" />
+<script src="dist/emoji-popover.umd.js"></script>
+<link rel="stylesheet" href="dist/style.css" />
 
-    <script>
-        document.addEventListener('livewire:load', function() {
-            const el = new EmojiPopover({
-                button: '.picker',
-                targetElement: '.emoji-picker',
-                emojiList: [{
-                        value: '🤣',
-                        label: 'laugh and cry'
-                    },
-                    // Add more emoji objects here
-                ]
-            });
-
-            el.onSelect(l => {
-                document.querySelector(".emoji-picker").value += l;
-            });
-
-            // Toggle the emoji picker popover manually
-            document.querySelector('.picker').addEventListener('click', function() {
-                el.toggle();
-            });
+<script>
+    document.addEventListener('livewire:load', function() {
+        const el = new EmojiPopover({
+            button: '.picker',
+            targetElement: '.emoji-picker',
+            emojiList: [{
+                    value: '🤣',
+                    label: 'laugh and cry'
+                },
+                // Add more emoji objects here
+            ]
         });
-    </script>
+
+        el.onSelect(l => {
+            document.querySelector(".emoji-picker").value += l;
+        });
+
+        // Toggle the emoji picker popover manually
+        document.querySelector('.picker').addEventListener('click', function() {
+            el.toggle();
+        });
+    });
+</script>
 @endpush
+
+
 
 
 <script>
@@ -3952,23 +3919,21 @@ style="display: flex; gap: 10px; align-items: center;">
     function updateDescription(content) {
         @this.set('description', content); // Update Livewire description property
     }
+
     function insertVideo() {
-    const url = prompt('Enter YouTube Video URL:');
-    if (url) {
-        // Match standard YouTube or shortened URLs
-        const match = url.match(/(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)/);
-        if (match && match[1]) {
-            const embedUrl = `https://www.youtube.com/embed/${match[1]}`;
-            const iframe = `<iframe src="${embedUrl}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="width:50%; height:200px;"></iframe>`;
-            document.execCommand('insertHTML', false, iframe);
-        } else {
-            alert('Invalid YouTube URL. Please use a valid link.');
+        const url = prompt('Enter YouTube Video URL:');
+        if (url) {
+            // Match standard YouTube or shortened URLs
+            const match = url.match(/(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)/);
+            if (match && match[1]) {
+                const embedUrl = `https://www.youtube.com/embed/${match[1]}`;
+                const iframe = `<iframe src="${embedUrl}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="width:50%; height:200px;"></iframe>`;
+                document.execCommand('insertHTML', false, iframe);
+            } else {
+                alert('Invalid YouTube URL. Please use a valid link.');
+            }
         }
     }
-}
-
-
-
 </script>
 <script>
     document.addEventListener('livewire:load', function() {
@@ -3984,16 +3949,8 @@ style="display: flex; gap: 10px; align-items: center;">
             }
         });
     });
-
-
-document.querySelectorAll('.three-dots-btn').forEach(function(button) {
-    button.addEventListener('click', function() {
-        const empId = this.getAttribute('wire:click').split("'")[1];
-        const dropdown = document.querySelector(`#dropdown-menu-${empId}`);
-        dropdown.classList.toggle('show'); // Toggle visibility class
-    });
-});
 </script>
+
 </div>
 @endif
 </div>
