@@ -39,7 +39,7 @@ class AdminDashboard extends Component
     public $activeEmployees;
     public $newEmployees;
     public $newEmployeedeparts;
-    public $activeTab = 'summary';
+    public $activeTab = 'active';
     public $mappedLeaveData = [];
     public $searchContent = '';
     public $overviewItems = [];
@@ -53,26 +53,62 @@ class AdminDashboard extends Component
     public $swipes;
     public $tasksData = [];
 
+    public $selectedOption = 'This Week';
+
+    public function updateOption($option)
+    {
+        $this->selectedOption = $option;
+        $activeTab = $this->activeTab;
+        $this->loadChartData();
+        return redirect()->route('admin-dashboard', [
+            'activeTab' => $activeTab,
+            'selectedOption' => $this->selectedOption, // Optionally pass the selected option
+        ]);
+        
+    }
+
 
     public function loadChartData()
     {
-        $totalTasks = Task::count();
-        $closed = Task::where('status', 11)->count();
-        $opened = Task::where('status', 10)->count();
-        $overdue = Task::where('status', 10)
-        ->whereDate('due_date', '<', now()) 
-        ->count();
+        $startDate = null;
+    $endDate = null;
 
-        $this->tasksData = [
-            'labels' => ['Opened', 'Closed', 'Overdue'],
-            'series' => $totalTasks > 0 ? [
-                round(($opened / $totalTasks) * 100, 2),
-                round(($closed / $totalTasks) * 100, 2),
-                round(($overdue / $totalTasks) * 100, 2),
-            ] : [0, 0, 0],
-            'totalTasks' => $totalTasks 
-        ];
-        Log::info($this->tasksData);
+    // Determine the date range based on the selected option
+    switch ($this->selectedOption) {
+        case 'This Week':
+            $startDate = Carbon::now()->startOfWeek();
+            $endDate = Carbon::now()->endOfWeek();
+            break;
+        case 'This Month':
+            $startDate = Carbon::now()->startOfMonth();
+            $endDate = Carbon::now()->endOfMonth();
+            break;
+        case 'Last Month':
+            $startDate = Carbon::now()->subMonth()->startOfMonth();
+            $endDate = Carbon::now()->subMonth()->endOfMonth();
+            break;
+        case 'This Year':
+            $startDate = Carbon::now()->startOfYear();
+            $endDate = Carbon::now()->endOfYear();
+            break;
+    }
+    $totalTasks = Task::whereBetween('created_at', [$startDate, $endDate])->count();
+    $closed = Task::where('status', 11)->whereBetween('created_at', [$startDate, $endDate])->count();
+    $opened = Task::where('status', 10)->whereBetween('created_at', [$startDate, $endDate])->count();
+    $overdue = Task::where('status', 10)
+                    ->whereDate('due_date', '<', now())
+                    ->whereBetween('created_at', [$startDate, $endDate])
+                    ->count();
+
+    $this->tasksData = [
+        'labels' => ['Opened', 'Closed', 'Overdue'],
+        'series' => $totalTasks > 0 ? [
+            round(($opened / $totalTasks) * 100, 2),
+            round(($closed / $totalTasks) * 100, 2),
+            round(($overdue / $totalTasks) * 100, 2),
+        ] : [0, 0, 0],
+        'totalTasks' => $totalTasks
+    ];
         $this->render();
     }
     public function setAction($action)

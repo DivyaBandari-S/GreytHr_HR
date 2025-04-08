@@ -5,11 +5,11 @@
         <section class="tab-section">
             <div class="container-fluid">
                 <div class="tab-pane">
-                    <button type="button" data-tab-pane="active" class="tab-pane-item active" onclick="tabToggle()">
+                    <button type="button" data-tab-pane="active" class="tab-pane-item {{ $activeTab === 'active' ? 'active' : '' }}"  wire:click="setActiveTab('active')">
                         <span class="tab-pane-item-title">01</span>
                         <span class="tab-pane-item-subtitle">Active</span>
                     </button>
-                    <button type="button" data-tab-pane="in-review" class="tab-pane-item after" onclick="tabToggle()">
+                    <button type="button" data-tab-pane="in-review" class="tab-pane-item {{ $activeTab === 'in-review' ? 'active' : '' }}" wire:click="setActiveTab('in-review')">
                         <span class="tab-pane-item-title">02</span>
                         <span class="tab-pane-item-subtitle">In Review</span>
                     </button>
@@ -30,7 +30,7 @@
                             <span class="tab-pane-item-subtitle">Paused</span>
                         </button> -->
                 </div>
-                <div class="tab-page active" data-tab-page="active">
+                <div class="tab-page {{ $activeTab === 'active' ? 'active' : '' }}" data-tab-page="active">
 
                     <div class="row m-0">
 
@@ -538,7 +538,7 @@
                     </div>
 
                 </div>
-                <div class="tab-page" data-tab-page="in-review">
+                <div class="tab-page {{ $activeTab === 'in-review' ? 'active' : '' }}" data-tab-page="in-review">
                     <h1 class="tab-page-title ms-3">In Review</h1>
                     <div class="row m-0 mb-3">
                         <div class="col-md-6 mb-3">
@@ -625,14 +625,30 @@
                                     <div class="col-md-6">
                                         <p class="fw-bold">Tasks Statistics</p>
                                     </div>
-                                    <div class="col-md-6 mb-3 text-end">
+                                    {{-- <div class="col-md-6 mb-3 text-end">
                                         <button class="btn btn-outline-primary btn-sm"><i
                                                 class="fa-regular fa-calendar"></i> This Week</button>
+                                    </div> --}}
+                                    <div class="col-md-6 mb-3 text-end">
+                                        <!-- Dropdown button -->
+                                        <div class="dropdown">
+                                            <button class="btn btn-outline-primary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <i class="fa-regular fa-calendar"></i> {{ $selectedOption }}
+                                            </button>
+                                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                <li><a class="dropdown-item" href="#" wire:click="updateOption('This Week')">This Week</a></li>
+                                                <li><a class="dropdown-item" href="#" wire:click="updateOption('This Month')">This Month</a></li>
+                                                <li><a class="dropdown-item" href="#" wire:click="updateOption('Last Month')">Last Month</a></li>
+                                                <li><a class="dropdown-item" href="#" wire:click="updateOption('This Year')">This Year</a></li>
+                                            </ul>
+                                        </div>
                                     </div>
+                                    
+                                    
                                 </div>
                                 <div style="height: 200px;">
                                     @if (!empty($tasksData['series']) && array_sum($tasksData['series']) > 0)
-                                        <div id="taskStatusChart"></div>
+                                        <div id="taskStatusChart" wire:ignore></div>
                                     @else
                                         <p>No data available for the chart.</p>
                                     @endif
@@ -853,6 +869,7 @@
     @endif
     <script>
         document.addEventListener("DOMContentLoaded", function() {
+            console.log(@json($tasksData));
             setTimeout(() => {
                 if (document.querySelector("#taskStatusChart")) {
                     var options = {
@@ -911,6 +928,7 @@
             Livewire.hook("message.processed", (message, component) => {
                 if (document.querySelector("#taskStatusChart") && window.chart) {
                     window.chart.updateSeries(@json($tasksData['series']));
+                    console.log(@json($tasksData));
                 }
             });
         });
