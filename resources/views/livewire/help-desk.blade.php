@@ -39,14 +39,14 @@
                     <div class="nav nav-pills" style="display: flex; justify-content: center; width: 100%; padding-right: 10px; margin-top: 5px;">
     <button wire:click="$set('activeTab', 'active')" 
             class="nav-link {{ $activeTab === 'active' ? 'active' : '' }}" 
-            style="border-radius: 5px 0 0 5px; margin-right: 5px; 
+            style="border-radius: 5px 0 0 5px;  
                    background-color: {{ $activeTab === 'active' ? 'rgb(2, 17, 79)' : '#f0f0f0' }}; 
                    border-right: 2px solid #ddd;">
         Active
     </button>
     <button wire:click="$set('activeTab', 'pending')" 
             class="nav-link {{ $activeTab === 'pending' ? 'active' : '' }}" 
-            style="border-radius: 0; margin-right: 5px; 
+            style="border-radius: 0; ; 
                    background-color: {{ $activeTab === 'pending' ? 'rgb(2, 17, 79)' : '#f0f0f0' }}; 
                    border-right: 2px solid #ddd;">
         Pending
@@ -61,12 +61,7 @@
 
 
 
-<div class="col-md-10 " >
-        <div class="newReq mt-2" style="align-items:end">
 
-    <button wire:click="exportToExcel" class="cancel-btn" style="margin-left:20px">Export to Excel</button>
-        </div>
-    </div>
 
 
 
@@ -78,6 +73,12 @@
     @if($forHR->whereIn('status_code', [8, 10])->count() > 0)
     
     @foreach ($forHR->whereIn('status_code', [8, 10]) as $record)
+    <div class="col-md-10 " >
+        <div class="newReq mt-2" style="align-items:end">
+
+    <button wire:click="exportToExcel" class="cancel-btn" style="margin-left:20px">Export to Excel</button>
+        </div>
+    </div>
     
             <div class="container d-flex justify-content-center align-items-center mt-2">
     <div class="card" style="width:80%;margin-top:30px;">
@@ -192,7 +193,8 @@
         <strong>{{ $employeeDetails->first_name ?? 'Unknown' }} 
                 {{ $employeeDetails->last_name ?? '' }} 
                 (#{{ $employeeDetails->emp_id ?? 'N/A' }})</strong> - 
-                <small>{{ \Carbon\Carbon::parse($record->updated_at)->diffForHumans() }}</small>
+                <small>{{ \Carbon\Carbon::parse($record->updated_at)->shortRelativeDiffForHumans() }}</small>
+
     </p>
 </div>
 
@@ -254,6 +256,12 @@
 
         @if($forHR->where('status_code', 5)->count() > 0)
             @foreach ($forHR->where('status_code', 5) as $record)
+            <div class="col-md-10 " >
+        <div class="newReq mt-2" style="align-items:end">
+
+    <button wire:click="exportToExcel" class="cancel-btn" style="margin-left:20px">Export to Excel</button>
+        </div>
+    </div>
             <div class="container d-flex justify-content-center align-items-center mt-2">
     <div class="card" style="width:80%;margin-top:30px;">
         <div class="card-header" style="background-color:#dbf0f9; color: black;border: 1px solid #ddd;height:auto;cursor:pointer" data-bs-toggle="collapse" data-bs-target="#collapse-body-{{ $record->id }}" aria-expanded="false" aria-controls="collapse-body-{{ $record->id }}">
@@ -365,7 +373,8 @@
         <strong>{{ $employeeDetails->first_name ?? 'Unknown' }} 
                 {{ $employeeDetails->last_name ?? '' }} 
                 (#{{ $employeeDetails->emp_id ?? 'N/A' }})</strong> - 
-                <small>{{ \Carbon\Carbon::parse($record->updated_at)->diffForHumans() }}</small>
+                <small>{{ \Carbon\Carbon::parse($record->updated_at)->shortRelativeDiffForHumans() }}</small>
+
     </p>
 </div>
 
@@ -420,6 +429,12 @@
     
     @if($forHR->where('status_code', 9)->count() > 0)
     @foreach ($forHR->where('status_code', 9) as $record)
+    <div class="col-md-10 " >
+        <div class="newReq mt-2" style="align-items:end">
+
+    <button wire:click="exportToExcel" class="cancel-btn" style="margin-left:20px">Export to Excel</button>
+        </div>
+    </div>
                 <div class="container d-flex justify-content-center align-items-center mt-2">
     <div class="card" style="width:80%;margin-top:30px;">
         <div class="card-header" style="background-color:#dbf0f9; color: black;border: 1px solid #ddd;height:auto;cursor:pointer" data-bs-toggle="collapse" data-bs-target="#collapse-body-{{ $record->id }}" aria-expanded="false" aria-controls="collapse-body-{{ $record->id }}">
@@ -533,7 +548,8 @@
         <strong>{{ $employeeDetails->first_name ?? 'Unknown' }} 
                 {{ $employeeDetails->last_name ?? '' }} 
                 (#{{ $employeeDetails->emp_id ?? 'N/A' }})</strong> - 
-                <small>{{ \Carbon\Carbon::parse($record->updated_at)->diffForHumans() }}</small>
+                <small>{{ \Carbon\Carbon::parse($record->updated_at)->shortRelativeDiffForHumans() }}</small>
+
     </p>
 </div>
 

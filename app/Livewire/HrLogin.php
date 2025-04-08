@@ -13,6 +13,7 @@
 
 namespace App\Livewire;
 
+use App\Helpers\FlashMessageHelper;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
@@ -99,14 +100,16 @@ class HrLogin extends Component
         if (Auth::guard('hr')->attempt(['hr_emp_id' => $this->form['emp_id'], 'password' => $this->form['password'], 'status' => 1])) {
             Log::info('Login successful via emp_id', ['emp_id' => $this->form['emp_id']]);
             session(['post_login' => true]);
+            FlashMessageHelper::flashSuccess('You are logged in successfully!');
             return redirect()->route('home');
         } elseif (Auth::guard('hr')->attempt(['email' => $this->form['emp_id'], 'password' => $this->form['password'], 'status' => 1])) {
             Log::info('Login successful via email', ['email' => $this->form['emp_id']]);
             session(['post_login' => true]);
+            FlashMessageHelper::flashSuccess('You are logged in successfully!');
             return redirect()->route('home');
         } else {
             Log::warning('Invalid login attempt', ['emp_id' => $this->form['emp_id']]);
-            $this->error = "Invalid ID or Password. Please try again.";
+            FlashMessageHelper::flashError('Invalid ID or Password. Please try again.');
         }
     } catch (ValidationException $e) {
         Log::error('Validation error', ['error' => $e->getMessage()]);

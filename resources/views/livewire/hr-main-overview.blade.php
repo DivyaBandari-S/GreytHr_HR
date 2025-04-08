@@ -1,7 +1,7 @@
 <div >
 <div class="p-2 m-0 main-overview-container">
 
-    <div>a
+    <div>
         @if ($showHelp == false)
             <div class="row main-overview-help">
                 <div class="col-md-11 col-10 d-flex flex-column">
