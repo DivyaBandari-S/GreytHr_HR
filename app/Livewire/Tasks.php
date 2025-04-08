@@ -273,6 +273,8 @@ class Tasks extends Component
     }
     public function downloadImage($taskId)
     {
+       
+
         $task = $this->records->firstWhere('id', $taskId);
 
     if (!$task) {
@@ -283,14 +285,17 @@ class Tasks extends Component
         $fileDataArray = is_string($task->file_paths)
             ? json_decode($task->file_paths, true)
             : $task->file_paths;
+          
 
         // Filter images
         $images = array_filter(
             $fileDataArray,
             fn($fileData) => strpos($fileData['mime_type'], 'image') !== false,
         );
+      
             // If only one image, provide direct download
     if (count($images) === 1) {
+
         $image = reset($images); // Get the single image
         $base64File = $image['data'];
         $mimeType = $image['mime_type'];

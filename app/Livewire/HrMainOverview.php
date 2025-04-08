@@ -62,6 +62,7 @@ class HrMainOverview extends Component
         $currentDate = Carbon::now();
         $startOfWeekFormatted = $currentDate->format('Y-m-d');
         $endOfWeekFormatted = $currentDate->copy()->addDays(6)->format('Y-m-d');
+       
 
 
         // Define the date range for the next month
@@ -90,8 +91,9 @@ class HrMainOverview extends Component
             ->whereIn('employee_status', ['active', 'on-probation'])
             ->get()
             ->map(function ($employee) use ($currentDate) {
+                Log::debug('Employee Hire Date: ' . $employee->hire_date);
                 // Get the hire date
-                $hireDate = Carbon::createFromFormat('Y-m-d', $employee->hire_date);
+                $hireDate = Carbon::createFromFormat('Y-m-d H:i:s', $employee->hire_date);
 
                 // Calculate the difference in years
                 $anniversaryYears = $currentDate->diffInYears($hireDate);
