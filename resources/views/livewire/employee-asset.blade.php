@@ -246,45 +246,42 @@
                         </div>
                     </div>
                  
-
-                <div class="row justify-content-center align-items-center mt-2 "  >
+                    <div class="row justify-content-center align-items-center mt-2 "  >
                 <div class="col-md-11 custom-container d-flex flex-column bg-white" >
     <div class="row justify-content-center mt-3 flex-column m-0 employee-details-main" >
-        <div class="col-md-10">
+        <div class="col-md-9">
             <div class="row " style="display:flex;">
                 <div class="col-md-11 m-0">
                     <p class="emp-heading" >Start searching to see specific employee details here</p>
                     <div class="col mt-3" style="display: flex;">
              
-             <p class="main-text mt-1">Employee Type:</p>
-            
-             <div class="dropdown mt-1">
-<button class="btn dropdown-toggle dp-info" type="button" data-bs-toggle="dropdown" style="font-size:12px">
-{{ ucfirst($selectedOption) }} 
-</button>
-<ul class="dropdown-menu" style="font-size:12px;">
-<li class="updated-dropdown">
- <a href="#" wire:click.prevent="updateSelected('all')" class="dropdown-item custom-info-item">All Employees</a>
-</li>
-<li class="updated-dropdown">
- <a href="#" wire:click.prevent="updateSelected('current')" class="dropdown-item custom-info-item">Current Employees</a>
-</li>
-<li class="updated-dropdown">
- <a href="#" wire:click.prevent="updateSelected('past')" class="dropdown-item custom-info-item">Resigned Employees</a>
-</li>
-<li class="updated-dropdown">
- <a href="#" wire:click.prevent="updateSelected('intern')" class="dropdown-item custom-info-item">Intern</a>
-</li>
-</ul>
+                        <p class="main-text mt-1">Employee Type:</p>
+                       
+                        <div class="dropdown mt-1">
+    <button class="btn dropdown-toggle dp-info" type="button" data-bs-toggle="dropdown" style="font-size:12px">
+     {{ ucfirst($selectedOption) }} 
+    </button>
+    <ul class="dropdown-menu" style="font-size:12px;">
+        <li class="updated-dropdown">
+            <a href="#" wire:click.prevent="updateSelected('all')" class="dropdown-item custom-info-item">All Employees</a>
+        </li>
+        <li class="updated-dropdown">
+            <a href="#" wire:click.prevent="updateSelected('current')" class="dropdown-item custom-info-item">Current Employees</a>
+        </li>
+        <li class="updated-dropdown">
+            <a href="#" wire:click.prevent="updateSelected('past')" class="dropdown-item custom-info-item">Resigned Employees</a>
+        </li>
+        <li class="updated-dropdown">
+            <a href="#" wire:click.prevent="updateSelected('intern')" class="dropdown-item custom-info-item">Intern</a>
+        </li>
+    </ul>
 </div>
 
+         
 
-
-           
-         </div>
-                 
-                  
-                    <div class="profile">
+                      
+                    </div>
+                   <div class="profile">
     <div class="col m-0">
         <div class="row d-flex align-items-center">
             <!-- Search Input -->
@@ -313,9 +310,9 @@
     wire:model.debounce.500ms="searchTerm"
     aria-label="{{ $selectedEmployeeFirstName ? ucfirst(strtolower($selectedEmployeeFirstName)) . ' ' . ucfirst(strtolower($selectedEmployeeLastName)) : 'Search for an employee...' }}"
     placeholder="{{ $selectedEmployeeFirstName ? ucfirst(strtolower($selectedEmployeeFirstName)) . ' ' . ucfirst(strtolower($selectedEmployeeLastName)) : 'Search for an employee...' }}"
-    type="text"
+    type="text"  wire:click="searchforEmployee"
     class="form-control search-term"
-    style="padding-left: 50px; padding-right: 35px;" 
+    style="padding-left: 50px; padding-right: 35px;"   wire:click="searchforEmployee"
 />
 
 <!-- Display Close Icon if Employee is Selected -->
@@ -403,7 +400,6 @@
                 
         </div>
     </div>
-        
  <div class="row">
  @if(!empty($selectedEmployeeId))
  <div class="row mt-2" >
@@ -412,7 +408,9 @@
         <div class="newReq mt-2" style="align-items:end">
         <!-- Add Asset Button -->
     <button class="cancel-btn" style="margin-left:20px" wire:click="addAsset">Add Asset</button>
+    @if($requests->isNotEmpty() && !empty($selectedEmployeeId))
     <button wire:click="exportToExcel" class="cancel-btn" style="margin-left:20px">Export to Excel</button>
+    @endif
         </div>
     </div>
     </div>
@@ -441,7 +439,7 @@
         <div class="col-md-4">
             <div class="mb-3">
                 <label for="assetType" class="col-cus-form-label cus-form-label">Asset Type</label>
-                <select wire:model="asset_type" class="form-select form-control cus-form-label" id="assetType" required>
+                <select wire:model="asset_type" class="form-select form-control cus-form-label" id="assetType" >
                     <option value="">Select Asset Type</option>
                     <option value="Laptop">Laptop</option>
                     <option value="Keyboard">Keyboard</option>
@@ -458,7 +456,7 @@
         <div class="col-md-4">
             <div class="mb-3">
                 <label for="assetStatus" class="col-cus-form-label cus-form-label">Asset Status</label>
-                <select wire:model="asset_status" class="form-select form-control cus-form-label" id="assetStatus" required>
+                <select wire:model.lazy="asset_status" class="form-select form-control cus-form-label" id="assetStatus" >
                     <option value="">Select Asset Status</option>
                     <option value="Available">Available</option>
                     <option value="Damaged">Damaged</option>
@@ -478,7 +476,7 @@
         <div class="col-md-4">
             <div class="mb-3">
                 <label for="assetDetails" class="col-cus-form-label cus-form-label">Asset Details</label>
-                <input type="text" wire:model="asset_details" class="form-control cus-form-label" id="assetDetails" required>
+                <input type="text" wire:model.lazy="asset_details" class="form-control cus-form-label" id="assetDetails" >
             </div>
             @error('asset_details') <span class="text-danger">{{ $message }}</span> @enderror
         </div>
@@ -486,7 +484,7 @@
         <div class="col-md-4">
             <div class="mb-3">
                 <label for="purchaseDate" class="col-cus-form-label cus-form-label">Purchase Date</label>
-                <input type="date" wire:model="purchase_date" class="form-control cus-form-label" id="purchaseDate" required>
+                <input type="date" wire:model.lazy="purchase_date" class="form-control cus-form-label" id="purchaseDate" >
             </div>
             @error('purchase_date') <span class="text-danger">{{ $message }}</span> @enderror
         </div>
@@ -500,7 +498,7 @@
         <div class="col-md-4">
             <div class="mb-3">
                 <label for="originalValue" class="col-cus-form-label cus-form-label">Original Value</label>
-                <input type="number" wire:model="original_value" class="form-control cus-form-label" id="originalValue" required>
+                <input type="number" wire:model.lazy="original_value" class="form-control cus-form-label" id="originalValue" >
             </div>
             @error('original_value') <span class="text-danger">{{ $message }}</span> @enderror
         </div>
@@ -508,7 +506,7 @@
         <div class="col-md-4">
             <div class="mb-3">
                 <label for="currentValue" class="col-cus-form-label cus-form-label">Current Value</label>
-                <input type="number" wire:model="current_value" class="form-control cus-form-label" id="currentValue" required>
+                <input type="number" wire:model.lazy="current_value" class="form-control cus-form-label" id="currentValue" >
             </div>
             @error('current_value') <span class="text-danger">{{ $message }}</span> @enderror
         </div>
@@ -522,8 +520,8 @@
           
             <div class="d-flex justify-content-start ml-3">
             <label for="warranty" class="col-cus-form-label cus-form-label">Warranty:</label>
-                    <input type="radio" wire:model="warranty" class="form-check-input" id="warrantyYes" value="Yes">
-                    <label class="form-check-label" for="warrantyYes">Yes</label>
+                    <input type="radio" wire:model.lazy="warranty" class="form-check-input" id="warrantyYes" value="Yes" >
+                    <label class="form-check-label" for="warrantyYes" checked>Yes</label>
                
                 
                     <input type="radio" wire:model="warranty" class="form-check-input " id="warrantyNo" value="No" style="margin-left:5px">
@@ -540,7 +538,7 @@
     <div class="col-md-4">
         <div class="mb-3 d-flex align-items-start">
             <label for="brand" class="col-cus-form-label cus-form-label">Brand</label>
-            <input type="text" wire:model="brand" class="form-control cus-form-label" id="brand">
+            <input type="text" wire:model.lazy="brand" class="form-control cus-form-label" id="brand">
         </div>
         @error('brand') <span class="text-danger">{{ $message }}</span> @enderror
     </div>
@@ -551,7 +549,7 @@
     <div class="col-md-4">
         <div class="mb-3 d-flex align-items-start">
             <label for="model" class="col-cus-form-label cus-form-label">Model</label>
-            <input type="text" wire:model="model" class="form-control cus-form-label" id="model">
+            <input type="text" wire:model.lazy="model" class="form-control cus-form-label" id="model">
         </div>
         @error('model') <span class="text-danger">{{ $message }}</span> @enderror
     </div>
@@ -562,7 +560,7 @@
     <div class="col-md-4">
         <div class="mb-3 d-flex align-items-start">
             <label for="invoiceNo" class="col-cus-form-label cus-form-label">Invoice No</label>
-            <input type="text" wire:model="invoice_no" class="form-control cus-form-label" id="invoiceNo">
+            <input type="text" wire:model.lazy="invoice_no" class="form-control cus-form-label" id="invoiceNo">
         </div>
         @error('invoice_no') <span class="text-danger">{{ $message }}</span> @enderror
     </div>
@@ -577,7 +575,7 @@
         <div class="col-md-4">
             <div class="mb-3">
                 <label for="remarks" class="col-cus-form-label cus-form-label">Remarks</label>
-                <textarea wire:model="remarks" class="form-control" id="remarks" style="font-size: 12px; width: 100%;" rows="3"></textarea>
+                <textarea wire:model.lazy="remarks" class="form-control" id="remarks" style="font-size: 12px; width: 100%;" rows="3"></textarea>
             </div>
             @error('remarks') <span class="text-danger">{{ $message }}</span> @enderror
         </div>
@@ -661,9 +659,17 @@
     @endforeach
 @else
     {{-- No requests available --}}
-    <div class="request-item-container">
-                    <h7>No requests found for Employee ID</h7>
-                </div>
+    <div class="d-flex justify-content-center align-items-center mt-2">
+                <div class="card text-start">
+                <div class="no-data  text-align-center justify-content-center align-items-center" style="width:700px;height:300px">
+        <img src="{{ asset('images/no-data_Gif.gif') }}" 
+     alt="No data available" 
+     style="width:100%; height: 200px; object-fit: contain;">
+
+            <p>No data available</p>
+        </div>
+        </div>
+        </div>
 @endif
 
   
