@@ -691,7 +691,7 @@
                        
                         <div class="form-group col-md-6 mb-2"style="margin-top: 30px;">
                            <label for="includeLeftEmployees"style="white-space: nowrap;">
-                                <input type="checkbox" id="includeLeftEmployees" name="includeLeftEmployees">
+                                <input type="checkbox" id="includeLeftEmployees" name="includeLeftEmployees"wire:click="includeLeftEmployeesForReports">
                                 Include employees who have left the organisation
                             </label>
                         </div>
@@ -836,13 +836,50 @@
                                     </label>
                                 </div>
                             </div>
-                        
-                        
+                        </div>
+                        <div class="row">
+                              
+                                <div class="form-group col-md-6 mb-2"style="margin-top: 30px;">
+                                <label for="includeLeftEmployees"style="white-space: nowrap;">
+                                        <input type="checkbox" id="includeLeftEmployees" name="includeLeftEmployees"wire:click="includeEmployeeFamilyDetails">
+                                        Include employees Family Details
+                                    </label>
+                                </div>
+                        </div>
+                        {{ $includeFamilyDetails }}
+                            @if($this->employeeTypeForAttendance=='selectedEmployees')
+                        <div class="toggle-button"wire:click="toggleSelectedEmployee">
+                            <div class="{{ $isToggleSelectedEmployee===false ? 'all' :'none'}}">All</div>
+                            <div class="{{ $isToggleSelectedEmployee===true ? 'selected' :'none'}}">Selected</div>
+                        </div>
+                  
+                    
+                    <div class="table-responsive mt-2" style="height:200px;max-height:200px;overflow-y:auto;width:100%;">
+                                <table class="swipes-table mt-2 border">
+                                    <tr style="background-color: #f6fbfc;">
+                                        <th style="width:50%;font-size: 11px; text-align:start;padding:5px 10px;color:#778899;font-weight:500;white-space:nowrap;">Employee Name</th>
+                                        <th style="width:50%;font-size: 11px; text-align:start;padding:5px 10px;color:#778899;font-weight:500;white-space:nowrap;">Employee Number</th>
+                                    </tr>
+                                    @foreach ($Employees as $emp)
+                                    <tr style="border:1px solid #ccc;">
+                                        <td style="width:50%;font-size: 10px; color:  #778899;text-align:start;padding:5px 10px;white-space:nowrap;">
+                                        <label class="custom-checkbox">
+                                                <input type="checkbox" name="employeeCheckbox[]" class="employee-swipes-checkbox" wire:model="EmployeeId" wire:change="updateEmployeeId" value="{{ $emp->emp_id }}">
+                                                <span class="checkmark"></span>
+                                                {{ucwords(strtolower($emp->first_name))}} {{ucwords(strtolower($emp->last_name))}}
+                                            </label> 
+                                        </td>
+                                        <td style="width:50%;font-size: 10px;color:#778899;text-align:start;padding:5px 32px">{{$emp->emp_id}}</td>
+                                    </tr>
+                                    @endforeach
+                                </table>
+                            </div>
+
+
+                    @endif
                         
                     </div>
-                    @if ($employeeTypeForAttendance=='selectedEmployees')
                     
-                    @endif
                     <div class="modal-footer d-flex justify-content-center">
                         <button type="submit" class="submit-btn"
                             wire:click="downloadFamilyDetailsReport">Run</button>
