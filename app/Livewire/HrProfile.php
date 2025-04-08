@@ -328,6 +328,7 @@ class HrProfile extends Component
     public function changePassword()
     {
         $this->isLoading = true; // Set loading state to true
+        $this->activeTab = "Password";
      
         $this->validate($this->passwordRules);
         try {

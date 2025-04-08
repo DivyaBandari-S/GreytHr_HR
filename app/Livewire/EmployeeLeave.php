@@ -94,7 +94,6 @@ public function generateReport()
     $employeeDetails = EmployeeDetails::where('emp_id', $this->selectedEmployee)->first();
   
 
-
 if ($this->exportFormat === 'pdf') {
 
     try {
@@ -260,125 +259,7 @@ public static function getLeaveBalances($employeeId, $selectedYear)
             return null;
         }
     }
-    // public function showCasualLeave()
-    // {
-    //     Log::info('showCasualLeave method called.');
-    //     $this->activeTab= "CL";
-        
-    //     try {
-    //         $today = Carbon::now()->year;
-    //         $yearToFetch = $this->filterPeriodValue === 'current_year' ? $today - 1 : $today;
-        
-    //         if (!$this->selectedEmployee) {
-    //             Log::warning('No employee selected.');
-    //             return;
-    //         }
-    
-    //         $this->leaveRequests = LeaveRequest::where('emp_id', $this->selectedEmployee)
-    //             ->where('leave_status', 2)
-    //             ->whereYear('created_at', $yearToFetch)
-    //             ->where('leave_type', 'Casual Leave')
-    //             ->get();
-            
-    //         $this->monthlyCounts = array_fill(1, 12, 0); // Initialize array for 12 months
-    
-    //         foreach ($this->leaveRequests as $request) {
-    //             $month = $request->created_at->format('n'); // Get the month (1-12)
-    //             $this->monthlyCounts[$month]++;
-    //         }
-           
-    
-         
-    //         $this->dispatchBrowserEvent('update-chart', ['monthlyCounts' => $this->monthlyCounts]);
-    //         Log::info('Monthly Counts: ', $this->monthlyCounts);
-        
-    
-    //     } catch (\Exception $e) {
-    //         Log::error('Error in showCasualLeave: ' . $e->getMessage() . ' Stack trace: ' . $e->getTraceAsString());
-
-    //         // You might also want to return a default value or error message
-    //         $this->monthlyCounts = array_fill(1, 12, 0); // Reset or handle the error accordingly
-    //     }
-    // }
-    // public function showLossOfPay()
-    // {
-    //     Log::info('showCasualLeave method called.');
-    //  $this->activeTab= "LOP";
-        
-    //     try {
-    //         $today = Carbon::now()->year;
-    //         $yearToFetch = $this->filterPeriodValue === 'current_year' ? $today - 1 : $today;
-        
-    //         if (!$this->selectedEmployee) {
-    //             Log::warning('No employee selected.');
-    //             return;
-    //         }
-    
-    //         $this->leaveRequests = LeaveRequest::where('emp_id', $this->selectedEmployee)
-    //             ->where('leave_status', 2)
-    //             ->whereYear('created_at', $yearToFetch)
-    //             ->where('leave_type', 'Loss Of Pay')
-    //             ->get();
-            
-    //         $this->monthlyCounts = array_fill(1, 12, 0); // Initialize array for 12 months
-    
-    //         foreach ($this->leaveRequests as $request) {
-    //             $month = $request->created_at->format('n'); // Get the month (1-12)
-    //             $this->monthlyCounts[$month]++;
-    //         }
-           
-    
-         
-    //         $this->dispatchBrowserEvent('update-chart', ['monthlyCounts' => $this->monthlyCounts]);
-    //         Log::info('Monthly Counts: ', $this->monthlyCounts);
-        
-    
-    //     } catch (\Exception $e) {
-    //         Log::error('Error in showCasualLeave: ' . $e->getMessage() . ' Stack trace: ' . $e->getTraceAsString());
-
-    //         // You might also want to return a default value or error message
-    //         $this->monthlyCounts = array_fill(1, 12, 0); // Reset or handle the error accordingly
-    //     }
-    // }
-    // public function showSickLeave()
-    // {
-    //     $this->activeTab= "SL";
-        
-    //     try {
-    //         $today = Carbon::now()->year;
-    //         $yearToFetch = $this->filterPeriodValue === 'current_year' ? $today - 1 : $today;
-        
-    //         if (!$this->selectedEmployee) {
-    //             Log::warning('No employee selected.');
-    //             return;
-    //         }
-    
-    //         $this->leaveRequests = LeaveRequest::where('emp_id', $this->selectedEmployee)
-    //             ->where('leave_status', 2)
-    //             ->whereYear('created_at', $yearToFetch)
-    //             ->where('leave_type', 'Sick Leave')
-    //             ->get();
-            
-    //         $this->monthlyCounts = array_fill(1, 12, 0); // Initialize array for 12 months
-    
-    //         foreach ($this->leaveRequests as $request) {
-    //             $month = $request->created_at->format('n'); // Get the month (1-12)
-    //             $this->monthlyCounts[$month]++;
-    //         }
-           
-    
-         
-    //         $this->dispatchBrowserEvent('update-chart', ['monthlyCounts' => $this->monthlyCounts]);
-    //         Log::info('Monthly Counts: ', $this->monthlyCounts);
-        
-    
-    //     } catch (\Exception $e) {
-    //         Log::error('Error in showCasualLeave: ' . $e->getMessage() . ' Stack trace: ' . $e->getTraceAsString());
-
-    //         // You might also want to return a default value or error message
-    //         $this->monthlyCounts = array_fill(1, 12, 0); // Reset or handle the error accordingly
-    //     }
-    // }
+   
     public function showLeaveType($leaveType)
 {
  

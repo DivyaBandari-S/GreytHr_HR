@@ -476,7 +476,7 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link {{ $activeTab === 'ML' ? 'active' : '' }}"
-                            wire:click="showMarriageLeave" id="ML-tab" data-bs-toggle="tab" href="#ML"
+                             id="ML-tab" data-bs-toggle="tab" href="#ML"
                             role="tab" aria-controls="ML" aria-selected="false">ML</a>
                     </li>
                     <li class="nav-item">

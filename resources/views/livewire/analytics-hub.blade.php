@@ -1,4 +1,4 @@
-<div class="main__body " style="overflow: auto; height: calc(100vh - 70px);background:#f9f9f9;">
+
 <div>
     <div class="analytic-main-container">
         <div class="analytic-header">
@@ -86,11 +86,12 @@
                     </thead>
                     <tbody>
                         @if ($employeesData->isEmpty())
+                                
                                 <tr>
                                     <td colspan="5" class="text-center">
-                                        <img class="analytic-no-items-found"
-                                            src="https://media.istockphoto.com/id/1357284048/vector/no-item-found-vector-flat-icon-design-illustration-web-and-mobile-application-symbol-on.jpg?s=612x612&w=0&k=20&c=j0V0ww6uBl1LwQLH0U9L7Zn81xMTZCpXPjH5qJo5QyQ="
+                                        <img class="task-no-items-found" src="{{ asset('images/nodata.png') }}"
                                             alt="No items found">
+                                        <p>No Data Found</p>
                                     </td>
                                 </tr>
 
@@ -141,11 +142,12 @@
                     </thead>
                     <tbody>
                         @if ($personalInformationData->isEmpty())
+                       
                         <tr>
                             <td colspan="6" class="text-center">
-                                <img class="analytic-no-items-found"
-                                    src="https://media.istockphoto.com/id/1357284048/vector/no-item-found-vector-flat-icon-design-illustration-web-and-mobile-application-symbol-on.jpg?s=612x612&w=0&k=20&c=j0V0ww6uBl1LwQLH0U9L7Zn81xMTZCpXPjH5qJo5QyQ="
+                                <img class="task-no-items-found" src="{{ asset('images/nodata.png') }}"
                                     alt="No items found">
+                                <p>No Data Found</p>
                             </td>
                         </tr>
 
@@ -232,9 +234,9 @@
                     @if ($allInfoData->isEmpty())
                     <tr>
                         <td colspan="6" class="text-center">
-                            <img class="analytic-no-items-found"
-                                src="https://media.istockphoto.com/id/1357284048/vector/no-item-found-vector-flat-icon-design-illustration-web-and-mobile-application-symbol-on.jpg?s=612x612&w=0&k=20&c=j0V0ww6uBl1LwQLH0U9L7Zn81xMTZCpXPjH5qJo5QyQ="
+                            <img class="task-no-items-found" src="{{ asset('images/nodata.png') }}"
                                 alt="No items found">
+                            <p>No Data Found</p>
                         </td>
                     </tr>
 
@@ -293,9 +295,9 @@
                     @if (count($filteredGenderCounts) === 0)
                     <tr>
                         <td colspan="2" class="text-center">
-                            <img class="analytic-no-items-found"
-                                src="https://media.istockphoto.com/id/1357284048/vector/no-item-found-vector-flat-icon-design-illustration-web-and-mobile-application-symbol-on.jpg?s=612x612&w=0&k=20&c=j0V0ww6uBl1LwQLH0U9L7Zn81xMTZCpXPjH5qJo5QyQ="
+                            <img class="task-no-items-found" src="{{ asset('images/nodata.png') }}"
                                 alt="No items found">
+                            <p>No Data Found</p>
                         </td>
                     </tr>
                     @else
@@ -338,9 +340,9 @@
                     @if ($resigneesData->isEmpty())
                     <tr>
                         <td colspan="7" class="text-center">
-                            <img class="analytic-no-items-found"
-                                src="https://media.istockphoto.com/id/1357284048/vector/no-item-found-vector-flat-icon-design-illustration-web-and-mobile-application-symbol-on.jpg?s=612x612&w=0&k=20&c=j0V0ww6uBl1LwQLH0U9L7Zn81xMTZCpXPjH5qJo5QyQ="
+                            <img class="task-no-items-found" src="{{ asset('images/nodata.png') }}"
                                 alt="No items found">
+                            <p>No Data Found</p>
                         </td>
                     </tr>
 
@@ -381,4 +383,4 @@
         </div>
     </div>
 </div>
-</div>
+
