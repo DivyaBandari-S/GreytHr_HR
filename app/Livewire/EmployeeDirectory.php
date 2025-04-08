@@ -62,12 +62,15 @@ class EmployeeDirectory extends Component
     {
    
         try {
+            $this->showHelp=true;
             $this->employeeFilter = $this->selectedEmploymentFilter;
         } catch (\Exception $e) {
             Log::error('Error in updateselectedEmploymentFilter method: ' . $e->getMessage());
             session()->flash('error', 'An error occurred while updating the employment filter. Please try again later.');
         }
     }
+   
+
     public function showhelp()
     {
         try {

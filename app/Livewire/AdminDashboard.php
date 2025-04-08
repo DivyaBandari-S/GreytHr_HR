@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Task;
 use Livewire\Component;
 use Carbon\Carbon;
+use Carbon\CarbonPeriod;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -132,7 +133,27 @@ class AdminDashboard extends Component
             $this->loginHRDetails();
             $this->setActiveTab($this->activeTab);
             $employeeId = auth()->guard('hr')->user()->emp_id;
+            $currentDate=now()->toDateString();
+            $date = Carbon::parse($currentDate);
+            $startOfWeek = $date->copy()->startOfWeek(Carbon::MONDAY);
+            $endOfWeek = $date->copy()->endOfWeek(Carbon::SUNDAY);
+            $workingDays = CarbonPeriod::create($startOfWeek, $endOfWeek)->filter(function ($day) {
+                return !$day->isWeekend(); // You can change this to fit your working calendar
+            });
+            
+           
+            $employees = EmployeeDetails::where('employee_status', 'active')->pluck('emp_id');
+            $totalEmployees = $employees->count();
 
+            $totalPresences = 0;
+            foreach ($workingDays as $day) {
+                $presentEmpIds = SwipeRecord::whereDate('created_at', $day->toDateString())
+                    ->whereIn('emp_id', $employees)
+                    ->distinct()
+                    ->pluck('emp_id');
+            
+                $totalPresences += $presentEmpIds->count();
+            }
             // $this->loginEmployee = Hr::where('emp_id', $employeeId)->select('emp_id', 'employee_name')->first();
             $companyId = EmployeeDetails::where('emp_id', $employeeId)->value('company_id');
             //Hr Requests
