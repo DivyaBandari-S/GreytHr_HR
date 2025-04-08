@@ -423,7 +423,7 @@ class BankAccount extends Component
                       ->orWhere('last_name', 'like', '%' . $this->searchTerm . '%')
                       ->orWhere('emp_id', 'like', '%' . $this->searchTerm . '%');
             })->get();
-    
+           
             // Include previously selected employees not currently displayed in the search
             foreach ($this->selectedPeople as $selectedEmpId) {
                 // Check if selected employee is in the current employees
@@ -509,18 +509,33 @@ public function removeSelectedEmployee()
     {
         $loggedInEmpID = auth()->guard('hr')->user()->emp_id;
         $employeeId = auth()->user()->emp_id;
-        $companyId = auth()->user()->company_id;
+        if (auth()->guard('hr')->check()) {
+            $loggedInEmpID = auth()->guard('hr')->user()->emp_id;
+            // Debugging to ensure correct emp_id is fetched
+       // Check if emp_id is correct
+        } else {
+            return;
+        }
+       
+   
+        
     
-        // Retrieve the company_id associated with the logged-in emp_id
+        $loggedInEmpID = auth()->guard('hr')->user()->emp_id;
+
+        // Fetch the company_id associated with the employee
         $companyID = EmployeeDetails::where('emp_id', $loggedInEmpID)
             ->pluck('company_id')
-            ->first(); // Assuming company_id is unique for emp_id
-  
-        // If no search term, fetch all employees for the logged-in user's company
-        if (empty($this->searchTerm)) {
-            $this->employees = EmployeeDetails::whereJsonContains('company_id', $companyID)->get();
+            ->first(); // This will return the first company ID for the employee
+        
+ 
+        $companyId = EmployeeDetails::where('emp_id', $loggedInEmpID)
+        ->pluck('company_id') // This returns the array of company IDs
+        ->first();
+        if (is_array($companyId)) {
+            $firstCompanyID = $companyId[0]; // Get the first element from the array
+        } else {
+            $firstCompanyID = $companyId; // Handle case where it's not an array
         }
-    
         // Determine if there are people found
         $peopleFound = $this->employees->count() > 0;
 
