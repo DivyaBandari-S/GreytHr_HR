@@ -391,7 +391,7 @@
             <tr class="row-for-absent-employee">
               <td style="font-size:10px;font-weight:700;overflow: hidden; text-overflow: ellipsis; white-space: nowrap;max-width:100px;"data-toggle="tooltip"
               data-placement="top" title="{{ ucwords(strtolower($s1->first_name)) }} {{ ucwords(strtolower($s1->last_name)) }}">{{ ucwords(strtolower($s1->first_name)) }} {{ ucwords(strtolower($s1->last_name)) }}<br /><span class="text-muted" style="font-weight:normal;font-size:10px;">#{{$s1->emp_id}}</span></td>
-              <td style="font-weight:700;font-size:10px;text-align: center;">{{$earlyArrivalTime}}<br /><span class="text-muted" style="font-size:10px;font-weight:300;">{{$s1->swipe_time}}</span></td>
+              <td style="font-weight:700;font-size:10px;text-align: center;">{{$earlyArrivalTime}}<br /><span class="text-muted" style="font-size:10px;font-weight:300;">{{\Carbon\Carbon::parse($s1->swipe_time)->format('H:i:s')}}</span></td>
               <td style="text-align:right;">
               <button class="arrow-btn" style="background-color:#fff;float:right;margin-top:-2px;margin-right:20px;cursor:pointer;color:{{ in_array($index, $openAccordionForEarlyComers) ? '#3a9efd' : '#778899' }};border:1px solid {{ in_array($index, $openAccordionForEarlyComers) ? '#3a9efd' : '#778899'}}" wire:click="toggleAccordionForEarly({{ $index }})">
                           <i class="fa fa-angle-{{ in_array($index, $openAccordionForEarlyComers) ? 'down' : 'up' }}"style="color:{{ in_array($index, $openAccordionForEarlyComers) ? '#3a9efd' : '#778899' }}"></i>
