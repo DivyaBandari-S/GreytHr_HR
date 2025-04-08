@@ -25,7 +25,7 @@
             border-radius: 5px;
             width:85%; /* You can adjust this to your desired width */
             height: auto; /* You can adjust this to your desired height */
-            margin: -15px 10px; /* This centers the container horizontally */
+            margin: -1px 10px; /* This centers the container horizontally */
             display: block; /* Ensures the container takes up the full width specified */
         }
         .yellow-container p{
@@ -125,22 +125,40 @@
 .dropdown-content-for-employee a:hover {
     background-color: #f1f1f1; /* Light gray background on hover */
 }
+.attendance-overview-help-for-showhelp
+{
+    position: relative;
+            width: 85%; /* Set your desired width */
+            height: auto; /* Set your desired height */
+            border-radius: 5px; /* Set your desired border-radius */
+            
+            padding: 10px; /* Add padding if needed */
+            margin: 20px 10px; /* Add margin if needed */
+           
+}
     </style>
     @php
        $s1=0;
     @endphp
-     @if($showHelp==false)   
-      <div class="attendance-overview-help">
-            <p style="font-size:13px;">The employee directory lists all employee in your organisation.<br/>Filters are available to select employees in a certain category(location,department, etc.) or by status.</p>
-            <p style="font-size:13px;">Explore greytHR by <a href="https://admin-help.greythr.com/admin/answers/123712613" target="_blank" style="color: #1fb6ff;cursor:pointer;">Help-Doc</a>.Watching<a href="https://youtu.be/drrSfJrjHz0?si=BrqYlKmNr9kFrHLT" target="_blank" style="color: #1fb6ff;cursor:pointer;">&nbsp;How-to Videos&nbsp;</a>and<a href="https://greythr.freshdesk.com/support/search/solutions?term=attendance+overview"style="color: #1fb6ff;cursor:pointer;">&nbsp;FAQ&nbsp;</a>.</p>
-            <span class="hide-attendance-help"wire:click="hideHelp">Hide Help</span>
-      </div>
+       
       
-    @else 
-      <button style="background-color: white; margin-top: -20px; float: right; color: #0000FF; border: 1px solid #ffff; border-radius: 5px; cursor: pointer; padding: 10px 20px;font-weight:bold;"wire:click="showhelp">Show&nbsp;&nbsp;Help</button>
-    @endif
+        @if($showHelp==false) 
+        <div class="attendance-overview-help">
+            <p style="font-size:13px;">The employee directory lists all employee in your organisation.<br/>Filters are available to select employees in a certain category(location,department, etc.) or by status.</p>
+            <p style="font-size:13px;">Explore HR Expert by <a href="https://admin-help.greythr.com/admin/answers/123712613" target="_blank" style="color: #1fb6ff;cursor:pointer;">Help-Doc</a>. <a href="https://youtu.be/drrSfJrjHz0?si=BrqYlKmNr9kFrHLT" target="_blank" style="color: #1fb6ff;cursor:pointer;">&nbsp;How-to Watch Videos&nbsp;</a>and<a href="https://greythr.freshdesk.com/support/search/solutions?term=attendance+overview"style="color: #1fb6ff;cursor:pointer;">&nbsp;FAQ&nbsp;</a>.</p>
+            <span class="hide-attendance-help"wire:click="hideHelp">Hide Help</span>
+        </div>    
+        @else 
+        <div class="attendance-overview-help-for-showhelp">
+           <button style="font-size: 14px;background-color: white; margin-top: -20px; float: right; color: #0000FF; border: 1px solid #ffff; border-radius: 5px; cursor: pointer;padding: 5px 20px;font-weight:bold;"wire:click="showhelp">Show&nbsp;&nbsp;Help</button>
+        </div> 
+        @endif    
+      
+      
+   
+     
       <div class="yellow-container">
-           <p style="font-size:13px;">New! You can now customize your Employee Directory by adding columns,grouping and pivoting,etc.&nbsp;&nbsp;<span style="color: #1fb6ff;cursor:pointer;">Go ahead and explore!</span><br/>Please note that we will soon remove the existing Employee Directory</p>
+           <p style="font-size:13px;">New! You can now customize your Employee Directory by adding columns,grouping and pivoting,etc.&nbsp;&nbsp;<span style="color: #DD761C;;cursor:pointer;">Go ahead and explore!</span><br/>Please note that we will soon remove the existing Employee Directory</p>
       </div>
       <div class="button-container">
          <button type="button"class="export-to-excel-button"wire:click="exportToExcel">Export to Excel</button>
@@ -148,14 +166,7 @@
 
       </div>
       <div style="margin-top:40px;display:flex;flex-direction:row;gap:5px;margin-left:15px;">
-            <select name="category" wire:model="selectedCategory"style="width: 200px; padding-right: 30px;  border-radius: 5px; height: 35px;">
-                            <option value="all">All</option>
-                            <option value="none">None</option>
-                            <option value="division">Division</option>
-                            <option value="cost_center">Cost Center</option>
-                            <option value="grade">Grade</option>
-                            <option value="designation">Designation</option>
-            </select>
+           
             <select name="employmentstatus" wire:model="selectedEmploymentStatus" wire:change="updateSelectedEmploymentStatus"
 
                 style="width: 200px; padding-right: 30px;  border-radius: 5px; height: 35px;">
@@ -196,11 +207,12 @@
                 <th>#</th>
                 <th>Employee ID</th>
                 <th>Employee Name</th>
-                <th>Join Date</th>
+                <th>Joining Date</th>
                 <th>Status</th>
                 <th>Phone No</th>
                 <th>Email</th>
                 <th>Extension No</th>
+                <th>Status</th>
             </tr>
         </thead>
         <tbody>
@@ -226,6 +238,7 @@
                 <td style="font-size:12px;">{{ str_replace('-', '', $r1->emergency_contact) }}</td>
                 <td style="font-size:12px;">{{$r1->email}}</td>
                 <td style="font-size:12px;">-</td>
+                <td style="font-size:12px;">{{ ucwords(strtolower($r1->employee_status)) }}</td>
             </tr>
         @endforeach   
         @else
