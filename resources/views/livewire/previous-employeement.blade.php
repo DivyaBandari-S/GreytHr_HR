@@ -254,14 +254,14 @@
         <div class="col-md-3">
             <div class="form-group">
                 <label>Company Name</label>
-                <input type="text" wire:model="company_name" class="form-control">
+                <input type="text" wire:model.lazy="company_name" class="form-control">
                 @error('company_name') <span class="text-danger">{{ $message }}</span> @enderror
             </div>
         </div>
         <div class="col-md-3">
             <div class="form-group">
                 <label>Designation</label>
-                <input type="text" wire:model="designation" class="form-control">
+                <input type="text" wire:model.lazy="designation" class="form-control">
                 @error('designation') <span class="text-danger">{{ $message }}</span> @enderror
             </div>
         </div>
@@ -271,14 +271,14 @@
         <div class="col-md-3">
             <div class="form-group">
                 <label>From Date</label>
-                <input type="date" wire:model="from_date" wire:change="calculateYearsAndMonths" class="form-control">
+                <input type="date" wire:model.lazy="from_date" wire:change="calculateYearsAndMonths" class="form-control">
                 @error('from_date') <span class="text-danger">{{ $message }}</span> @enderror
             </div>
         </div>
         <div class="col-md-3">
             <div class="form-group">
                 <label>To Date</label>
-                <input type="date" wire:model="to_date" wire:change="calculateYearsAndMonths" class="form-control">
+                <input type="date" wire:model.lazy="to_date" wire:change="calculateYearsAndMonths" class="form-control">
                 @error('to_date') <span class="text-danger">{{ $message }}</span> @enderror
   
             </div>
@@ -291,7 +291,7 @@
             <div class="form-group">
              
          
-             <input type="text" wire:model="years_of_experience" class="form-control" readonly wire:poll>
+             <input type="text" wire:model.lazy="years_of_experience" class="form-control" readonly wire:poll>
 
          </div>
          <span>Years</span>
@@ -300,7 +300,7 @@
             <div class="form-group">
              
          
-             <input type="text" wire:model="months_of_experience" class="form-control" readonly wire:poll>
+             <input type="text" wire:model.lazy="months_of_experience" class="form-control" readonly wire:poll>
 
          </div>
          <span>Months</span>
@@ -316,14 +316,14 @@
         <div class="col-md-4">
             <div class="form-group">
                 <label>Nature of Duties</label>
-                <textarea wire:model="nature_of_duties" class="form-control"></textarea>
+                <textarea wire:model.lazy="nature_of_duties" class="form-control"></textarea>
                 @error('nature_of_duties') <span class="text-danger">{{ $message }}</span> @enderror
             </div>
         </div>
         <div class="col-md-3">
             <div class="form-group">
                 <label>Leaving Reason</label>
-                <textarea wire:model="leaving_reason" class="form-control"></textarea>
+                <textarea wire:model.lazy="leaving_reason" class="form-control"></textarea>
                 @error('leaving_reason') <span class="text-danger">{{ $message }}</span> @enderror
             </div>
         </div>
@@ -333,14 +333,14 @@
         <div class="col-md-3">
             <div class="form-group">
                 <label>PF Member ID</label>
-                <input type="text" wire:model="pf_member_id" class="form-control">
+                <input type="text" wire:model.lazy="pf_member_id" class="form-control">
                 @error('pf_member_id') <span class="text-danger">{{ $message }}</span> @enderror
             </div>
         </div>
         <div class="col-md-3">
             <div class="form-group">
                 <label>Last Drawn Salary : ₹</label>
-                <input type="number"  wire:model="last_drawn_salary" class="form-control">
+                <input type="number"  wire:model.lazy="last_drawn_salary" class="form-control">
                 @error('last_drawn_salary') <span class="text-danger">{{ $message }}</span> @enderror
             </div>
         </div>
