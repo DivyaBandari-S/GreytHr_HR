@@ -98,6 +98,7 @@ use App\Livewire\ShiftRotationCalendar;
 use App\Livewire\StopSalaries;
 use App\Livewire\SwipeManagementForHr;
 use App\Livewire\AuthorizeSignatory;
+use App\Livewire\BankAccount;
 use App\Livewire\CreateSignatory;
 use App\Livewire\EmployeeDataUpdate;
 use App\Livewire\EmployeeLopDays;
@@ -225,7 +226,8 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
         Route::get('/position-history', PositionHistory::class)->name('position-history');
         Route::get('parent-details', ParentDetails::class)->name('parent-details');
         Route::get('/emp-document', EmpDocument::class)->name('emp-document');
-        Route::get('/bank-account', EmpDocument::class)->name('bank-account');
+        Route::get('/bank-account', BankAccount::class)->name('bank-account');
+        Route::get('/previous', PreviousEmployeement::class)->name('previous');
         Route::get('/user/attendance-process', AttendanceProcess::class)->name('attendance-process');
         Route::get('/user/swipe-management-for-hr', SwipeManagementForHr::class)->name('swipe-management-for-hr');
         Route::get('/user/employee-swipes-for-hr', EmployeeSwipesForHr::class)->name('employee-swipes-for-hr');

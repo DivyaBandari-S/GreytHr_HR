@@ -85,7 +85,7 @@
 
                     <div class="me-2">
                         <label>Search:</label>
-                        <input type="text" class="form-control" wire:model.debounce.500ms="searchTerm" wire:input="loadLetters" placeholder="Search something..">
+                        <input type="text" class="form-control" wire:model.debounce.500ms="searchTerm" wire:input="loadLetters" placeholder="Search..">
                     </div>
                     
 

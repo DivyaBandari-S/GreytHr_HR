@@ -350,13 +350,13 @@
                         </thead>
                         <tbody>
                             @if ($leaveRequests->isEmpty())
-                                <tr>
-                                    <td colspan="3" class="text-center">
-                                        <img class="analytic-no-items-found"
-                                            src="https://media.istockphoto.com/id/1357284048/vector/no-item-found-vector-flat-icon-design-illustration-web-and-mobile-application-symbol-on.jpg?s=612x612&w=0&k=20&c=j0V0ww6uBl1LwQLH0U9L7Zn81xMTZCpXPjH5qJo5QyQ="
-                                            alt="No items found" style="max-width: 100px; height: auto;">
-                                    </td>
-                                </tr>
+                            <tr>
+                                <td colspan="3" class="text-center">
+                                    <img class="task-no-items-found" src="{{ asset('images/nodata.png') }}"
+                                        alt="No items found">
+                                    <p>No Data Found</p>
+                                </td>
+                            </tr>
                             @else
                                 @foreach ($leaveRequests as $leaveRequest)
                                     <tr>

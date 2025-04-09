@@ -530,36 +530,18 @@ class EmployeeProfile extends Component
    
     public function mount()
     {
-        // Retrieve the logged-in user's emp_id from the 'hr' guard
-        if (auth()->guard('hr')->check()) {
+         // Retrieve the logged-in user's emp_id from the 'hr' guard
+         if (auth()->guard('hr')->check()) {
             $loggedInEmpID = auth()->guard('hr')->user()->emp_id;
-            // Debugging to ensure correct emp_id is fetched
-       // Check if emp_id is correct
         } else {
+            // Debug if user is not authenticated
+        
             return;
         }
-        $loggedInEmpID = auth()->guard('hr')->user()->emp_id;
-        $companyId = EmployeeDetails::where('emp_id', $loggedInEmpID)
-->pluck('company_id') // This returns the array of company IDs
-->first();
-if (is_array($companyId)) {
-    $firstCompanyID = $companyId[0]; // Get the first element from the array
-} else {
-    $firstCompanyID = $companyId; // Handle case where it's not an array
-}
-
-
-        // Fetch the company_id associated with the employee
-        $companyID = EmployeeDetails::where('emp_id', $firstCompanyID)
-            ->pluck('company_id')
-            ->first(); // This will return the first company ID for the employee
-
-        // Outputs the company_id based on whether it's a parent or not
-        
     
         // Retrieve the company_id associated with the logged-in emp_id
         $employeeDetails = EmployeeDetails::where('emp_id', $loggedInEmpID)->first();
-    
+        
         if (!$employeeDetails) {
             // Debug if no employee details are found for this emp_id
       
@@ -567,7 +549,7 @@ if (is_array($companyId)) {
         }
     
         $companyID = $employeeDetails->company_id;
- 
+    
         if (!$companyID) {
             // Handle the case where companyID is null
         
@@ -576,14 +558,8 @@ if (is_array($companyId)) {
         }
     
         // Fetch all emp_id values where company_id matches the logged-in user's company_id
-        $this->employeeIds = EmployeeDetails::whereJsonContains('company_id', $firstCompanyID)->pluck('emp_id')->toArray();
-     
-
-   
-   
-        // Fetch the employee IDs after filtering
-       
-        
+        $this->employeeIds = EmployeeDetails::whereJsonContains('company_id', $companyID)->pluck('emp_id')->toArray();
+    
         if (empty($this->employeeIds)) {
             // Handle the case where no employees are found
          
@@ -591,7 +567,7 @@ if (is_array($companyId)) {
         }
     
         // Initialize employees based on search term and company_id
-        $employeesQuery = EmployeeDetails::whereJsonContains('company_id', $firstCompanyID)
+        $employeesQuery = EmployeeDetails::whereJsonContains('company_id', $companyID)
             ->where(function ($query) {
                 $query->where('first_name', 'like', '%' . $this->searchTerm . '%')
                       ->orWhere('last_name', 'like', '%' . $this->searchTerm . '%')
@@ -607,17 +583,13 @@ if (is_array($companyId)) {
             // Handle the case where no employees match the search term
          
         }
-        
     
         // Debug output for fetched employees
      
     
         // Set the component's employee data
         $this->employees = $employees;
-      
-
-      
-        $this->employeess = EmployeeDetails::whereJsonContains('company_id', $firstCompanyID)
+        $this->employeess = EmployeeDetails::whereJsonContains('company_id', $companyID)
         ->orderBy('hire_date', 'desc') // Order by hire_date descending
       
         ->take(5) // Limit to 5 records
@@ -681,7 +653,7 @@ if (is_array($companyId)) {
         $this->selectedEmployeeFirstName = EmployeeDetails::where('emp_id', $empId)->value('first_name');
         $this->selectedEmployeeLastName = EmployeeDetails::where('emp_id', $empId)->value('last_name');
         $this->selectedEmployeeImage = EmployeeDetails::where('emp_id', $empId)->value('image');
-        $this->searchTerm='';
+      
         
     }
 
@@ -694,6 +666,7 @@ if (is_array($companyId)) {
         $this->selectedEmployeeImage = EmployeeDetails::where('emp_id', $empId)->value('image');
         $this->searchTerm='';
     }
+
 
 public $selectedEmployee = null;
 
