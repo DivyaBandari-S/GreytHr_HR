@@ -652,12 +652,12 @@ public function calculateAverageWorkHoursAndPercentage($startDate, $endDate)
             $totalHoursWorked = 0;
             $totalMinutesWorked = 0;
             $ip = request()->ip();
-            $location = GeoIP::getLocation($ip);
-            $lat = $location['lat'];
-            $lon = $location['lon'];
-            $this->country = $location['country'];
-            $this->city = $location['city'];
-            $this->postal_code = $location['postal_code'];
+            // $location = GeoIP::getLocation($ip);
+            // $lat = $location['lat'];
+            // $lon = $location['lon'];
+            // $this->country = $location['country'];
+            // $this->city = $location['city'];
+            // $this->postal_code = $location['postal_code'];
             $firstDateOfPreviousMonth = Carbon::now()->subMonth()->startOfMonth();
 
             // Get the current date of the current month
