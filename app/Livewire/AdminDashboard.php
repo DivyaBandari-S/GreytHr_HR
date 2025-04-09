@@ -15,7 +15,6 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Task;
 use Livewire\Component;
 use Carbon\Carbon;
-use Carbon\CarbonPeriod;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -23,6 +22,7 @@ use Illuminate\Support\Facades\Log;
 class AdminDashboard extends Component
 {
     public $show = false;
+    public $signInTime;
     public $totalEmployeeCount;
     public $totalNewEmployeeCount;
     public $totalNewEmployees;
@@ -53,7 +53,7 @@ class AdminDashboard extends Component
     public $groupedByEmpId;
     public $lateEmployees;
     public $swipes;
-    public $dateRange = 'thisYear';
+    public $dateRange = 'thisMonth';
     public $tasksData = [];
 
     public $selectedOption = 'This Week';
@@ -127,33 +127,13 @@ class AdminDashboard extends Component
 
     public function mount()
     {
-
         try {
+            $this->signInTime = today()->format('Y-m-d');
             $this->getContainerData();
             $this->loginHRDetails();
             $this->setActiveTab($this->activeTab);
             $employeeId = auth()->guard('hr')->user()->emp_id;
-            $currentDate=now()->toDateString();
-            $date = Carbon::parse($currentDate);
-            $startOfWeek = $date->copy()->startOfWeek(Carbon::MONDAY);
-            $endOfWeek = $date->copy()->endOfWeek(Carbon::SUNDAY);
-            $workingDays = CarbonPeriod::create($startOfWeek, $endOfWeek)->filter(function ($day) {
-                return !$day->isWeekend(); // You can change this to fit your working calendar
-            });
-            
-           
-            $employees = EmployeeDetails::where('employee_status', 'active')->pluck('emp_id');
-            $totalEmployees = $employees->count();
 
-            $totalPresences = 0;
-            foreach ($workingDays as $day) {
-                $presentEmpIds = SwipeRecord::whereDate('created_at', $day->toDateString())
-                    ->whereIn('emp_id', $employees)
-                    ->distinct()
-                    ->pluck('emp_id');
-            
-                $totalPresences += $presentEmpIds->count();
-            }
             // $this->loginEmployee = Hr::where('emp_id', $employeeId)->select('emp_id', 'employee_name')->first();
             $companyId = EmployeeDetails::where('emp_id', $employeeId)->value('company_id');
             //Hr Requests
@@ -272,11 +252,11 @@ class AdminDashboard extends Component
             foreach ($emp_ids as $emp_id) {
                 // Determine the period to fetch leave days for based on the selected range
                 if ($this->dateRange == 'thisMonth') {
-                    $approvedLeaves = LeaveHelper::getApprovedLeaveDaysForRange($emp_id, $lastMonth); // This month
+                    $approvedLeaves = LeaveHelper::getApprovedLeaveDaysForFilter($emp_id, $currentMonth, $this->dateRange); // This month
                 } elseif ($this->dateRange == 'lastMonth') {
-                    $approvedLeaves = LeaveHelper::getApprovedLeaveDaysForRange($emp_id, $currentMonth); // Last month
+                    $approvedLeaves = LeaveHelper::getApprovedLeaveDaysForFilter($emp_id, $lastMonth, $this->dateRange); // Last month
                 } else {
-                    $approvedLeaves = LeaveHelper::getApprovedLeaveDaysForRange($emp_id, $currentYear); // This year
+                    $approvedLeaves = LeaveHelper::getApprovedLeaveDaysForFilter($emp_id, $currentYear, $this->dateRange); // This year
                 }
                 $data[$emp_id] = $approvedLeaves;
             }
@@ -301,22 +281,28 @@ class AdminDashboard extends Component
             } else {
                 $top5LeaveDays[] = [];
             }
-
-            // Iterate through the leave data and get the employee details
-            foreach ($top5LeaveDays as $key => $value) {
-                // Fetch the employee details based on emp_id
-                $employee = EmployeeDetails::where('emp_id', $key)->first();  // Assuming emp_id is unique
-                if ($employee) {
-                    // Map the employee details with the leave days
-                    $this->mappedLeaveData[$key] = [
-                        'totalLeave' => $value,
-                        'first_name' => $employee->first_name,
-                        'last_name' => $employee->last_name,
-                        'job_role' => $employee->job_role,
-                        'image' => $employee->image,
-                    ];
+            // Check if top4LeaveDays is set and not empty
+            if (isset($top5LeaveDays) && !empty($top5LeaveDays)) {
+                // Iterate through the leave data and get the employee details
+                foreach ($top5LeaveDays as $key => $value) {
+                    // Fetch the employee details based on emp_id
+                    $employee = EmployeeDetails::where('emp_id', $key)->first();  // Assuming emp_id is unique
+                    if ($employee) {
+                        // Map the employee details with the leave days
+                        $this->mappedLeaveData[$key] = [
+                            'totalLeave' => $value,
+                            'first_name' => $employee->first_name,
+                            'last_name' => $employee->last_name,
+                            'job_role' => $employee->job_role,
+                            'image' => $employee->image,
+                        ];
+                    }
                 }
+            } else {
+                // If top4LeaveDays is not set, map an empty array
+                $this->mappedLeaveData = [];
             }
+
         } catch (\Exception $e) {
             if ($e instanceof \Illuminate\Database\QueryException) {
                 // Handle database query exceptions
@@ -348,7 +334,7 @@ class AdminDashboard extends Component
         try {
             // Fetch swipe data, including employee details
             $this->swipes = SwipeRecord::with('employee')
-                ->whereDate('created_at', today())
+                ->whereDate('created_at', $this->signInTime)
                 ->orderBy('emp_id') // Ensure order by employee_id
                 ->orderBy('created_at', 'asc')  // Order by creation date to get the first swipe for each employee
                 ->get()
@@ -371,7 +357,7 @@ class AdminDashboard extends Component
                     $this->lateEmployees[] = $swipe;
                 } else {
                     // Add the employee to the early or on-time employees array
-                    $this->earlyOrOnTimeEmployees[] = null;
+                    $this->earlyOrOnTimeEmployees[] = $swipe;
                 }
             }
         } catch (\Exception $e) {

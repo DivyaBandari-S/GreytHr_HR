@@ -198,9 +198,9 @@
                                         <div class="d-flex align-items-center justify-content-between mb-3 ">
                                             <p class="fw-bold mb-0">Top 5 Leave Takers</p>
                                             <select id="dateRange" class="dropdown" wire:model="dateRange" wire:click="getTopLeaveTakers">
-                                                <option value="thisMonth" >This Month</option>
-                                                <option value="lastMonth" >Last Month</option>
-                                                <option value="thisYear" >This Year</option>
+                                                <option value="thisMonth">This Month</option>
+                                                <option value="lastMonth">Last Month</option>
+                                                <option value="thisYear">This Year</option>
                                             </select>
                                         </div>
                                     </div>
@@ -216,6 +216,7 @@
                                         </thead>
                                         <tbody>
                                             @if ($mappedLeaveData)
+
                                             @foreach ($mappedLeaveData as $key => $value)
                                             <tr>
                                                 <td>
@@ -328,7 +329,7 @@
                                     @endforeach
                                     @else
                                     <div>
-                                        <span>No data</span>
+                                        <span class="fw-normal fs12 p-0">No data</span>
                                     </div>
                                     @endif
                                 </div>
@@ -343,15 +344,17 @@
                                         <p class="fw-bold">Clock-In/Out</p>
                                     </div>
                                     <div class="col-md-6 text-end mb-3">
-                                        <button class="btn btn-outline-primary btn-sm"><i
-                                                class="fa-regular fa-calendar"></i> This Week</button>
+                                        <div class="form-group">
+                                            <input type="date" class="form-control" wire:model="signInTime" wire:change="getSignInOutData">
+                                        </div>
                                     </div>
                                 </div>
 
                                 <div class="row m-0 mt-3">
-                                    @if($earlyOrOnTimeEmployees && count($earlyOrOnTimeEmployees) > 0)
+                                    @if($earlyOrOnTimeEmployees && $earlyOrOnTimeEmployees[0]->employee)
                                     <p class="fw-bold fs14 p-0">Early/On Time</p>
                                     @foreach ($earlyOrOnTimeEmployees as $swipe)
+                                    @if($swipe->employee)
                                     <div class="m-0 mb-3 p-2 row border">
                                         <div style="display: flex; align-items: center;">
                                             @if($swipe->employee->image && $swipe->employee->image !== 'null')
@@ -374,8 +377,8 @@
                                             @endif
                                             @endif
                                             <div class="d-flex flex-column col">
-                                                <p class="mb-0 normalTextTruncated">{{ ucwords(strtolower($swipe->employee->first_name)) }} {{ ucwords(strtolower($swipe->employee->last_name)) }}</p>
-                                                <p class="smallText mb-0">{{ ucwords(strtolower($swipe->employee->job_role)) }}</p>
+                                                <p class="mb-0 normalTextTruncated">{{ ucwords(strtolower($swipe->employee->first_name ?? 'N/A')) }} {{ ucwords(strtolower($swipe->employee->last_name ?? 'N/A')) }}</p>
+                                                <p class="smallText mb-0">{{ ucwords(strtolower($swipe->employee->job_role ?? 'N/A')) }}</p>
                                             </div>
                                             <div class="col d-flex justify-content-center align-items-center">
                                                 <span class="normalText">{{ $swipe->in_or_out }}</span>
@@ -385,14 +388,15 @@
                                             </div>
                                         </div>
                                     </div>
+                                    @endif
                                     @endforeach
                                     @else
                                     <p class="fw-normal fs12 p-0">No Early/On Time Employees Found</p>
                                     @endif
-
-                                    @if(count($lateEmployees) > 0)
+                                    @if(count($lateEmployees) > 0 && isset($lateEmployees[0]->employee))
                                     <p class="fw-bold fs14 p-0">Late</p>
                                     @foreach($lateEmployees as $lateSwipe)
+                                    @if($lateSwipe->employee)
                                     <div class="m-0 mb-3 p-2 row border">
                                         <div style="display: flex; align-items: center;">
                                             @if($lateSwipe->image && $lateSwipe->image !== 'null')
@@ -415,8 +419,8 @@
                                             @endif
                                             @endif
                                             <div class="d-flex flex-column col">
-                                                <p class="mb-0 normalTextTruncated">{{ ucwords(strtolower($lateSwipe->employee->first_name)) }} {{ ucwords(strtolower($lateSwipe->employee->last_name)) }}</p>
-                                                <p class="smallText mb-0">{{ ucwords(strtolower($lateSwipe->employee->job_role)) }}</p>
+                                                <p class="mb-0 normalTextTruncated">{{ ucwords(strtolower($lateSwipe->employee->first_name ?? 'N/A')) }} {{ ucwords(strtolower($lateSwipe->employee->last_name ?? 'N/A')) }}</p>
+                                                <p class="smallText mb-0">{{ ucwords(strtolower($lateSwipe->employee->job_role ?? 'N/A')) }}</p>
                                             </div>
                                             <div class="col d-flex justify-content-center align-items-center">
                                                 <span class="normalText">{{ $lateSwipe->in_or_out }}</span>
@@ -426,9 +430,10 @@
                                             </div>
                                         </div>
                                     </div>
+                                    @endif
                                     @endforeach
                                     @else
-                                    <p>No late employees today.</p>
+                                    <p class="fw-normal fs12 p-0">No late employees today.</p>
                                     @endif
                                 </div>
 
@@ -705,18 +710,6 @@
                                         <p class="fs14 mb-2"><i class="fa-solid fa-circle"
                                                 style="color: #feb019"></i> Overdue</p>
                                         <p class="fs14 mb-2 fw-bold">{{ $tasksData['series'][2] ?? 0 }}%</p>
-                                    </div>
-                                </div>
-
-                                <div class="row m-0">
-                                    <div class="row m-0 bg-dark rounded py-2 my-3">
-                                        <div class="col-md-8 mb-3">
-                                            <p class="mb-1 fw-bold" style="color: #00e396">389/689 hrs</p>
-                                            <p class="text-white fs14 mb-0">Spent on Overall Tasks This Week</p>
-                                        </div>
-                                        <div class="col-md-4 text-end m-auto">
-                                            <button class="btn btn-sm btn-light">View All</button>
-                                        </div>
                                     </div>
                                 </div>
 
