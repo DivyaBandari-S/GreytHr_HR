@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Exports\LateArrivalsExport;
 use App\Helpers\FlashMessageHelper;
 use App\Mail\RegularisationApprovalMail;
 use App\Mail\RegularisationRejectionMail;
@@ -17,6 +18,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Livewire\Component;
+use Maatwebsite\Excel\Facades\Excel;
 use Spatie\SimpleExcel\SimpleExcelWriter;
 
 class HrAttendanceOverviewNew extends Component
@@ -294,11 +296,8 @@ class HrAttendanceOverviewNew extends Component
             $data[] = [$employee->emp_id, $employee->first_name, $employee->last_name];
         }
     
-        $filePath = storage_path('app/employees.xlsx');
-    
-        SimpleExcelWriter::create($filePath)->addRows($data);
-    
-        return response()->download($filePath, 'notassignedemployees.xlsx');
+        return Excel::download(new LateArrivalsExport($data), 'not_assigned_employees.xlsx');
+       
     }
     public function downloadexcelForAttendanceType()
     {
@@ -334,10 +333,8 @@ class HrAttendanceOverviewNew extends Component
             }
             $data[] = [$employee->emp_id, ucwords(strtolower($employee->first_name)).' '.ucwords(strtolower($employee->last_name)),$employee->swipe_time,$employee->job_role,$employee->job_location,$deviceLabel];
         }
-        $filePath = storage_path('app/employees.xlsx');
-        SimpleExcelWriter::create($filePath)->addRows($data);
-    
-        return response()->download($filePath, 'employeesattendanceType.xlsx');
+        return Excel::download(new LateArrivalsExport($data), 'employees_attendance_type.xlsx');
+       
     }
     public function closeAllAbsentEmployees()
     {
@@ -697,26 +694,14 @@ public function openSelector()
                 ->groupBy('swipe_records.emp_id');
         })
         ->join('employee_details', 'swipe_records.emp_id', '=', 'employee_details.emp_id')
-        ->leftJoin('emp_personal_infos', 'swipe_records.emp_id', '=', 'emp_personal_infos.emp_id')  // Join with emp_personal_infos
         ->leftJoin('company_shifts', function ($join) {
-            // Join with company_shifts using JSON_UNQUOTE to extract company_id from employee_details
             $join->on('company_shifts.company_id', '=', DB::raw("JSON_UNQUOTE(JSON_EXTRACT(employee_details.company_id, '$[0]'))"))
                  ->on('company_shifts.shift_name', '=', 'employee_details.shift_type');
         })
-        ->select(
-            'swipe_records.*', 
-            'employee_details.first_name', 
-            'employee_details.last_name',
-            'company_shifts.shift_start_time',  // Use shift times from company_shifts
-            'company_shifts.shift_end_time',    // Use shift times from company_shifts
-          
-        )
-        ->where(function ($query) {
-            $query->whereRaw("swipe_records.swipe_time > company_shifts.shift_start_time");
-        })
+        ->whereRaw("TIME(swipe_records.swipe_time) > company_shifts.shift_start_time")
         ->where('employee_details.employee_status', 'active')
-        ->distinct('swipe_records.emp_id')
-        ->count();
+        ->count(DB::raw('DISTINCT swipe_records.emp_id'));
+    
         $this->earlyemployeescount = SwipeRecord::whereIn('swipe_records.id', function ($query) use ($employees, $approvedLeaveRequests, $currentDate) {
             $query->selectRaw('MIN(swipe_records.id)')
                 ->from('swipe_records')
@@ -726,7 +711,6 @@ public function openSelector()
                 ->groupBy('swipe_records.emp_id');
         })
         ->join('employee_details', 'swipe_records.emp_id', '=', 'employee_details.emp_id')
-        ->leftJoin('emp_personal_infos', 'swipe_records.emp_id', '=', 'emp_personal_infos.emp_id') // Joining emp_personal_infos
         ->leftJoin('company_shifts', function ($join) {
             // Join with company_shifts using JSON_UNQUOTE to extract company_id from employee_details
             $join->on('company_shifts.company_id', '=', DB::raw("JSON_UNQUOTE(JSON_EXTRACT(employee_details.company_id, '$[0]'))"))
@@ -741,7 +725,7 @@ public function openSelector()
         )
         ->where(function ($query) {
             // Comparing swipe_time with shift_start_time from company_shifts
-            $query->whereRaw("swipe_records.swipe_time <= company_shifts.shift_start_time");
+            $query->whereRaw("TIME(swipe_records.swipe_time) <= company_shifts.shift_start_time");
         })
         ->where('employee_details.employee_status', 'active')
         ->orderBy('swipe_records.swipe_time')
