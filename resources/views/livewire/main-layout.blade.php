@@ -47,7 +47,7 @@
                             <li><a href="/hr/user/main-overview">Overview</a></li>
                             <li><a href="/hr/user/analytics-hub">Analytics Hub</a></li>
                             <li><a href="/hr/user/hremployeedirectory">Employee Directory</a></li>
-                            <li><a href="/user">Organization Chart</a></li>
+                            <li><a href="/hr/user/hr-organisation-chart">Organization Chart</a></li>
                         </ul>
                     </li>
                     <li>
@@ -62,7 +62,7 @@
 
                             <li><a href="/hr/previous">Previous Employment</a></li>
                             <li><a href="/user">Separation</a></li>
-                            <li><a href="/user">Acess card details</a></li>
+                            <li><a href="/user">Access card details</a></li>
 
                             <li><a href="/user">Employee Contracts</a></li>
                             <li><a href="/hr/user/employee-salary">Employee Salary</a></li>
@@ -222,7 +222,6 @@
                         <a href="#">Main <i class="ph-caret-right-fill"></i></a>
                         <ul class="sidebar__dropdown-menu">
                             <li><a href="/hr/user/leave-overview">Leave Overview</a></li>
-                            <li><a href="/hr/user/hr-attendance-overview">Attendance Overview</a></li>
                             <li><a href="/hr/user/hr-attendance-overview">Attendance DailyView</a></li>
                             <li><a href="/hr/user/leave-calendar">Leave Calendar</a></li>
                             <li><a href="/hr/user/who-is-in-chart-hr">Who is in?</a></li>

@@ -1,6 +1,6 @@
 <div class="container mt-3">
     <div style="display: flex; justify-content: end;">
-        <button class="btn btn-primary mb-3" onclick="window.location='{{ route('signatory.create') }}'">
+        <button class="submit-btn" onclick="window.location='{{ route('signatory.create') }}'">
             Add Signatory
         </button>
     </div>

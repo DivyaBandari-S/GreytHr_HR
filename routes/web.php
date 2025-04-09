@@ -124,6 +124,7 @@ use App\Models\Task;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Response;
 use App\Livewire\HrProfile;
+use App\Livewire\KnowledgeBase;
 use App\Models\ClientProjects;
 
 /*
@@ -140,11 +141,13 @@ use App\Models\ClientProjects;
 // Route::get('/', function () {
 //     return view('welcome');
 // });
+   
 Route::middleware(['guest'])->group(function () {
     Route::get('/hrlogin', HrLogin::class)->name('hrlogin');
 });
 Route::middleware(['auth', 'auth.session'])->group(function () {
 
+        
     Route::get('/', HomeDashboard::class)->name('home');
     // Group routes under the 'hr' prefix
     Route::prefix('hr')->group(function () {
@@ -270,6 +273,8 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
         Route::get('/user/leaveYearEndProcess', YearEndProcess::class)->name('year-end-process');
         Route::get('/user/attendance-process', AttendanceProcess::class)->name('attendance-process');
         Route::get('/user/swipe-management-for-hr', SwipeManagementForHr::class)->name('swipe-management-for-hr');
+        Route::get('/user/hr-organisation-chart', HrOrganisationChart::class)->name('hr-organisation-chart');
+       
         Route::get('/user/hr-manual-override', HrManualOverride::class)->name('hr-manual-override');
         Route::get('/user/edit-attendance-exception-page/{id}', EditAttendanceExceptionPage::class)->name('edit-attendance-exception-page');
         Route::get('/user/edit-shift-override/{id}', EditShiftOverride::class)->name('edit-shift-override');
@@ -331,6 +336,10 @@ Route::get('/file/{id}', function ($id) {
 
 Route::get('/privacy-and-policy', function () {
     return view('privacy_policy_view');
+});
+
+Route::get('/knowledge-base', function () {
+    return view('knowledge_base_view');
 });
 
 Route::get('/Terms&Services', function () {

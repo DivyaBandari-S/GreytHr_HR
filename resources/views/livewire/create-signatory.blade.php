@@ -98,9 +98,9 @@
 
         </div>
 <div style="margin-left: 200px; margin-top: 25px">
-    <button type="submit" class="btn btn-success ">Save</button>
+    <button type="submit" class="submit-btn">Save</button>
     <button type="button" onclick="window.location='{{ route('authorize-signatory.page') }}'"
-        class="btn btn-secondary">
+        class="cancel-btn">
         Cancel
     </button>
 </div>

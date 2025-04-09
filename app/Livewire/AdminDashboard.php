@@ -22,6 +22,7 @@ use Illuminate\Support\Facades\Log;
 class AdminDashboard extends Component
 {
     public $show = false;
+    public $signInTime;
     public $totalEmployeeCount;
     public $totalNewEmployeeCount;
     public $totalNewEmployees;
@@ -47,10 +48,12 @@ class AdminDashboard extends Component
 
     public $selectedAction = null;
     public $dataEmp;
+    public $earlyOrOnTimeEmployees;
     public $topLeaveTakers;
     public $groupedByEmpId;
-
+    public $lateEmployees;
     public $swipes;
+    public $dateRange = 'thisMonth';
     public $tasksData = [];
 
     public $selectedOption = 'This Week';
@@ -64,51 +67,50 @@ class AdminDashboard extends Component
             'activeTab' => $activeTab,
             'selectedOption' => $this->selectedOption, // Optionally pass the selected option
         ]);
-        
     }
 
 
     public function loadChartData()
     {
         $startDate = null;
-    $endDate = null;
+        $endDate = null;
 
-    // Determine the date range based on the selected option
-    switch ($this->selectedOption) {
-        case 'This Week':
-            $startDate = Carbon::now()->startOfWeek();
-            $endDate = Carbon::now()->endOfWeek();
-            break;
-        case 'This Month':
-            $startDate = Carbon::now()->startOfMonth();
-            $endDate = Carbon::now()->endOfMonth();
-            break;
-        case 'Last Month':
-            $startDate = Carbon::now()->subMonth()->startOfMonth();
-            $endDate = Carbon::now()->subMonth()->endOfMonth();
-            break;
-        case 'This Year':
-            $startDate = Carbon::now()->startOfYear();
-            $endDate = Carbon::now()->endOfYear();
-            break;
-    }
-    $totalTasks = Task::whereBetween('created_at', [$startDate, $endDate])->count();
-    $closed = Task::where('status', 11)->whereBetween('created_at', [$startDate, $endDate])->count();
-    $opened = Task::where('status', 10)->whereBetween('created_at', [$startDate, $endDate])->count();
-    $overdue = Task::where('status', 10)
-                    ->whereDate('due_date', '<', now())
-                    ->whereBetween('created_at', [$startDate, $endDate])
-                    ->count();
+        // Determine the date range based on the selected option
+        switch ($this->selectedOption) {
+            case 'This Week':
+                $startDate = Carbon::now()->startOfWeek();
+                $endDate = Carbon::now()->endOfWeek();
+                break;
+            case 'This Month':
+                $startDate = Carbon::now()->startOfMonth();
+                $endDate = Carbon::now()->endOfMonth();
+                break;
+            case 'Last Month':
+                $startDate = Carbon::now()->subMonth()->startOfMonth();
+                $endDate = Carbon::now()->subMonth()->endOfMonth();
+                break;
+            case 'This Year':
+                $startDate = Carbon::now()->startOfYear();
+                $endDate = Carbon::now()->endOfYear();
+                break;
+        }
+        $totalTasks = Task::whereBetween('created_at', [$startDate, $endDate])->count();
+        $closed = Task::where('status', 11)->whereBetween('created_at', [$startDate, $endDate])->count();
+        $opened = Task::where('status', 10)->whereBetween('created_at', [$startDate, $endDate])->count();
+        $overdue = Task::where('status', 10)
+            ->whereDate('due_date', '<', now())
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->count();
 
-    $this->tasksData = [
-        'labels' => ['Opened', 'Closed', 'Overdue'],
-        'series' => $totalTasks > 0 ? [
-            round(($opened / $totalTasks) * 100, 2),
-            round(($closed / $totalTasks) * 100, 2),
-            round(($overdue / $totalTasks) * 100, 2),
-        ] : [0, 0, 0],
-        'totalTasks' => $totalTasks
-    ];
+        $this->tasksData = [
+            'labels' => ['Opened', 'Closed', 'Overdue'],
+            'series' => $totalTasks > 0 ? [
+                round(($opened / $totalTasks) * 100, 2),
+                round(($closed / $totalTasks) * 100, 2),
+                round(($overdue / $totalTasks) * 100, 2),
+            ] : [0, 0, 0],
+            'totalTasks' => $totalTasks
+        ];
         $this->render();
     }
     public function setAction($action)
@@ -125,8 +127,8 @@ class AdminDashboard extends Component
 
     public function mount()
     {
-
         try {
+            $this->signInTime = today()->format('Y-m-d');
             $this->getContainerData();
             $this->loginHRDetails();
             $this->setActiveTab($this->activeTab);
@@ -226,10 +228,16 @@ class AdminDashboard extends Component
         }
     }
 
+    public $currentYear;
+    public $currentMonth;
+    public $lastMonth;
     //get top 5 leavew takrs data
     public function getTopLeaveTakers()
     {
         try {
+            $currentYear = date('Y');
+            $currentMonth = date('m');
+            $lastMonth = date('m', strtotime('last month'));
             $employeeId = auth()->guard('hr')->user()->emp_id;
             $companyId = EmployeeDetails::where('emp_id', $employeeId)->value('company_id');
             // Fetch employee ids with status 1 and matching company_id
@@ -242,8 +250,15 @@ class AdminDashboard extends Component
 
             // Iterate through emp_ids to fetch matching leave takers
             foreach ($emp_ids as $emp_id) {
-                $approvedLeaves = LeaveHelper::getApprovedLeaveDays($emp_id, '2025');
-                $data[$emp_id] =  $approvedLeaves;
+                // Determine the period to fetch leave days for based on the selected range
+                if ($this->dateRange == 'thisMonth') {
+                    $approvedLeaves = LeaveHelper::getApprovedLeaveDaysForFilter($emp_id, $currentMonth, $this->dateRange); // This month
+                } elseif ($this->dateRange == 'lastMonth') {
+                    $approvedLeaves = LeaveHelper::getApprovedLeaveDaysForFilter($emp_id, $lastMonth, $this->dateRange); // Last month
+                } else {
+                    $approvedLeaves = LeaveHelper::getApprovedLeaveDaysForFilter($emp_id, $currentYear, $this->dateRange); // This year
+                }
+                $data[$emp_id] = $approvedLeaves;
             }
             // Initialize an array to store the top 5 highest leave days for each type
             $topLeaveDays = [];
@@ -266,22 +281,28 @@ class AdminDashboard extends Component
             } else {
                 $top5LeaveDays[] = [];
             }
-
-            // Iterate through the leave data and get the employee details
-            foreach ($top5LeaveDays as $key => $value) {
-                // Fetch the employee details based on emp_id
-                $employee = EmployeeDetails::where('emp_id', $key)->first();  // Assuming emp_id is unique
-                if ($employee) {
-                    // Map the employee details with the leave days
-                    $this->mappedLeaveData[$key] = [
-                        'totalLeave' => $value,
-                        'first_name' => $employee->first_name,
-                        'last_name' => $employee->last_name,
-                        'job_role' => $employee->job_role,
-                        'image' => $employee->image,
-                    ];
+            // Check if top4LeaveDays is set and not empty
+            if (isset($top5LeaveDays) && !empty($top5LeaveDays)) {
+                // Iterate through the leave data and get the employee details
+                foreach ($top5LeaveDays as $key => $value) {
+                    // Fetch the employee details based on emp_id
+                    $employee = EmployeeDetails::where('emp_id', $key)->first();  // Assuming emp_id is unique
+                    if ($employee) {
+                        // Map the employee details with the leave days
+                        $this->mappedLeaveData[$key] = [
+                            'totalLeave' => $value,
+                            'first_name' => $employee->first_name,
+                            'last_name' => $employee->last_name,
+                            'job_role' => $employee->job_role,
+                            'image' => $employee->image,
+                        ];
+                    }
                 }
+            } else {
+                // If top4LeaveDays is not set, map an empty array
+                $this->mappedLeaveData = [];
             }
+
         } catch (\Exception $e) {
             if ($e instanceof \Illuminate\Database\QueryException) {
                 // Handle database query exceptions
@@ -308,21 +329,43 @@ class AdminDashboard extends Component
         }
     }
 
-    //get sign in and sign out data
     public function getSignInOutData()
     {
         try {
+            // Fetch swipe data, including employee details
             $this->swipes = SwipeRecord::with('employee')
-                ->whereDate('created_at', today())
-                ->orderBy('emp_id') // Optional: ensure order by employee_id
+                ->whereDate('created_at', $this->signInTime)
+                ->orderBy('emp_id') // Ensure order by employee_id
                 ->orderBy('created_at', 'asc')  // Order by creation date to get the first swipe for each employee
                 ->get()
                 ->unique('emp_id');
-        } catch (\Exception  $e) {
-            Log::error("Database error getting leaves of employee: " . $e->getMessage());
+
+            // Initialize arrays to store late and early/on-time employees
+            $this->lateEmployees = [];
+            $this->earlyOrOnTimeEmployees = [];
+
+            // Loop through the swipes to check for late or early/on-time entries
+            foreach ($this->swipes as $swipe) {
+                // Parse the swipe time using Carbon
+                $swipeTime = Carbon::parse($swipe->swipe_time);
+
+                // Define the "late" threshold time (10:00 AM)
+                $lateThreshold = Carbon::createFromTime(10, 0, 0);  // 10:00 AM
+                // Check if the employee's swipe time is later than 10:00 AM and if it is an "IN" swipe
+                if ($swipe->in_or_out === 'IN' && $swipeTime->gt($lateThreshold)) {
+                    // Add the employee to the late employees array
+                    $this->lateEmployees[] = $swipe;
+                } else {
+                    // Add the employee to the early or on-time employees array
+                    $this->earlyOrOnTimeEmployees[] = $swipe;
+                }
+            }
+        } catch (\Exception $e) {
+            Log::error("Database error getting swipe data: " . $e->getMessage());
             FlashMessageHelper::flashError('An error occurred while getting swipe data. Please try again later.');
         }
     }
+
     public function loginHRDetails()
     {
         $user = auth()->guard('hr')->user();
@@ -644,7 +687,8 @@ class AdminDashboard extends Component
             'loginEmployee' => $this->loginEmployee,
             'topLeaveTakers' => $this->topLeaveTakers,
             'mappedLeaveData' => $this->mappedLeaveData,
-            'swipes' => $this->swipes
+            'lateEmployees' => $this->lateEmployees,
+            'swipes' => $this->earlyOrOnTimeEmployees
         ]);
     }
 }

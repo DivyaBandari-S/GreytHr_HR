@@ -291,6 +291,12 @@ ul {
     margin-top: 8px;
 }
 /* admin dashboard */
+.badgeSign{
+    background-color: var(--main-button-color);
+    color: white;
+    display: flex;
+    border-radius: 5px;
+}
 .text-bg-primary{
     color: white;
     background-color: var(--main-button-color);
@@ -7881,7 +7887,7 @@ button.btn.btn-link.edit-icon {
     margin-top: 15px;
 }
 .searchBtnBg {
-    background-color: rgb(2, 17, 79);
+    background-color: #306cc6;
     border-radius: 0 5px 5px 0;
 }
 .search-btn-leave {
