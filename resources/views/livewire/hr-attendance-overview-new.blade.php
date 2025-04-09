@@ -92,7 +92,7 @@
                     
                     <p>On the<span style="font-weight: bold;"> Attendance Overview</span> page,get an overview of your teams' attendance information. Get quick answers to questions<br/> such as Number of work hours completed by the team in a month,Summary of work hours,Who is in,and Access card details.</p>
                     <p>To view frequently asked questions <span style="color: #1fb6ff;cursor:pointer;"> click here</span>.</p>
-                    <span class="hide-attendance-help"  wire:click="hideHelp">Hide Help</span>
+                    <!-- <span class="hide-attendance-help"  wire:click="hideHelp">Hide Help</span> -->
                 </div>
         @else
           
