@@ -96,7 +96,7 @@
                     <button class="btn btn-outline-primary me-2"  wire:click="downloadExcel">
                         <i class="fas fa-download"></i>
                     </button>
-                    <button class="btn btn-primary" wire:click="showPrepareLetter">Prepare A Letter</button>
+                    <button class="submit-btn" wire:click="showPrepareLetter">Prepare A Letter</button>
                 </div>
             </div>
 
@@ -108,10 +108,10 @@
                             <th>Letter Template</th>
                             <th style="width: 140px;">Serial No</th>
                             <th>Employee</th>
-                            <th>Prepared On</th>
+                            <th  style="width: 15%;">Prepared On</th>
                             <th>Prepared By</th>
                             <th>Status</th>
-                            <th style="width: 22%;">Action</th> <!-- Add Action Column -->
+                            <th style="width: 14%;">Action</th> <!-- Add Action Column -->
                         </tr>
                     </thead>
                     <tbody>
@@ -151,16 +151,13 @@
 
                                 <td class="analytic-grey-text">{{ ucfirst($letter->status ?? 'Pending') }}</td>
                                 <!-- Default to 'Pending' -->
-                                <td>
-                                    {{-- <a href="" class="btn btn-sm btn-secondary">
-                                        View
-                                    </a> --}}
+                                {{-- <td>
+                                   
                                     <button class="btn btn-sm btn-secondary"
                                         wire:click="viewLetter({{ $letter->id }})">
                                         View
                                     </button>
 
-                                    <!-- Download Button -->
                                     <button class="btn btn-sm btn-info"
                                         wire:click="downloadLetter({{ $letter->id }})">
                                         Download
@@ -173,9 +170,20 @@
                                     </button>
 
 
-                                    {{-- <button class="btn btn-sm btn-info" wire:click="downloadLetter({{ $letter->id }})">
-                                        Download
-                                    </button> --}}
+                                  
+                                </td> --}}
+                                <td>
+                                    <!-- Action Icons: Edit, View, Delete -->
+                                    <a href="#" wire:click="viewLetter({{ $letter->id }})" title="View">
+                                        <i class="fas fa-eye text-secondary"></i>
+                                    </a>
+                                    <a href="#" wire:click="downloadLetter({{ $letter->id }})" title="Download" class="mx-2">
+                                        <i class="fas fa-download text-primary"></i>
+                                    </a>
+                                   
+                                    <a href="#" wire:click="publishLetter({{ $letter->id }})" title="Publish" class="mx-2" @if ($letter->status === 'Published') disabled @endif>
+                                        <i class="fas fa-paper-plane text-success"></i>
+                                    </a>
                                 </td>
                             </tr>
                         @empty

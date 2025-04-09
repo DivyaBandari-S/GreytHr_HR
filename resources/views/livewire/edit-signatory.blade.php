@@ -1,5 +1,5 @@
 <div class="container mt-3">
-    <h4>Edit Signatory</h4>
+    <h4 style="font-size: 18px;">Edit Signatory</h4>
     @if (session()->has('message'))
         <div class="alert alert-success">{{ session('message') }}</div>
     @endif
@@ -100,9 +100,9 @@
 
 
                 <div style="margin-left: 200px; margin-top: 25px">
-                    <button type="submit" class="btn btn-success">Save Changes</button>
+                    <button type="submit" class="submit-btn">Save Changes</button>
                     <button type="button" onclick="window.location='{{ route('authorize-signatory.page') }}'"
-                        class="btn btn-secondary">Cancel</button>
+                        class="cancel-btn">Cancel</button>
                 </div>
             </div>
         </div>
