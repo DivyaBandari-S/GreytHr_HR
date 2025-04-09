@@ -5,7 +5,7 @@
         <section class="tab-section">
             <div class="container-fluid">
                 <div class="tab-pane">
-                    <button type="button" data-tab-pane="active" class="tab-pane-item {{ $activeTab === 'active' ? 'active' : '' }}"  wire:click="setActiveTab('active')">
+                    <button type="button" data-tab-pane="active" class="tab-pane-item {{ $activeTab === 'active' ? 'active' : '' }}" wire:click="setActiveTab('active')">
                         <span class="tab-pane-item-title">01</span>
                         <span class="tab-pane-item-subtitle">Active</span>
                     </button>
@@ -74,18 +74,18 @@
                                             $route = ($contentList['route']); // Make sure route is properly escaped
 
                                     ?>
-                                    <a href="<?php echo $route; ?>"
-                                        class="scroll-item <?php echo $contentList['bgClass']; ?> pt-3 ps-3 pe-3">
-                                        <div class="row m-0">
-                                            <div class="col-6 p-0">
-                                                <i class=" <?php echo $contentList['iconClass']; ?> <?php echo $contentList['bgClass']; ?>-icon"></i>
-                                            </div>
-                                            <div class="col-6 p-0 text-end">
-                                                <i class="fa-solid fa-xmark closeIconFav"></i>
-                                            </div>
-                                        </div>
-                                        <p><?php echo $content; ?></p>
-                                    </a>
+                                            <a href="<?php echo $route; ?>"
+                                                class="scroll-item <?php echo $contentList['bgClass']; ?> pt-3 ps-3 pe-3">
+                                                <div class="row m-0">
+                                                    <div class="col-6 p-0">
+                                                        <i class=" <?php echo $contentList['iconClass']; ?> <?php echo $contentList['bgClass']; ?>-icon"></i>
+                                                    </div>
+                                                    <div class="col-6 p-0 text-end">
+                                                        <i class="fa-solid fa-xmark closeIconFav"></i>
+                                                    </div>
+                                                </div>
+                                                <p><?php echo $content; ?></p>
+                                            </a>
                                     <?php
                                             // Increment counter for the next item
                                             $counter++;
@@ -195,8 +195,14 @@
                             <div class="border mb-3 rounded row m-0">
                                 <div class="border-bottom m-0 mt-3 row">
                                     <div class="col-md-12">
-                                        <p class="fw-bold mb-0">Top 5 Leave Takers for All Leave Types</p>
-                                        <p class="fs12">01 Nov 2024 to 28 Feb 2025</p>
+                                        <div class="d-flex align-items-center justify-content-between mb-3 ">
+                                            <p class="fw-bold mb-0">Top 5 Leave Takers</p>
+                                            <select id="dateRange" class="dropdown" wire:model="dateRange" wire:click="getTopLeaveTakers">
+                                                <option value="thisMonth">This Month</option>
+                                                <option value="lastMonth">Last Month</option>
+                                                <option value="thisYear">This Year</option>
+                                            </select>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="table-responsive p-0">
@@ -210,43 +216,44 @@
                                         </thead>
                                         <tbody>
                                             @if ($mappedLeaveData)
-                                                @foreach ($mappedLeaveData as $key => $value)
-                                                    <tr>
-                                                        <td>
-                                                            <div class="d-flex gap-2">
-                                                                @if ($value['image'] && $value['image'] !== 'null')
-                                                                    <div class="employee-profile-img">
-                                                                        <img class="rounded-circle" height="35"
-                                                                            width="35"
-                                                                            src="data:image/jpeg;base64,{{ $value['image'] }} ">
-                                                                    </div>
-                                                                @else
-                                                                    <div class="employee-profile-img">
-                                                                        <img src="{{ asset('images/user.jpg') }}"
-                                                                            class=" rounded-circle" height="35"
-                                                                            width="35" alt="Default Image">
-                                                                    </div>
-                                                                @endif
-                                                                <div class="d-flex flex-column">
-                                                                    <span class="normalTextTruncated">
-                                                                        {{ ucwords(strtolower($value['first_name'])) }}
-                                                                        {{ ucwords(strtolower($value['last_name'])) }}
-                                                                    </span>
-                                                                    <span class="smallText">{{ $key }}</span>
-                                                                </div>
-                                                            </div>
-                                                        </td>
-                                                        <td>{{ $value['job_role'] }}</td>
-                                                        <td>
-                                                            <span
-                                                                class="text-danger fw-bold">{{ $value['totalLeave'] }}</span>
-                                                        </td>
-                                                    </tr>
-                                                @endforeach
+
+                                            @foreach ($mappedLeaveData as $key => $value)
+                                            <tr>
+                                                <td>
+                                                    <div class="d-flex gap-2">
+                                                        @if ($value['image'] && $value['image'] !== 'null')
+                                                        <div class="employee-profile-img">
+                                                            <img class="rounded-circle" height="35"
+                                                                width="35"
+                                                                src="data:image/jpeg;base64,{{ $value['image'] }} ">
+                                                        </div>
+                                                        @else
+                                                        <div class="employee-profile-img">
+                                                            <img src="{{ asset('images/user.jpg') }}"
+                                                                class=" rounded-circle" height="35"
+                                                                width="35" alt="Default Image">
+                                                        </div>
+                                                        @endif
+                                                        <div class="d-flex flex-column">
+                                                            <span class="normalTextTruncated">
+                                                                {{ ucwords(strtolower($value['first_name'])) }}
+                                                                {{ ucwords(strtolower($value['last_name'])) }}
+                                                            </span>
+                                                            <span class="smallText">{{ $key }}</span>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>{{ $value['job_role'] }}</td>
+                                                <td>
+                                                    <span
+                                                        class="text-danger fw-bold">{{ $value['totalLeave'] }}</span>
+                                                </td>
+                                            </tr>
+                                            @endforeach
                                             @else
-                                                <tr colspan="4">
-                                                    <td>No data found</td>
-                                                </tr>
+                                            <tr>
+                                                <td colspan="4">No data found</td>
+                                            </tr>
                                             @endif
                                         </tbody>
                                     </table>
@@ -258,7 +265,7 @@
                                         <p class="fw-bold">Employees</p>
                                     </div>
                                     <div class="col-md-6 text-end mb-3">
-                                        <button class="btn btn-outline-primary btn-sm">View All</button>
+                                        <button class="cancel-btn"><a href="/hr/update-employee-details" style="color:#306cc6;">View All</a></button>
                                     </div>
                                 </div>
 
@@ -274,55 +281,56 @@
                                 <div class="row m-0 mt-3">
 
                                     @if ($dataEmp)
-                                        @foreach ($dataEmp as $employee)
-                                            <div class="m-0 mb-3 p-2 row border-bottom">
-                                                <div style="display: flex; align-items: center;">
-                                                    @if ($employee->image && $employee->image !== 'null')
-                                                        <div class="employee-profile-img">
-                                                            <img class="rounded-circle" height="35" width="35"
-                                                                src="data:image/jpeg;base64,{{ $employee->image }} ">
-                                                        </div>
-                                                    @else
-                                                        @if ($employee->gender == 'FEMALE')
-                                                            <div class="employee-profile-img">
-                                                                <img src="{{ asset('images/female-default.jpg') }}"
-                                                                    class=" rounded-circle" height="35"
-                                                                    width="35" alt="Default Image">
-                                                            </div>
-                                                        @elseif($employee->gender == 'MALE')
-                                                            <div class="employee-profile-img">
-                                                                <img src="{{ asset('images/male-default.png') }}"
-                                                                    class=" rounded-circle" height="35"
-                                                                    width="35" alt="Default Image">
-                                                            </div>
-                                                        @else
-                                                            <div class="employee-profile-img">
-                                                                <img src="{{ asset('images/user.jpg') }}"
-                                                                    class=" rounded-circle" height="35"
-                                                                    width="35" alt="Default Image">
-                                                            </div>
-                                                        @endif
-                                                    @endif
-                                                    <div class="d-flex flex-column">
-                                                        <p class="normalTextTruncated"
-                                                            title="{{ ucwords(strtolower($employee->first_name)) }} {{ ucwords(strtolower($employee->last_name)) }}">
-                                                            {{ ucwords(strtolower($employee->first_name)) }}
-                                                            {{ ucwords(strtolower($employee->last_name)) }}</p>
-                                                        <p style="margin: 0; font-size: 12px; color: #666;">
-                                                            {{ preg_replace('/\bii\b/i', 'II', ucwords(strtolower($employee->job_role))) }}
-                                                        </p>
-
-                                                    </div>
-                                                    <span class="deptDetails">
-                                                        {{ ucwords(strtolower($employee->empDepartment->department)) }}
-                                                    </span>
-                                                </div>
+                                    @foreach ($dataEmp as $employee)
+                                    <div class="m-0 mb-3 p-2 row border-bottom">
+                                        <div style="display: flex; align-items: center;">
+                                            @if ($employee->image && $employee->image !== 'null')
+                                            <div class="employee-profile-img">
+                                                <img class="rounded-circle" height="35" width="35"
+                                                    src="data:image/jpeg;base64,{{ $employee->image }} ">
                                             </div>
-                                        @endforeach
-                                    @else
-                                        <div>
-                                            <span>No data</span>
+                                            @else
+                                            @if ($employee->gender == 'FEMALE')
+                                            <div class="employee-profile-img">
+                                                <img src="{{ asset('images/female-default.jpg') }}"
+                                                    class=" rounded-circle" height="35"
+                                                    width="35" alt="Default Image">
+                                            </div>
+                                            @elseif($employee->gender == 'MALE')
+                                            <div class="employee-profile-img">
+                                                <img src="{{ asset('images/male-default.png') }}"
+                                                    class=" rounded-circle" height="35"
+                                                    width="35" alt="Default Image">
+                                            </div>
+                                            @else
+                                            <div class="employee-profile-img">
+                                                <img src="{{ asset('images/user.jpg') }}"
+                                                    class=" rounded-circle" height="35"
+                                                    width="35" alt="Default Image">
+                                            </div>
+                                            @endif
+                                            @endif
+                                            <div class="d-flex flex-column">
+                                                <p class="normalTextTruncated"
+                                                    title="{{ ucwords(strtolower($employee->first_name)) }} {{ ucwords(strtolower($employee->last_name)) }}">
+                                                    {{ ucwords(strtolower($employee->first_name)) }}
+                                                    {{ ucwords(strtolower($employee->last_name)) }}
+                                                </p>
+                                                <p style="margin: 0; font-size: 12px; color: #666;">
+                                                    {{ preg_replace('/\bii\b/i', 'II', ucwords(strtolower($employee->job_role))) }}
+                                                </p>
+
+                                            </div>
+                                            <span class="deptDetails">
+                                                {{ ucwords(strtolower($employee->empDepartment->department)) }}
+                                            </span>
                                         </div>
+                                    </div>
+                                    @endforeach
+                                    @else
+                                    <div>
+                                        <span class="fw-normal fs12 p-0">No data</span>
+                                    </div>
                                     @endif
                                 </div>
 
@@ -336,74 +344,106 @@
                                         <p class="fw-bold">Clock-In/Out</p>
                                     </div>
                                     <div class="col-md-6 text-end mb-3">
-                                        <button class="btn btn-outline-primary btn-sm"><i
-                                                class="fa-regular fa-calendar"></i> This Week</button>
+                                        <div class="form-group">
+                                            <input type="date" class="form-control" wire:model="signInTime" wire:change="getSignInOutData">
+                                        </div>
                                     </div>
                                 </div>
 
                                 <div class="row m-0 mt-3">
-                                    @if($swipes)
-                                    @foreach ($swipes as $swipe)
+                                    @if($earlyOrOnTimeEmployees && $earlyOrOnTimeEmployees[0]->employee)
+                                    <p class="fw-bold fs14 p-0">Early/On Time</p>
+                                    @foreach ($earlyOrOnTimeEmployees as $swipe)
+                                    @if($swipe->employee)
                                     <div class="m-0 mb-3 p-2 row border">
                                         <div style="display: flex; align-items: center;">
-                                            @if($swipe->employee->image && $swipe->employee->image !=='null')
+                                            @if($swipe->employee->image && $swipe->employee->image !== 'null')
                                             <div class="employee-profile-img">
-                                                <img class="rounded-circle" height="35" width="35" src="data:image/jpeg;base64,{{($swipe->employee->image)}} ">
+                                                <img class="rounded-circle" height="35" width="35" src="data:image/jpeg;base64,{{ $swipe->employee->image }}">
                                             </div>
                                             @else
-                                            @if($swipe->employee->gender=='FEMALE')
+                                            @if($swipe->employee->gender == 'FEMALE')
                                             <div class="employee-profile-img">
-                                                <img src="{{ asset('images/female-default.jpg') }}" class=" rounded-circle" height="35" width="35" alt="Default Image">
+                                                <img src="{{ asset('images/female-default.jpg') }}" class="rounded-circle" height="35" width="35" alt="Default Image">
                                             </div>
-                                            @elseif($swipe->employee->gender=='MALE')
+                                            @elseif($swipe->employee->gender == 'MALE')
                                             <div class="employee-profile-img">
-                                                <img src="{{ asset('images/male-default.png') }}" class=" rounded-circle" height="35" width="35" alt="Default Image">
+                                                <img src="{{ asset('images/male-default.png') }}" class="rounded-circle" height="35" width="35" alt="Default Image">
                                             </div>
                                             @else
                                             <div class="employee-profile-img">
-                                                <img src="{{ asset('images/user.jpg') }}" class=" rounded-circle" height="35" width="35" alt="Default Image">
+                                                <img src="{{ asset('images/user.jpg') }}" class="rounded-circle" height="35" width="35" alt="Default Image">
                                             </div>
                                             @endif
                                             @endif
                                             <div class="d-flex flex-column col">
-                                                <p class="mb-0 normalTextTruncated">{{ ucwords(strtolower($swipe->employee->first_name)) }} {{ ucwords(strtolower($swipe->employee->last_name)) }}</p>
-                                                <p class="smallText mb-0">{{ ucwords(strtolower($swipe->employee->job_role)) }}</p>
+                                                <p class="mb-0 normalTextTruncated">{{ ucwords(strtolower($swipe->employee->first_name ?? 'N/A')) }} {{ ucwords(strtolower($swipe->employee->last_name ?? 'N/A')) }}</p>
+                                                <p class="smallText mb-0">{{ ucwords(strtolower($swipe->employee->job_role ?? 'N/A')) }}</p>
                                             </div>
                                             <div class="col d-flex justify-content-center align-items-center">
-                                                <span class="normalText"> {{ $swipe->in_or_out }} </span>
+                                                <span class="normalText">{{ $swipe->in_or_out }}</span>
                                             </div>
-                                            <div class="col d-flex justify-content-center align-items-center">
-                                                <span class="badge col" >{{ \Carbon\Carbon::parse($swipe->swipe_time) }}
-                                                </span>
+                                            <div class="d-flex justify-content-center align-items-center">
+                                                <span class="badge text-bg-success">{{ \Carbon\Carbon::parse($swipe->swipe_time)->format('H:i') }}</span>
                                             </div>
                                         </div>
                                     </div>
+                                    @endif
                                     @endforeach
                                     @else
-                                        <p class="fw-bold fs14 p-0">No Data Found</p>
+                                    <p class="fw-normal fs12 p-0">No Early/On Time Employees Found</p>
                                     @endif
+                                    @if(count($lateEmployees) > 0 && isset($lateEmployees[0]->employee))
                                     <p class="fw-bold fs14 p-0">Late</p>
+                                    @foreach($lateEmployees as $lateSwipe)
+                                    @if($lateSwipe->employee)
                                     <div class="m-0 mb-3 p-2 row border">
                                         <div style="display: flex; align-items: center;">
-                                            <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-24.jpg"
-                                                style="width: 2em; height: 2em; border-radius: 50%; margin-right: 8px;" />
-                                            <div style="display: flex; flex-direction: column;">
-                                                <p style="font-weight: bold; margin: 0; font-size: 14px;">Daniel
-                                                    Esbella</p>
-                                                <p style="margin: 0; font-size: 12px; color: #666;">UI/UX Designer</p>
+                                            @if($lateSwipe->image && $lateSwipe->image !== 'null')
+                                            <div class="employee-profile-img">
+                                                <img class="rounded-circle" height="35" width="35" src="data:image/jpeg;base64,{{ $lateSwipe->employee->image }}">
                                             </div>
-                                            <i class="fa-regular fa-clock me-2"
-                                                style="vertical-align: middle; margin-left: auto"></i>
-                                            <span class="badge text-bg-danger" style="margin-left: auto;">09 :
-                                                06</span>
+                                            @else
+                                            @if($lateSwipe->employee->gender == 'FEMALE')
+                                            <div class="employee-profile-img">
+                                                <img src="{{ asset('images/female-default.jpg') }}" class="rounded-circle" height="35" width="35" alt="Default Image">
+                                            </div>
+                                            @elseif($lateSwipe->employee->gender == 'MALE')
+                                            <div class="employee-profile-img">
+                                                <img src="{{ asset('images/male-default.png') }}" class="rounded-circle" height="35" width="35" alt="Default Image">
+                                            </div>
+                                            @else
+                                            <div class="employee-profile-img">
+                                                <img src="{{ asset('images/user.jpg') }}" class="rounded-circle" height="35" width="35" alt="Default Image">
+                                            </div>
+                                            @endif
+                                            @endif
+                                            <div class="d-flex flex-column col">
+                                                <p class="mb-0 normalTextTruncated">{{ ucwords(strtolower($lateSwipe->employee->first_name ?? 'N/A')) }} {{ ucwords(strtolower($lateSwipe->employee->last_name ?? 'N/A')) }}</p>
+                                                <p class="smallText mb-0">{{ ucwords(strtolower($lateSwipe->employee->job_role ?? 'N/A')) }}</p>
+                                            </div>
+                                            <div class="col d-flex justify-content-center align-items-center">
+                                                <span class="normalText">{{ $lateSwipe->in_or_out }}</span>
+                                            </div>
+                                            <div class="d-flex justify-content-center align-items-center">
+                                                <span class="badge text-bg-danger">{{ \Carbon\Carbon::parse($lateSwipe->swipe_time)->format('H:i') }}</span>
+                                            </div>
                                         </div>
                                     </div>
+                                    @endif
+                                    @endforeach
+                                    @else
+                                    <p class="fw-normal fs12 p-0">No late employees today.</p>
+                                    @endif
                                 </div>
+
 
                                 <div class="row m-0 my-3">
                                     <div class="d-grid gap-2 p-0">
-                                        <button class="btn btn-outline-secondary btn-sm" type="button">View All
-                                            Attendance</button>
+                                        <a href="{{ route('employee-swipes-for-hr') }}" class="btn btn-outline-secondary btn-sm">
+                                            View All Attendance
+                                        </a>
+
                                     </div>
                                 </div>
                             </div>
@@ -643,14 +683,14 @@
                                             </ul>
                                         </div>
                                     </div>
-                                    
-                                    
+
+
                                 </div>
                                 <div style="height: 200px;">
                                     @if (!empty($tasksData['series']) && array_sum($tasksData['series']) > 0)
-                                        <div id="taskStatusChart" wire:ignore></div>
+                                    <div id="taskStatusChart" wire:ignore></div>
                                     @else
-                                        <p>No data available for the chart.</p>
+                                    <p>No data available for the chart.</p>
                                     @endif
 
 
@@ -658,7 +698,7 @@
                                 <div class="row m-0 mt-3">
                                     <div class="col-md-4 border-end text-center">
                                         <p class="fs14 mb-2"><i class="fa-solid fa-circle"
-                                                style="color: #008ffb"></i> Opened</p>
+                                                style="color: #306cc6"></i> Opened</p>
                                         <p class="fs14 mb-2 fw-bold">{{ $tasksData['series'][0] ?? 0 }}%</p>
                                     </div>
                                     <div class="col-md-4 border-end text-center">
@@ -670,18 +710,6 @@
                                         <p class="fs14 mb-2"><i class="fa-solid fa-circle"
                                                 style="color: #feb019"></i> Overdue</p>
                                         <p class="fs14 mb-2 fw-bold">{{ $tasksData['series'][2] ?? 0 }}%</p>
-                                    </div>
-                                </div>
-
-                                <div class="row m-0">
-                                    <div class="row m-0 bg-dark rounded py-2 my-3">
-                                        <div class="col-md-8 mb-3">
-                                            <p class="mb-1 fw-bold" style="color: #00e396">389/689 hrs</p>
-                                            <p class="text-white fs14 mb-0">Spent on Overall Tasks This Week</p>
-                                        </div>
-                                        <div class="col-md-4 text-end m-auto">
-                                            <button class="btn btn-sm btn-light">View All</button>
-                                        </div>
                                     </div>
                                 </div>
 
@@ -796,42 +824,42 @@
 
     <!-- Modal -->
     @if ($showDynamicContent)
-        <div class="modal" id="logoutModal" tabindex="-1" style="display: block;">
-            <div class="modal-dialog modal-lg modal-dialog-scrollable">
-                <div class="modal-content">
-                    <div class="modal-header text-white">
-                        <h6 class="modal-title " id="logoutModalLabel" style="align-items: center;">Search</h6>
-                        <button type="button" class="btn-close" wire:click="toggleContent"
-                            style="cursor: pointer;"></button>
+    <div class="modal" id="logoutModal" tabindex="-1" style="display: block;">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header text-white">
+                    <h6 class="modal-title " id="logoutModalLabel" style="align-items: center;">Search</h6>
+                    <button type="button" class="btn-close" wire:click="toggleContent"
+                        style="cursor: pointer;"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="input-group flex-nowrap">
+                        <span class="input-group-text"><i class="fa-solid fa-magnifying-glass"></i></span>
+                        <input type="text" class="form-control" wire:model.live="searchContent"
+                            placeholder="Search here">
                     </div>
-                    <div class="modal-body">
-                        <div class="input-group flex-nowrap">
-                            <span class="input-group-text"><i class="fa-solid fa-magnifying-glass"></i></span>
-                            <input type="text" class="form-control" wire:model.live="searchContent"
-                                placeholder="Search here">
-                        </div>
-                        <div class="row m-0 mb-3">
-                            <p class="mt-1x">
-                                <span class="chipTextFav {{ $categoryFilter === '' ? 'active' : '' }}"
-                                    wire:click="setCategory('')">All</span>
-                                <span class="chipTextFav {{ $categoryFilter === 'favorites' ? 'active' : '' }}"
-                                    wire:click="setCategory('favorites')">My Favourites</span>
-                                <span class="chipTextFav {{ $categoryFilter === 'employee' ? 'active' : '' }}"
-                                    wire:click="setCategory('employee')">Employee</span>
-                                <span class="chipTextFav {{ $categoryFilter === 'payroll' ? 'active' : '' }}"
-                                    wire:click="setCategory('payroll')">Payroll</span>
-                                <span class="chipTextFav {{ $categoryFilter === 'leave' ? 'active' : '' }}"
-                                    wire:click="setCategory('leave')">Leave</span>
-                                <span class="chipTextFav {{ $categoryFilter === 'attendance' ? 'active' : '' }}"
-                                    wire:click="setCategory('attendance')">Attendance</span>
-                                <span class="chipTextFav {{ $categoryFilter === 'other' ? 'active' : '' }}"
-                                    wire:click="setCategory('other')">Other</span>
-                            </p>
+                    <div class="row m-0 mb-3">
+                        <p class="mt-1x">
+                            <span class="chipTextFav {{ $categoryFilter === '' ? 'active' : '' }}"
+                                wire:click="setCategory('')">All</span>
+                            <span class="chipTextFav {{ $categoryFilter === 'favorites' ? 'active' : '' }}"
+                                wire:click="setCategory('favorites')">My Favourites</span>
+                            <span class="chipTextFav {{ $categoryFilter === 'employee' ? 'active' : '' }}"
+                                wire:click="setCategory('employee')">Employee</span>
+                            <span class="chipTextFav {{ $categoryFilter === 'payroll' ? 'active' : '' }}"
+                                wire:click="setCategory('payroll')">Payroll</span>
+                            <span class="chipTextFav {{ $categoryFilter === 'leave' ? 'active' : '' }}"
+                                wire:click="setCategory('leave')">Leave</span>
+                            <span class="chipTextFav {{ $categoryFilter === 'attendance' ? 'active' : '' }}"
+                                wire:click="setCategory('attendance')">Attendance</span>
+                            <span class="chipTextFav {{ $categoryFilter === 'other' ? 'active' : '' }}"
+                                wire:click="setCategory('other')">Other</span>
+                        </p>
 
-                        </div>
+                    </div>
 
-                        <div class="row m-0" style="max-height:350px;overflow-y:auto;">
-                            <?php
+                    <div class="row m-0" style="max-height:350px;overflow-y:auto;">
+                        <?php
                         foreach ($this->overviewItems as $item) {
                         ?>
                             <div class="col-md-3 homeContainers d-flex flex-column">
@@ -852,20 +880,20 @@
                                     </p>
                                 </div>
                             </div>
-                            <?php
+                        <?php
                         }
                         ?>
-                        </div>
+                    </div>
 
 
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="cancel-btn" wire:click="toggleContent">Close</button>
-                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="cancel-btn" wire:click="toggleContent">Close</button>
                 </div>
             </div>
         </div>
-        <div class="modal-backdrop fade show"></div>
+    </div>
+    <div class="modal-backdrop fade show"></div>
     @endif
     <script>
         document.addEventListener("DOMContentLoaded", function() {
