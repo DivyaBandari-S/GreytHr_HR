@@ -145,12 +145,12 @@
         @if($showHelp==false) 
         <div class="attendance-overview-help">
             <p style="font-size:13px;">The employee directory lists all employee in your organisation.<br/>Filters are available to select employees in a certain category(location,department, etc.) or by status.</p>
-            <p style="font-size:13px;">Explore HR Expert by <a href="https://admin-help.greythr.com/admin/answers/123712613" target="_blank" style="color: #1fb6ff;cursor:pointer;">Help-Doc</a>. <a href="https://youtu.be/drrSfJrjHz0?si=BrqYlKmNr9kFrHLT" target="_blank" style="color: #1fb6ff;cursor:pointer;">&nbsp;How-to Watch Videos&nbsp;</a>and<a href="https://greythr.freshdesk.com/support/search/solutions?term=attendance+overview"style="color: #1fb6ff;cursor:pointer;">&nbsp;FAQ&nbsp;</a>.</p>
+            <p style="font-size:13px;">Explore HR Expert by <a href="/knowledge-base"style="color: #1fb6ff;cursor:pointer;">&nbsp;FAQ&nbsp;</a>.</p>
             <span class="hide-attendance-help"wire:click="hideHelp">Hide Help</span>
         </div>    
         @else 
         <div class="attendance-overview-help-for-showhelp">
-           <button style="font-size: 14px;background-color: white; margin-top: -20px; float: right; color: #0000FF; border: 1px solid #ffff; border-radius: 5px; cursor: pointer;padding: 5px 20px;font-weight:bold;"wire:click="showhelp">Show&nbsp;&nbsp;Help</button>
+           <button style="font-size:14px;background-color: white; margin-top: -20px; float: right; color: #0000FF; border: 1px solid #ffff; border-radius: 5px; cursor: pointer; padding: 5px 20px;font-weight:bold;"wire:click="showhelp">Show&nbsp;&nbsp;Help</button>
         </div> 
         @endif    
       
@@ -208,7 +208,7 @@
                 <th>Employee ID</th>
                 <th>Employee Name</th>
                 <th>Joining Date</th>
-                <th>Status</th>
+                <th>Job Role</th>
                 <th>Phone No</th>
                 <th>Email</th>
                 <th>Extension No</th>
