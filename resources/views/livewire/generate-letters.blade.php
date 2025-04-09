@@ -150,28 +150,7 @@
                                 <td class="analytic-grey-text">{{ ucwords(strtolower($preparedBy)) }}</td>
 
                                 <td class="analytic-grey-text">{{ ucfirst($letter->status ?? 'Pending') }}</td>
-                                <!-- Default to 'Pending' -->
-                                {{-- <td>
-                                   
-                                    <button class="btn btn-sm btn-secondary"
-                                        wire:click="viewLetter({{ $letter->id }})">
-                                        View
-                                    </button>
-
-                                    <button class="btn btn-sm btn-info"
-                                        wire:click="downloadLetter({{ $letter->id }})">
-                                        Download
-                                    </button>
-
-                                    <button class="btn btn-sm btn-success"
-                                        wire:click="publishLetter({{ $letter->id }})"
-                                        @if ($letter->status === 'Published') disabled @endif>
-                                        Publish
-                                    </button>
-
-
-                                  
-                                </td> --}}
+                  
                                 <td>
                                     <!-- Action Icons: Edit, View, Delete -->
                                     <a href="#" wire:click="viewLetter({{ $letter->id }})" title="View">
