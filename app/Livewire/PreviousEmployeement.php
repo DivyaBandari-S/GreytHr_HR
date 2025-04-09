@@ -90,6 +90,28 @@ public $hire_date;
     public $editingField = false;
     public $company_name, $designation, $from_date, $to_date, $years_of_experience,$months_of_experience;
     public $nature_of_duties, $leaving_reason, $pf_member_id, $last_drawn_salary;
+    protected $rules = [
+        'company_name' => 'required|string|max:255',
+        'designation' => 'required|string|max:255',
+        'from_date' => 'required|date',
+        'to_date' => 'required|date|after_or_equal:from_date',
+        'nature_of_duties' => 'nullable|string',
+        'leaving_reason' => 'nullable|string',
+        'pf_member_id' => 'nullable|string|max:50',
+        'last_drawn_salary' => 'nullable|numeric|min:0',
+    ];
+    
+    protected $messages = [
+        'company_name.required' => 'Company name is required.',
+        'designation.required' => 'Designation is required.',
+        'from_date.required' => 'Start date is required.',
+        'to_date.required' => 'End date is required.',
+        'to_date.after_or_equal' => 'End date must be after or equal to start date.',
+        'to_date.before' => 'End date must be before joining date.',
+        'last_drawn_salary.numeric' => 'Salary must be a number.',
+        'last_drawn_salary.min' => 'Salary must be at least 0.',
+        'pf_member_id.max' => 'PF Member ID can’t exceed 50 characters.',
+    ];
 
     public function updatesearchTerm()
     {
@@ -629,11 +651,11 @@ public function calculateYearsAndMonths()
     $this->months_of_experience = $months;
 }
 
-
 public function saveExperience()
 {
-       // Save the experience data
-       $emp_id = $this->selectedPeople[0] ?? null;
+    $emp_id = $this->selectedPeople[0] ?? null;
+
+    // Dynamic validation rule for to_date based on hire_date
     $this->validate([
         'company_name' => 'required|string|max:255',
         'designation' => 'required|string|max:255',
@@ -643,37 +665,49 @@ public function saveExperience()
         'leaving_reason' => 'nullable|string',
         'pf_member_id' => 'nullable|string|max:50',
         'last_drawn_salary' => 'nullable|numeric|min:0',
+    ], $this->messages);
+
+    if (!$emp_id) {
+        session()->flash('error', 'Selected employee not found.');
+        return;
+    }
+
+    $selectedPerson = EmployeeDetails::find($emp_id);
+
+    if (!$selectedPerson) {
+        session()->flash('error', 'Employee record not found.');
+        return;
+    }
+
+    // Experience calculation
+    $start = new \DateTime($this->from_date);
+    $end = new \DateTime($this->to_date);
+    $interval = $start->diff($end);
+    $this->years_of_experience = $interval->y;
+    $this->months_of_experience = $interval->m;
+
+    // Save record
+    PreviousEmployement::create([
+        'emp_id' => $emp_id,
+        'company_name' => $this->company_name,
+        'designation' => $this->designation,
+        'from_date' => $this->from_date,
+        'to_date' => $this->to_date,
+        'years_of_experience' => $this->years_of_experience,
+        'months_of_experience' => $this->months_of_experience,
+        'nature_of_duties' => $this->nature_of_duties,
+        'leaving_reason' => $this->leaving_reason,
+        'pf_member_id' => $this->pf_member_id,
+        'last_drawn_salary' => $this->last_drawn_salary,
     ]);
 
- 
-
-    if ($emp_id) {
-        $selectedPerson = EmployeeDetails::find($emp_id);
-        if ($selectedPerson) {
-            $years_of_experience = date_diff(date_create($this->from_date), date_create($this->to_date))->y;
-            $this->years_of_experience = $years_of_experience; 
-            PreviousEmployement::create([
-                'emp_id' => $emp_id,
-                'company_name' => $this->company_name,
-                'designation' => $this->designation,
-                'from_date' => $this->from_date,
-                'to_date' => $this->to_date,
-                'years_of_experience' => $this->years_of_experience,
-                'months_of_experience' => $this->months_of_experience,
-                'nature_of_duties' => $this->nature_of_duties,
-                'leaving_reason' => $this->leaving_reason,
-                'pf_member_id' => $this->pf_member_id,
-                'last_drawn_salary' => $this->last_drawn_salary,
-            ]);
-
-            session()->flash('message', 'Experience details saved successfully.');
-            $this->showPreviousDialog=false;
-          
-        }
-    } else {
-        session()->flash('error', 'Selected employee not found.');
-    }
+    session()->flash('message', 'Experience details saved successfully.');
+    $this->resetForm();
+    $this->showPreviousDialog = false;
 }
+
+// ✅ Reset form method
+
 
 
     public function render()

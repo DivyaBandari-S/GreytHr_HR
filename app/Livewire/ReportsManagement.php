@@ -51,6 +51,7 @@ class ReportsManagement extends Component
     public $searching = 0;
     public $notFound;
 
+    public $includeFamilyDetails=false;
     public $formattedWorkHrsMinutes;
     public $excessHrsMinutes;
     public $holiday;
@@ -263,8 +264,13 @@ public function downloadAbsentReportInExcel()
     return Excel::download(new AbsentEmployeesExport($missingData), 'absent_report_employees.xlsx');
 }
 
+public function includeEmployeeFamilyDetails()
+{
+    $this->includeFamilyDetails = !$this->includeFamilyDetails;
+}
     public function downloadFamilyDetailsReport()
     {
+     
         
         $rows = [];
         $data = [
@@ -273,7 +279,14 @@ public function downloadAbsentReportInExcel()
  
         ];
         $rows=$data;
-        $employees2=EmployeeDetails::where('employee_status','active')->get();
+        if($this->EmployeeId)
+        {
+            $employees2=EmployeeDetails::whereIn('emp_id',$this->EmployeeId)->where('employee_status','active')->get();
+        }
+        else
+        {
+            $employees2=EmployeeDetails::where('employee_status','active')->get();
+        }
         foreach ($employees2 as $employee) {
 
             $selfData = [
@@ -334,8 +347,12 @@ public function downloadAbsentReportInExcel()
                 ];
      
                 // Add the parent's details row to the rows array
-                $rows[] = $motherData;
-                $rows[]= $fatherData;
+                if($this->includeFamilyDetails)
+                {
+                    $rows[] = $motherData;
+                    $rows[]= $fatherData;
+                }
+                
             }
             if ($employee_is_married) {
                 $spouseDetails = DB::table('emp_spouse_details')->where('emp_id', $employee['emp_id'])->first(); // Use first() instead of get() to get a single record
@@ -376,10 +393,13 @@ public function downloadAbsentReportInExcel()
                             ];
                         }
                        
-                       
+                        if($this->includeFamilyDetails)
+                        {
+                            $rows[] = $spouseData;
+                        }
                        
                     // Add the parent's details row to the rows array
-                    $rows[] = $spouseData;
+                    
                     if ($employee_has_children) {
                         $childrenDetails = DB::table('emp_spouse_details')->where('emp_id', $employee['emp_id'])->select('children')->first();
                        
@@ -426,7 +446,11 @@ public function downloadAbsentReportInExcel()
                                         ];
                             }
                                 // Add the child's details row to the rows array
-                                $rows[] = $childrenData;
+                                
+                                if($this->includeFamilyDetails)
+                                {
+                                    $rows[] = $childrenData;
+                                }
                             }
                         }
                        
@@ -463,8 +487,13 @@ public function downloadAbsentReportInExcel()
         $this->employeeTypeForAttendance='allEmployees';
         $this->EmployeeId=[];
         $this->employeesForSelection='all';
+        // $this->includeFamilyDetails!=$this->includeFamilyDetails;
     }
 
+    public function includeLeftEmployeesForReports()
+    {
+        
+    }
     public function toggleStarred($id)
     {
         try {

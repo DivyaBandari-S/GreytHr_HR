@@ -206,8 +206,7 @@
                                 <div class="secondary-text">
         Explore HR Xpert by 
         <span class="hide-text">Help-Doc</span>, watching How-to 
-        <span class="hide-text">Videos</span> and 
-        <span class="hide-text">FAQ</span>
+        <span class="hide-text">Videos</span> 
     </div>
     @endif
   
@@ -280,7 +279,7 @@
     wire:model.debounce.500ms="searchTerm"
     aria-label="{{ $selectedEmployeeFirstName ? ucfirst(strtolower($selectedEmployeeFirstName)) . ' ' . ucfirst(strtolower($selectedEmployeeLastName)) : 'Search for an employee...' }}"
     placeholder="{{ $selectedEmployeeFirstName ? ucfirst(strtolower($selectedEmployeeFirstName)) . ' ' . ucfirst(strtolower($selectedEmployeeLastName)) : 'Search for an employee...' }}"
-    type="text"
+    type="text"  wire:click="searchforEmployee"
     class="form-control search-term"
     style="padding-left: 50px; padding-right: 35px;"   wire:click="searchforEmployee"
 />
@@ -966,13 +965,32 @@
                         </div>
                     @elseif($activeTab1 === 'tab4')
                         <div class="tab-pane fade show active">
-                            <h3>Content for Tab 4</h3>
-                            <p>This is the content for the fourth tab.</p>
+                  
+                        <div class="d-flex justify-content-start align-items-start mt-2">
+                <div class="card text-start">
+                <div class="no-data  text-align-center justify-content-center align-items-center" style="width:900px;height:300px">
+        <img src="{{ asset('images/no-data_Gif.gif') }}" 
+     alt="No data available" 
+     style="width:100%; height: 250px; object-fit: contain;">
+
+            <p>No data available</p>
+        </div>
+        </div>
+        </div>
                         </div>
                     @elseif($activeTab1 === 'tab5')
                         <div class="tab-pane fade show active">
-                            <h3>Content for Tab 5</h3>
-                            <p>This is the content for the fifth tab.</p>
+                        <div class="d-flex justify-content-start align-items-start mt-2">
+                <div class="card text-start">
+                <div class="no-data  text-align-center justify-content-center align-items-center" style="width:900px;height:300px">
+        <img src="{{ asset('images/no-data_Gif.gif') }}" 
+     alt="No data available" 
+     style="width:100%; height: 250px; object-fit: contain;">
+
+            <p>No data available</p>
+        </div>
+        </div>
+        </div>
                         </div>
                     @endif
                 </div>

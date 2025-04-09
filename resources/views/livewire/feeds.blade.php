@@ -519,28 +519,7 @@
                                 <span class="custom-radio-content ">Posts</span>
                             </label>
                         </div>
-                        @if ($isManager)
-                            <div class="post-requests">
-                                <label class="custom-radio-label">
-
-                                    <input type="radio" id="radio-emp" name="radio" value="post-requests"
-                                        data-url="/emp-post-requests" wire:click="handleRadioChange('post-requests')">
-
-                                    <div class="feed-icon-container" style="margin-left: 10px;">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12"
-                                            viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                            class="feather feather-file stroke-current text-purple-400 stroke-1"
-                                            style="width: 1rem; height: 1rem;">
-                                            <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path>
-                                            <polyline points="13 2 13 9 20 9"></polyline>
-                                        </svg>
-                                    </div>
-                                    <span class="custom-radio-button bg-blue"></span>
-                                    <span class="custom-radio-content ">Post Requests</span>
-                                </label>
-                            </div>
-                        @endif
+                    
 
 
                         <hr style="width: 100%;border-bottom: 1px solid grey;">

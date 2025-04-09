@@ -116,54 +116,64 @@
     <div class="leave-transctions">
         <div class="pdf-heading">
             @php
-            // Check if company_id is an array or JSON
-            $companyIds = is_array($employeeDetails->company_id) ? $employeeDetails->company_id : json_decode($employeeDetails->company_id, true);
+            use App\Models\EmployeeDetails;
+            use App\Models\Company;
+            $employeeId = auth()->guard('hr')->user()->emp_id;
+
+            // Fetch the company_ids for the logged-in employee
+            $companyIds = EmployeeDetails::where('emp_id', $employeeId)->value('company_id');
+
+            // Check if companyIds is an array; decode if it's a JSON string
+            $companyIdsArray = is_array($companyIds) ? $companyIds : json_decode($companyIds, true);
         @endphp
-             @if (in_array('XSS-12345', $companyIds))
-             <img src="{{ asset('public/images/company_logo.png') }}"
-             alt="" style="width:100px;height:100px;">
-                <div>
-                    <h2>XSILICA SOFTWARE SOLUTIONS P LTD <br>
-                        <span>
-                            <p>3rd Floor, Unit No.4, Kapil Kavuri Hub IT Block, Nanakramguda Main Road, Hyderabad,
-                                Rangareddy, <br> Telangana, 500032</p>
-                        </span>
-                    </h2>
-                    <h3>Leave Transactions From
-                        {{ \Carbon\Carbon::parse($fromDate)->format('d M Y') }} to
-                        {{ \Carbon\Carbon::parse($toDate)->format('d M Y') }}</h3>
-                </div>
-                <!-- payglogo -->
-                @elseif (in_array('PAYG-12345', $companyIds))
-                <img src="https://play-lh.googleusercontent.com/qUGkF93p010_IHxbn8FbnFWZfqb2lk_z07i6JkpOhC9zf8hLzxTdRGv2oPpNOOGVaA=w600-h300-pc0xffffff-pd"
-                    style="width:200px;height:125px;">
-                <div>
-                    <h2> PayG <br>
-                        <span>
-                            <p>3rd Floor, Unit No.4, Kapil Kavuri Hub IT Block, Nanakramguda Main Road, Hyderabad,
-                                Rangareddy, <br> Telangana, 500032</p>
-                        </span>
-                    </h2>
-                    <h3>Leave Transactions From
-                        {{ \Carbon\Carbon::parse($fromDate)->format('d M Y') }} to
-                        {{ \Carbon\Carbon::parse($toDate)->format('d M Y') }}</h3>
-                </div>
-                <!-- attune golabal logo -->
-                @elseif (in_array('AGS-12345', $companyIds))
-                <img src="https://images.crunchbase.com/image/upload/c_lpad,h_256,w_256,f_auto,q_auto:eco,dpr_1/rxyycak6d2ydcybdbb3e"
-                    alt="" style="width:200px;height:125px;">
-                <div>
-                    <h2>Attune Global Solutions<br>
-                        <span>
-                            <p>3rd Floor, Unit No.4, Kapil Kavuri Hub IT Block, Nanakramguda Main Road, Hyderabad,
-                                Rangareddy, <br> Telangana, 500032</p>
-                        </span>
-                    </h2>
-                    <h3>Leave Transactions From
-                        {{ \Carbon\Carbon::parse($fromDate)->format('d M Y') }} to
-                        {{ \Carbon\Carbon::parse($toDate)->format('d M Y') }}</h3>
-                </div>
-            @endif
+               @foreach ($companyIdsArray as $companyId)
+               @php
+                   // Fetch the company by company_id
+                   $company = Company::where('company_id', $companyId)->where('is_parent', 'yes')->first();
+               @endphp
+
+               @if ($company)
+                   <!-- Display company details if a matching company is found -->
+                   @if ($company->company_id === 'XSS-12345')
+                       <img src="data:image/jpeg;base64,{{ $company->company_logo }}">
+                       <div>
+                           <h2>XSILICA SOFTWARE SOLUTIONS P LTD <br>
+                               <span>
+                                   <p>3rd Floor, Unit No.4, Kapil Kavuri Hub IT Block, Nanakramguda Main Road,
+                                       Hyderabad, Rangareddy, <br> Telangana, 500032</p>
+                               </span>
+                           </h2>
+                           <h3>Leave Transactions From {{ \Carbon\Carbon::parse($fromDate)->format('d M Y') }} to
+                               {{ \Carbon\Carbon::parse($toDate)->format('d M Y') }}</h3>
+                       </div>
+                   @elseif($company->company_id === 'PAYG-12345')
+                       <img src="data:image/jpeg;base64,{{ $company->company_logo }}" style="width:200px;height:125px;">
+                       <div>
+                           <h2> PayG <br>
+                               <span>
+                                   <p>3rd Floor, Unit No.4, Kapil Kavuri Hub IT Block, Nanakramguda Main Road,
+                                       Hyderabad, Rangareddy, <br> Telangana, 500032</p>
+                               </span>
+                           </h2>
+                           <h3>Leave Transactions From {{ \Carbon\Carbon::parse($fromDate)->format('d M Y') }} to
+                               {{ \Carbon\Carbon::parse($toDate)->format('d M Y') }}</h3>
+                       </div>
+                   @elseif($company->company_id === 'AGS-12345')
+                       <img src="data:image/jpeg;base64,{{ $company->company_logo }}" alt=""
+                           style="width:200px;height:125px;">
+                       <div>
+                           <h2>Attune Global Solutions<br>
+                               <span>
+                                   <p>3rd Floor, Unit No.4, Kapil Kavuri Hub IT Block, Nanakramguda Main Road,
+                                       Hyderabad, Rangareddy, <br> Telangana, 500032</p>
+                               </span>
+                           </h2>
+                           <h3>Leave Transactions From {{ \Carbon\Carbon::parse($fromDate)->format('d M Y') }} to
+                               {{ \Carbon\Carbon::parse($toDate)->format('d M Y') }}</h3>
+                       </div>
+                   @endif
+               @endif
+           @endforeach
         </div>
     </div>
 

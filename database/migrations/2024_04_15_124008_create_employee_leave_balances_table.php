@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('period', 25)->nullable();
             $table->string('periodicity', 25)->nullable();
             $table->string('granted_for_year', 10)->nullable();
-            $table->boolean('is_lapsed')->defaullt(false);
+            $table->boolean('is_lapsed')->default(false);
             $table->timestamp('lapsed_date')->nullable();
             $table->string('from_date', 25)->nullable();
             $table->string('to_date', 25)->nullable();

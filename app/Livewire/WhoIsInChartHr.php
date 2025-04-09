@@ -184,11 +184,14 @@ class WhoIsInChartHr extends Component
             ];
 
             foreach ($swipes as $employee) {
-                $swipeTime = Carbon::parse($employee->swipe_time);
-                $shiftStartTime = $employee->shift_start_time;
-                $swipeTime1 = Carbon::parse($employee['created_at'])->format('H:i:s');
+                $swipeDateTime = Carbon::parse($employee->swipe_time);
+                $shiftDateTime = Carbon::parse($employee->shift_start_time);
+                $swipeTime = Carbon::createFromTime($swipeDateTime->hour, $swipeDateTime->minute, $swipeDateTime->second);
+                $shiftStartTime = Carbon::createFromTime($shiftDateTime->hour, $shiftDateTime->minute, $shiftDateTime->second);
+                
+                // $swipeTime1 = Carbon::parse($employee['created_at'])->format('H:i:s');
                 $lateArrivalTime = $swipeTime->diff(Carbon::parse($shiftStartTime))->format('%H:%I');
-                $isLateBy10AM = $swipeTime->format('H:i') >= $shiftStartTime;
+                $isLateBy10AM = $swipeTime >= $shiftStartTime;
                 if($isLateBy10AM)
                 {
                     $data[] = [$employee['emp_id'], ucwords(strtolower($employee['first_name'])) . ucwords(strtolower($employee['last_name'])), Carbon::parse($employee['swipe_time'])->format('H:i:s'), $lateArrivalTime];
@@ -272,12 +275,10 @@ class WhoIsInChartHr extends Component
                 $isEarlyBy10AM = $swipeTime->format('H:i') <=$shiftStartTime;
                 if($isEarlyBy10AM)
                 {
-                    $data[] = [$employee['emp_id'], ucwords(strtolower($employee['first_name'])).' '. ucwords(strtolower($employee['last_name'])), $employee['swipe_time'], $earlyArrivalTime];
+                    $data[] = [$employee['emp_id'], ucwords(strtolower($employee['first_name'])).' '. ucwords(strtolower($employee['last_name'])), Carbon::parse($employee['swipe_time'])->format('H:i:s'), $earlyArrivalTime];
                 }
             }
-            $filePath = storage_path('app/employees_on_time.xlsx');
-            SimpleExcelWriter::create($filePath)->addRows($data);
-            return response()->download($filePath, 'employees_on_time.xlsx');
+            return Excel::download(new LateArrivalsExport($data), 'early_employees.xlsx');
         } catch (\Exception $e) {
             Log::error('Error generating Excel report for early/on-time arrivals: ' . $e->getMessage());
             session()->flash('error', 'An error occurred while generating the Excel report. Please try again.');
@@ -335,11 +336,7 @@ class WhoIsInChartHr extends Component
                 $data[] = [$employee['emp_id'], ucwords(strtolower($employee['first_name'])) . ' ' . ucwords(strtolower($employee['last_name'])), $employee['leave_type'], $employee['number_of_days']];
             }
 
-            $filePath = storage_path('app/employees_on_leave.xlsx');
-
-            SimpleExcelWriter::create($filePath)->addRows($data);
-
-            return response()->download($filePath, 'employees_on_leave.xlsx');
+            return Excel::download(new LateArrivalsExport($data), 'employees_on_leave.xlsx');
         } catch (\Exception $e) {
             Log::error('Error generating Excel report for leave: ' . $e->getMessage());
             session()->flash('error', 'An error occurred while generating the Excel report. Please try again.');

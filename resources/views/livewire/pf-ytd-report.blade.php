@@ -136,8 +136,7 @@
                             <div class="secondary-text">
     Explore HR Xpert by 
     <span class="hide-text">Help-Doc</span>, watching How-to 
-    <span class="hide-text">Videos</span> and 
-    <span class="hide-text">FAQ</span>
+    <span class="hide-text">Videos</span> 
 </div>
 @endif
 

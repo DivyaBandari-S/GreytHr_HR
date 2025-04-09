@@ -1,10 +1,10 @@
 <div class="container mt-3">
     <!-- Add Client Button -->
-    <div style="display: flex; justify-content: end;">
-        <button class="btn btn-primary mb-3" style=" margin-right: 10px;" onclick="window.location='{{ route('client.create') }}'">
+    <div style="display: flex; justify-content: end; gap: 10px;">
+        <button class="submit-btn"  onclick="window.location='{{ route('client.create') }}'">
             Add Client
         </button>
-        <button class="btn btn-secondary mb-3 ml-2" onclick="window.location='{{ route('assign.project') }}'">
+        <button class="cancel-btn" onclick="window.location='{{ route('assign.project') }}'">
             Assign Project
         </button>
        
@@ -41,6 +41,19 @@
                             @endif
                         </td>
                         <td>
+                            <!-- Action Icons: Edit, View, Delete -->
+                            <a href="#" onclick="window.location='{{ route('client.edit', ['clientId' => $client->client_id]) }}'" {{ $client->status == 1 ? 'disabled' : '' }} title="Edit">
+                                <i class="fas fa-edit text-secondary"></i>
+                            </a>
+                            <a href="#" wire:click="delete({{ $client->client_id }})" {{ $client->status == 1 ? 'disabled' : '' }} title="Delete" class="mx-2">
+                                <i class="fas fa-trash text-primary"></i>
+                            </a>
+                           
+                            <button class="submit-btn" onclick="window.location='{{ route('project.create', ['client_id' => $client->client_id]) }}'" {{ $client->status == 1 ? 'disabled' : '' }}>
+                                Add Project
+                            </button>
+                        </td>
+                        {{-- <td>
                             <!-- Edit Button (always enabled) -->
                             <button class="btn btn-sm btn-secondary" onclick="window.location='{{ route('client.edit', ['clientId' => $client->client_id]) }}'" {{ $client->status == 1 ? 'disabled' : '' }}>
                                 Edit
@@ -54,10 +67,8 @@
                             </button>
                         
                             <!-- Add Project Button (disabled if status is 1) -->
-                            <button class="btn btn-sm btn-info" onclick="window.location='{{ route('project.create', ['client_id' => $client->client_id]) }}'" {{ $client->status == 1 ? 'disabled' : '' }}>
-                                Add Project
-                            </button>
-                        </td>
+                           
+                        </td> --}}
                         
                     </tr>
                 @empty
