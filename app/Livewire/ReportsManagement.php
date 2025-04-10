@@ -152,6 +152,7 @@ class ReportsManagement extends Component
     {
         $this->reportsGallery = AddFavoriteReport::all();
        
+       
     }
     
    

@@ -126,6 +126,7 @@ use Illuminate\Support\Facades\Response;
 use App\Livewire\HrProfile;
 use App\Livewire\KnowledgeBase;
 use App\Models\ClientProjects;
+use App\Models\FineAndDamage;
 
 /*
 |--------------------------------------------------------------------------
@@ -256,6 +257,7 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
         Route::get('/user/hr-attendance-overview', HrAttendanceOverviewNew::class)->name('attendance-overview');
         Route::get('/user/leave-calendar', HrLeaveCalendar::class)->name('Leave-calendar');
         Route::get('/user/who-is-in-chart-hr', WhoIsInChartHr::class)->name('who-is-in-chart-hr');
+        Route::get('/user/fine-and-damage', FineAndDamageComponent::class)->name('fine-and-damage');
 
         //HR Leave-Infomation Submodule Routes
         Route::get('/user/employee-leave', EmployeeLeave::class)->name('employee-leave');

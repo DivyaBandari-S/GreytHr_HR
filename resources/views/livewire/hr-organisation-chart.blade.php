@@ -1158,7 +1158,7 @@
                                 </div>
                 </div>        
         </div>
-                    
+                 
        @livewire('flowchart',['selectedEmployeeId'=>$selectedEmployeeId])
                      
         </div>

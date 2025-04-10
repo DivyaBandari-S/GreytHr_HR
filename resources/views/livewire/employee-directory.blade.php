@@ -200,9 +200,9 @@
  
       
      
-    <div class="table-container"style="max-height:300px;overflow-y:auto;width:100%; margin:0;padding:0 10px;">  
-      <table id="employee-table">
-        <thead style="position:sticky;top:0;">
+    <div class="table-container"style="max-height:300px;overflow-x:auto; width:100%; margin:0;scrollbar-width:none">  
+      <table id="employee-table"style="margin:0px" >
+        <thead style="position: sticky;top:0px">
             <tr>
                 <th>#</th>
                 <th>Employee ID</th>
@@ -215,7 +215,7 @@
                 <th>Status</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody style="max-height:300px;overflow-y:auto;">
         @if(count($records)>0)    
         @foreach($records as $r1)    
             <tr>

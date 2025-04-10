@@ -7959,8 +7959,8 @@ button.btn.btn-link.edit-icon {
 }
 
 .custom-checkbox input:checked+.checkmark {
-    background-color: rgb(2, 17, 79);
-    border: 1px solid rgb(2, 17, 79);
+    background-color: #306cc6;
+    border: 1px solid #306cc6;
 }
 
 .checkmark:after {
