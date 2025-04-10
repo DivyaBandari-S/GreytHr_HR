@@ -94,7 +94,7 @@
                     <li>
                         <a href="#">Statutory <i class="ph-caret-right-fill"></i></a>
                         <ul class="sidebar__dropdown-menu">
-                            <li><a href="/home">Fines/Damages</a></li>
+                            <li><a href="/hr/user/fine-and-damage">Fines/Damages</a></li>
                         </ul>
                     </li>
                 </ul>

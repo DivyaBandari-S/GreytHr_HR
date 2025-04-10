@@ -49,7 +49,7 @@
         text-align: right; /* Align content to the right */
     border-radius: 5px;
     padding: 5px;
-    margin-left:930px;
+    margin-left: 800px;
    
 }
 .dropdown-container {
