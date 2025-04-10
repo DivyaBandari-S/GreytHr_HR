@@ -652,13 +652,13 @@
 
     <div class="m-3 d-flex justify-content-start gap-3">
         @if ($currentStep > 1)
-            <button class="btn btn-secondary" wire:click="previousStep">Previous</button>
+            <button class="btn btn-secondary" style="font-size: 12px;" wire:click="previousStep">Previous</button>
         @endif
-        <button class="btn btn-light">Cancel</button>
+        <button class="cancel-btn">Cancel</button>
         @if ($currentStep < 3)
-            <button class="btn btn-primary" wire:click="nextStep">Next</button>
+            <button class="submit-btn" wire:click="nextStep">Next</button>
         @else
-            <button class="btn btn-success" wire:click="saveLetter">Generate Letter</button>
+            <button class="submit-btn" wire:click="saveLetter">Generate Letter</button>
         @endif
     </div>
 </div>
