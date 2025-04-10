@@ -21,6 +21,7 @@ use Livewire\Component;
 class YearEndProcess extends Component
 {
     public $employeeIds = [];
+    public $getManagerIds = [];
     public $pendingLeaveRequests;
     public $employeeDetailsList;
     public $managerDetails;
@@ -36,6 +37,7 @@ class YearEndProcess extends Component
     public $selectedLeaveRequestIds = [];
     public $selectAll = false;
     public $endDate;
+    public $managerInfo = 'all';
     public $yearRange;
     public $leavePolicyData = [];
     public $selectedYear;
@@ -45,6 +47,7 @@ class YearEndProcess extends Component
     public $showYearEndProcessModal = false;
     public $selectedLeaveNames = [];
     public $filteredLeaveData;
+    public $managerDetailsInfo;
     public function mount()
     {
 
@@ -72,6 +75,19 @@ class YearEndProcess extends Component
 
             // Decode the company IDs if necessary
             $companyIdsArray = is_array($companyID) ? $companyID : json_decode($companyID, true);
+
+            $this->getManagerIds = EmployeeDetails::where(function ($query) use ($companyIdsArray) {
+                foreach ($companyIdsArray as $companyId) {
+                    $query->orWhere('company_id', 'like', "%\"$companyId\"%");
+                }
+            })
+                ->whereNotNull('manager_id')
+                ->distinct()
+                ->pluck('manager_id');
+            //manager details
+            $this->managerDetailsInfo = EmployeeDetails::whereIn('emp_id', $this->getManagerIds)
+                ->select('first_name', 'last_name','emp_id')
+                ->get();
 
             // Query employees based on company IDs and status
             $this->employeeIds = EmployeeDetails::where(function ($query) use ($companyIdsArray) {
@@ -136,12 +152,22 @@ class YearEndProcess extends Component
             if (empty($this->employeeIds)) {
                 throw new \Exception('Employee IDs are not available.');
             }
-
             // Calculate the date exactly 3 working days ago
             $dateThreshold = $this->subtractWorkingDays(3);
 
-            // Query leave requests where the difference between created_at and current date is exactly 3 working days
-            $this->pendingLeaveRequests = LeaveRequest::whereIn('emp_id', $this->employeeIds)
+            // Check if managerInfo is set and filter leave requests based on the selected manager
+            if ($this->managerInfo != 'all' && !empty($this->managerInfo)) {
+                // Get employee IDs whose manager_id matches the selected managerInfo
+                $employeeIds = EmployeeDetails::where('manager_id', $this->managerInfo)
+                    ->pluck('emp_id')
+                    ->toArray(); // Get all employee IDs for the selected manager
+            } else {
+                // Use employeeIds if no specific manager is selected
+                $employeeIds = $this->employeeIds;
+            }
+
+            // Query leave requests where the employee ID is in the list of filtered employee IDs
+            $this->pendingLeaveRequests = LeaveRequest::whereIn('emp_id', $employeeIds)
                 ->whereDate('created_at', '<=', $dateThreshold) // Fetch requests on or before 3 working days ago
                 ->where(function ($query) {
                     $query->where('leave_status', 5)
@@ -175,6 +201,7 @@ class YearEndProcess extends Component
             return collect(); // Return an empty collection on error
         }
     }
+
 
     private function subtractWorkingDays($days)
     {
@@ -234,7 +261,7 @@ class YearEndProcess extends Component
             } else {
                 // Remove the ID if it's already in the array (toggle selection)
                 $this->selectedLeaveRequestIds = array_diff($this->selectedLeaveRequestIds, [$id]);
-            }   
+            }
         } catch (\Exception $e) {
             // Catch any exception that occurs and log the error or show a message
             FlashMessageHelper::flashError("An error occurred while selecting the employee: " . $e->getMessage());
@@ -962,6 +989,7 @@ class YearEndProcess extends Component
             'currentPage' => $this->currentPage,
             'totalImages' => $this->totalImages,
             'totalPages' => $this->totalPages,
+            'managerDetailsInfo' => $this->managerDetailsInfo
         ]);
     }
 }

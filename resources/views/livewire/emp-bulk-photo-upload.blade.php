@@ -1,7 +1,7 @@
 <div>
 
     <div class="container-fluid px-1  rounded">
-        <ul class="nav leave-grant-nav-tabs d-flex gap-3 py-1" id="myTab" role="tablist">
+        <ul class="nav bg-white leave-grant-nav-tabs d-flex gap-3 py-1" id="myTab" role="tablist">
 
             <li class="leave-grant-nav-item" role="presentation">
 
@@ -22,7 +22,7 @@
                 <div class="row m-0 px-4 ">
                     <div class="main-overview-help d-flex px-3">
                         <div class="col-md-11 col-10 d-flex flex-column  ">
-                            <p class="main-overview-text mb-1">greytHR is equipped to upload photos in bulk from the Bulk Photo Upload page. This saves time in the manual upload of each employee's photos and the errors that may creep in due to the repetitive nature of the task.
+                            <p class="main-overview-text mb-1">HrExpert is equipped to upload photos in bulk from the Bulk Photo Upload page. This saves time in the manual upload of each employee's photos and the errors that may creep in due to the repetitive nature of the task.
                             </p>
                         </div>
                     </div>
@@ -175,7 +175,7 @@
                                             <div class="input-group">
                                                 <input type="text" class="form-control" id="selecetedEmployees_{{ $index }}"
                                                     wire:click="toggleEmployeeContainer('{{ $index }}')"
-                                                    wire:model="selectedEmployees.{{ $index }}"  value="{{ $selectedEmployees ? $selectedEmployees['emp_id'] : '' }}"  readonly>
+                                                    wire:model="selectedEmployees.{{ $index }}" value="{{ $selectedEmployees ? $selectedEmployees['emp_id'] : '' }}" readonly>
                                                 <div class="input-group-append bg-white border" wire:click="toggleEmployeeContainer('{{ $index }}')">
                                                     <span class="input-group-text" style="border:none; background:none;">
                                                         <i class="ph-caret-down-fill"></i>
@@ -256,10 +256,33 @@
                 @endif
             </div>
             <div class="tab-pane" id="dashboard-tab-pane" role="tabpanel" aria-labelledby="dashboard-tab" tabindex="0">
-                <div>
-                    activity review
-                </div>
+                @if($getActivity)
+                <div class="d-flex flex-column align-item-center justify-content-start mt-3 px-4">
+                    @foreach ($getActivity as $activity)
+                    <span class="normalText mb-3">
+                        &rarr; Photos uploaded by
+                        <strong class="fw-500">{{ ucwords(strtolower($activity->employee->first_name)) }} {{ ucwords(strtolower($activity->employee->first_name)) }} (#{{ $activity->uploaded_by }}).</strong>
+                        <br>
 
+                        <span class="muted">Updated at {{ \Carbon\Carbon::parse($activity->uploaded_at)->format('Y m d H:i:s') }}</span>
+                        <br>
+
+                        @if ($activity->status == 'Completed')
+                        <span class="mute">Status: <span style="color:green;">{{ $activity->status }}</span></span>
+                        @elseif ($activity->status == 'Cancelled')
+                        <span class="mute">Status: <span style="color:red;">{{ $activity->status }}</span></span>
+                        @else
+                        <span class="mute">Status: <span style="color:gray;">{{ $activity->status }}</span></span>
+                        @endif
+                    </span>
+                    @endforeach
+
+                </div>
+                @else
+                <div class="d-flex align-item-center justify-content-center">
+                    <span>No activity data found.</span>
+                </div>
+                @endif
             </div>
         </div>
 

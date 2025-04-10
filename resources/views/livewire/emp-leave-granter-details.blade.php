@@ -1,8 +1,8 @@
-<div >
+<div>
 
     <div class="container-fluid px-1  rounded">
 
-        <ul class="nav leave-grant-nav-tabs d-flex gap-3 py-1" id="myTab" role="tablist">
+        <ul class="nav bg-white leave-grant-nav-tabs d-flex gap-3 py-1" id="myTab" role="tablist">
 
             <li class="leave-grant-nav-item" role="presentation">
 
@@ -27,16 +27,14 @@
                         <div class="col-md-11 col-10 d-flex flex-column">
                             <p class="main-overview-text mb-1">The <span class="msgHeighlighter">Leave Granter</span> page displays a summary of all leaves credited (granted) to employees for the current leave year. Click the icons present adjacent to each row to further manage the data. Leave is usually granted automatically as per schedule. However, you can also grant leave manually by clicking the <span class="msgHeighlighter">Grant Leave</span> button. </p>
                         </div>
-                        <div class="hide-main-overview-help col-md-1 col-2 d-flex align-items-start">
-                            <span wire:click="hideHelp">Hide Help</span>
-                        </div>
+
                     </div>
                 </div>
                 <div class="leave-granter px-3">
                     <div class="row m-0 p-0">
                         <div class="col-md-5"></div>
-                        <div class="col-md-5"></div>
-                        <div class="col-md-2  p-0">
+                        <div class="col-md-4"></div>
+                        <div class="col-md-3  p-0">
                             <div class="date-picker d-flex justify-content-end">
                                 <select id="selectedYear" wire:model="selectedYear" wire:change="updateDateRange" class="form-control" style="font-size: 14px;">
                                     <option value="" disabled>Select Year</option>
@@ -302,7 +300,11 @@
                 @if($showActiveGrantLeave)
                 <div class="grantLeaveTab px-3 py-2">
                     <div class="row g-2 mb-3 p-0">
-                        <div class="col-md-6"></div>
+                        <div class="col-md-6">
+                            <div class="d-flex justify-content-start">
+                                <a class="submit-btn" href="{{ route('grant-summary') }}" style="color:white;">Back</a>
+                            </div>
+                        </div>
                         <div class="col-md-6 d-flex justify-content-end gap-2">
                             <div class="date-picker p-0">
                                 <!-- Start Year Dropdown -->
@@ -321,7 +323,7 @@
                     <div>
                         <!-- Employee Selection -->
                         <div class="mb-3 row mt-2 d-flex align-items-center">
-                            <div class="col-md-2">
+                            <div class="col-md-3">
                                 <div class="form-check">
                                     <div>
                                         <input
@@ -336,7 +338,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-10 ">
+                            <div class="col-md-9">
                                 <div class="d-flex align-items-center gap-4">
                                     <div class="form-check">
                                         <div>
@@ -413,7 +415,16 @@
                                 </div>
                             </div>
                         </div>
-
+                        @if($selectedEmployees && $getSelectedEmpData)
+                        <div class="row m-0 mb-3">
+                            <div class="f-flex align-items-center">
+                                <strong class="fs12">Selected Employee :</strong>
+                                <span class="normalText">{{ ucwords(strtolower($getSelectedEmpData->first_name)) }} {{ ucwords(strtolower($getSelectedEmpData->last_name)) }}
+                                    (#{{ $getSelectedEmpData->emp_id }})
+                                </span>
+                            </div>
+                        </div>
+                        @endif
                         <div class="row m-0 mb-3 p-0">
                             <!-- Periodicity and Period -->
                             <div class="col-md-12 p-0">
@@ -455,12 +466,15 @@
                             </div>
                         </div>
                         @if($showFromTodates)
-                        <div>
-                            <label for="from_date">From Date</label>
-                            <input type="date" id="from_date" wire:model="from_date" wire:change="calculateToDate">
-
-                            <label for="to_date">To Date</label>
-                            <input type="date" id="to_date" wire:model="to_date">
+                        <div class="form-row d-flex gap-3 mb-3">
+                            <div class="form-group">
+                                <label for="from_date">From Date</label>
+                                <input type="date" id="from_date" class="form-control" wire:model="from_date" wire:change="calculateToDate">
+                            </div>
+                            <div class="form-group">
+                                <label for="to_date">To Date</label>
+                                <input type="date" id="to_date" wire:model="to_date" class="form-control">
+                            </div>
                         </div>
 
                         @endif
@@ -512,13 +526,13 @@
 
             </div>
 
-                <div class="tab-pane" id="dashboard-tab-pane" role="tabpanel" aria-labelledby="dashboard-tab" tabindex="0">
+            <div class="tab-pane" id="dashboard-tab-pane" role="tabpanel" aria-labelledby="dashboard-tab" tabindex="0">
 
-                    <div>
-                        activity review
-                    </div>
-
+                <div>
+                    activity review
                 </div>
+
+            </div>
 
         </div>
 
