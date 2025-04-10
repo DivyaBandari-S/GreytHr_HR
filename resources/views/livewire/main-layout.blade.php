@@ -222,7 +222,7 @@
                         <a href="#">Main <i class="ph-caret-right-fill"></i></a>
                         <ul class="sidebar__dropdown-menu">
                             <li><a href="/hr/user/leave-overview">Leave Overview</a></li>
-                            <li><a href="/hr/user/hr-attendance-overview">Attendance DailyView</a></li>
+                            <li><a class="attendance_dailyview" href="/hr/user/hr-attendance-overview">Attendance DailyView</a></li>
                             <li><a href="/hr/user/leave-calendar">Leave Calendar</a></li>
                             <li><a href="/hr/user/who-is-in-chart-hr">Who is in?</a></li>
                         </ul>
