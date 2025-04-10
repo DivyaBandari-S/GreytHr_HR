@@ -40,6 +40,7 @@ class CTCSlips extends Component
     public $showConfDialog = false;
     public $filePath;
     public $selectedOption = 'all';
+
     public $searchTerm = '';
     public $peopleData = [];
     public $empId;

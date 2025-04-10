@@ -22,10 +22,11 @@ class EmpBulkPhotoUpload extends Component
     public $log;
     public $status;
     public $searchTerm;
-    public $selecetedEmployee;
     public $showUploadContent  = false;
-
+    public $selectedEmployees = [];
+    public $openEmployeeContainers = [];
     public $folderId;
+    public $empId;
     public $employeeIds = [];
     public $perPage = 4;  // Define how many images per page
     public $currentPage = 1; // Default to page 1
@@ -215,8 +216,7 @@ class EmpBulkPhotoUpload extends Component
         }
     }
 
-    public $selectedEmployees = [];
-    public $openEmployeeContainers = [];
+
     public function getSelectedEmployee($empId, $imagePath, $index)
     {
         // Initialize selected employees array if it's not set
@@ -401,8 +401,6 @@ class EmpBulkPhotoUpload extends Component
                 ]);
                 // Call the extractZipFile method after successful file upload
                 $this->extractZipFile($this->upload);
-
-                FlashMessageHelper::flashSuccess('Zip file uploaded and images extraction started!');
                 $this->zip_file = null;
                 $this->nextStep();
             } else {
@@ -571,8 +569,8 @@ class EmpBulkPhotoUpload extends Component
             'currentPageUploaded' => $this->currentPageUploaded,
             'paginatedData' => $this->paginatedData,
             'totaluploadedPages' => $this->totaluploadedPages,
-            'totalUploaded' => $this->totalUploaded
-
+            'totalUploaded' => $this->totalUploaded,
+            'selectedEmployees' => $this->selectedEmployees
         ]);
     }
 }

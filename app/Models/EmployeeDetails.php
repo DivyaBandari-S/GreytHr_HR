@@ -58,7 +58,9 @@ class EmployeeDetails extends Authenticatable
         'probation_Period',
         'service_age',
         'confirmation_date',
+        'mpin'
     ];
+    protected $hidden = ['password', 'remember_token', 'mpin'];
 
     protected $casts = [
         'company_id' => 'array',
@@ -159,7 +161,7 @@ class EmployeeDetails extends Authenticatable
 
 
     // Conversations the employee is part of
-  
+
     // Define the relationship with the Department model
     public function department()
     {

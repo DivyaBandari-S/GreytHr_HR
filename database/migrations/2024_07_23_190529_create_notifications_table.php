@@ -28,7 +28,7 @@ return new class extends Migration
             $table->dateTime('message_read_at')->nullable();
             $table->longText('body')->nullable();
             $table->boolean('is_read')->default(false);
-            $table->enum('leave_type', ['Casual Leave', 'Sick Leave', 'Loss Of Pay', 'Maternity Leave', 'Casual Leave Probation', 'Marriage Leave', 'Petarnity Leave', 'Work From Home']);
+            $table->enum('leave_type', ['Casual Leave', 'Sick Leave', 'Loss Of Pay', 'Maternity Leave', 'Casual Leave Probation', 'Marriage Leave', 'Petarnity Leave', 'Work From Home','Earned Leave']);
             $table->foreign('emp_id')
                 ->references('emp_id')
                 ->on('employee_details')
