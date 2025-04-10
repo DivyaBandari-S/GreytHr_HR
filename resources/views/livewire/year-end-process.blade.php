@@ -1,4 +1,4 @@
-<div l>
+<div class="px-3">
     <div>
         <nav>
             <div class="nav nav-tabs" id="nav-tab" role="tablist">
@@ -32,10 +32,11 @@
                     <div class="container mt-4">
                         <div class="d-flex gap-2 align-items-center mb-2">
                             <label for="managerFilter" class="managerFilter">Manager: </label>
-                            <select id="managerFilter" class="form-select w-auto">
+                            <select id="managerFilter" class="form-select w-auto" wire:model="managerInfo" wire:change="getPendingLeaveRequests">
                                 <option value="all">All</option>
-                                <option value="manager1">Manager 1</option>
-                                <option value="manager2">Manager 2</option>
+                                @foreach ($managerDetailsInfo as $manager)
+                                <option value="{{ $manager->emp_id }} ">{{ ucwords(strtolower($manager->first_name)) }} {{ ucwords(strtolower($manager->last_name)) }}</option>
+                                @endforeach
                             </select>
                         </div>
 
@@ -113,7 +114,7 @@
                             <div class="modal-dialog modal-dialog-centered">
                                 <div class="modal-content">
                                     <div class="modal-header text-white">
-                                        <h6 class="modal-title " id="logoutModalLabel" style="align-items: center;">Confirmation</h6>
+                                        <h6 class="modal-title " id="logoutModalLabel" style="align-items: center;"> Confirmation</h6>
                                     </div>
                                     <div class="modal-body text-center" style="font-size: 14px;color:var( --main-heading-color);">
                                         Are you sure you want to send reminder mail?
@@ -198,7 +199,7 @@
                         <div class="modal-dialog modal-dialog-centered">
                             <div class="modal-content">
                                 <div class="modal-header text-white">
-                                    <h6 class="modal-title " id="logoutModalLabel" style="align-items: center;">Confirmation</h6>
+                                    <h6 class="modal-title " id="logoutModalLabel" style="align-items: center;">Year End Process Confirmation</h6>
                                 </div>
                                 <div class="modal-body text-center" style="font-size: 14px;color:var( --main-heading-color);">
                                     <div class="date-picker mb-3 d-flex justify-content-end">

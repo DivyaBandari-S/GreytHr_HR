@@ -267,7 +267,7 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
         Route::get('/user/employee-swipes-for-hr', EmployeeSwipesForHr::class)->name('employee-swipes-for-hr');
 
         //HR Leave-Admin Submodule Routes
-        Route::get('/user/grantLeave', GrantLeaveBalance::class)->name('grantLeave');
+        // Route::get('/user/grantLeave', GrantLeaveBalance::class)->name('grantLeave');
         Route::get('/user/grant-summary', EmpLeaveGranterDetails::class)->name('grant-summary');
         Route::get('/user/leavePolicySettings', LeaveSettingPolicy::class)->name('leavePolicySettings');
         Route::get('/user/leaveYearEndProcess', YearEndProcess::class)->name('year-end-process');

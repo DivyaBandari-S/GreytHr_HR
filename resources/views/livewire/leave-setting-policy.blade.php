@@ -1,5 +1,8 @@
 <div>
     <div class="row m-0  leaveGranter-container">
+        <div class="d-flex justify-content-start mb-3">
+            <a class="submit-btn" href="{{ route('grant-summary') }}">Back</a>
+        </div>
         <div class="col-md-8">
             <div class="leaveGranter-header mb-2">
                 <div class="d-flex flex-column text-start">
