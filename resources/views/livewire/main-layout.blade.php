@@ -198,14 +198,7 @@
                     </li>
                 </ul>
             </li>
-            <li>
-                <a href="#"><i class="ph-fill ph-money"></i></a>
-                <ul class="sidebar__submenu">
-                    <li class="title">Accounts</li>
-                    <li><a href="#">User settings</a></li>
-                    <li><a href="#">Change password</a></li>
-                </ul>
-            </li>
+
             <li>
             <li>
                 <a href="#"><i class="ph-chart-pie-slice-light"></i></a>
@@ -267,18 +260,9 @@
                     </li>
                 </ul>
             </li>
-            <li>
-                <a href="#"><i class="ph-fill ph-airplay"></i></a>
-                <ul class="sidebar__submenu">
-                    <li class="title">Accounts</li>
-                    <li><a href="#">User settings</a></li>
-                    <li><a href="#">Change password</a></li>
-                </ul>
-            </li>
+
             <li class="divider"></li>
-            <li>
-                <a href="#"><i class="ph-gear-fill"></i></a>
-            </li>
+
             <div class="pointer m-auto">@livewire('log-out')</div>
         </ul>
     </section>

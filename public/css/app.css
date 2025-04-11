@@ -299,7 +299,8 @@ ul {
     align-items: center;
 }
 .attendanceChart{
-    width: 90%;
+    width: 85%;
+    position: relative;
     margin: 0;
     padding: 0;
     display: flex;

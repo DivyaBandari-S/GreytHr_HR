@@ -629,10 +629,22 @@
                                                 class="fa-regular fa-calendar"></i> This Week</button>
                                     </div>
                                 </div>
-                                <div class="attendanceChart" >
-                                <canvas id="attendanceDonutChart" width="320" height="320"></canvas>
+                                <div class="attendanceChart">
+                                        <canvas id="attendanceDonutChart"></canvas>
+                                        <div id="donutCenterText" style="
+                                            position: absolute;
+                                            top: 60%;
+                                            left: 50%;
+                                            transform: translate(-50%, -50%);
+                                            font-weight: bold;
+                                            font-size: 16px;
+                                            text-align: center;
+                                            pointer-events: none;
+                                        ">
+                                            75 Total
+                                        </div>
+                                    </div>
 
-                                </div>
                                 <div class="row m-0">
                                     <p class="mb-1 fw-bold">Status</p>
                                     <div class="col-6 pe-0">
@@ -908,6 +920,7 @@
                                 }
                             }
                         },
+
                         tooltip: {
                             enabled: true
                         },
@@ -1040,6 +1053,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 <script>
     const donutCtx = document.getElementById('attendanceDonutChart').getContext('2d');
+    const centerText = document.getElementById('donutCenterText');
 
     const attendanceDonutChart = new Chart(donutCtx, {
         type: 'doughnut',
@@ -1048,10 +1062,7 @@ document.addEventListener("DOMContentLoaded", function () {
             datasets: [{
                 data: [52, 8, 10, 5],
                 backgroundColor: [
-                    '#4caf50', // Present
-                    '#f44336', // Absent
-                    '#2196f3', // WFH
-                    '#ff9800'  // Leave
+                    '#4caf50', '#f44336', '#2196f3', '#ff9800'
                 ],
                 borderRadius: 10,
                 spacing: 5
@@ -1059,25 +1070,52 @@ document.addEventListener("DOMContentLoaded", function () {
         },
         options: {
             responsive: true,
-            cutout: '72%',
-            rotation: -90,         // 🔄 Starts from top
-            circumference: 180,    // 🌙 Only half circle
+            cutout: '74%',
+            rotation: -90,
+            circumference: 180,
             plugins: {
                 legend: {
                     display: false
-                    // position: 'bottom',
-                    // labels: {
-                    //     font: {
-                    //         size: 12
-                    //     },
-                    //     usePointStyle: true,
-                    //     pointStyle: 'circle'
-                    // }
+                },
+                tooltip: {
+                    enabled: true,
+                    external: function(context) {
+                        const tooltipModel = context.tooltip;
+                        const data = context.chart.data.datasets[0].data;
+                        const total = data.reduce((a, b) => a + b, 0);
+
+                        if (tooltipModel.opacity === 0) {
+                            centerText.innerHTML = '100%';
+                            return;
+                        }
+
+                        if (tooltipModel.dataPoints) {
+                            const dp = tooltipModel.dataPoints[0];
+                            const value = dp.raw;
+                            const percentage = ((value / total) * 100).toFixed(1);
+                            centerText.innerHTML = `${percentage}%`;
+                        }
+                    }
+                },
+                datalabels: {
+                    color: '#fff',
+                    font: {
+                        weight: 'bold',
+                        size: 12
+                    },
+                    formatter: (value, context) => {
+                        const data = context.chart.data.datasets[0].data;
+                        const total = data.reduce((a, b) => a + b, 0);
+                        const percentage = ((value / total) * 100).toFixed(1);
+                        return `${percentage}%`;
+                    }
                 }
             }
-        }
+        },
+        plugins: [ChartDataLabels]
     });
 </script>
+
 
 
 
