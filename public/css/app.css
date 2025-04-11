@@ -6979,7 +6979,6 @@ select:focus {
 } */
 input.form-control.rounded-pill {
     padding: 10px;
-    width: 38%;
 }
 .profileCon {
     border-radius: 10px;

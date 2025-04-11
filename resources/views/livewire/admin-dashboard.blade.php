@@ -833,6 +833,7 @@
                         style="cursor: pointer;"></button>
                 </div>
                 <div class="modal-body">
+                    <span wire:click="setAction('delete')">check</span>
                     <div class="input-group flex-nowrap">
                         <span class="input-group-text"><i class="fa-solid fa-magnifying-glass"></i></span>
                         <input type="text" class="form-control" wire:model.live="searchContent"
@@ -875,9 +876,11 @@
                                                 style="cursor: pointer;"></i>
                                         </div>
                                     </div>
-                                    <p class="text-truncate" title="<?php echo htmlspecialchars(is_array($item['content']) ? implode(' ', $item['content']) : $item['content']); ?>">
-                                        <?php echo htmlspecialchars(is_array($item['content']) ? implode(' ', $item['content']) : $item['content']); ?>
-                                    </p>
+                                    <a href="{{ url($item['route']) }}" style="text-decoration: none;" class="text-truncate">
+                                        <p class="text-truncate" title="<?php echo htmlspecialchars(is_array($item['content']) ? implode(' ', $item['content']) : $item['content']); ?>">
+                                            <?php echo htmlspecialchars(is_array($item['content']) ? implode(' ', $item['content']) : $item['content']); ?>
+                                        </p>
+                                    </a>
                                 </div>
                             </div>
                         <?php
