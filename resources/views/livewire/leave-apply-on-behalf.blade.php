@@ -32,9 +32,6 @@
                     <div class="col-md-11 col-10 d-flex flex-column">
                         <p class="main-overview-text mb-1">The <span class="msgHeighlighter">Apply On Behalf page</span> enables you to apply for leave on behalf of an employee. Select an employee, add the details and then click <span class="msgHeighlighter">Apply</span> to apply for particular employee leave.</p>
                     </div>
-                    <div class="hide-main-overview-help col-md-1 col-2 d-flex align-items-start">
-                        <span wire:click="hideHelp">Hide Help</span>
-                    </div>
                 </div>
                 @endif
             </div>
@@ -601,7 +598,7 @@
         <div class="tab-pane" id="dashboard-tab-pane" role="tabpanel" aria-labelledby="dashboard-tab" tabindex="0">
             <div class="active-section-leave">
                 <h6><strong class="active-headings">Activity Stream</strong></h6>
-                @foreach ( $hrAppliedLeaveRequests as $leaveRequest )
+                @foreach ($hrAppliedLeaveRequests ?? [] as $leaveRequest)
                 <div class="d-flex flex-column align-items-start mb-3">
                     <span class="active-normatTextValue">Applied Leave Request for an employee:
                        <span class="active-normatTextValue"> {{ ucwords(strtolower($leaveRequest->employee->first_name)) }} {{ ucwords(strtolower($leaveRequest->employee->last_name)) }} ({{ ($leaveRequest->employee->emp_id) }})</span>

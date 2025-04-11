@@ -273,6 +273,8 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
         Route::get('/user/grant-summary', EmpLeaveGranterDetails::class)->name('grant-summary');
         Route::get('/user/leavePolicySettings', LeaveSettingPolicy::class)->name('leavePolicySettings');
         Route::get('/user/leaveYearEndProcess', YearEndProcess::class)->name('year-end-process');
+        Route::get('/user/leave-approval', YearEndProcess::class)->name('leave-approve');
+        Route::get('/user/approval-leave-cancellation', YearEndProcess::class)->name('approval-leave-cancellation');
         Route::get('/user/attendance-process', AttendanceProcess::class)->name('attendance-process');
         Route::get('/user/swipe-management-for-hr', SwipeManagementForHr::class)->name('swipe-management-for-hr');
         Route::get('/user/hr-organisation-chart', HrOrganisationChart::class)->name('hr-organisation-chart');

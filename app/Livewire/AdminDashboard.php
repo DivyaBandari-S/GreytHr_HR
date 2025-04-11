@@ -498,16 +498,15 @@ class AdminDashboard extends Component
                     '/54' => 'Approve Reimbursement'
                 ],
                 'leave' => [
-                    '/user/leave/approve' => 'Add Holidays',
+                    '/hr/user/holidayList' => 'Add Holidays',
                     '/55' => 'Post Leave Transction',
-                    '/56' => 'Grant Leave',
-                    '/57' => 'Year End Process',
-                    '/58' => 'Download Leave Card',
-                    '/59' => 'Approve Leave',
-                    '/60' => 'Approve Leave Cancellation',
-                    '/61' => 'Approve RH',
-                    '/62' => 'Leave Calendar',
-                    '/63' => 'Approve Comp Off',
+                    '/hr//user/grant-summary' => 'Grant Leave',
+                    '/hr/user/leaveYearEndProcess' => 'Year End Process',
+                    '/hr/user/leave-approval' => 'Approve Leave',
+                    '/hr/user/approval-leave-cancellation' => 'Approve Leave Cancellation',
+                    // '/61' => 'Approve RH',
+                    '/hr/user/leave-calendar' => 'Leave Calendar',
+                    // '/63' => 'Approve Comp Off',
                     '/64' => 'Update Employee Weekdays'
                 ],
                 'attendance' => [
