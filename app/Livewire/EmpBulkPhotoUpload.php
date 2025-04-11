@@ -40,10 +40,13 @@ class EmpBulkPhotoUpload extends Component
     public $totaluploadedPages;
 
     public $perpageUploaded = 10;
+    public $getActivity;
 
     public function mount()
     {
+        $loggedInEmpId = auth()->guard('hr')->user()->emp_id;
         $this->getUploadedZipFiles();
+        $this->getActivity = UploadBulkPhotos::with('employee')->where('uploaded_by', $loggedInEmpId)->get();;
     }
     public function toggleUploadBtn()
     {
@@ -570,7 +573,8 @@ class EmpBulkPhotoUpload extends Component
             'paginatedData' => $this->paginatedData,
             'totaluploadedPages' => $this->totaluploadedPages,
             'totalUploaded' => $this->totalUploaded,
-            'selectedEmployees' => $this->selectedEmployees
+            'selectedEmployees' => $this->selectedEmployees,
+            'getActivity' => $this->getActivity
         ]);
     }
 }
