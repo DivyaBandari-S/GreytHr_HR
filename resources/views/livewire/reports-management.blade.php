@@ -55,27 +55,27 @@
         .apply-button:hover {
             border-color: #306cc6;
             /* Change the border color to green on hover */
-            color: #306cc6;
+            color:  #306cc6;
             /* Change the text color to green on hover */
         }
 
         .apply-button:active {
-            background-color: #306cc6;
+            background-color:  #306cc6;
             /* Change background color to green when clicked */
             color: #FFFFFF;
-            border-color: #306cc6;
+            border-color:  #306cc6;
             /* Change text color to white when clicked */
         }
 
         .pending-button:hover {
             border-color: #306cc6;
             /* Change the border color to green on hover */
-            color: #306cc6;
+            color:  #306cc6;
             /* Change the text color to green on hover */
         }
 
         .pending-button:active {
-            background-color: #306cc6;
+            background-color:  #306cc6;
             /* Change background color to green when clicked */
             color: #FFFFFF;
             border-color: #306cc6;
@@ -1081,21 +1081,16 @@
                                     </div>
 
 
-                                    <!-- <label>
-                                           <input type="checkbox" wire:model="selectAll" wire:change="updateSelectAll"> Select All Employees
-                                    </label> -->
+
                                     <label class="custom-checkbox">
 
-                                                            <input type="checkbox" name="employeeCheckbox[]" class="employee-swipes-checkbox" wire:model="selectAll"wire:change="updateSelectAll">
+                                                <input type="checkbox" name="employeeCheckbox[]" class="employee-swipes-checkbox" wire:model="selectAll"wire:change="updateSelectAll">
 
-                                                            <span class="checkmark"></span>
-                                                             Select All Employees
-                                                          
-
-                                                        </label>
+                                                <span class="checkmark"></span>
+                                                Select All Employees
 
 
-
+                                    </label>
                                     <div class="table-responsive mt-2" style="height:200px;max-height:200px;overflow-y:auto;">
 
                                         @if (session('error'))
