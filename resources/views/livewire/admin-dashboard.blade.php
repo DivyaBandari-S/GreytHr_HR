@@ -584,15 +584,29 @@
                         <div class="col-md-6 mb-3">
                             <div class="border m-0 rounded row mb-3">
                                 <div class="border-bottom m-0 mt-3 row">
-                                    <div class="col-md-6">
+                                    <div class="col-md-12">
                                         <p class="fw-bold">Employees By Department</p>
                                     </div>
-                                    <div class="col-md-6 text-end">
-                                        <button class="btn btn-outline-primary btn-sm"><i
-                                                class="fa-regular fa-calendar"></i> This Week</button>
+                                </div>
+                                <div >
+                                    <canvas id="employeeChart" height="100"></canvas>
+                                </div>
+                            </div>
+                            <div class="border m-0 rounded row mb-3 d-flex justify-content-center">
+                                <div class="border-bottom m-0 mt-3 row ">
+                                    <div class="col-md-12">
+                                        <p class="fw-bold">Employee Gender Distribution</p>
                                     </div>
                                 </div>
-                                <div id="employeeByDep"></div>
+                                <div class="genderChart" >
+                                    <canvas id="genderPieChart" width="400" height="400"></canvas>
+                                    <div style="display:grid;grid-template-columns: repeat(2, 1fr);">
+                                        <span class="normalText">Male : <strong>{{ $maleCount }}</strong> </span>
+                                        <span class="normalText">Female : <strong>{{ $femaleCount }}</strong> </span>
+                                        <span class="normalText">other : <strong>{{ $otherCount }}</strong> </span>
+                                        <span class="normalText">Not Available : <strong>{{ $notAvailableCount }}</strong> </span>
+                                    </div>
+                                </div>
                             </div>
                             <div class="border m-0 rounded row">
                                 <div class="border-bottom m-0 mt-3 row">
@@ -968,3 +982,89 @@
 
 </section>
 <!-- end: MAIN -->
+
+<!-- //employee by department -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const employeeCtx = document.getElementById('employeeChart').getContext('2d');
+        const employeeChart = new Chart(employeeCtx, {
+            type: 'bar',
+            data: {
+                labels: ['HR', 'Sales', 'Development', 'Marketing', 'Support'],
+                datasets: [{
+                    label: 'Number of Employees',
+                    data: [12, 19, 8, 14, 10],
+                    backgroundColor: [
+                        '#007bff',
+                        '#28a745',
+                        '#ffc107',
+                        '#dc3545',
+                        '#17a2b8'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                    },
+                    title: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    });
+</script>
+
+
+<!-- //gender distribution -->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    console.log("Script loaded");
+
+    const genderCtx = document.getElementById('genderPieChart');
+
+    if (!genderCtx) {
+        console.error("genderPieChart element not found in DOM.");
+        return;
+    }
+
+    const chart = new Chart(genderCtx.getContext('2d'), {
+        type: 'pie',
+        data: {
+            labels: @json($labels),
+            datasets: [{
+                label: 'Gender Distribution',
+                data: @json($data),
+                backgroundColor: @json($backgroundColors),
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                },
+                title: {
+                    display: true,
+                    text: 'Employee Gender Distribution'
+                }
+            }
+        }
+    });
+
+    console.log("Chart created successfully", chart);
+});
+</script>
+
+
