@@ -603,7 +603,7 @@
                                     <div style="display:grid;grid-template-columns: repeat(2, 1fr);">
                                         <span class="normalText">Male : <strong>{{ $maleCount }}</strong> </span>
                                         <span class="normalText">Female : <strong>{{ $femaleCount }}</strong> </span>
-                                        <span class="normalText">other : <strong>{{ $otherCount }}</strong> </span>
+                                        <span class="normalText">Other : <strong>{{ $otherCount }}</strong> </span>
                                         <span class="normalText">Not Available : <strong>{{ $notAvailableCount }}</strong> </span>
                                     </div>
                                 </div>
@@ -985,43 +985,42 @@
 
 <!-- //employee by department -->
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const employeeCtx = document.getElementById('employeeChart').getContext('2d');
-        const employeeChart = new Chart(employeeCtx, {
-            type: 'bar',
-            data: {
-                labels: ['HR', 'Sales', 'Development', 'Marketing', 'Support'],
-                datasets: [{
-                    label: 'Number of Employees',
-                    data: [12, 19, 8, 14, 10],
-                    backgroundColor: [
-                        '#007bff',
-                        '#28a745',
-                        '#ffc107',
-                        '#dc3545',
-                        '#17a2b8'
-                    ],
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        display: true,
-                        position: 'top',
-                    },
-                    title: {
-                        display: false
-                    }
+    const employeeCtx = document.getElementById('employeeChart').getContext('2d');
+    const employeeChart = new Chart(employeeCtx, {
+        type: 'bar',
+        data: {
+            labels: ['UI/UX', 'Development', 'Management', 'HR', 'Testing', 'Marketing'],
+            datasets: [{
+                label: 'Department Count',
+                data: [300, 320, 400, 600, 1100, 1400],
+                backgroundColor: '#29b6f6', // Consistent blue color
+                borderRadius: 5 // Slight rounded corners
+            }]
+        },
+        options: {
+            indexAxis: 'y', // Make it horizontal
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: false
                 },
-                scales: {
-                    y: {
-                        beginAtZero: true
+                title: {
+                    display: false
+                }
+            },
+            scales: {
+                x: {
+                    beginAtZero: true
+                },
+                y: {
+                    ticks: {
+                        font: {
+                            size: 14
+                        }
                     }
                 }
             }
-        });
+        }
     });
 </script>
 

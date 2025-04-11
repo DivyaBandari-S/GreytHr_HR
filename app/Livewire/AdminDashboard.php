@@ -25,7 +25,7 @@ class AdminDashboard extends Component
     public $signInTime;
     public $totalEmployeeCount;
     public $totalNewEmployeeCount;
-    public $totalNewEmployees;
+    public $totalActiveEmpList;
     public $labels;
     public $data;
     public $departmentCount;
@@ -59,7 +59,8 @@ class AdminDashboard extends Component
     public $colors;
     public $selectedOption = 'This Week';
     public $otherCount;
-    public $notAvailableCount ;
+    public $departmentChartData;
+    public $notAvailableCount;
 
     public function updateOption($option)
     {
@@ -159,25 +160,15 @@ class AdminDashboard extends Component
                 ->groupBy('job_location')
                 ->get();
 
-            // Count new employees for the current year
-            $this->totalNewEmployees = EmployeeDetails::where('company_id', $companyId)
+            // Count of employees for the department year
+            $this->totalActiveEmpList = EmployeeDetails::whereJsonContains('company_id', $companyId)
                 ->where('status', 1)
-                ->whereYear('hire_date', Carbon::now()->year)
                 ->get();
-            $this->totalNewEmployeeCount = $this->totalNewEmployees->count();
-            $departmentNames = [];
-            // Check if $newEmployees is not empty
-            if ($this->totalNewEmployees->isNotEmpty()) {
-                foreach ($this->totalNewEmployees as $employee) {
-                    $departmentNames[] = $employee->department;
-                }
-                $uniqueDepartments = array_unique($departmentNames);
-
-                $this->departmentCount = count($uniqueDepartments);
-            } else {
-                $this->departmentCount = 0;
-            }
-
+            $this->departmentChartData = $this->totalActiveEmpList
+                ->groupBy('dept_id')
+                ->map(fn($group) => $group->count())
+                ->sortDesc();
+                dd( $this->departmentChartData);
             // Get gender distribution for the company
             $genderDistribution = EmployeeDetails::select('gender', DB::raw('count(*) as count'))
                 ->whereJsonContains('company_id', $companyId)
@@ -190,7 +181,7 @@ class AdminDashboard extends Component
                 'MALE' => 'rgb(255, 99, 132)',
                 'FEMALE' => 'rgb(54, 162, 235)',
                 'OTHER' => 'rgb(255, 205, 86)',
-                 '' => 'rgb(201, 203, 207)'
+                '' => 'rgb(201, 203, 207)'
             ];
 
             // Loop through the gender distribution data to calculate male and female counts
@@ -199,9 +190,9 @@ class AdminDashboard extends Component
                     $maleCount = $distribution->count;
                 } elseif ($distribution->gender === 'FEMALE') {
                     $femaleCount = $distribution->count;
-                }elseif($distribution->gender === 'OTHER'){
+                } elseif ($distribution->gender === 'OTHER') {
                     $otherCount = $distribution->count;
-                }elseif (empty($distribution->gender) || is_null($distribution->gender)) {
+                } elseif (empty($distribution->gender) || is_null($distribution->gender)) {
                     $notAvailableCount = $distribution->count;
                 }
             }
@@ -701,7 +692,6 @@ class AdminDashboard extends Component
     {
         $this->loadChartData();
         return view('livewire.admin-dashboard', [
-            'departmentCount' => $this->departmentCount,
             'loginEmployee' => $this->loginEmployee,
             'topLeaveTakers' => $this->topLeaveTakers,
             'mappedLeaveData' => $this->mappedLeaveData,
