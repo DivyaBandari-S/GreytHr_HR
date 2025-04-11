@@ -1,7 +1,7 @@
 <div>
 
     <div>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+   
 
         <style>
              .attendance-overview-help {
@@ -86,20 +86,21 @@
         margin: 10px;
     }
         </style>    
-        @if($showHelp==false)
+       
           
                <div class="attendance-overview-help">
                     
-                    <p>On the<span style="font-weight: bold;"> Attendance Overview</span> page,get an overview of your teams' attendance information. Get quick answers to questions<br/> such as Number of work hours completed by the team in a month,Summary of work hours,Who is in,and Access card details.</p>
+                    <p>On the<span style="font-weight: bold;"> Attendance DailyView</span> page,get an overview of your teams' attendance information. Get quick answers to questions<br/> such as Number of work hours completed by the team in a month,Summary of work hours,Who is in,and Access card details.</p>
+                    @if($showHelp==false)
                     <p>To view frequently asked questions <span style="color: #1fb6ff;cursor:pointer;"> click here</span>.</p>
-                    <!-- <span class="hide-attendance-help"  wire:click="hideHelp">Hide Help</span> -->
+                    @endif
+                    @if($showHelp==false)
+                    <span class="hide-attendance-help"  wire:click="hideHelp">Hide Help</span>
+                    @else
+                    <span class="hide-attendance-help"style="margin-bottom: -25px;"  wire:click="showhelp">Show Help</span>
+                    @endif
                 </div>
-        @else
-          
-       
-        <button style="background-color: white; margin-top: -20px; float: right; color: #0000FF; border: 1px solid #ffff; border-radius: 5px; cursor: pointer; padding: 10px 20px;font-weight:bold;"wire:click="showhelp">Show&nbsp;&nbsp;Help</button>
-           
-        @endif
+        
         <div class="dropdown-container">
                 <select class="dropdown-right" wire:model="selectedYear" wire:change="updateSelectedYear">
         <option value="{{ $previousYear }}">
@@ -396,6 +397,7 @@
                 <div class="row"style="justify-content:space-between;">
                 <div class="col-sm-6 mb-3" style="border: 1px solid #dddddd; padding: 5px; border-radius: 5px;">
                                         <h6 style="text-align:left; font-weight:600; color: rgba(103,122,142,1);">Who's In?</h6>
+                                        {{ $absentemployeescount }}tdfgh{{ $lateemployeescount }}ewrtqw{{ $earlyemployeescount }}
                     <!-- Table for the first container goes here -->
                            <div style="display:flex;flex-direction:row;justify-content:space-between">
                                       
@@ -452,9 +454,15 @@
                                                
                            </div>   
                            {{$absentemployeescount}}
-                           <div style="width:300px;height:300px;"> 
+                           <div wire:ignore>
+                                <canvas id="employeeAttendanceTypeChart" width="150" height="150"></canvas>
+                            </div>
+
+                           
+
+                           <!-- <div style="width:300px;height:300px;"> 
                              <canvas id="employeeAttendanceTypeChart" width="150" height="150"></canvas>    
-                           </div>
+                           </div> -->
                            <p style="color: blue; cursor: pointer;"wire:click="openSelector">+2 More</p>
                           
                 </div>
@@ -484,138 +492,25 @@
     </div> 
     
   <script>
-    var ctx = document.getElementById('employeeStatusChart').getContext('2d');
-var employeeStatusChart = new Chart(ctx, {
-    type: 'pie',
-    data: {
-        labels: [
-            'Not Yet In: {{$absentemployeescount}}',
-            'On Time: {{$earlyemployeescount}}',
-            'Late In: {{$lateemployeescount}}'
-        ],
-        datasets: [{
-            data: [{{$absentemployeescount}}, {{$earlyemployeescount}}, {{$lateemployeescount}}],
-            backgroundColor: [
-                'rgba(255, 99, 132, 0.2)', // Color for "Not Yet In"
-                'rgba(75, 192, 192, 0.2)',  // Color for "On Time"
-                'rgba(255, 159, 64, 0.2)'   // Color for "Late In"
-            ],
-            borderColor: [
-                'rgba(255, 99, 132, 1)',
-                'rgba(75, 192, 192, 1)',
-                'rgba(255, 159, 64, 1)'
-            ],
-            borderWidth: 1
-        }]
-    },
-    options: {
-        responsive: true,
-        maintainAspectRatio: true, // Allow resizing to custom dimensions
-        plugins: {
-            legend: {
-                position: 'top',
-                labels: {
-                    usePointStyle: true,
-                    pointStyle: 'circle'
-                }
-            },
-            tooltip: {
-                enabled: true
-            }
+   
+document.addEventListener('DOMContentLoaded', function () {
+    const attendanceCtx = document.getElementById('employeeAttendanceTypeChart');
+    const modalCtx = document.getElementById('employeeAttendanceTypeChartmodal');
+
+    let attendanceChart;
+    let modalChart;
+
+    function renderAttendanceChart(ctx, data, labels) {
+        if (ctx.chartInstance) {
+            ctx.chartInstance.destroy();
         }
-    }
-});
-var ctx = document.getElementById('employeeAttendanceTypeChart').getContext('2d');
-var employeeAttendanceTypeChart = new Chart(ctx, {
-    type: 'pie',
-    data: {
-        labels: [
-            'Mobile Sign In: {{$mobileEmployeeCount}}',
-            'Web Sign In: {{$laptopEmployeeCount}}',
-            'Astra: 0'
-        ],
-        datasets: [{
-            data: [{{$mobileEmployeeCount}}, {{$laptopEmployeeCount}}, 0],
-            backgroundColor: [
-                'rgba(255, 99, 132, 0.2)', // Color for "Not Yet In"
-                'rgba(75, 192, 192, 0.2)',  // Color for "On Time"
-                'rgba(255, 159, 64, 0.2)'   // Color for "Late In"
-            ],
-            borderColor: [
-                'rgba(255, 99, 132, 1)',
-                'rgba(75, 192, 192, 1)',
-                'rgba(255, 159, 64, 1)'
-            ],
-            borderWidth: 1
-        }]
-    },
-    options: {
-        responsive: true,
-        maintainAspectRatio: true, // Allow resizing to custom dimensions
-        plugins: {
-            legend: {
-                position: 'top',
-                labels: {
-                    usePointStyle: true,
-                    pointStyle: 'circle'
-                }
-            },
-            tooltip: {
-                enabled: true
-            }
-        }
-    }
-});
-var ctx = document.getElementById('employeeAttendanceTypeChartmodal').getContext('2d');
-var employeeAttendanceTypeChartmodal = new Chart(ctx, {
-    type: 'pie',
-    data: {
-        labels: [
-            'Mobile Sign In: {{$mobileEmployeeCount}}',
-            'Web Sign In: {{$laptopEmployeeCount}}',
-            'Astra: 0'
-        ],
-        datasets: [{
-            data: [{{$mobileEmployeeCount}}, {{$laptopEmployeeCount}}, 0],
-            backgroundColor: [
-                'rgba(255, 99, 132, 0.2)', // Color for "Not Yet In"
-                'rgba(75, 192, 192, 0.2)',  // Color for "On Time"
-                'rgba(255, 159, 64, 0.2)'   // Color for "Late In"
-            ],
-            borderColor: [
-                'rgba(255, 99, 132, 1)',
-                'rgba(75, 192, 192, 1)',
-                'rgba(255, 159, 64, 1)'
-            ],
-            borderWidth: 1
-        }]
-    },
-    options: {
-        responsive: true,
-        maintainAspectRatio: true, // Allow resizing to custom dimensions
-        plugins: {
-            legend: {
-                position: 'top',
-                labels: {
-                    usePointStyle: true,
-                    pointStyle: 'circle'
-                }
-            },
-            tooltip: {
-                enabled: true
-            }
-        }
-    }
-});
-document.addEventListener("DOMContentLoaded", function () {
-    const canvas = document.getElementById('myPieChart');
-    if (canvas) {
-        const ctx = canvas.getContext('2d');
-        new Chart(ctx, {
+
+        const chartInstance = new Chart(ctx.getContext('2d'), {
             type: 'pie',
             data: {
+                labels: labels,
                 datasets: [{
-                    data: [42, 90, 0],
+                    data: data,
                     backgroundColor: [
                         'rgba(255, 99, 132, 0.2)',
                         'rgba(75, 192, 192, 0.2)',
@@ -631,6 +526,7 @@ document.addEventListener("DOMContentLoaded", function () {
             },
             options: {
                 responsive: true,
+                maintainAspectRatio: true,
                 plugins: {
                     legend: {
                         position: 'top',
@@ -638,14 +534,112 @@ document.addEventListener("DOMContentLoaded", function () {
                             usePointStyle: true,
                             pointStyle: 'circle'
                         }
+                    },
+                    tooltip: {
+                        enabled: true
                     }
                 }
             }
         });
-    } else {
-        console.error("Canvas with ID 'myPieChart' not found.");
+
+        ctx.chartInstance = chartInstance;
     }
+
+    function updateCharts() {
+        const mobile = {{ $mobileEmployeeCount }};
+        const web = {{ $laptopEmployeeCount }};
+        const astra = 0;
+
+        const labels = [
+            `Mobile Sign In: ${mobile}`,
+            `Web Sign In: ${web}`,
+            `Astra: ${astra}`
+        ];
+
+        const data = [mobile, web, astra];
+
+        if (attendanceCtx) renderAttendanceChart(attendanceCtx, data, labels);
+        if (modalCtx) renderAttendanceChart(modalCtx, data, labels);
+    }
+
+    updateCharts();
+
+    Livewire.hook('message.processed', () => {
+        updateCharts();
+    });
+    
 });
+
+    const statusCtx = document.getElementById('employeeStatusChart');
+
+    let statusChart;
+
+    function renderStatusChart(ctx, data, labels) {
+        if (ctx.chartInstance) {
+            ctx.chartInstance.destroy();
+        }
+
+        const chartInstance = new Chart(ctx.getContext('2d'), {
+            type: 'pie',
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: data,
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)', // Not Yet In
+                        'rgba(75, 192, 192, 0.2)', // On Time
+                        'rgba(255, 159, 64, 0.2)'  // Late In
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(255, 159, 64, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            usePointStyle: true,
+                            pointStyle: 'circle'
+                        }
+                    },
+                    tooltip: {
+                        enabled: true
+                    }
+                }
+            }
+        });
+
+        ctx.chartInstance = chartInstance;
+    }
+
+    function updateStatusChart() {
+        const absent = {{ $absentemployeescount }};
+        const early = {{ $earlyemployeescount }};
+        const late = {{ $lateemployeescount }};
+
+        const labels = [
+            `Not Yet In: ${absent}`,
+            `On Time: ${early}`,
+            `Late In: ${late}`
+        ];
+
+        const data = [absent, early, late];
+
+        if (statusCtx) renderStatusChart(statusCtx, data, labels);
+    }
+
+    updateStatusChart();
+
+    Livewire.hook('message.processed', () => {
+        updateStatusChart();
+    });
 
   </script>
   
