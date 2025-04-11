@@ -298,6 +298,15 @@ ul {
     justify-content: center;
     align-items: center;
 }
+.attendanceChart{
+    width: 90%;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
 .badgeSign{
     background-color: var(--main-button-color);
     color: white;

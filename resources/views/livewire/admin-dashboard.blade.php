@@ -584,12 +584,23 @@
                         <div class="col-md-6 mb-3">
                             <div class="border m-0 rounded row mb-3">
                                 <div class="border-bottom m-0 mt-3 row">
-                                    <div class="col-md-12">
+                                    <div class="col-md-9">
                                         <p class="fw-bold">Employees By Department</p>
                                     </div>
                                 </div>
+                                <div class="col-md-12">
+                                    <div class="mb-2 mt-2">
+                                        <label for="departmentSelect">Select Departments:</label>
+                                        <select class="dropdown" id="departmentSelect" wire:model="selectedDepartments" wire:change="filterDepartmentChart">
+                                            <option value="">All Departments</option> {{-- Default option to show all --}}
+                                            @foreach($allDepartments as $department)
+                                                <option value="{{ $department->dept_id }}">{{ $department->department }}</option>
+                                            @endforeach
+                                        </select>
+                                        </div>
+                                    </div>
                                 <div >
-                                    <canvas id="employeeChart" height="100"></canvas>
+                                    <canvas id="employeeChart" height="180"></canvas>
                                 </div>
                             </div>
                             <div class="border m-0 rounded row mb-3 d-flex justify-content-center">
@@ -608,17 +619,20 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="border m-0 rounded row">
+                            <div class="border m-0 rounded row d-flex justify-content-center">
                                 <div class="border-bottom m-0 mt-3 row">
-                                    <div class="col-md-6">
+                                    <div class="col-md-8">
                                         <p class="fw-bold">Attendance Overview</p>
                                     </div>
-                                    <div class="col-md-6 text-end mb-3">
+                                    <div class="col-md-4 text-end mb-3">
                                         <button class="btn btn-outline-primary btn-sm"><i
                                                 class="fa-regular fa-calendar"></i> This Week</button>
                                     </div>
                                 </div>
-                                <div id="attendanceDiv"></div>
+                                <div class="attendanceChart" >
+                                <canvas id="attendanceDonutChart" width="320" height="320"></canvas>
+
+                                </div>
                                 <div class="row m-0">
                                     <p class="mb-1 fw-bold">Status</p>
                                     <div class="col-6 pe-0">
@@ -728,102 +742,45 @@
                                 </div>
 
                             </div>
-                            <div class="border m-0 rounded row empStatus">
+                            <div class="border m-0 mt-4 rounded row empStatus">
                                 <div class="border-bottom m-0 mt-3 row">
                                     <div class="col-md-6">
                                         <p class="fw-bold">Employee Status</p>
                                     </div>
-                                    <div class="col-md-6 text-end mb-3">
-                                        <button class="btn btn-outline-primary btn-sm"><i
-                                                class="fa-regular fa-calendar"></i> This Week</button>
-                                    </div>
                                 </div>
 
                                 <div class="m-0 mt-3 row">
-                                    <div class="col-md-6">
-                                        <p>Total Employee</p>
+                                    <div class="col-md-8">
+                                        <p class="normalTextSubheading">Total Employee Count <strong style="font-size: 16px;">({{  $totalEmployees }})</strong></p>
                                     </div>
                                     <div class="col-md-6 text-end">
                                     </div>
                                 </div>
 
                                 <div class="m-0 px-4 row">
-                                    <div class="p-0 progress-stacked">
-                                        <div class="progress" role="progressbar" aria-label="Segment one"
-                                            aria-valuenow="15" aria-valuemin="0" aria-valuemax="100"
-                                            style="width: 15%">
-                                            <div class="progress-bar"></div>
-                                        </div>
-                                        <div class="progress" role="progressbar" aria-label="Segment two"
-                                            aria-valuenow="30" aria-valuemin="0" aria-valuemax="100"
-                                            style="width: 30%">
-                                            <div class="progress-bar bg-success"></div>
-                                        </div>
-                                        <div class="progress" role="progressbar" aria-label="Segment three"
-                                            aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"
-                                            style="width: 20%">
-                                            <div class="progress-bar bg-info"></div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="m-0 mt-3 px-4 row">
-                                    <div class="border col-md-6 pt-3">
-                                        <p class="mb-0">Fulltime (48%)</p>
-                                        <p class="fs-1 fw-bold mb-1">112</p>
-                                    </div>
-                                    <div class="border-bottom border-end border-top col-md-6 pt-3 text-end">
-                                        <p class="mb-0">Contract (20%)</p>
-                                        <p class="fs-1 fw-bold mb-1">112</p>
-                                    </div>
-                                </div>
-
-                                <div class="m-0 px-4 row">
-                                    <div class="border-bottom border-end border-start col-md-6 pt-3">
-                                        <p class="mb-0">Probation (22%)</p>
-                                        <p class="fs-1 fw-bold mb-1">112</p>
-                                    </div>
-                                    <div class="border-bottom border-end col-md-6 pt-3 text-end">
-                                        <p class="mb-0">WFH (20%)</p>
-                                        <p class="fs-1 fw-bold mb-1">112</p>
-                                    </div>
-                                </div>
-
-                                <div class="row m-0 mt-3">
-                                    <p class="mb-1">Top Performer</p>
-                                    <div class="row m-0">
-                                        <div class="row m-0 p-2 rounded-2 performerDiv">
-                                            <div class="col-md-1 p-0 m-auto">
-                                                <p class="mb-0">
-                                                    <i class="fa-solid fa-award fs-3 me-3 perfColor"
-                                                        style="vertical-align: middle;"></i>
-                                                    <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-24.jpg"
-                                                        style="width: 2em; border-radius: 50%;" />
-                                                </p>
-                                            </div>
-                                            <div class="col-md-11 p-0">
-                                                <div class="m-0 row">
-                                                    <div class="col-md-6 p-0">
-                                                        <p class="fw-bold mb-0 fs14">Daniel Esbella</p>
-                                                        <p class="fs12 mb-0">IOS Developer</p>
-                                                    </div>
-                                                    <div class="col-md-6 text-end p-0">
-                                                        <p class="mb-0 fs14">Performance</p>
-                                                        <p class="fs12 fw-bold mb-0 perfColor">99%</p>
-                                                    </div>
+                                        <div class="progress p-0" >
+                                        @if (isset($employeeTypes))
+                                            @foreach ($employeeTypes as $index => $emp)
+                                                <div class="progress-bar" role="progressbar" title="{{ ucfirst($emp['type']) }} - {{ $emp['percentage'] }}%"
+                                                    style="cursor:pointer;width: {{ $emp['percentage'] }}%; background-color: {{ $loop->index == 0 ? '#007bff' : ($loop->index == 1 ? '#2e8b57' : ($loop->index == 2 ? '#00d1ff' : '#d3d3d3')) }};"
+                                                    aria-valuenow="{{ $emp['percentage'] }}" aria-valuemin="0" aria-valuemax="100">
                                                 </div>
-                                            </div>
+                                            @endforeach
+                                            @else
+                                            <p>no data</p>
+                                            @endif
                                         </div>
-                                    </div>
-                                </div>
 
-                                <div class="row m-0 my-3">
-                                    <div class="d-grid gap-2">
-                                        <button class="btn btn-outline-secondary btn-sm" type="button">View
-                                            All</button>
-                                    </div>
+                                        <div class="row text-center mt-3 mb-3">
+                                            @foreach ($employeeTypes as $emp)
+                                                <div class="col-md-4 border py-3 d-flex flex-column align-items-center">
+                                                    <div class="normalTextSubheading">{{ ucfirst($emp['type']) }} </div>
+                                                    <span>({{ $emp['percentage'] }}%)</span>
+                                                    <h2 >{{ $emp['count'] }}</h2>
+                                                </div>
+                                            @endforeach
+                                        </div>
                                 </div>
-
                             </div>
                         </div>
                     </div>
@@ -930,6 +887,8 @@
                                 endAngle: 90, // Stop at the bottom
                                 offsetY: 10,
                                 customScale: 0.9,
+                                borderRadius: 10,
+                                 spacing: 5,
                                 donut: {
                                     size: "65%", // Adjust thickness
                                     labels: {
@@ -985,43 +944,55 @@
 
 <!-- //employee by department -->
 <script>
-    const employeeCtx = document.getElementById('employeeChart').getContext('2d');
-    const employeeChart = new Chart(employeeCtx, {
+    const ctx = document.getElementById('employeeChart').getContext('2d');
+
+    const labels = @json($departmentChartData->keys());
+    const data = @json($departmentChartData->values());
+
+    const employeeChart = new Chart(ctx, {
         type: 'bar',
         data: {
-            labels: ['UI/UX', 'Development', 'Management', 'HR', 'Testing', 'Marketing'],
+            labels: labels,
             datasets: [{
-                label: 'Department Count',
-                data: [300, 320, 400, 600, 1100, 1400],
-                backgroundColor: '#29b6f6', // Consistent blue color
-                borderRadius: 5 // Slight rounded corners
+                label: 'Employees per Department',
+                data: data,
+                backgroundColor: '#29b6f6',
+                borderRadius: 5
             }]
         },
         options: {
-            indexAxis: 'y', // Make it horizontal
+            indexAxis: 'y',
             responsive: true,
             plugins: {
                 legend: {
-                    display: false
-                },
-                title: {
                     display: false
                 }
             },
             scales: {
                 x: {
-                    beginAtZero: true
+                    beginAtZero: true,
+                    barPercentage: 0.8, // You can experiment with this value to get a good look
+                    categoryPercentage: 0.5 // This affects how wide the bar is relative to the available space
                 },
                 y: {
                     ticks: {
                         font: {
-                            size: 14
+                            size: 10
                         }
                     }
                 }
             }
         }
     });
+    window.addEventListener('admin-dashboard', event => {
+    const chartData = event.detail.data;
+
+    employeeChart.data.labels = Object.keys(chartData);
+    employeeChart.data.datasets[0].data = Object.values(chartData);
+    employeeChart.update();
+});
+
+
 </script>
 
 
@@ -1062,8 +1033,52 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    console.log("Chart created successfully", chart);
 });
 </script>
+
+<!-- //attendnace overview -->
+
+<script>
+    const donutCtx = document.getElementById('attendanceDonutChart').getContext('2d');
+
+    const attendanceDonutChart = new Chart(donutCtx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Present', 'Absent', 'WFH', 'Leave'],
+            datasets: [{
+                data: [52, 8, 10, 5],
+                backgroundColor: [
+                    '#4caf50', // Present
+                    '#f44336', // Absent
+                    '#2196f3', // WFH
+                    '#ff9800'  // Leave
+                ],
+                borderRadius: 10,
+                spacing: 5
+            }]
+        },
+        options: {
+            responsive: true,
+            cutout: '72%',
+            rotation: -90,         // 🔄 Starts from top
+            circumference: 180,    // 🌙 Only half circle
+            plugins: {
+                legend: {
+                    display: false
+                    // position: 'bottom',
+                    // labels: {
+                    //     font: {
+                    //         size: 12
+                    //     },
+                    //     usePointStyle: true,
+                    //     pointStyle: 'circle'
+                    // }
+                }
+            }
+        }
+    });
+</script>
+
+
 
 

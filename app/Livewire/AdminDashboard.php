@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use Livewire\Component;
 use App\Helpers\FlashMessageHelper;
 use App\Helpers\LeaveHelper;
 use App\Models\AdminFavoriteModule;
@@ -13,7 +14,6 @@ use App\Models\LeaveRequest;
 use App\Models\SwipeRecord;
 use Illuminate\Support\Facades\DB;
 use App\Models\Task;
-use Livewire\Component;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\Auth;
@@ -54,14 +54,21 @@ class AdminDashboard extends Component
     public $swipes;
     public $dateRange = 'thisMonth';
     public $tasksData = [];
-
+    public $deptCounts;
     public $backgroundColors;
     public $colors;
-    public $selectedOption = 'This Week';
+    public $selectedOption = 'This Year';
     public $otherCount;
     public $departmentChartData;
     public $notAvailableCount;
-
+    public $selectedDepartments = '';
+    public $allDepartments;
+    public $currentYear;
+    public $currentMonth;
+    public $lastMonth;
+    public $totalEmployees;
+    public $empStatus;
+    public $employeeTypes;
     public function updateOption($option)
     {
         $this->selectedOption = $option;
@@ -131,6 +138,7 @@ class AdminDashboard extends Component
     public function mount()
     {
         try {
+            $this->selectedDepartments;
             $this->signInTime = today()->format('Y-m-d');
             $this->getContainerData();
             $this->loginHRDetails();
@@ -146,29 +154,43 @@ class AdminDashboard extends Component
                 ->whereJsonContains('company_id', $companyId)
                 ->inRandomOrder()
                 ->get()->take(5);
-
             $this->getTopLeaveTakers();
             $this->getSignInOutData();
             $this->getHrRequests($companyId);
             $this->getEmployeesCount($companyId);
             // Count total employees
             // $this->totalEmployeeCount = EmployeeDetails::where('company_id', $companyId)->count();
-
+            // Count of employees for the department year
+            $this->totalActiveEmpList = EmployeeDetails::whereJsonContains('company_id', $companyId)
+                ->where('status', 1)
+                ->get();
+            $this->totalEmployees = $this->totalActiveEmpList->count();
+            if ($this->totalActiveEmpList && $this->totalActiveEmpList->count()) {
+                $empStatus = $this->totalActiveEmpList->groupBy('employee_type');
+            
+                $totalEmployees = $this->totalActiveEmpList->count();
+            
+                $employeeTypes = [];
+                foreach ($empStatus as $type => $group) {
+                    $count = $group->count();
+                    $percentage = round(($count / $totalEmployees) * 100, 2);
+                    $this->employeeTypes[] = [
+                        'type' => $type,
+                        'count' => $count,
+                        'percentage' => $percentage,
+                    ];
+                }
+            } else {
+                $this->employeeTypes = []; // fallback empty array to prevent error
+            }
+            //get all departments
+            $this->allDepartments = EmpDepartment::all();
             // Get total employees grouped by location
             $this->employeeCountsByLocation = EmployeeDetails::select('job_location', DB::raw('count(*) as count'))
                 ->whereJsonContains('company_id', $companyId)
                 ->groupBy('job_location')
                 ->get();
 
-            // Count of employees for the department year
-            $this->totalActiveEmpList = EmployeeDetails::whereJsonContains('company_id', $companyId)
-                ->where('status', 1)
-                ->get();
-            $this->departmentChartData = $this->totalActiveEmpList
-                ->groupBy('dept_id')
-                ->map(fn($group) => $group->count())
-                ->sortDesc();
-                dd( $this->departmentChartData);
             // Get gender distribution for the company
             $genderDistribution = EmployeeDetails::select('gender', DB::raw('count(*) as count'))
                 ->whereJsonContains('company_id', $companyId)
@@ -196,7 +218,6 @@ class AdminDashboard extends Component
                     $notAvailableCount = $distribution->count;
                 }
             }
-
             $this->maleCount = $maleCount ?? 0;
             $this->femaleCount = $femaleCount ?? 0;
             $this->otherCount = $otherCount ?? 0;
@@ -204,6 +225,7 @@ class AdminDashboard extends Component
             $this->backgroundColors = $genderDistribution->pluck('gender')->map(function ($label) use ($colors) {
                 return $colors[$label] ?? 'rgba(201, 203, 207, 0.5)';
             });
+            $this->filterDepartmentChart();
         } catch (\Exception $e) {
             if ($e instanceof \Illuminate\Database\QueryException) {
                 // Handle database query exceptions
@@ -230,9 +252,34 @@ class AdminDashboard extends Component
         }
     }
 
-    public $currentYear;
-    public $currentMonth;
-    public $lastMonth;
+    public function filterDepartmentChart()
+    {
+        $filteredList = $this->totalActiveEmpList;
+
+        if (!empty($this->selectedDepartments)) {
+            $filteredList = $filteredList->filter(function ($emp) {
+                return $emp['dept_id'] == $this->selectedDepartments;
+            });
+        }
+
+        $this->deptCounts = $filteredList
+            ->groupBy('dept_id')
+            ->map(fn($group) => $group->count())
+            ->sortDesc();
+        $departmentNames = EmpDepartment::whereIn('dept_id', $this->deptCounts->keys()->filter()->all())
+            ->pluck('department', 'dept_id');
+
+        $this->departmentChartData = $this->deptCounts->mapWithKeys(function ($count, $deptId) use ($departmentNames) {
+            $deptName = $departmentNames[$deptId] ?? 'Not Assigned';
+            return [$deptName => $count];
+        });
+
+        // If you want to emit to JS
+
+        $this->dispatch('admin-dashboard', data: $this->departmentChartData);
+    }
+
+
     //get top 5 leavew takrs data
     public function getTopLeaveTakers()
     {
@@ -697,7 +744,8 @@ class AdminDashboard extends Component
             'mappedLeaveData' => $this->mappedLeaveData,
             'lateEmployees' => $this->lateEmployees,
             'swipes' => $this->earlyOrOnTimeEmployees,
-            'backgroundColors' => $this->backgroundColors
+            'backgroundColors' => $this->backgroundColors,
+            'allDepartments' => $this->allDepartments
         ]);
     }
 }

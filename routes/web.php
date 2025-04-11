@@ -162,7 +162,6 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
         Route::get('/user/tasks', Tasks::class)->name('tasks');
         // In your web.php file
         Route::get('/admin-dashboard/{activeTab}/{selectedOption?}', AdminDashboard::class)->name('admin-dashboard');
-
         // Route::get('/user/client-registration', ClientRegistration::class)->name('client.create');
         // Route for adding a new client
         Route::get('/user/client-registration', ClientRegistration::class)->name('client.create');
