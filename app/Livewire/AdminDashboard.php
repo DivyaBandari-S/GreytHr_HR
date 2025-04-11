@@ -29,7 +29,6 @@ class AdminDashboard extends Component
     public $labels;
     public $data;
     public $departmentCount;
-    public $colors;
     public $maleCount = 0;
     public $femaleCount = 0;
     public $employeeCountsByLocation;
@@ -56,7 +55,11 @@ class AdminDashboard extends Component
     public $dateRange = 'thisMonth';
     public $tasksData = [];
 
+    public $backgroundColors;
+    public $colors;
     public $selectedOption = 'This Week';
+    public $otherCount;
+    public $notAvailableCount ;
 
     public function updateOption($option)
     {
@@ -111,7 +114,6 @@ class AdminDashboard extends Component
             ] : [0, 0, 0],
             'totalTasks' => $totalTasks
         ];
-        $this->render();
     }
     public function setAction($action)
     {
@@ -153,7 +155,7 @@ class AdminDashboard extends Component
 
             // Get total employees grouped by location
             $this->employeeCountsByLocation = EmployeeDetails::select('job_location', DB::raw('count(*) as count'))
-                ->where('company_id', $companyId)
+                ->whereJsonContains('company_id', $companyId)
                 ->groupBy('job_location')
                 ->get();
 
@@ -178,30 +180,39 @@ class AdminDashboard extends Component
 
             // Get gender distribution for the company
             $genderDistribution = EmployeeDetails::select('gender', DB::raw('count(*) as count'))
-                ->where('company_id', $companyId)
+                ->whereJsonContains('company_id', $companyId)
+                ->where('status', 1)
                 ->groupBy('gender')
                 ->get();
-
             $this->labels = $genderDistribution->pluck('gender');
             $this->data = $genderDistribution->pluck('count');
-            $this->colors = [
-                'Male' => 'rgb(255, 99, 132)',
-                'Female' => 'rgb(54, 162, 235)',
-                'Not Active' => 'rgb(255, 205, 86)'
+            $colors = [
+                'MALE' => 'rgb(255, 99, 132)',
+                'FEMALE' => 'rgb(54, 162, 235)',
+                'OTHER' => 'rgb(255, 205, 86)',
+                 '' => 'rgb(201, 203, 207)'
             ];
 
             // Loop through the gender distribution data to calculate male and female counts
             foreach ($genderDistribution as $distribution) {
-                if ($distribution->gender === 'Male') {
+                if ($distribution->gender === 'MALE') {
                     $maleCount = $distribution->count;
-                } elseif ($distribution->gender === 'Female') {
+                } elseif ($distribution->gender === 'FEMALE') {
                     $femaleCount = $distribution->count;
+                }elseif($distribution->gender === 'OTHER'){
+                    $otherCount = $distribution->count;
+                }elseif (empty($distribution->gender) || is_null($distribution->gender)) {
+                    $notAvailableCount = $distribution->count;
                 }
             }
 
             $this->maleCount = $maleCount ?? 0;
             $this->femaleCount = $femaleCount ?? 0;
-            $this->loadChartData();
+            $this->otherCount = $otherCount ?? 0;
+            $this->notAvailableCount = $notAvailableCount ?? 0;
+            $this->backgroundColors = $genderDistribution->pluck('gender')->map(function ($label) use ($colors) {
+                return $colors[$label] ?? 'rgba(201, 203, 207, 0.5)';
+            });
         } catch (\Exception $e) {
             if ($e instanceof \Illuminate\Database\QueryException) {
                 // Handle database query exceptions
@@ -302,7 +313,6 @@ class AdminDashboard extends Component
                 // If top4LeaveDays is not set, map an empty array
                 $this->mappedLeaveData = [];
             }
-
         } catch (\Exception $e) {
             if ($e instanceof \Illuminate\Database\QueryException) {
                 // Handle database query exceptions
@@ -677,16 +687,27 @@ class AdminDashboard extends Component
         $this->show = true;
     }
 
+    public function getEmpCountByDept()
+    {
+        try {
+        } catch (Exception $e) {
+            // Log the error and provide feedback
+            Log::error('Error in chart dept: ' . $e->getMessage());
+            FlashMessageHelper::flashError("An error occurred while updating the chart. Please try again later.");
+        }
+    }
 
     public function render()
     {
+        $this->loadChartData();
         return view('livewire.admin-dashboard', [
             'departmentCount' => $this->departmentCount,
             'loginEmployee' => $this->loginEmployee,
             'topLeaveTakers' => $this->topLeaveTakers,
             'mappedLeaveData' => $this->mappedLeaveData,
             'lateEmployees' => $this->lateEmployees,
-            'swipes' => $this->earlyOrOnTimeEmployees
+            'swipes' => $this->earlyOrOnTimeEmployees,
+            'backgroundColors' => $this->backgroundColors
         ]);
     }
 }
