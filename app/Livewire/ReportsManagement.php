@@ -42,7 +42,7 @@ class ReportsManagement extends Component
     public $fromDate;
     public $toDate;
 
-  
+    public $searchTerm='';
     public $selectDate;
     public $employeeType = 'active';
     public $leaveType = 'all';
@@ -73,9 +73,8 @@ class ReportsManagement extends Component
     public $employees;
     public $search;
 
-    public $selectAll=[];
     
-   
+   public $selectAll=[];
     public $selectedEmployees=[];
     public $currentDate;
     public $isToggleSelectedEmployee=false;
@@ -118,7 +117,6 @@ class ReportsManagement extends Component
         $this->isPending=1;
         $this->defaultApply=0;
         $this->swipeData=[];
-       
     }
 
     public function exportWebSignInData()
@@ -165,7 +163,6 @@ public function updateselectDate()
         $this->isPending=0;
         $this->defaultApply=1;
         $this->swipeData=[];
-        
     
     }
     public function toggleSelectedEmployeeForAttendanceMuster()
@@ -234,7 +231,7 @@ public function updateselectDate()
     {
        
         
-        $this->swipeData = $this->selectAllEmployees->pluck('emp_id')->toArray();
+        $this->swipeData = $this->employees->pluck('emp_id')->toArray();
        
     }
     public function getReportsData()
@@ -572,13 +569,14 @@ public function includeEmployeeFamilyDetails()
         $this->leaveType = 'all';
         $this->transactionType = 'all';
         $this->leaveBalance = [];
-        $this->selectAll=[];
         $this->employeeType = 'active';
         $this->sortBy = 'newest_first';
         $this->employeeTypeForAttendance='allEmployees';
+        $this->selectAll=[];
         $this->EmployeeId=[];
         $this->swipeData=[];
         $this->employeesForSelection='all';
+        $this->selectDate=$this->currentDate;
         $this->includeFamilyDetails=false;
     }
 
@@ -3115,7 +3113,7 @@ public function downloadAbsentReport()
          $this->employees = EmployeeDetails::whereNotIn('employee_details.employee_status', ['terminated', 'resigned'])
          ->select('emp_id', 'first_name', 'last_name')->get();
          if ($this->searching == 1) {
-             $nameFilter = $this->search; // Assuming $this->search contains the name filter
+             $nameFilter = $this->search||$this->searchTerm; // Assuming $this->search contains the name filter
              $this->filteredEmployees = $this->employees->filter(function ($employee) use ($nameFilter) {
                  return stripos($employee->first_name, $nameFilter) !== false ||
                      stripos($employee->last_name, $nameFilter) !== false ||
