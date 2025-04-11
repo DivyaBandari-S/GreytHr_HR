@@ -158,7 +158,6 @@ class LeaveApplyOnBehalf extends Component
         } catch (\Exception $e) {
             // Log the exception message
             Log::error('Error while fetching or formatting leave requests: ' . $e->getMessage());
-
             // Optionally, you could return a message or perform another action if something goes wrong
             FlashMessageHelper::flashError('Something went wrong while processing leave requests.');
         }
