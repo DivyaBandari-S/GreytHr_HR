@@ -630,7 +630,7 @@
                                     </div>
                                 </div>
                                 <div class="attendanceChart">
-                                        <canvas id="attendanceDonutChart"></canvas>
+                                        <canvas id="attendanceDonutChart" style="width: 320px;height:320px;"></canvas>
                                         <div id="donutCenterText" style="
                                             position: absolute;
                                             top: 60%;
@@ -1051,70 +1051,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 <!-- //attendnace overview -->
 
-<script>
-    const donutCtx = document.getElementById('attendanceDonutChart').getContext('2d');
-    const centerText = document.getElementById('donutCenterText');
-
-    const attendanceDonutChart = new Chart(donutCtx, {
-        type: 'doughnut',
-        data: {
-            labels: ['Present', 'Absent', 'WFH', 'Leave'],
-            datasets: [{
-                data: [52, 8, 10, 5],
-                backgroundColor: [
-                    '#4caf50', '#f44336', '#2196f3', '#ff9800'
-                ],
-                borderRadius: 10,
-                spacing: 5
-            }]
-        },
-        options: {
-            responsive: true,
-            cutout: '74%',
-            rotation: -90,
-            circumference: 180,
-            plugins: {
-                legend: {
-                    display: false
-                },
-                tooltip: {
-                    enabled: true,
-                    external: function(context) {
-                        const tooltipModel = context.tooltip;
-                        const data = context.chart.data.datasets[0].data;
-                        const total = data.reduce((a, b) => a + b, 0);
-
-                        if (tooltipModel.opacity === 0) {
-                            centerText.innerHTML = '100%';
-                            return;
-                        }
-
-                        if (tooltipModel.dataPoints) {
-                            const dp = tooltipModel.dataPoints[0];
-                            const value = dp.raw;
-                            const percentage = ((value / total) * 100).toFixed(1);
-                            centerText.innerHTML = `${percentage}%`;
-                        }
-                    }
-                },
-                datalabels: {
-                    color: '#fff',
-                    font: {
-                        weight: 'bold',
-                        size: 12
-                    },
-                    formatter: (value, context) => {
-                        const data = context.chart.data.datasets[0].data;
-                        const total = data.reduce((a, b) => a + b, 0);
-                        const percentage = ((value / total) * 100).toFixed(1);
-                        return `${percentage}%`;
-                    }
-                }
-            }
-        },
-        plugins: [ChartDataLabels]
-    });
-</script>
+s
 
 
 
