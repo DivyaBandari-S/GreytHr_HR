@@ -31,7 +31,7 @@ return new class extends Migration
             $table->enum('employee_status', [
                 'active',
                 'on-leave',
-                'terminated',   
+                'terminated',
                 'resigned',
                 'on-probation',
                 'transferred',
