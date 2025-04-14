@@ -512,10 +512,30 @@ class AdminDashboard extends Component
                     '/hr/user/analytics-hub' => 'People Analytical Hub',
                     '/hr/user/hr-organisation-chart' => 'Organization Chart',
                     '/26' => 'Assign Manager',
+                    '/hr/request' => 'Offboarding Request',
+                    '/hr/HelpDesk' => 'HelpDesk',
+                    '/hr/hrFeeds' => 'Engage',
+
+                ],
+
+                'Information' => [
+                   ' /hr/employee-profile'=>'Employee Information',
+                   '/hr/position-history'=>'Employee Information',
+                   '/hr/employee-asset'=>'Employee Information',
+                   '/hr/bank-account'=>'Employee Information',
+                   '/hr/parent-details'=>'Employee Information',
+                   '/hr/emp-document'=>'Employee Information',
+                   '/hr/previous'=>'Employee Information',
                 ],
                 'payroll' => [
                     '/hr/user/payroll/update' => 'Stop Salary Processing',
                     '/user/payroll/process' => 'Deduct Loss Of Pay(LOP)',
+                    '/hr/payslips' => 'Payslips',
+                    '/hr/ctcslips' => 'CTC Slips',
+                    '/hr/ytdreport' => 'YTD Reports',
+                    '/hr/pfytdreport' => 'PF YTD REport',
+                    '/hr/itstatement' => 'IT Statement',
+            
                     '/27' => 'Print/Email Payslips',
                     '/28' => 'Settle Resigned Employee',
                     '/29' => 'Print/Email Reimbursement Payslip',
