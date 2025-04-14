@@ -102,6 +102,7 @@ use App\Livewire\BankAccount;
 use App\Livewire\CreateSignatory;
 use App\Livewire\EmployeeDataUpdate;
 use App\Livewire\EmployeeLopDays;
+use App\Livewire\EmployeeResignRequests;
 use App\Livewire\Loans;
 use App\Livewire\ReleaseSalary;
 use App\Livewire\EmployeeSeparation;
@@ -301,6 +302,7 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
         Route::get('/review-pending-regularisation-for-hr/{id}/{emp_id}', RegularisationPendingForHr::class)->name('review-pending-regularisation-for-hr');
         Route::get('/employee-data-update/{action}', EmployeeDataUpdate::class)->name('employee.data.update');
         Route::get('/user/employee-separation', EmployeeSeparation::class)->name('employee-separation');
+        Route::get('/user/emp-resign-requests', EmployeeResignRequests::class)->name('emp-resign-requests');
 
         //Reports
         Route::get('/user/reports/', ReportsManagement::class)->name('reports');

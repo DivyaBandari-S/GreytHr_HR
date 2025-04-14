@@ -164,12 +164,13 @@ class AdminDashboard extends Component
             $this->totalActiveEmpList = EmployeeDetails::whereJsonContains('company_id', $companyId)
                 ->where('status', 1)
                 ->get();
+
             $this->totalEmployees = $this->totalActiveEmpList->count();
             if ($this->totalActiveEmpList && $this->totalActiveEmpList->count()) {
                 $empStatus = $this->totalActiveEmpList->groupBy('employee_type');
-            
+
                 $totalEmployees = $this->totalActiveEmpList->count();
-            
+
                 $employeeTypes = [];
                 foreach ($empStatus as $type => $group) {
                     $count = $group->count();
@@ -226,6 +227,8 @@ class AdminDashboard extends Component
                 return $colors[$label] ?? 'rgba(201, 203, 207, 0.5)';
             });
             $this->filterDepartmentChart();
+            $this->getAttendanceOverView();
+
         } catch (\Exception $e) {
             if ($e instanceof \Illuminate\Database\QueryException) {
                 // Handle database query exceptions
@@ -735,6 +738,59 @@ class AdminDashboard extends Component
         }
     }
 
+    public $present ;
+    public $late ;
+    public $absent ;
+    public $total = 0;
+    public function getAttendanceOverView($range = 'this_week')
+    {
+        $this->present = 0;
+        $this->late = 0;
+        $this->absent = 0;
+    
+        // Calculate the start and end dates based on the range
+        switch ($range) {
+            case 'this_month':
+                $startDate = Carbon::now()->startOfMonth();
+                $endDate = Carbon::now();
+                break;
+            case 'last_month':
+                $startDate = Carbon::now()->subMonth()->startOfMonth();
+                $endDate = Carbon::now()->subMonth()->endOfMonth();
+                break;
+            case 'this_year':
+                $startDate = Carbon::now()->startOfYear();
+                $endDate = Carbon::now();
+                break;
+            case 'this_week':
+            default:
+                $startDate = Carbon::now()->startOfWeek(); // Monday
+                $endDate = Carbon::now(); // today
+                break;
+        }
+    
+        $employeeIds = $this->totalActiveEmpList->pluck('emp_id');
+        $swipes = SwipeRecord::whereBetween('created_at', [$startDate, $endDate])->get();
+    
+        foreach ($employeeIds as $empId) {
+            $swipe = $swipes->firstWhere('emp_id', $empId);
+    
+            if ($swipe) {
+                $signinTime = Carbon::parse($swipe->signin_time); // Adjust field name as needed
+    
+                if ($signinTime->lte(Carbon::parse('10:00:00'))) {
+                    $this->present++;
+                } else {
+                    $this->late++;
+                }
+            } else {
+                $this->absent++;
+            }
+        }
+    
+        $this->total = $this->present + $this->late + $this->absent;
+    }
+
     public function render()
     {
         $this->loadChartData();
@@ -745,7 +801,11 @@ class AdminDashboard extends Component
             'lateEmployees' => $this->lateEmployees,
             'swipes' => $this->earlyOrOnTimeEmployees,
             'backgroundColors' => $this->backgroundColors,
-            'allDepartments' => $this->allDepartments
+            'allDepartments' => $this->allDepartments,
+            'total' => $this->total,
+            'present'=>$this->present,
+            'late'=>$this->late,
+            'absent'=> $this->absent
         ]);
     }
 }

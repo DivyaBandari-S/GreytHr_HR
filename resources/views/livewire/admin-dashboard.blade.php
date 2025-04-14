@@ -145,7 +145,8 @@
                                     </div>
                                 </div>
                                 <div class="col-md-4">
-                                    <div class="card-stat">
+                                <a href="{{ route('emp-resign-requests') }}" style="text-decoration: none; color: inherit;">
+                                    <div class="card-stat" style="cursor: pointer;">
                                         <div class="background-stat">
                                             <p>Resignation Request(s)</p>
                                         </div>
@@ -160,11 +161,12 @@
                                             </span>
                                         </div>
                                         <div class="box-stat box3-stat">
-                                            <span class="icon-stat">
-                                            </span>
+                                            <span class="icon-stat"></span>
                                         </div>
                                         <div class="box-stat box4-stat"></div>
                                     </div>
+                                </a>
+
                                 </div>
                             </div>
 
@@ -625,8 +627,12 @@
                                         <p class="fw-bold">Attendance Overview</p>
                                     </div>
                                     <div class="col-md-4 text-end mb-3">
-                                        <button class="btn btn-outline-primary btn-sm"><i
-                                                class="fa-regular fa-calendar"></i> This Week</button>
+                                        <select id="attendance-range" class="form-select form-select-sm w-auto d-inline-block">
+                                            <option value="this_week" selected>This Week</option>
+                                            <option value="this_month">This Month</option>
+                                            <option value="last_month">Last Month</option>
+                                            <option value="this_year">This Year</option>
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="attendanceChart">
@@ -641,7 +647,7 @@
                                             text-align: center;
                                             pointer-events: none;
                                         ">
-                                            75 Total
+
                                         </div>
                                     </div>
 
@@ -649,50 +655,25 @@
                                     <p class="mb-1 fw-bold">Status</p>
                                     <div class="col-6 pe-0">
                                         <p class="mb-1"><i class="fa-solid fa-circle" style="color: #008ffb"></i>
-                                            Present</p>
-                                        <p class="mb-1"><i class="fa-solid fa-circle" style="color: #00e396"></i>
                                             Late</p>
-                                        <p class="mb-1"><i class="fa-solid fa-circle" style="color: #feb019"></i>
-                                            Permission</p>
+                                        <p class="mb-1"><i class="fa-solid fa-circle" style="color: #00e396"></i>
+                                            OnTime/Early</p>
                                         <p class="mb-1"><i class="fa-solid fa-circle" style="color: #ff4560"></i>
                                             Absent</p>
                                     </div>
                                     <div class="col-6 ps-0 text-end">
-                                        <p class="mb-1 fw-bold">59%</p>
-                                        <p class="mb-1 fw-bold">21%</p>
-                                        <p class="mb-1 fw-bold">2%</p>
-                                        <p class="mb-1 fw-bold">15%</p>
+                                        <p class="mb-1 fw-bold">{{ $late }}</p>
+                                        <p class="mb-1 fw-bold">{{ $present }}</p>
+                                        <p class="mb-1 fw-bold">{{ $absent }}</p>
                                     </div>
                                 </div>
                                 <div class="m-0 mb-3 mt-3 px-4 row">
                                     <div class="bg-light m-0 p-0 py-2 rounded row">
                                         <div class="col-md-8 mb-3 d-flex align-items-center">
                                             <p class="mb-0 me-2">Total Absenties</p>
-                                            <div class="avatar-list-stacked avatar-group-sm">
-                                                <span class="avatar avatar-rounded">
-                                                    <img class="border border-white"
-                                                        src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-27.jpg"
-                                                        alt="img">
-                                                </span>
-                                                <span class="avatar avatar-rounded">
-                                                    <img class="border border-white"
-                                                        src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-30.jpg"
-                                                        alt="img">
-                                                </span>
-                                                <span class="avatar avatar-rounded">
-                                                    <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-14.jpg"
-                                                        alt="img">
-                                                </span>
-                                                <span class="avatar avatar-rounded">
-                                                    <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-29.jpg"
-                                                        alt="img">
-                                                </span>
-                                                <a class="avatar bg-primary avatar-rounded text-fixed-white fs10"
-                                                    href="/react/template/index" data-discover="true">+1</a>
-                                            </div>
                                         </div>
                                         <div class="col-md-4 text-end">
-                                            <a href="#" class="perfColor"
+                                            <a href="/hr/user/who-is-in-chart-hr" class="perfColor"
                                                 style="text-decoration: underline;">View Details</a>
                                         </div>
                                     </div>
@@ -1054,15 +1035,23 @@ document.addEventListener("DOMContentLoaded", function () {
 <script>
     const donutCtx = document.getElementById('attendanceDonutChart').getContext('2d');
     const centerText = document.getElementById('donutCenterText');
+    const attendanceData = {
+                present: @json($present),
+                late: @json($late),
+                absent: @json($absent)
+            };
 
+    const present = attendanceData.present;
+    const late = attendanceData.late;
+    const absent = attendanceData.absent;
     const attendanceDonutChart = new Chart(donutCtx, {
         type: 'doughnut',
         data: {
-            labels: ['Present', 'Absent', 'WFH', 'Leave'],
+            labels: ['OnTime/Early', 'Absent', 'Late'],
             datasets: [{
-                data: [52, 8, 10, 5],
+                data: [present, absent, late],
                 backgroundColor: [
-                    '#4caf50', '#f44336', '#2196f3', '#ff9800'
+                    '#4caf50', '#f44336', '#2196f3'
                 ],
                 borderRadius: 10,
                 spacing: 5
@@ -1082,6 +1071,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     external: function(context) {
                         const tooltipModel = context.tooltip;
                         const data = context.chart.data.datasets[0].data;
+                        const labels = context.chart.data.labels;
                         const total = data.reduce((a, b) => a + b, 0);
 
                         if (tooltipModel.opacity === 0) {
@@ -1091,9 +1081,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
                         if (tooltipModel.dataPoints) {
                             const dp = tooltipModel.dataPoints[0];
+                            const total = data.reduce((a, b) => a + b, 0);
                             const value = dp.raw;
+                            const label = labels[dp.dataIndex];
                             const percentage = ((value / total) * 100).toFixed(1);
-                            centerText.innerHTML = `${percentage}%`;
+                            centerText.innerHTML = `${label}: ${percentage}%`;
                         }
                     }
                 },
@@ -1107,6 +1099,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         const data = context.chart.data.datasets[0].data;
                         const total = data.reduce((a, b) => a + b, 0);
                         const percentage = ((value / total) * 100).toFixed(1);
+                        const label = labels[context.dataIndex];
                         return `${percentage}%`;
                     }
                 }

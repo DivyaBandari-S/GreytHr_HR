@@ -24,6 +24,7 @@ class EmpResignations extends Model
     {
         return $this->belongsTo(EmployeeDetails::class, 'emp_id', 'emp_id');
     }
+
     public function getImageUrlAttribute()
     {
         return $this->signature ? 'data:image/jpeg;base64,' . base64_encode($this->signature) : null;
