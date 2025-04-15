@@ -228,7 +228,6 @@ class AdminDashboard extends Component
             });
             $this->filterDepartmentChart();
             $this->getAttendanceOverView();
-
         } catch (\Exception $e) {
             if ($e instanceof \Illuminate\Database\QueryException) {
                 // Handle database query exceptions
@@ -391,7 +390,7 @@ class AdminDashboard extends Component
                 ->get()
                 ->unique('emp_id');
 
-        // Initialize arrays to store late and early/on-time employees
+            // Initialize arrays to store late and early/on-time employees
             $this->lateEmployees = [];
             $this->earlyOrOnTimeEmployees = [];
 
@@ -411,7 +410,6 @@ class AdminDashboard extends Component
                     $this->earlyOrOnTimeEmployees[] = $swipe;
                 }
             }
-
         } catch (\Exception $e) {
             Log::error("Database error getting swipe data: " . $e->getMessage());
             FlashMessageHelper::flashError('An error occurred while getting swipe data. Please try again later.');
@@ -523,42 +521,41 @@ class AdminDashboard extends Component
                 ],
 
                 'Information' => [
-                   ' /hr/employee-profile'=>'Employee Information',
-                   '/hr/position-history'=>'Employee Information',
-                   '/hr/employee-asset'=>'Employee Information',
-                   '/hr/bank-account'=>'Employee Information',
-                   '/hr/parent-details'=>'Employee Information',
-                   '/hr/emp-document'=>'Employee Information',
-                   '/hr/previous'=>'Employee Information',
+                    ' /hr/employee-profile' => 'Employee Information',
+                    '/hr/position-history' => 'Employee Information',
+                    '/hr/employee-asset' => 'Employee Information',
+                    '/hr/bank-account' => 'Employee Information',
+                    '/hr/parent-details' => 'Employee Information',
+                    '/hr/emp-document' => 'Employee Information',
+                    '/hr/previous' => 'Employee Information',
                 ],
                 'payroll' => [
-                    '/hr/user/payroll/update' => 'Stop Salary Processing',
-                    '/user/payroll/process' => 'Deduct Loss Of Pay(LOP)',
+                    '/hr/user/stop-salaries' => 'Stop Salary Processing',
+                    '/hr/user/employee-lop-days' => 'Deduct Loss Of Pay(LOP)',
                     '/hr/payslips' => 'Payslips',
                     '/hr/ctcslips' => 'CTC Slips',
                     '/hr/ytdreport' => 'YTD Reports',
                     '/hr/pfytdreport' => 'PF YTD REport',
                     '/hr/itstatement' => 'IT Statement',
-            
                     '/27' => 'Print/Email Payslips',
                     '/28' => 'Settle Resigned Employee',
                     '/29' => 'Print/Email Reimbursement Payslip',
                     '/30' => 'Arrears',
                     '/31' => 'Update Employee PAN Number',
-                    '/32' => 'Revise Employee Salary',
+                    '/hr/user/salary-revision' => 'Revise Employee Salary',
                     '/33' => 'Process Payroll',
                     '/34' => 'Release IT Declaration',
                     '/35' => 'Download IT Declaration For TDS',
                     '/36' => 'Create New Payroll Month',
-                    '/37' => 'Update Payroll Data',
+                    '/hr/user/payroll-salary' => 'Update Payroll Data',
                     '/38' => 'Pay Arrears',
                     '/39' => 'Verify Payroll Difference',
                     '/40' => 'Generate Payroll Statement',
                     '/41' => 'Generate Accounts JV',
                     '/42' => 'Release Payslips To Employees',
                     '/43' => 'Clean Up Payroll',
-                    '/44' => 'Hold Salary Account',
-                    '/45' => 'Release Salary Account',
+                    '/hr/user/hold-salaries' => 'Hold Salary Account',
+                    '/hr/user/release-salary ' => 'Release Salary Account',
                     '/46' => 'Resettle Employee',
                     '/47' => 'Add TDS Challan',
                     '/48' => 'Bank Transfer',
@@ -759,16 +756,16 @@ class AdminDashboard extends Component
         }
     }
 
-    public $present ;
-    public $late ;
-    public $absent ;
+    public $present;
+    public $late;
+    public $absent;
     public $total = 0;
     public function getAttendanceOverView($range = 'this_week')
     {
         $this->present = 0;
         $this->late = 0;
         $this->absent = 0;
-    
+
         // Calculate the start and end dates based on the range
         switch ($range) {
             case 'this_month':
@@ -808,7 +805,7 @@ class AdminDashboard extends Component
                 $this->absent++;
             }
         }
-    
+
         $this->total = $this->present + $this->late + $this->absent;
     }
 
@@ -824,9 +821,9 @@ class AdminDashboard extends Component
             'backgroundColors' => $this->backgroundColors,
             'allDepartments' => $this->allDepartments,
             'total' => $this->total,
-            'present'=>$this->present,
-            'late'=>$this->late,
-            'absent'=> $this->absent
+            'present' => $this->present,
+            'late' => $this->late,
+            'absent' => $this->absent
         ]);
     }
 }
