@@ -1,5 +1,5 @@
-<div class="container mt-5">
-    <h2 style="font-size: 18px;font-weight: bold; margin-top: -20px;">{{ $client_id ? 'Edit Client' : 'Client Registration' }}</h2>
+<div class="container mt-3">
+    <h2 style="font-size: var(----main-headings-font-size);font-weight: 500; margin-left: 10px;a color: var(--main-heading-color)">{{ $client_id ? 'Edit Client' : 'Client Registration' }}</h2>
 
     <!-- Display success message -->
     @if (session()->has('success'))

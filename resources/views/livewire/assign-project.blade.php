@@ -12,7 +12,9 @@
         .table th {
             /* background-color: #f8f9fa; */
             background-color: var(--main-table-heading-bg-color);
-            font-weight: 600;
+            font-weight: 500;
+            color: #778899;
+            font-size: 12px;
         }
          /* Adding a container with a background and padding to form and table */
          .form-container, .table-container1 {
@@ -61,11 +63,20 @@
             color: var(--label-color);
             margin-bottom: 0px;
         }
+        h2 {
+            font-size: var(--main-headings-font-size);
+            /* Decreased the font size */
+            font-weight: 500;
+            color: var(--main-heading-color);
+            margin-bottom: 15px;
+            padding: 10px;
+            border-radius: 8px;
+        }
     </style>
     <div class="row">
         <!-- Left side: Heading and Form -->
         <div class="col-md-4 form-container mx-3">
-            <h2 style="font-size: 16px; font-weight: bold;">Assign Project to Employee</h2>
+            <h2>Assign Project to Employee</h2>
 
             <!-- Display success message if any -->
             @if (session()->has('message'))
@@ -337,7 +348,7 @@
         </div>
         <div class="col-md-7">
             <div class="table-container1">
-                <h3 style="font-size: 16px; font-weight: bold;">Assigned Projects</h3>
+                <h2>Assigned Projects</h2>
                 <table class="table table-striped mt-3" style="max-height: 300px;">
                     <thead>
                         <tr>
@@ -351,52 +362,62 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($assignedProjects as $project)
+                        @if ($assignedProjects->isEmpty())
                             <tr>
-                                <td>{{ $loop->iteration }}</td>
-                                
-                                <!-- Display Client Name -->
-                                <td>{{ ucwords($project->client->client_name) ?? "-" }}</td>
-        
-                                <!-- Display Project Name -->
-                                <td>{{ ucwords($project->project_name) }}</td>
-        
-                                <!-- Display Employees -->
-                                <td>
-                                    @if($project->emp_id)
-                                        @php
-                                            $employees = json_decode($project->emp_id);  // Decoding the JSON string
-                                        @endphp
-                                        @foreach($employees as $employee)
-                                            <div>{{ $employee->full_name }}</div>
-                                        @endforeach
-                                    @else
-                                        -
-                                    @endif
-                                </td>
-        
-                                <!-- Display Start Date -->
-                                <td>{{ $project->start_date ? \Carbon\Carbon::parse($project->start_date)->format('Y-m-d') : '-' }}</td>
-        
-                                <!-- Display End Date -->
-                                <td>{{ $project->end_date ? \Carbon\Carbon::parse($project->end_date)->format('Y-m-d') : '-' }}</td>
-        
-                                <!-- Actions -->
-                                <td>
-                                    <!-- Action Icons: Edit, View, Delete -->
-                                    <a href="#" wire:click="viewProject({{ $project->client->client_id }})" title="View">
-                                        <i class="fas fa-eye text-secondary"></i>
-                                    </a>
-                                    <a href="#"  title="Edit" class="mx-2">
-                                        <i class="fas fa-edit text-info"></i>
-                                    </a>
-                                    <a href="#"  title="Delete">
-                                        <i class="fas fa-trash text-danger"></i>
-                                    </a>
+                                <td colspan="7" class="text-center">
+                                    <img class="task-no-items-found" src="{{ asset('images/nodata.png') }}" alt="No items found">
+                                    <p>No Data Found</p>
                                 </td>
                             </tr>
-                        @endforeach
+                        @else
+                            @foreach($assignedProjects as $project)
+                                <tr>
+                                    <td>{{ $loop->iteration }}</td>
+                                    
+                                    <!-- Display Client Name -->
+                                    <td>{{ ucwords($project->client->client_name) ?? "-" }}</td>
+                    
+                                    <!-- Display Project Name -->
+                                    <td>{{ ucwords($project->project_name) }}</td>
+                    
+                                    <!-- Display Employees -->
+                                    <td>
+                                        @if($project->emp_id)
+                                            @php
+                                                $employees = json_decode($project->emp_id);  // Decoding the JSON string
+                                            @endphp
+                                            @foreach($employees as $employee)
+                                                <div>{{ $employee->full_name }}</div>
+                                            @endforeach
+                                        @else
+                                            -
+                                        @endif
+                                    </td>
+                    
+                                    <!-- Display Start Date -->
+                                    <td>{{ $project->start_date ? \Carbon\Carbon::parse($project->start_date)->format('Y-m-d') : '-' }}</td>
+                    
+                                    <!-- Display End Date -->
+                                    <td>{{ $project->end_date ? \Carbon\Carbon::parse($project->end_date)->format('Y-m-d') : '-' }}</td>
+                    
+                                    <!-- Actions -->
+                                    <td>
+                                        <!-- Action Icons: Edit, View, Delete -->
+                                        <a href="#" wire:click="viewProject({{ $project->client->client_id }})" title="View">
+                                            <i class="fas fa-eye text-secondary"></i>
+                                        </a>
+                                        <a href="#" title="Edit" class="mx-2">
+                                            <i class="fas fa-edit text-info"></i>
+                                        </a>
+                                        <a href="#" title="Delete">
+                                            <i class="fas fa-trash text-danger"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        @endif
                     </tbody>
+                    
                 </table>
             </div>
         </div>

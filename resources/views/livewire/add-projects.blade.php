@@ -1,32 +1,26 @@
-<div class="container mt-5">
+<div class="container mt-3">
     <div class="d-flex justify-content-end">
-        
-            <input type="text" class="search-input" wire:model="search" wire:input="searchProjects" placeholder="Search...">
-        
+
+        <input type="text" class="search-input" wire:model="search" wire:input="searchProjects" placeholder="Search...">
+
     </div>
-  
+
     <style>
         .container {
             max-width: 1200px;
         }
 
         h2 {
-            font-size: 18px; /* Decreased the font size */
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 30px;
-            padding: 15px;
+            font-size: var(--main-headings-font-size);
+            /* Decreased the font size */
+            font-weight: 500;
+            color: var(--main-heading-color);
+            margin-bottom: 15px;
+            padding: 10px;
             border-radius: 8px;
         }
 
-        h3 {
-            font-size: 18px; /* Decreased the font size */
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 15px;
-            padding: 15px;
-            border-radius: 8px;
-        }
+       
 
         .form-control {
             border-radius: 8px;
@@ -50,14 +44,20 @@
         .table {
             margin-top: 20px;
             border-collapse: collapse;
-            background-color: white; /* White background for the table */
+            background-color: white;
+            /* White background for the table */
             border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Shadow effect for the table */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            /* Shadow effect for the table */
         }
 
-        .table th, .table td {
+        .table th,
+        .table td {
             padding: 12px;
             text-align: left;
+            color: #778899;
+            font-size: 12px;
+            font-weight: 500;
         }
 
         .table th {
@@ -71,7 +71,8 @@
         }
 
         /* Adding a container with a background and padding to form and table */
-        .form-container, .table-container1 {
+        .form-container,
+        .table-container1 {
             background-color: #fff;
             padding: 20px;
             border-radius: 8px;
@@ -79,7 +80,7 @@
             /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); */
             margin-bottom: 30px;
         }
-       
+
 
         .search-input {
             padding: 5px 10px;
@@ -94,8 +95,9 @@
     <div class="row">
         <!-- Left side: Heading and Form -->
         <div class="col-md-4 form-container mx-3">
-            <h2 class="mb-4">{{ $selectedProjectId ? 'Edit Project' : 'Add New Project for Client: ' . $client_id }}</h2>
-            
+            <h2 class="mb-4">{{ $selectedProjectId ? 'Edit Project for Client: ' . $client_id : 'Add New Project for Client: ' . $client_id }}
+            </h2>
+
             <!-- Success Message -->
             @if (session()->has('success'))
                 <div class="alert alert-success">
@@ -114,8 +116,11 @@
                             <label>Project Name</label>
                         </div>
                         <div class="col-md-7">
-                            <input type="text" class="form-control" wire:model="project_name" wire:keyup="validateInputChange('project_name')">
-                            @error('project_name') <span class="text-danger">{{ $message }}</span> @enderror
+                            <input type="text" class="form-control" wire:model="project_name"
+                                wire:keyup="validateInputChange('project_name')">
+                            @error('project_name')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
                         </div>
                     </div>
                 </div>
@@ -128,7 +133,9 @@
                         </div>
                         <div class="col-md-7">
                             <textarea class="form-control" wire:model="project_description"></textarea>
-                            @error('project_description') <span class="text-danger">{{ $message }}</span> @enderror
+                            @error('project_description')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
                         </div>
                     </div>
                 </div>
@@ -141,7 +148,9 @@
                         </div>
                         <div class="col-md-7">
                             <input type="date" class="form-control" wire:model="project_start_date">
-                            @error('project_start_date') <span class="text-danger">{{ $message }}</span> @enderror
+                            @error('project_start_date')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
                         </div>
                     </div>
                 </div>
@@ -154,84 +163,99 @@
                         </div>
                         <div class="col-md-7">
                             <input type="date" class="form-control" wire:model="project_end_date">
-                            @error('project_end_date') <span class="text-danger">{{ $message }}</span> @enderror
+                            @error('project_end_date')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
                         </div>
                     </div>
                 </div>
 
                 <!-- Submit Button -->
                 <div class="form-group text-center">
-                    <button type="submit" class="submit-btn">{{ $selectedProjectId ? 'Update Project' : 'Save Project' }}</button>
+                    <button type="submit"
+                        class="submit-btn">{{ $selectedProjectId ? 'Update Project' : 'Save Project' }}</button>
                 </div>
             </form>
         </div>
 
         <!-- Right side: Project List -->
         <div class="col-md-7 table-container1">
-            <h3>Projects List</h3>
+            <h2>Projects List</h2>
             <!-- Project Table -->
             <table class="table table-striped mt-3" style="max-height: 300px;">
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th style="width: 23%;">Project Name</th>
-                        <th>Description</th>
+                        <th style="width: 20%;">Project Name</th>
+                        <th style="width: 14%">Description</th>
                         <th style="width: 19%;">Start Date</th>
                         <th style="width: 19%;">End Date</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($projects as $project)
+                    @if ($projects->isEmpty())
                         <tr>
-                            <td>{{ $loop->iteration }}</td>
-                            <td>{{ ucwords($project->project_name) }}</td>
-                            <td style="text-align: center">{{ $project->project_description ?: '-' }}</td>
-                            <td style="text-align: center">{{ $project->project_start_date ?: '-' }}</td>
-                            <td style="text-align: center">{{ $project->project_end_date ?: '-' }}</td>
-                            
-                            <td>
-                                <!-- Action Icons: Edit, View, Delete -->
-                                <a href="#" wire:click="viewProject({{ $project->id }})" title="View">
-                                    <i class="fas fa-eye text-secondary"></i>
-                                </a>
-                                <a href="#" wire:click="editProject({{ $project->id }})" title="Edit" class="mx-2">
-                                    <i class="fas fa-edit text-info"></i>
-                                </a>
-                                <a href="#" wire:click="deleteProject({{ $project->id }})" title="Delete">
-                                    <i class="fas fa-trash text-danger"></i>
-                                </a>
+                            <td colspan="6" class="text-center">
+                                <img class="task-no-items-found" src="{{ asset('images/nodata.png') }}" alt="No items found">
+                                <p>No Data Found</p>
                             </td>
                         </tr>
-                    @endforeach
+                    @else
+                        @foreach ($projects as $project)
+                            <tr>
+                                <td>{{ $loop->iteration }}</td>
+                                <td>{{ ucwords($project->project_name) }}</td>
+                                <td style="text-align: center">{{ $project->project_description ?: '-' }}</td>
+                                <td style="text-align: center">{{ $project->project_start_date ?: '-' }}</td>
+                                <td style="text-align: center">{{ $project->project_end_date ?: '-' }}</td>
+                
+                                <td>
+                                    <!-- Action Icons: Edit, View, Delete -->
+                                    <a href="#" wire:click="viewProject({{ $project->id }})" title="View">
+                                        <i class="fas fa-eye text-secondary"></i>
+                                    </a>
+                                    <a href="#" wire:click="editProject({{ $project->id }})" title="Edit"
+                                        class="mx-2">
+                                        <i class="fas fa-edit text-info"></i>
+                                    </a>
+                                    <a href="#" wire:click="deleteProject({{ $project->id }})" title="Delete">
+                                        <i class="fas fa-trash text-danger"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        @endforeach
+                    @endif
                 </tbody>
+                
             </table>
         </div>
     </div>
     <!-- Edit Project Modal -->
 
 
-<!-- View Project Modal -->
-@if($showViewModal)
-<div class="modal fade show" style="display: block;" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            
-            <div class="modal-header alert alert-success m-0">
-                <!-- <h5 class="modal-title ">Success</h5> -->
-                <h5 class="modal-title ">View Project</h5>
-                <a style="margin-left: auto;"><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" wire:click="$set('showViewModal', false)"></button></a>
-            </div>
-            <div class="modal-body">
-                <p><strong style="margin-right: 20px;">Project Name:</strong>  {{ ucwords($project_name) }}</p>
-                <p><strong>Description:</strong> {{ $project_description }}</p>
-                <p><strong>Start Date:</strong> {{ $project_start_date }}</p>
-                <p><strong>End Date:</strong> {{ $project_end_date }}</p>
+    <!-- View Project Modal -->
+    @if ($showViewModal)
+        <div class="modal fade show" style="display: block;" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+
+                    <div class="modal-header alert alert-success m-0">
+                        <!-- <h5 class="modal-title ">Success</h5> -->
+                        <h5 class="modal-title ">View Project</h5>
+                        <a style="margin-left: auto;"><button type="button" class="btn-close" data-bs-dismiss="modal"
+                                aria-label="Close" wire:click="$set('showViewModal', false)"></button></a>
+                    </div>
+                    <div class="modal-body">
+                        <p><strong style="margin-right: 20px;">Project Name:</strong> {{ ucwords($project_name) }}</p>
+                        <p><strong>Description:</strong> {{ $project_description }}</p>
+                        <p><strong>Start Date:</strong> {{ $project_start_date }}</p>
+                        <p><strong>End Date:</strong> {{ $project_end_date }}</p>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-</div>
-<div class="modal-backdrop fade show"></div>
-@endif
+        <div class="modal-backdrop fade show"></div>
+    @endif
 
 </div>

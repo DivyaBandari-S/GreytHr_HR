@@ -111,9 +111,9 @@
                     wire:click="$set('activeTab', 'Activity')" id="starred-tab" data-bs-toggle="tab" href="#starred"
                     role="tab" aria-controls="starred" aria-selected="false">Activity</a>
             </li>
-            <li class="nav-item ms-auto">
+            {{-- <li class="nav-item ms-auto">
                 <a class="nav-link folder-active" href="#">Select</a>
-            </li>
+            </li> --}}
         </ul>
     </div>
     <div class="tab-content" id="myTabContent">
@@ -127,17 +127,17 @@
                                 activities-the pattern of leave usage in the
                                 organization across the months and the type of leave availed by your employees.
                             </p>
-                            <p class="main-overview-text">Explore greytHR by <span class="main-overview-highlited-text">
+                            {{-- <p class="main-overview-text">Explore greytHR by <span class="main-overview-highlited-text">
                                     Help-Doc</span>, watching<span class="main-overview-highlited-text"> How-to
                                     Videos</span>
-                                and<span class="main-overview-highlited-text"> FAQ</span>.</p>
+                                and<span class="main-overview-highlited-text"> FAQ</span>.</p> --}}
                         </div>
-                        <div class="hide-main-overview-help col-md-1 col-2 d-flex align-items-start">
+                        {{-- <div class="hide-main-overview-help col-md-1 col-2 d-flex align-items-start">
                             <span wire:click="hideHelp">Hide Help</span>
-                        </div>
+                        </div> --}}
                     </div>
                 @else
-                    <div class="row main-overview-help">
+                    {{-- <div class="row main-overview-help">
                         <div class="col-11 d-flex flex-column">
                             <p class="main-overview-text">This page displays a summary of your employee's leave-related
                                 activities-the pattern of leave usage in the
@@ -147,7 +147,7 @@
                         <div class="hide-main-overview-help col-1">
                             <span wire:click="showhelp">Show Help</span>
                         </div>
-                    </div>
+                    </div> --}}
                 @endif
             </div>
             <div class="form-group task-date-range-picker">
@@ -253,6 +253,7 @@
                                 wire:change="monthLeaveTypeFilter">
                                 <option value="all" selected>All</option>
                                 <option value="Casual Leave">Casual Leave</option>
+                                <option value="Earned Leave">Earned Leave</option>
                                 <option value="Casual Leave Probation">Casual Leave Probation </option>
                                 <option value="Maternity Leave">Maternity Leave</option>
                                 <option value="Loss Of Pay">Loss Of Pay</option>
@@ -284,6 +285,7 @@
                                     >
                                     <option value="all" selected>All</option>
                                     <option value="Casual Leave">Casual Leave</option>
+                                    <option value="Earned Leave">Earned Leave</option>
                                     <option value="Casual Leave Probation">Casual Leave Probation </option>
                                     <option value="Maternity Leave">Maternity Leave</option>
                                     <option value="Loss Of Pay">Loss Of Pay</option>
@@ -325,6 +327,7 @@
                             wire:change="leaveTypeFilter">
                             <option value="all" selected>All</option>
                             <option value="Casual Leave">Casual Leave</option>
+                            <option value="Earned Leave">Earned Leave</option>
                             <option value="Casual Leave Probation">Casual Leave Probation </option>
                             <option value="Maternity Leave">Maternity Leave</option>
                             <option value="Loss Of Pay">Loss Of Pay</option>
@@ -414,6 +417,7 @@
             'Sick Leave',
             'Maternity Leave',
             'Casual Leave',
+            'Earned Leave',
             'Marriage Leave',
             'Casual Leave Probation',
             'Paternity Leave'
@@ -423,6 +427,7 @@
             'Sick Leave': '#ffd6a5', // Lighter shade of orange
             'Maternity Leave': '#fdffb6', // Lighter shade of yellow
             'Casual Leave': '#caffbf', // Lighter shade of green
+            'Earned Leave': '#9bf6ff', 
             'Marriage Leave': '#a0c4ff', // Lighter shade of blue
             'Casual Leave Probation': '#bdb2ff', // Lighter shade of purple
             'Paternity Leave': '#8996cb', // Lighter shade of teal

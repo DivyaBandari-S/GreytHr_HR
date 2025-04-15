@@ -33,6 +33,16 @@ class AssignProject extends Component
         'startDate' => 'nullable|date',
         'endDate' => 'nullable|date',
     ];
+
+    protected $messages = [
+        'selectedClient.required' => 'Select client is required.',
+        'selectedProject.required' => 'Select project is required.',
+        'selectedPeople.required' => 'At least one person must be selected for the project.',
+        'selectedPeople.array' => 'selected people must be an array.',
+        'selectedPeople.min' => 'Please select at least one employee.',
+        'startDate.date' => 'Start date must be a valid date.',
+        'endDate.date' => 'End date must be a valid date.',
+    ];
     public function clearValidationMessages($field)
 {
     // Clear the validation error for the specific field

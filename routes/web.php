@@ -106,6 +106,7 @@ use App\Livewire\Loans;
 use App\Livewire\ReleaseSalary;
 use App\Livewire\EmployeeSeparation;
 use App\Livewire\EmpResettlement;
+use App\Livewire\GiveKudos;
 use App\Livewire\IncomeTax;
 use App\Livewire\ItStatement;
 use App\Livewire\SalarySlip;
@@ -190,6 +191,7 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
         //feeds
         Route::get('/hrFeeds', Feeds::class)->name('hrfeeds');
         Route::get('/everyone', Everyone::class)->name('everyone');
+        Route::get('/givekudos', GiveKudos::class)->name('givekudos');
 
 
         //HR Payroll Submodule Routes->Published Info

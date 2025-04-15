@@ -370,7 +370,7 @@ class Feeds extends Component
     public function searchEmployees()
     {
 
-        $loggedInId = auth()->guard('emp')->user()->emp_id;
+        $loggedInId = auth()->guard('hr')->user()->emp_id;
 
         // Fetch all employees excluding the logged-in one
         $employees = EmployeeDetails::query()
@@ -749,7 +749,7 @@ $this->employees = EmployeeDetails::where('company_id', $companyId)->get();
         $urls = [
             'posts' => '/hr/everyone',
             'activities' => '/hr/hrFeeds',
-            'kudos' => '/kudos',
+            'kudos' => '/hr/givekudos',
             'post-requests' => '/emp-post-requests'
             // Add more mappings if necessary
         ];

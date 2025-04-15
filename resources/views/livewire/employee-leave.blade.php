@@ -286,9 +286,7 @@
                     wire:click="$set('activeButton', 'Activity')" id="starred-tab" data-bs-toggle="tab" href="#starred"
                     role="tab" aria-controls="starred" aria-selected="false">Activity</a>
             </li>
-            <li class="nav-item ms-auto">
-                <a class="nav-link folder-active" href="#">Select</a>
-            </li>
+          
         </ul>
     </div>
     <div class="tab-content" id="myTabContent">
@@ -302,17 +300,17 @@
                             information of employees. Select an employee and click each tab to view information
                             about a particular type of leave. Change the year to view leave data for a different
                             period.</p>
-                        <p class="main-overview-text">Explore greytHR by <span class="main-overview-highlited-text">
+                        {{-- <p class="main-overview-text">Explore greytHR by <span class="main-overview-highlited-text">
                                 Help-Doc</span>, watching<span class="main-overview-highlited-text"> How-to
                                 Videos</span>
-                            and<span class="main-overview-highlited-text"> FAQ</span>.</p>
+                            and<span class="main-overview-highlited-text"> FAQ</span>.</p> --}}
                     </div>
-                    <div class="hide-main-overview-help col-md-1 col-2 d-flex align-items-start">
+                    {{-- <div class="hide-main-overview-help col-md-1 col-2 d-flex align-items-start">
                         <span wire:click="hideHelp">Hide Help</span>
-                    </div>
+                    </div> --}}
                 </div>
                 @else
-                <div class="row main-overview-help">
+                {{-- <div class="row main-overview-help">
                     <div class="col-11 d-flex flex-column">
                         <p class="main-overview-text">The Employee Leave page enables you to view the leave
                             information of employees. Select an employee and click each tab to view information
@@ -323,7 +321,7 @@
                     <div class="hide-main-overview-help col-1">
                         <span wire:click="showhelp">Show Help</span>
                     </div>
-                </div>
+                </div> --}}
                 @endif
             </div>
 
