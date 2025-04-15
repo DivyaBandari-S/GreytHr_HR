@@ -358,7 +358,7 @@ class AdminDashboard extends Component
             if ($e instanceof \Illuminate\Database\QueryException) {
                 // Handle database query exceptions
                 Log::error("Database error getting leaves of employee: " . $e->getMessage());
-                FlashMessageHelper::flashError('Database connection error occurred. Please try again later.');
+                FlashMessageHelper::flashError('dfghj Database connection error occurred. Please try again later.');
             } elseif (strpos($e->getMessage(), 'Call to a member function store() on null') !== false) {
                 // Display a user-friendly error message for null image
                 FlashMessageHelper::flashError('An error occured while getting leave data.');
@@ -391,7 +391,7 @@ class AdminDashboard extends Component
                 ->get()
                 ->unique('emp_id');
 
-            // Initialize arrays to store late and early/on-time employees
+        // Initialize arrays to store late and early/on-time employees
             $this->lateEmployees = [];
             $this->earlyOrOnTimeEmployees = [];
 
@@ -401,7 +401,7 @@ class AdminDashboard extends Component
                 $swipeTime = Carbon::parse($swipe->swipe_time);
 
                 // Define the "late" threshold time (10:00 AM)
-                $lateThreshold = Carbon::createFromTime(10, 0, 0);  // 10:00 AM
+                $lateThreshold = $swipeTime->copy()->setTime(10, 0, 0);  // 10:00 AM
                 // Check if the employee's swipe time is later than 10:00 AM and if it is an "IN" swipe
                 if ($swipe->in_or_out === 'IN' && $swipeTime->gt($lateThreshold)) {
                     // Add the employee to the late employees array
@@ -411,6 +411,7 @@ class AdminDashboard extends Component
                     $this->earlyOrOnTimeEmployees[] = $swipe;
                 }
             }
+
         } catch (\Exception $e) {
             Log::error("Database error getting swipe data: " . $e->getMessage());
             FlashMessageHelper::flashError('An error occurred while getting swipe data. Please try again later.');
@@ -768,17 +769,17 @@ class AdminDashboard extends Component
                 $endDate = Carbon::now(); // today
                 break;
         }
-    
+
         $employeeIds = $this->totalActiveEmpList->pluck('emp_id');
         $swipes = SwipeRecord::whereBetween('created_at', [$startDate, $endDate])->get();
-    
+
         foreach ($employeeIds as $empId) {
             $swipe = $swipes->firstWhere('emp_id', $empId);
-    
+
             if ($swipe) {
-                $signinTime = Carbon::parse($swipe->signin_time); // Adjust field name as needed
-    
-                if ($signinTime->lte(Carbon::parse('10:00:00'))) {
+                $signinTimes = Carbon::parse($swipe->signin_time); // Adjust field name as needed
+
+                if ($signinTimes->lte(Carbon::parse('10:00:00'))) {
                     $this->present++;
                 } else {
                     $this->late++;

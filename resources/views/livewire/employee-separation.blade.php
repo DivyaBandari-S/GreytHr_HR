@@ -16,9 +16,7 @@
                         <div class="col-md-11 col-10 d-flex flex-column">
                             <p class="main-overview-text mb-1">View and update the <span class="msgHeighlighter">Separation Details</span> of an employee on the <span class="msgHeighlighter">Separation.</span> Please note that depending on the <span class="msgHeighlighter">Separation Mode</span>, the captured information varies. If an employee resigns, then you need first to update the Resignation Details. Subsequently, on the day the employee leaves, <span class="msgHeighlighter">Exit </span> Details can be updated on this page.</p>
                         </div>
-                        <div class="hide-main-overview-help col-md-1 col-2 d-flex align-items-start">
-                            <span wire:click="hideHelp">Hide Help</span>
-                        </div>
+
                     </div>
                     <!-- //second row contnet -->
                     <div class="row d-flex align-items-center mx-0 mb-4 p-0 bg-white rounded">
@@ -36,7 +34,7 @@
                                     </div>
                                     <div class="d-flex flex-column position-relative">
                                         <div class="row">
-                                            <div class="col-md-4">
+                                            <div class="col-md-12">
                                                 <label for="search" class="mb-2">Search An Employee</label>
                                                 <div class="searchWidth rounded-pill position-relative">
                                                     @if($seleceted_emp_id && $selecetdEmpDetails)
@@ -57,7 +55,7 @@
                                                             class="position-absolute end-0 translate-middle-y border-0 bg-transparent"
                                                             wire:click="closeSearchContainer"
                                                             aria-label="Clear Selection"
-                                                            style="width:30px;color:#ccc;left:90%;top:50%;">
+                                                            style="width:30px;color:#ccc;top:50%;">
                                                             <i class="fa fa-times-circle text-muted"></i>
                                                         </button>
                                                     </div>
@@ -81,36 +79,40 @@
                                     </div>
 
                                     @if($showEmployeeSearch)
-                                    <div class="selectEmp mb-3 bg-white d-flex flex-column position-absolute">
-                                        <div class="d-flex justify-content-end">
-                                            <span wire:click="closeSearchContainer"><i class="fa fa-times-circle text-muted" style="color:#ccc;cursor:pointer;"></i></span>
-                                        </div>
-                                        <div>
-                                            @if(count($employeeIds) > 0)
-                                            @foreach($employeeIds as $emp_id => $emp_data)
-                                            <div class="d-flex p-2 align-items-start gap-2 mb-2 border rounded bg-white" wire:click="getSelectedEmp('{{  $emp_id }}')">
-                                                <!-- Display employee image if image exists -->
-                                                @if ($emp_data['image'] !== null && $emp_data['image']!= "null" && $emp_data['image']!= "Null" && $emp_data['image'] != "")
-                                                <img src="data:image/jpeg;base64,{{ ($emp_data['image']) }}" style="width: 35px; height: 35px; object-fit: cover;" class="rounded-circle">
-                                                @else
-                                                <!-- Fallback image if no image is found -->
-                                                <img src="{{ asset('images/user.jpg') }}" style="width: 35px; height: 35px; object-fit: cover;" class="rounded-circle">
-                                                @endif
+                                    <div class="row">
+                                        <div class="col-md-4 position-absolute">
+                                            <div class="selectEmp mb-3 bg-white d-flex flex-column ">
+                                                <div class="d-flex justify-content-end">
+                                                    <span wire:click="closeSearchContainer"><i class="fa fa-times-circle text-muted" style="color:#ccc;cursor:pointer;"></i></span>
+                                                </div>
+                                                <div>
+                                                    @if(count($employeeIds) > 0)
+                                                    @foreach($employeeIds as $emp_id => $emp_data)
+                                                    <div class="d-flex p-2 align-items-start gap-2 mb-2 border rounded bg-white" wire:click="getSelectedEmp('{{  $emp_id }}')">
+                                                        <!-- Display employee image if image exists -->
+                                                        @if ($emp_data['image'] !== null && $emp_data['image']!= "null" && $emp_data['image']!= "Null" && $emp_data['image'] != "")
+                                                        <img src="data:image/jpeg;base64,{{ ($emp_data['image']) }}" style="width: 35px; height: 35px; object-fit: cover;" class="rounded-circle">
+                                                        @else
+                                                        <!-- Fallback image if no image is found -->
+                                                        <img src="{{ asset('images/user.jpg') }}" style="width: 35px; height: 35px; object-fit: cover;" class="rounded-circle">
+                                                        @endif
 
-                                                <!-- Display employee name -->
-                                                <div class="d-flex flex-column">
-                                                    <span class="normalText">
-                                                        {{ ucwords(strtolower($emp_data['full_name'])) }}
-                                                    </span>
-                                                    <small class="normalText">
-                                                        {{ strtoupper($emp_id) }}
-                                                    </small>
+                                                        <!-- Display employee name -->
+                                                        <div class="d-flex flex-column">
+                                                            <span class="normalText">
+                                                                {{ ucwords(strtolower($emp_data['full_name'])) }}
+                                                            </span>
+                                                            <small class="normalText">
+                                                                {{ strtoupper($emp_id) }}
+                                                            </small>
+                                                        </div>
+                                                    </div>
+                                                    @endforeach
+                                                    @else
+                                                    <div class="text-center subTextValue py-2">No data found for your search query.</div>
+                                                    @endif
                                                 </div>
                                             </div>
-                                            @endforeach
-                                            @else
-                                            <div class="text-center subTextValue py-2">No data found for your search query.</div>
-                                            @endif
                                         </div>
                                     </div>
                                     @endif
@@ -655,12 +657,23 @@
                 </div>
             </div>
             <div class="tab-pane" id="dashboard-tab-pane" role="tabpanel" aria-labelledby="dashboard-tab" tabindex="0">
-
-                <div>
-                    activity review
+                @if($allDetails)
+                @foreach ($allDetails as $review )
+                <div class="d-flex flex-column mt-4 px-4 mb-3">
+                    <span class="normalText">
+                        &rarr; <strong>{{ $review->HRemployee->employee_name }}</strong> updated the employee separation details for <strong>{{ $review->employee->first_name }} {{ $review->employee->last_name }} #({{ $review->emp_id }})</strong>.
+                    </span>
+                    <span class="muted">
+                        Updated on {{ \Carbon\Carbon::parse($review->created_at)->format('d M, Y') }}.
+                    </span>
+                    <span class="normalText">
+                        Separation mode set to <strong class="fw-500 fs-14">{{ ucwords(strtolower($review->separation_mode)) }}</strong>.
+                    </span>
                 </div>
 
-            </div>
+                @endforeach
+                @endif
+            </div>a
         </div>
 
     </div>

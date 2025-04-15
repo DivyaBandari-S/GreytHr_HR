@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Helpers\FlashMessageHelper;
 use App\Models\EmployeeDetails;
 use App\Models\EmpResignations;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Livewire\Component;
 
@@ -49,7 +50,13 @@ class EmployeeResignRequests extends Component
     //approve resign request
     public function confirmAction()
     {
+        $this->validate([
+            'comment' => 'required|string|min:3',
+        ], [
+            'comment.required' => 'Please enter a comment before proceeding.',
+        ]);
         try {
+            $logginHrId = Auth::guard('hr')->user()->emp_id;
             $request = EmpResignations::find($this->selectedRequestId);
             if (!$request) {
                 FlashMessageHelper::flashError('request not found');
@@ -57,16 +64,20 @@ class EmployeeResignRequests extends Component
             if ($this->actionType === 'approve') {
                 // handle approve logic
                 $request->status = 2;
-                $request->approved_date = now();
+                $request->action_by = $logginHrId;
+                $request->action_date = now();
             } elseif ($this->actionType === 'reject') {
                 // handle reject logic
+                $request->action_by = $logginHrId;
                 $request->status = 3;
+                $request->action_date = now();
             }
             $request->comments = $this->comment;
             $request->save();
-            FlashMessageHelper::flashSuccess(ucfirst($this->actionType).'ed' . 'successfully!');
+            FlashMessageHelper::flashSuccess(ucfirst($this->actionType) . 'ed  ' . 'successfully!');
             // Reset modal state
             $this->reset(['showApproveModal', 'selectedRequestId', 'actionType', 'comment']);
+            $this->getEmployeeResignRequests();
         } catch (\Exception $e) {
             if ($e instanceof \Illuminate\Database\QueryException) {
                 // Handle database query exceptions
@@ -74,7 +85,7 @@ class EmployeeResignRequests extends Component
                 FlashMessageHelper::flashError('Database connection error occurred. Please try again later.');
             } elseif (strpos($e->getMessage(), 'Call to a member function store() on null') !== false) {
                 // Display a user-friendly error message for null image
-                FlashMessageHelper::flashError('An error occured while getting leave data.');
+                FlashMessageHelper::flashError('An error occured while' . ucfirst($this->actionType) . 'ing the request');
             } elseif ($e instanceof \Illuminate\Http\Client\RequestException) {
                 // Handle network request exceptions
                 Log::error("Network error registering employee: " . $e->getMessage());

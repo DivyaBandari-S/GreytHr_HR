@@ -51,7 +51,7 @@
                                 </tr>
                                 @else
                                 <tr>
-                                    <td colspan="6">No data found</td>
+                                    <td colspan="6 " class="text-center">No data found</td>
                                 </tr>
                                 @endif
                                 @endforeach
@@ -62,6 +62,13 @@
                 </div>
             </div>
             <div class="tab-pane {{ $activeSection === 'closed' ? 'active' : '' }}" id="pending-section">
+                <div class="row m-0 mb-3">
+                    <div class="d-flex justify-content-end">
+                        <div class="d-flex justify-content-end">
+                            <a href="{{ route('employee-separation') }}" class="submit-btn">Employee Separation</a>
+                        </div>
+                    </div>
+                </div>
                 <div class="row m-0 px-2">
                     <table class="leave-table">
                         <thead>
@@ -73,7 +80,7 @@
                                 <th>Last working day</th>
                                 <th>Approved date</th>
                                 <th>Approved by</th>
-                                <th>status</th>
+                                <th>Status</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -86,8 +93,8 @@
                                 <td>{{ Carbon\Carbon::parse($request->resignation_date)->format('d M, Y') }}</td>
                                 <td>{{ ucfirst(strtolower($request->reason)) }}</td>
                                 <td>{{ Carbon\Carbon::parse($request->last_working_date)->format('d M, Y') }}</td>
-                                <td>{{ Carbon\Carbon::parse($request->approved_date)->format('d M, Y') }}</td>
-                                <td>HR</td>
+                                <td>{{ Carbon\Carbon::parse($request->action_date)->format('d M, Y') }}</td>
+                                <td>{{ $request->action_by }}</td>
                                 <td>
                                     <span class="approveColor">Approved</span>
                                 </td>

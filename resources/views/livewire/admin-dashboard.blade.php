@@ -347,7 +347,7 @@
                                     </div>
                                     <div class="col-md-6 text-end mb-3">
                                         <div class="form-group">
-                                            <input type="date" class="form-control" wire:model="signInTime" wire:change="getSignInOutData">
+                                            <input type="date" class="form-control" wire:model="signInTime" wire:change="getSignInOutData"  max="{{ \Carbon\Carbon::today()->format('Y-m-d') }}">
                                         </div>
                                     </div>
                                 </div>
@@ -355,7 +355,7 @@
                                 <div class="row m-0 mt-3">
                                     @if($earlyOrOnTimeEmployees && $earlyOrOnTimeEmployees[0]->employee)
                                     <p class="fw-bold fs14 p-0">Early/On Time</p>
-                                    @foreach ($earlyOrOnTimeEmployees as $swipe)
+                                    @foreach (array_slice($earlyOrOnTimeEmployees, 0, 5) as $swipe)
                                     @if($swipe->employee)
                                     <div class="m-0 mb-3 p-2 row border">
                                         <div style="display: flex; align-items: center;">
@@ -397,7 +397,7 @@
                                     @endif
                                     @if(count($lateEmployees) > 0 && isset($lateEmployees[0]->employee))
                                     <p class="fw-bold fs14 p-0">Late</p>
-                                    @foreach($lateEmployees as $lateSwipe)
+                                    @foreach(array_slice($lateEmployees, 0, 5) as $lateSwipe)
                                     @if($lateSwipe->employee)
                                     <div class="m-0 mb-3 p-2 row border">
                                         <div style="display: flex; align-items: center;">
@@ -581,10 +581,9 @@
 
                 </div>
                 <div class="tab-page {{ $activeTab === 'in-review' ? 'active' : '' }}" data-tab-page="in-review">
-                    <h1 class="tab-page-title ms-3">In Review</h1>
                     <div class="row m-0 mb-3">
-                        <div class="col-md-6 mb-3">
-                            <div class="border m-0 rounded row mb-3">
+                        <div class="col-md-7">
+                        <div class="border m-0 rounded row mb-3">
                                 <div class="border-bottom m-0 mt-3 row">
                                     <div class="col-md-9">
                                         <p class="fw-bold">Employees By Department</p>
@@ -605,7 +604,9 @@
                                     <canvas id="employeeChart" height="180"></canvas>
                                 </div>
                             </div>
-                            <div class="border m-0 rounded row mb-3 d-flex justify-content-center">
+                        </div>
+                        <div class="col-md-5">
+                                  <div class="border m-0 rounded row mb-3 d-flex justify-content-center">
                                 <div class="border-bottom m-0 mt-3 row ">
                                     <div class="col-md-12">
                                         <p class="fw-bold">Employee Gender Distribution</p>
@@ -621,6 +622,12 @@
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                    <div class="row m-0 mb-3">
+                        <div class="col-md-6 mb-3">
+
+
                             <div class="border m-0 rounded row d-flex justify-content-center">
                                 <div class="border-bottom m-0 mt-3 row">
                                     <div class="col-md-8">
