@@ -454,7 +454,7 @@
 
                     <div class="row m-0 mt-3">
 
-                        <!-- <div class="col-md-6 ps-0">
+                        <div class="col-md-6 ps-0">
                             <div class="border m-0 rounded row">
                                 <div class="border-bottom m-0 mt-3 row">
                                     <div class="col-md-6">
@@ -576,7 +576,7 @@
                                     </table>
                                 </div>
                             </div>
-                        </div> -->
+                        </div>
                     </div>
 
                 </div>
@@ -600,8 +600,9 @@
                                         </select>
                                         </div>
                                     </div>
-                                <div >
-                                    <canvas id="employeeChart" height="180"></canvas>
+                                <div style="height: 210px;width:
+                                450px;" >
+                                    <canvas id="employeeChart" ></canvas>
                                 </div>
                             </div>
                         </div>
@@ -613,7 +614,8 @@
                                     </div>
                                 </div>
                                 <div class="genderChart" >
-                                    <canvas id="genderPieChart" width="400" height="400"></canvas>
+                                    <canvas id="genderPieChart" style="height: 150px;width:
+                                    150px;"></canvas>
                                     <div style="display:grid;grid-template-columns: repeat(2, 1fr);">
                                         <span class="normalText">Male : <strong>{{ $maleCount }}</strong> </span>
                                         <span class="normalText">Female : <strong>{{ $femaleCount }}</strong> </span>
