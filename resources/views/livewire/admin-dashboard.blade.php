@@ -644,7 +644,7 @@
                             <div class="border m-0 rounded row d-flex justify-content-center">
                                 <div class="border-bottom m-0 mt-3 row">
                                     <div class="col-md-8">
-                                        <p class="fw-bold">Attendance Overview</p>
+                                        <p class="fw-bold chartHeading">Attendance Overview</p>
                                     </div>
                                     <div class="col-md-4 text-end mb-3">
                                         <select id="attendance-range" class="form-select form-select-sm w-auto d-inline-block">
@@ -758,7 +758,7 @@
                             <div class="border m-0 mt-4 rounded row empStatus">
                                 <div class="border-bottom m-0 mt-3 row">
                                     <div class="col-md-6">
-                                        <p class="fw-bold">Employee Status</p>
+                                        <p class="fw-bold chartHeading">Employee Status</p>
                                     </div>
                                 </div>
 
