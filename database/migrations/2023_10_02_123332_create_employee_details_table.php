@@ -47,6 +47,7 @@ return new class extends Migration
 
             $table->string('emergency_contact', 20)->nullable();
             $table->string('password')->nullable();
+            $table->string('mpin')->nullable();
             $table->tinyInteger('status')->default(1);
             $table->enum('inter_emp', ['yes', 'no']);
             $table->string('job_location', 50)->nullable();

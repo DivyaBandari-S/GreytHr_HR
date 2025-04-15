@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Exports\SwipeLogsExport;
 use App\Models\EmpDepartment;
 use App\Models\EmployeeDetails;
 use App\Models\SwipeRecord;
@@ -12,6 +13,7 @@ use Illuminate\Support\Facades\Log;
 use Jenssegers\Agent\Agent as AgentAgent;
 use Jenssegers\Agent\Facades\Agent;
 use Livewire\Component;
+use Maatwebsite\Excel\Facades\Excel;
 use Spatie\SimpleExcel\SimpleExcelWriter;
 
 class EmployeeSwipesForHr extends Component
@@ -516,8 +518,13 @@ class EmployeeSwipesForHr extends Component
             $authUser = Auth::user();
             $userId = $authUser->emp_id;
 
-            $managedEmployees = EmployeeDetails::where('employee_status', 'active')
+            
+
+            $managedEmployees = DB::table('employee_details')
+                ->where('employee_status', 'active')
+                
                 ->get();
+            //    dd($managedEmployees);
 
             $swipeData = [];
 
@@ -527,11 +534,14 @@ class EmployeeSwipesForHr extends Component
                 $headerColumns = ['Employee ID', 'Employee Name', 'Swipe Date', 'Swipe Time', 'Direction'];
                 $employeesInExcel = $this->processSwipeLogs($managedEmployees, $this->startDate);
                 foreach ($employeesInExcel as $employee) {
+                    
                     foreach($employee['swipe_log'] as $log)
                     {
+                        
                             $swipeData[] = [
                                             $employee['employee']->emp_id,
                                             ucwords(strtolower($employee['employee']->first_name)).' '.ucwords(strtolower($employee['employee']->last_name)),
+                                       
                                             Carbon::parse($log->logDate)->format('jS F Y') ,
                                             Carbon::parse($log->logDate)->format('H:i:s'),
                                             strtoupper($log->Direction),
@@ -543,7 +553,7 @@ class EmployeeSwipesForHr extends Component
                 
             } elseif ($this->isApply == 0 && $this->isPending == 1 && $this->defaultApply == 0) {
                 $title = 'Web Sign In Data';
-                $headerColumns = ['Employee ID', 'Employee Name', 'Swipe Date', 'Swipe Time', 'Web Sign In Data'];
+                $headerColumns = ['Employee ID', 'Employee Name','Swipe Date', 'Swipe Time', 'Web Sign In Data'];
                 $employeesInExcel = $this->processWebSignInLogs();
                 foreach ($employeesInExcel as $employee) {
                     foreach($employee['swipe_log'] as $log)
@@ -564,15 +574,8 @@ class EmployeeSwipesForHr extends Component
             
 
            
-            $filePath = storage_path('app/todays_present_employees.xlsx');
+            return Excel::download(new SwipeLogsExport($swipeData, $headerColumns, $title), 'todays_present_employees.xlsx');
 
-            SimpleExcelWriter::create($filePath)
-                ->addRow([$title])
-                ->addRow($headerColumns)
-                ->addRows($swipeData)
-                ->close();
-
-            return response()->download($filePath, 'todays_present_employees.xlsx');
         } catch (\Exception $e) {
             Log::error('Error downloading file for swipes: ' . $e->getMessage());
             session()->flash('error', 'An error occurred while downloading the file for swipes. Please try again.');

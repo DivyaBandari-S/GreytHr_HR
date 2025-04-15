@@ -102,6 +102,7 @@ use App\Livewire\BankAccount;
 use App\Livewire\CreateSignatory;
 use App\Livewire\EmployeeDataUpdate;
 use App\Livewire\EmployeeLopDays;
+use App\Livewire\EmployeeResignRequests;
 use App\Livewire\Loans;
 use App\Livewire\ReleaseSalary;
 use App\Livewire\EmployeeSeparation;
@@ -127,6 +128,7 @@ use Illuminate\Support\Facades\Response;
 use App\Livewire\HrProfile;
 use App\Livewire\KnowledgeBase;
 use App\Models\ClientProjects;
+use App\Models\FineAndDamage;
 
 /*
 |--------------------------------------------------------------------------
@@ -162,7 +164,6 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
         Route::get('/user/tasks', Tasks::class)->name('tasks');
         // In your web.php file
         Route::get('/admin-dashboard/{activeTab}/{selectedOption?}', AdminDashboard::class)->name('admin-dashboard');
-
         // Route::get('/user/client-registration', ClientRegistration::class)->name('client.create');
         // Route for adding a new client
         Route::get('/user/client-registration', ClientRegistration::class)->name('client.create');
@@ -251,13 +252,14 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
 
 
         //HR Leave-Main Submodule Routes
-        Route::get('/user/hr-organisation-chart/{selectedEmployeeId?}', HrOrganisationChart::class)->name('hr-organisation-chart');
+        Route::get('/user/hr-organisation-chart/{selectedEmployeeId?}', HrOrganisationChart::class)->name('hr-organisation-charts');
         Route::get('/user/leave-overview', HrLeaveOverview::class)->name('leave-overview');
         Route::get('/user/leave-overview/{month}/{leaveType?}', HrLeaveOverview::class)->name('leave-overview.month');
         Route::get('/leave-overview/{monthLeaveType?}', HrLeaveOverview::class)->name('leave-overview.monthLeaveType');
         Route::get('/user/hr-attendance-overview', HrAttendanceOverviewNew::class)->name('attendance-overview');
         Route::get('/user/leave-calendar', HrLeaveCalendar::class)->name('Leave-calendar');
         Route::get('/user/who-is-in-chart-hr', WhoIsInChartHr::class)->name('who-is-in-chart-hr');
+        Route::get('/user/fine-and-damage', FineAndDamageComponent::class)->name('fine-and-damage');
 
         //HR Leave-Infomation Submodule Routes
         Route::get('/user/employee-leave', EmployeeLeave::class)->name('employee-leave');
@@ -269,14 +271,16 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
         Route::get('/user/employee-swipes-for-hr', EmployeeSwipesForHr::class)->name('employee-swipes-for-hr');
 
         //HR Leave-Admin Submodule Routes
-        Route::get('/user/grantLeave', GrantLeaveBalance::class)->name('grantLeave');
+        // Route::get('/user/grantLeave', GrantLeaveBalance::class)->name('grantLeave');
         Route::get('/user/grant-summary', EmpLeaveGranterDetails::class)->name('grant-summary');
         Route::get('/user/leavePolicySettings', LeaveSettingPolicy::class)->name('leavePolicySettings');
         Route::get('/user/leaveYearEndProcess', YearEndProcess::class)->name('year-end-process');
+        Route::get('/user/leave-approval', YearEndProcess::class)->name('leave-approve');
+        Route::get('/user/approval-leave-cancellation', YearEndProcess::class)->name('approval-leave-cancellation');
         Route::get('/user/attendance-process', AttendanceProcess::class)->name('attendance-process');
         Route::get('/user/swipe-management-for-hr', SwipeManagementForHr::class)->name('swipe-management-for-hr');
         Route::get('/user/hr-organisation-chart', HrOrganisationChart::class)->name('hr-organisation-chart');
-       
+
         Route::get('/user/hr-manual-override', HrManualOverride::class)->name('hr-manual-override');
         Route::get('/user/edit-attendance-exception-page/{id}', EditAttendanceExceptionPage::class)->name('edit-attendance-exception-page');
         Route::get('/user/edit-shift-override/{id}', EditShiftOverride::class)->name('edit-shift-override');
@@ -300,6 +304,7 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
         Route::get('/review-pending-regularisation-for-hr/{id}/{emp_id}', RegularisationPendingForHr::class)->name('review-pending-regularisation-for-hr');
         Route::get('/employee-data-update/{action}', EmployeeDataUpdate::class)->name('employee.data.update');
         Route::get('/user/employee-separation', EmployeeSeparation::class)->name('employee-separation');
+        Route::get('/user/emp-resign-requests', EmployeeResignRequests::class)->name('emp-resign-requests');
 
         //Reports
         Route::get('/user/reports/', ReportsManagement::class)->name('reports');

@@ -13,13 +13,14 @@
         .hide-attendance-help {
             margin-top:40px;
             position: absolute;
-            bottom: 110px;
+            bottom: 155px;
             right: 10px;
             color: #0000FF;
             font-weight:500;
             cursor: pointer;
         }
         .container {
+          width: 950px;
     display: flex;
     align-items: center;
     background-color: #f8f9fa; /* Light gray background */

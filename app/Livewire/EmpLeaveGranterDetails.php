@@ -60,6 +60,7 @@ class EmpLeaveGranterDetails extends Component
     public $showToSelect = true;
     public $leaveType;
     public $employmentType;
+    public $getSelectedEmpData;
     public $grantType;
     protected $rules = [
         'leavePolicyIds' => 'required|array',
@@ -509,12 +510,20 @@ class EmpLeaveGranterDetails extends Component
     }
     public function closeContainer()
     {
+
         $this->showEmployeeSearch = false;
         $this->searchTerm = '';
+        $this->selectAll = [];
+        if($this->selectedEmployees){
+            $this->getSelectedEmpData = EmployeeDetails::where('emp_id', $this->selectedEmployees)->select('first_name','last_name','emp_id')->first();
+        }
     }
+
+    public $isManuallySelectingAll = false;
     // Handle "Select All" functionality
     public function toggleSelectAll()
     {
+        $this->isManuallySelectingAll = true;
         if ($this->selectAll) {
             // Select all employees
             $this->selectedEmployees = array_keys($this->employeeIds); // Assuming $this->employeeIds holds employee data
@@ -524,19 +533,20 @@ class EmpLeaveGranterDetails extends Component
         } else {
             $this->selectedEmployees = [];
         }
+        $this->isManuallySelectingAll = false;
     }
 
-    public function updatedSelectedEmployees($value)
+    public function updatedSelectedEmployees()
     {
-        // Check if all employees are selected to update the "select all" checkbox state
-        $this->selectAll = count($this->selectedEmployees) === count($this->employeeIds);
+        if (!$this->isManuallySelectingAll) {
+            $this->selectAll = count($this->selectedEmployees) === count($this->employeeIds);
+        }
     }
 
 
     // Method to store the leave balance for selected leave policies
     public function storeLeaveBalance()
     {
-        // Trim whitespace from selected data
         $this->selectedPolicyIds = array_map('trim', $this->selectedPolicyIds);
         $this->selectedEmployeeIds = array_map('trim', $this->selectedEmployees);
         // Validate if selected policies and employees exist
@@ -593,8 +603,13 @@ class EmpLeaveGranterDetails extends Component
                 }
             }
 
+            FlashMessageHelper::flashSuccess('Leave balance added suceesfully!');
             $this->selectAll = null;
             $this->resetLeaveGrant();
+            $this->selectedEmployees=[];
+            $this->showEmployeeSelectionList = false;
+            $this->showToSelect = true;
+            $this->updatePeriodOptions();
             // Step 7: Clear selected data
             $this->selectedPolicyIds = [];
             $this->selectedEmployeeIds = [];
@@ -1010,7 +1025,8 @@ class EmpLeaveGranterDetails extends Component
             'employeeLeaveBalance' => $this->employeeLeaveBalance,
             'groupedData' => $this->groupedData,
             'leavePolicyData' => $this->leavePolicyData,
-            'employeeIds' => $this->employeeIds
+            'employeeIds' => $this->employeeIds,
+            'getSelectedEmpData' => $this->getSelectedEmpData
         ]);
     }
 }

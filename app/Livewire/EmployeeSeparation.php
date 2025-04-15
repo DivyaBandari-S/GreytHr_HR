@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Helpers\FlashMessageHelper;
 use App\Models\EmployeeDetails;
+use App\Models\EmpResignations;
 use App\Models\EmpSeparationDetails;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -97,6 +98,11 @@ class EmployeeSeparation extends Component
                 'date_of_demise' => null,
                 'retired_date' => null,
             ];
+            $resignation = EmpResignations::where('emp_id', $this->seleceted_emp_id)->first();
+            if ($resignation) {
+                $this->separationDetails->resignation_submitted_on = $resignation->resignation_date;
+                $this->separationDetails->reason = $resignation->reason;
+            }
         } catch (\Exception $e) {
             Log::error('Error fetching separation details: ' . $e->getMessage());
             FlashMessageHelper::flashError('An error occured please try again later.');
@@ -508,7 +514,10 @@ class EmployeeSeparation extends Component
                 ]);
             }
             $this->resetDetails();
-            $this->showResignationDetails = false;
+            $this->showResignationDetails = true;
+            $this->showResignationEdit = false;
+            $this->showExitDetailsEdit = false;
+            $this->showExitInterviewEdit = false;
             $this->showWarningModal = false;
             $this->getEmpSeparationDetails();
             // Flash a success message after saving the details
@@ -644,7 +653,7 @@ class EmployeeSeparation extends Component
             if ($this->separation_mode) {
                 // Check if emp_id exists in EmpSeparationDetails
                 $existingSeparation = EmpSeparationDetails::where('emp_id', $this->seleceted_emp_id)->first();
-    
+
                 if ($existingSeparation) {
                     $existingSeparation->update([
                         'separation_mode' => $this->separation_mode, // Update the separation mode
@@ -666,7 +675,7 @@ class EmployeeSeparation extends Component
             } else {
                 FlashMessageHelper::flashWarning('EmployeeDetails not found for emp_id: ' . $this->seleceted_emp_id);
             }
-    
+
 
             // Check if the method name is set and exists
             if (isset($this->method) && method_exists($this, $this->method)) {
@@ -675,17 +684,16 @@ class EmployeeSeparation extends Component
                 Log::error('Invalid method: ' . ($this->method ?? 'NULL'));
                 FlashMessageHelper::flashError('Invalid method call.');
             }
-    
+
             FlashMessageHelper::flashSuccess('Separation details updated successfully!');
             $this->showWarningModal = false;
-
         } catch (\Exception $e) {
             // Log the exception for debugging
             Log::error('Error in handleConfirmation: ' . $e->getMessage());
-    
+
             // Optional: log the stack trace for deeper debugging
             Log::error($e->getTraceAsString());
-    
+
             // Show error message to the user
             FlashMessageHelper::flashError('An error occurred while updating separation details. Please try again.');
         }
@@ -730,8 +738,11 @@ class EmployeeSeparation extends Component
         $this->showResignSection = true;
     }
 
+    public $allDetails;
+
     public function render()
     {
+        $this->allDetails = EmpSeparationDetails::with('employee', 'HRemployee')->get();
         return view(
             'livewire.employee-separation',
             [
@@ -740,7 +751,8 @@ class EmployeeSeparation extends Component
                 'warningMessage' => $this->warningMessage,
                 'method' => $this->method,
                 'selecetdEmpDetails' => $this->selecetdEmpDetails,
-                'seleceted_emp_id' => $this->seleceted_emp_id
+                'seleceted_emp_id' => $this->seleceted_emp_id,
+                'allDetails' => $this->allDetails
             ]
         );
     }

@@ -291,6 +291,23 @@ ul {
     margin-top: 8px;
 }
 /* admin dashboard */
+.genderChart{
+    width: 70%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.attendanceChart{
+    width: 85%;
+    position: relative;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
 .badgeSign{
     background-color: var(--main-button-color);
     color: white;
@@ -4507,8 +4524,9 @@ input[type="date"]::before {
     width: 50%;
 }
 .selectEmp {
-    width: 25%;
-    height: auto;
+    width: 100%;
+    max-height: 200px;
+    overflow-y: auto;
     margin-top: 3px;
     overflow-y: auto;
     border: 1px solid #ccc;
@@ -4587,7 +4605,11 @@ input[type="date"]::before {
     /* justify-content: space-between; */
     align-items: center;
 }
-
+.accordion-button.collapsed{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
 .leaveGranter-edit {
     color: var(--label-color);
     font-size: 14px;
@@ -6578,6 +6600,11 @@ select:focus {
 /* task module styles ended */
 
 /* start of bulk photos upload page */
+.muted{
+    color: gray;
+    font-style: italic;
+    font-size: var(--normal-font-size);
+}
 .active > .page-link,
 .page-link.active {
     background-color: var(--main-button-color);
@@ -6970,7 +6997,6 @@ select:focus {
 } */
 input.form-control.rounded-pill {
     padding: 10px;
-    width: 38%;
 }
 .profileCon {
     border-radius: 10px;
@@ -6997,7 +7023,7 @@ input.form-control.rounded-pill {
     color: var(--label-color);
 }
 .normalTextSmall {
-    font-size: var(--normal-font-size);
+    font-size: 12px;
     color: #555;
 }
 .custom-table {
@@ -7950,8 +7976,8 @@ button.btn.btn-link.edit-icon {
 }
 
 .custom-checkbox input:checked+.checkmark {
-    background-color: rgb(2, 17, 79);
-    border: 1px solid rgb(2, 17, 79);
+    background-color: #306cc6;
+    border: 1px solid #306cc6;
 }
 
 .checkmark:after {
@@ -8029,6 +8055,23 @@ button.btn.btn-link.edit-icon {
     font-family: 'Montserrat', sans-serif;
     font-size: 14px;
     font-weight: 600;
+}
+
+/* //employee resign requests styles */
+.activeTab{
+    width:100%;
+    margin:0;
+    padding: 10px 50px;
+}
+.pedningColor{
+    color: darkgoldenrod;
+    font-weight: 500;
+    text-transform: capitalize;
+}
+.approveColor{
+    color: #059212;
+    font-weight: 500;
+    text-transform: capitalize;
 }
 
 /* kudos module */

@@ -257,6 +257,9 @@ body {
 #sidebar .sidebar__dropdown-menu li a:hover {
 	color: var(--blue);
 }
+#sidebar .sidebar__dropdown-menu li a.attendance_dailyview {
+    font-size: 0.858rem;
+}
 /* end: SIDEBAR */
 
 

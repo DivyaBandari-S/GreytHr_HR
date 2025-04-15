@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use Livewire\Component;
 use App\Helpers\FlashMessageHelper;
 use App\Helpers\LeaveHelper;
 use App\Models\AdminFavoriteModule;
@@ -13,7 +14,6 @@ use App\Models\LeaveRequest;
 use App\Models\SwipeRecord;
 use Illuminate\Support\Facades\DB;
 use App\Models\Task;
-use Livewire\Component;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\Auth;
@@ -25,11 +25,10 @@ class AdminDashboard extends Component
     public $signInTime;
     public $totalEmployeeCount;
     public $totalNewEmployeeCount;
-    public $totalNewEmployees;
+    public $totalActiveEmpList;
     public $labels;
     public $data;
     public $departmentCount;
-    public $colors;
     public $maleCount = 0;
     public $femaleCount = 0;
     public $employeeCountsByLocation;
@@ -55,9 +54,21 @@ class AdminDashboard extends Component
     public $swipes;
     public $dateRange = 'thisMonth';
     public $tasksData = [];
-
-    public $selectedOption = 'This Week';
-
+    public $deptCounts;
+    public $backgroundColors;
+    public $colors;
+    public $selectedOption = 'This Year';
+    public $otherCount;
+    public $departmentChartData;
+    public $notAvailableCount;
+    public $selectedDepartments = '';
+    public $allDepartments;
+    public $currentYear;
+    public $currentMonth;
+    public $lastMonth;
+    public $totalEmployees;
+    public $empStatus;
+    public $employeeTypes;
     public function updateOption($option)
     {
         $this->selectedOption = $option;
@@ -111,7 +122,6 @@ class AdminDashboard extends Component
             ] : [0, 0, 0],
             'totalTasks' => $totalTasks
         ];
-        $this->render();
     }
     public function setAction($action)
     {
@@ -128,6 +138,7 @@ class AdminDashboard extends Component
     public function mount()
     {
         try {
+            $this->selectedDepartments;
             $this->signInTime = today()->format('Y-m-d');
             $this->getContainerData();
             $this->loginHRDetails();
@@ -143,65 +154,81 @@ class AdminDashboard extends Component
                 ->whereJsonContains('company_id', $companyId)
                 ->inRandomOrder()
                 ->get()->take(5);
-
             $this->getTopLeaveTakers();
             $this->getSignInOutData();
             $this->getHrRequests($companyId);
             $this->getEmployeesCount($companyId);
             // Count total employees
             // $this->totalEmployeeCount = EmployeeDetails::where('company_id', $companyId)->count();
+            // Count of employees for the department year
+            $this->totalActiveEmpList = EmployeeDetails::whereJsonContains('company_id', $companyId)
+                ->where('status', 1)
+                ->get();
 
+            $this->totalEmployees = $this->totalActiveEmpList->count();
+            if ($this->totalActiveEmpList && $this->totalActiveEmpList->count()) {
+                $empStatus = $this->totalActiveEmpList->groupBy('employee_type');
+
+                $totalEmployees = $this->totalActiveEmpList->count();
+
+                $employeeTypes = [];
+                foreach ($empStatus as $type => $group) {
+                    $count = $group->count();
+                    $percentage = round(($count / $totalEmployees) * 100, 2);
+                    $this->employeeTypes[] = [
+                        'type' => $type,
+                        'count' => $count,
+                        'percentage' => $percentage,
+                    ];
+                }
+            } else {
+                $this->employeeTypes = []; // fallback empty array to prevent error
+            }
+            //get all departments
+            $this->allDepartments = EmpDepartment::all();
             // Get total employees grouped by location
             $this->employeeCountsByLocation = EmployeeDetails::select('job_location', DB::raw('count(*) as count'))
-                ->where('company_id', $companyId)
+                ->whereJsonContains('company_id', $companyId)
                 ->groupBy('job_location')
                 ->get();
 
-            // Count new employees for the current year
-            $this->totalNewEmployees = EmployeeDetails::where('company_id', $companyId)
-                ->where('status', 1)
-                ->whereYear('hire_date', Carbon::now()->year)
-                ->get();
-            $this->totalNewEmployeeCount = $this->totalNewEmployees->count();
-            $departmentNames = [];
-            // Check if $newEmployees is not empty
-            if ($this->totalNewEmployees->isNotEmpty()) {
-                foreach ($this->totalNewEmployees as $employee) {
-                    $departmentNames[] = $employee->department;
-                }
-                $uniqueDepartments = array_unique($departmentNames);
-
-                $this->departmentCount = count($uniqueDepartments);
-            } else {
-                $this->departmentCount = 0;
-            }
-
             // Get gender distribution for the company
             $genderDistribution = EmployeeDetails::select('gender', DB::raw('count(*) as count'))
-                ->where('company_id', $companyId)
+                ->whereJsonContains('company_id', $companyId)
+                ->where('status', 1)
                 ->groupBy('gender')
                 ->get();
-
             $this->labels = $genderDistribution->pluck('gender');
             $this->data = $genderDistribution->pluck('count');
-            $this->colors = [
-                'Male' => 'rgb(255, 99, 132)',
-                'Female' => 'rgb(54, 162, 235)',
-                'Not Active' => 'rgb(255, 205, 86)'
+            $colors = [
+                'MALE' => 'rgb(255, 99, 132)',
+                'FEMALE' => 'rgb(54, 162, 235)',
+                'OTHER' => 'rgb(255, 205, 86)',
+                '' => 'rgb(201, 203, 207)'
             ];
 
             // Loop through the gender distribution data to calculate male and female counts
             foreach ($genderDistribution as $distribution) {
-                if ($distribution->gender === 'Male') {
+                if ($distribution->gender === 'MALE') {
                     $maleCount = $distribution->count;
-                } elseif ($distribution->gender === 'Female') {
+                } elseif ($distribution->gender === 'FEMALE') {
                     $femaleCount = $distribution->count;
+                } elseif ($distribution->gender === 'OTHER') {
+                    $otherCount = $distribution->count;
+                } elseif (empty($distribution->gender) || is_null($distribution->gender)) {
+                    $notAvailableCount = $distribution->count;
                 }
             }
-
             $this->maleCount = $maleCount ?? 0;
             $this->femaleCount = $femaleCount ?? 0;
-            $this->loadChartData();
+            $this->otherCount = $otherCount ?? 0;
+            $this->notAvailableCount = $notAvailableCount ?? 0;
+            $this->backgroundColors = $genderDistribution->pluck('gender')->map(function ($label) use ($colors) {
+                return $colors[$label] ?? 'rgba(201, 203, 207, 0.5)';
+            });
+            $this->filterDepartmentChart();
+            $this->getAttendanceOverView();
+
         } catch (\Exception $e) {
             if ($e instanceof \Illuminate\Database\QueryException) {
                 // Handle database query exceptions
@@ -228,9 +255,34 @@ class AdminDashboard extends Component
         }
     }
 
-    public $currentYear;
-    public $currentMonth;
-    public $lastMonth;
+    public function filterDepartmentChart()
+    {
+        $filteredList = $this->totalActiveEmpList;
+
+        if (!empty($this->selectedDepartments)) {
+            $filteredList = $filteredList->filter(function ($emp) {
+                return $emp['dept_id'] == $this->selectedDepartments;
+            });
+        }
+
+        $this->deptCounts = $filteredList
+            ->groupBy('dept_id')
+            ->map(fn($group) => $group->count())
+            ->sortDesc();
+        $departmentNames = EmpDepartment::whereIn('dept_id', $this->deptCounts->keys()->filter()->all())
+            ->pluck('department', 'dept_id');
+
+        $this->departmentChartData = $this->deptCounts->mapWithKeys(function ($count, $deptId) use ($departmentNames) {
+            $deptName = $departmentNames[$deptId] ?? 'Not Assigned';
+            return [$deptName => $count];
+        });
+
+        // If you want to emit to JS
+
+        $this->dispatch('admin-dashboard', data: $this->departmentChartData);
+    }
+
+
     //get top 5 leavew takrs data
     public function getTopLeaveTakers()
     {
@@ -302,12 +354,11 @@ class AdminDashboard extends Component
                 // If top4LeaveDays is not set, map an empty array
                 $this->mappedLeaveData = [];
             }
-
         } catch (\Exception $e) {
             if ($e instanceof \Illuminate\Database\QueryException) {
                 // Handle database query exceptions
                 Log::error("Database error getting leaves of employee: " . $e->getMessage());
-                FlashMessageHelper::flashError('Database connection error occurred. Please try again later.');
+                FlashMessageHelper::flashError('dfghj Database connection error occurred. Please try again later.');
             } elseif (strpos($e->getMessage(), 'Call to a member function store() on null') !== false) {
                 // Display a user-friendly error message for null image
                 FlashMessageHelper::flashError('An error occured while getting leave data.');
@@ -340,7 +391,7 @@ class AdminDashboard extends Component
                 ->get()
                 ->unique('emp_id');
 
-            // Initialize arrays to store late and early/on-time employees
+        // Initialize arrays to store late and early/on-time employees
             $this->lateEmployees = [];
             $this->earlyOrOnTimeEmployees = [];
 
@@ -350,7 +401,7 @@ class AdminDashboard extends Component
                 $swipeTime = Carbon::parse($swipe->swipe_time);
 
                 // Define the "late" threshold time (10:00 AM)
-                $lateThreshold = Carbon::createFromTime(10, 0, 0);  // 10:00 AM
+                $lateThreshold = $swipeTime->copy()->setTime(10, 0, 0);  // 10:00 AM
                 // Check if the employee's swipe time is later than 10:00 AM and if it is an "IN" swipe
                 if ($swipe->in_or_out === 'IN' && $swipeTime->gt($lateThreshold)) {
                     // Add the employee to the late employees array
@@ -360,6 +411,7 @@ class AdminDashboard extends Component
                     $this->earlyOrOnTimeEmployees[] = $swipe;
                 }
             }
+
         } catch (\Exception $e) {
             Log::error("Database error getting swipe data: " . $e->getMessage());
             FlashMessageHelper::flashError('An error occurred while getting swipe data. Please try again later.');
@@ -437,33 +489,32 @@ class AdminDashboard extends Component
             // Define the overview content list
             $this->overviewContentList = [
                 'employee' => [
-                    '/update-employee-details' => 'Update Employee Data',
-                    '/add-employee-details/{employee?}' => 'Add Employee Data',
-                    '/' => 'Prepare Letter',
+                    '/hr/update-employee-details' => 'Update Employee Data',
+                    '/hr/add-employee-details/{employee?}' => 'Add Employee Data',
+                    '/hr/letter/prepare' => 'Prepare Letter',
                     '/import' => 'Import Data From Excel',
-                    '/1' => 'Disable Portal Access',
-                    '/2' => 'Enable Portal Access',
+                    '/hr/employee-data-update/disable' => 'Disable Portal Access',
+                    '/hr/employee-data-update/enable' => 'Enable Portal Access',
                     '/3' => 'Regenerate Employee Password',
-                    '/4' => 'Employee Separation',
-                    '/5' => 'Confirm Employee',
-                    '/6' => 'Extend Probation Period',
+                    '/hr/user/employee-separation' => 'Employee Separation',
+                    '/hr/employee-data-update/confirm' => 'Confirm Employee',
+                    '/hr/employee-data-update/extend' => 'Extend Probation Period',
                     '/7' => 'Change Employee Number',
                     '/8' => 'Exclude From Payroll',
-                    '/9' => 'Delete Employee',
+                    '/hr/employee-data-update/delete' => 'Delete Employee',
                     '/10' => 'Upload Employee Document',
                     '/11' => 'Add Bulletin Board',
                     '/12' => 'Mass Employee Email',
                     '/14' => 'Employee onboarding',
                     '/15' => 'Invite Employees(Email Employee Password)',
                     '/16' => 'Employee Filter',
-                    '/17' => 'Bulk Photo Upload',
+                    '/hr/user/emp/admin/bulkphoto-upload' => 'Bulk Photo Upload',
                     '/18' => 'PF/ESI Details',
                     '/19' => 'Add Nomination Details',
                     '/21' => 'Bulk Data Upload',
-                    '/22' => 'Add Employee',
                     '/23' => 'Upload Forms/Policies',
-                    '/24' => 'People Analytical Hub',
-                    '/25' => 'Organization Chart',
+                    '/hr/user/analytics-hub' => 'People Analytical Hub',
+                    '/hr/user/hr-organisation-chart' => 'Organization Chart',
                     '/26' => 'Assign Manager',
                 ],
                 'payroll' => [
@@ -499,29 +550,28 @@ class AdminDashboard extends Component
                     '/54' => 'Approve Reimbursement'
                 ],
                 'leave' => [
-                    '/user/leave/approve' => 'Add Holidays',
+                    '/hr/user/holidayList' => 'Add Holidays',
                     '/55' => 'Post Leave Transction',
-                    '/56' => 'Grant Leave',
-                    '/57' => 'Year End Process',
-                    '/58' => 'Download Leave Card',
-                    '/59' => 'Approve Leave',
-                    '/60' => 'Approve Leave Cancellation',
-                    '/61' => 'Approve RH',
-                    '/62' => 'Leave Calendar',
-                    '/63' => 'Approve Comp Off',
+                    '/hr//user/grant-summary' => 'Grant Leave',
+                    '/hr/user/leaveYearEndProcess' => 'Year End Process',
+                    '/hr/user/leave-approval' => 'Approve Leave',
+                    '/hr/user/approval-leave-cancellation' => 'Approve Leave Cancellation',
+                    // '/61' => 'Approve RH',
+                    '/hr/user/leave-calendar' => 'Leave Calendar',
+                    // '/63' => 'Approve Comp Off',
                     '/64' => 'Update Employee Weekdays'
                 ],
                 'attendance' => [
-                    '/hr/user/holidayList' => 'Verify Employee Swipes',
-                    '/65' => 'Attendance Muster',
-                    '/66' => 'Manual Override',
-                    '/67' => 'Shift Roster',
-                    '/68' => 'Shift Override',
-                    '/69' => 'Attendance Exception',
+                    '/hr/user/employee-swipes-for-hr' => 'Verify Employee Swipes',
+                    '/hr/user/attendance-muster-hr' => 'Attendance Muster',
+                    '/hr/user/hr-manual-override' => 'Manual Override',
+                    '/hr/user/shift-roster-hr' => 'Shift Roster',
+                    '/hr/user/shift-override' => 'Shift Override',
+                    '/hr/user/attendance-exception' => 'Attendance Exception',
                     '/70' => 'Attendance Period Finalization',
                     '/71' => 'Update Sign In IP Address',
-                    '/72' => 'Who is in ?',
-                    '/73' => 'View Employee Attendance',
+                    '/hr/user/who-is-in-chart-hr' => 'Who is in ?',
+                    '/hr/user/hr-attendance-overview' => 'View Employee Attendance',
                     '/74' => 'Review Attendance Regularization',
                     '/75' => 'Delete Attendance Manual Override',
                 ],
@@ -679,16 +729,84 @@ class AdminDashboard extends Component
         $this->show = true;
     }
 
+    public function getEmpCountByDept()
+    {
+        try {
+        } catch (Exception $e) {
+            // Log the error and provide feedback
+            Log::error('Error in chart dept: ' . $e->getMessage());
+            FlashMessageHelper::flashError("An error occurred while updating the chart. Please try again later.");
+        }
+    }
+
+    public $present ;
+    public $late ;
+    public $absent ;
+    public $total = 0;
+    public function getAttendanceOverView($range = 'this_week')
+    {
+        $this->present = 0;
+        $this->late = 0;
+        $this->absent = 0;
+    
+        // Calculate the start and end dates based on the range
+        switch ($range) {
+            case 'this_month':
+                $startDate = Carbon::now()->startOfMonth();
+                $endDate = Carbon::now();
+                break;
+            case 'last_month':
+                $startDate = Carbon::now()->subMonth()->startOfMonth();
+                $endDate = Carbon::now()->subMonth()->endOfMonth();
+                break;
+            case 'this_year':
+                $startDate = Carbon::now()->startOfYear();
+                $endDate = Carbon::now();
+                break;
+            case 'this_week':
+            default:
+                $startDate = Carbon::now()->startOfWeek(); // Monday
+                $endDate = Carbon::now(); // today
+                break;
+        }
+
+        $employeeIds = $this->totalActiveEmpList->pluck('emp_id');
+        $swipes = SwipeRecord::whereBetween('created_at', [$startDate, $endDate])->get();
+
+        foreach ($employeeIds as $empId) {
+            $swipe = $swipes->firstWhere('emp_id', $empId);
+
+            if ($swipe) {
+                $signinTimes = Carbon::parse($swipe->signin_time); // Adjust field name as needed
+
+                if ($signinTimes->lte(Carbon::parse('10:00:00'))) {
+                    $this->present++;
+                } else {
+                    $this->late++;
+                }
+            } else {
+                $this->absent++;
+            }
+        }
+    
+        $this->total = $this->present + $this->late + $this->absent;
+    }
 
     public function render()
     {
+        $this->loadChartData();
         return view('livewire.admin-dashboard', [
-            'departmentCount' => $this->departmentCount,
             'loginEmployee' => $this->loginEmployee,
             'topLeaveTakers' => $this->topLeaveTakers,
             'mappedLeaveData' => $this->mappedLeaveData,
             'lateEmployees' => $this->lateEmployees,
-            'swipes' => $this->earlyOrOnTimeEmployees
+            'swipes' => $this->earlyOrOnTimeEmployees,
+            'backgroundColors' => $this->backgroundColors,
+            'allDepartments' => $this->allDepartments,
+            'total' => $this->total,
+            'present'=>$this->present,
+            'late'=>$this->late,
+            'absent'=> $this->absent
         ]);
     }
 }
