@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('device_id',100)->nullable();
             $table->string('swipe_location',100)->nullable();
             $table->string('swipe_remarks',100)->nullable();
-            $table->foreign('emp_id')a
+            $table->foreign('emp_id')
             ->references('emp_id')
             ->on('employee_details')
             ->onDelete('restrict')

@@ -39,4 +39,8 @@ class EmpSeparationDetails extends Model
     {
         return $this->belongsTo(EmployeeDetails::class, 'emp_id', 'emp_id');
     }
+    public function HRemployee()
+    {
+        return $this->belongsTo(Hr::class, 'hr_emp_id', 'hr_emp_id');
+    }
 }

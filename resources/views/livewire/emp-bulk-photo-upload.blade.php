@@ -1,7 +1,7 @@
-<div >
+<div>
 
     <div class="container-fluid px-1  rounded">
-        <ul class="nav leave-grant-nav-tabs d-flex gap-3 py-1" id="myTab" role="tablist">
+        <ul class="nav bg-white leave-grant-nav-tabs d-flex gap-3 py-1" id="myTab" role="tablist">
 
             <li class="leave-grant-nav-item" role="presentation">
 
@@ -16,24 +16,21 @@
             </li>
 
         </ul>
-        <div class="tab-content " id="myTabContent" >
+        <div class="tab-content " id="myTabContent">
             <div class="tab-pane show active" id="summary-tab-pane" role="tabpanel" aria-labelledby="summary-tab" tabindex="0">
                 @if($showHistory)
                 <div class="row m-0 px-4 ">
                     <div class="main-overview-help d-flex px-3">
                         <div class="col-md-11 col-10 d-flex flex-column  ">
-                            <p class="main-overview-text mb-1">greytHR is equipped to upload photos in bulk from the Bulk Photo Upload page. This saves time in the manual upload of each employee's photos and the errors that may creep in due to the repetitive nature of the task.
+                            <p class="main-overview-text mb-1">HrExpert is equipped to upload photos in bulk from the Bulk Photo Upload page. This saves time in the manual upload of each employee's photos and the errors that may creep in due to the repetitive nature of the task.
                             </p>
-                        </div>
-                        <div class="hide-main-overview-help col-md-1 col-2 d-flex align-items-start">
-                            <span wire:click="hideHelp">Hide Help</span>
                         </div>
                     </div>
                 </div>
                 <div class="row m-0 pt-3 px-4">
                     <div class="d-flex justify-content-end mb-3 gap-3 p-0">
                         <div class="search-containers">
-                            <input type="text" class="form-control" wire:model.live="searchQuery" placeholder="Search..." >
+                            <input type="text" class="form-control" wire:model.live="searchQuery" placeholder="Search...">
                         </div>
                         <button type="button" class="submit-btn" wire:click="toggleUploadBtn">Upload Zip files</button>
                     </div>
@@ -166,8 +163,8 @@
                                 @php
                                 $folderId = basename(dirname(dirname($path)));
                                 $filename = basename($path);
+                                $selectedEmployees = $selectedEmployees[$index] ?? null;
                                 @endphp
-
                                 <div class="image-item rounded">
                                     <img src="{{ asset($path) }}" alt="Extracted Image" style="max-width: 50px; max-height: 50px;">
                                     <div class="d-flex flex-column">
@@ -176,9 +173,9 @@
                                         </div>
                                         <div class="form-group d-flex align-items-start mb-2 position-relative">
                                             <div class="input-group">
-                                                <input type="text" class="form-control" id="selecetedEmployee_{{ $index }}"
+                                                <input type="text" class="form-control" id="selecetedEmployees_{{ $index }}"
                                                     wire:click="toggleEmployeeContainer('{{ $index }}')"
-                                                    wire:model="selectedEmployees.{{ $index }}" value="{{ $selectedEmployees[$index] ?? '' }}" readonly>
+                                                    wire:model="selectedEmployees.{{ $index }}" value="{{ $selectedEmployees ? $selectedEmployees['emp_id'] : '' }}" readonly>
                                                 <div class="input-group-append bg-white border" wire:click="toggleEmployeeContainer('{{ $index }}')">
                                                     <span class="input-group-text" style="border:none; background:none;">
                                                         <i class="ph-caret-down-fill"></i>
@@ -217,6 +214,7 @@
                                     </div>
                                 </div>
                                 @endforeach
+
                             </div>
                             @else
                             <p>No images extracted from the ZIP file.</p>
@@ -246,7 +244,7 @@
                                     </ul>
                                 </nav>
                             </div>
-                            <div class="row">
+                            <div class="d-flex align-items-center justify-contnet-center gap-2">
                                 <button class="cancel-btn" type="button" wire:click="gotoBack">Back</button>
                                 <button class="submit-btn" type="button" wire:click="storeImageOfEmployee">Finish</button>
                                 <button class="cancel-btn" type="button" wire:click="cancelUpdating({{ $folderId }})">Cancel</button>
@@ -258,10 +256,33 @@
                 @endif
             </div>
             <div class="tab-pane" id="dashboard-tab-pane" role="tabpanel" aria-labelledby="dashboard-tab" tabindex="0">
-                <div>
-                    activity review
-                </div>
+                @if($getActivity)
+                <div class="d-flex flex-column align-item-center justify-content-start mt-3 px-4">
+                    @foreach ($getActivity as $activity)
+                    <span class="normalText mb-3">
+                        &rarr; Photos uploaded by
+                        <strong class="fw-500">{{ ucwords(strtolower($activity->employee->first_name)) }} {{ ucwords(strtolower($activity->employee->first_name)) }} (#{{ $activity->uploaded_by }}).</strong>
+                        <br>
 
+                        <span class="muted">Updated at {{ \Carbon\Carbon::parse($activity->uploaded_at)->format('Y m d H:i:s') }}</span>
+                        <br>
+
+                        @if ($activity->status == 'Completed')
+                        <span class="mute">Status: <span style="color:green;">{{ $activity->status }}</span></span>
+                        @elseif ($activity->status == 'Cancelled')
+                        <span class="mute">Status: <span style="color:red;">{{ $activity->status }}</span></span>
+                        @else
+                        <span class="mute">Status: <span style="color:gray;">{{ $activity->status }}</span></span>
+                        @endif
+                    </span>
+                    @endforeach
+
+                </div>
+                @else
+                <div class="d-flex align-item-center justify-content-center">
+                    <span>No activity data found.</span>
+                </div>
+                @endif
             </div>
         </div>
 

@@ -133,12 +133,13 @@ class LetterPreparePage extends Component
             'selectedEmployees' => $this->selectedEmployees,
             'authorized_signatory'=> $this->authorized_signatory,
         ]);
+        $this->validate($this->getValidationRules());
      
     
         try {
             // Validate form data before proceeding
            
-            $this->validate($this->getValidationRules());
+        
             if ($this->currentStep == 2) {
                 
                 // Collect employee IDs based on the selected employee or employees

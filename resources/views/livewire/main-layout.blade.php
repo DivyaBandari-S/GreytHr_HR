@@ -47,7 +47,7 @@
                             <li><a href="/hr/user/main-overview">Overview</a></li>
                             <li><a href="/hr/user/analytics-hub">Analytics Hub</a></li>
                             <li><a href="/hr/user/hremployeedirectory">Employee Directory</a></li>
-                            <li><a href="/user">Organization Chart</a></li>
+                            <li><a href="/hr/user/hr-organisation-chart">Organization Chart</a></li>
                         </ul>
                     </li>
                     <li>
@@ -94,7 +94,7 @@
                     <li>
                         <a href="#">Statutory <i class="ph-caret-right-fill"></i></a>
                         <ul class="sidebar__dropdown-menu">
-                            <li><a href="/home">Fines/Damages</a></li>
+                            <li><a href="/hr/user/fine-and-damage">Fines/Damages</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -198,14 +198,7 @@
                     </li>
                 </ul>
             </li>
-            <li>
-                <a href="#"><i class="ph-fill ph-money"></i></a>
-                <ul class="sidebar__submenu">
-                    <li class="title">Accounts</li>
-                    <li><a href="#">User settings</a></li>
-                    <li><a href="#">Change password</a></li>
-                </ul>
-            </li>
+
             <li>
             <li>
                 <a href="#"><i class="ph-chart-pie-slice-light"></i></a>
@@ -222,8 +215,7 @@
                         <a href="#">Main <i class="ph-caret-right-fill"></i></a>
                         <ul class="sidebar__dropdown-menu">
                             <li><a href="/hr/user/leave-overview">Leave Overview</a></li>
-                            <li><a href="/hr/user/hr-attendance-overview">Attendance Overview</a></li>
-                            <li><a href="/hr/user/hr-attendance-overview">Attendance DailyView</a></li>
+                            <li><a class="attendance_dailyview" href="/hr/user/hr-attendance-overview">Attendance DailyView</a></li>
                             <li><a href="/hr/user/leave-calendar">Leave Calendar</a></li>
                             <li><a href="/hr/user/who-is-in-chart-hr">Who is in?</a></li>
                         </ul>
@@ -268,18 +260,9 @@
                     </li>
                 </ul>
             </li>
-            <li>
-                <a href="#"><i class="ph-fill ph-airplay"></i></a>
-                <ul class="sidebar__submenu">
-                    <li class="title">Accounts</li>
-                    <li><a href="#">User settings</a></li>
-                    <li><a href="#">Change password</a></li>
-                </ul>
-            </li>
+
             <li class="divider"></li>
-            <li>
-                <a href="#"><i class="ph-gear-fill"></i></a>
-            </li>
+
             <div class="pointer m-auto">@livewire('log-out')</div>
         </ul>
     </section>

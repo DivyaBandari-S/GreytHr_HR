@@ -24,64 +24,68 @@
                             <div class="col-md-11 col-10 d-flex flex-column">
                                 <p class="main-overview-text mb-1">The <span class="msgHeighlighter">Delete Employee</span> page enables you to remove those employees from the database who have either worked for just one day or been accidentally created. You can also use this page to delete duplicate or incorrect employee records. NOTE: Use this only in rare situations.<span class="msgHeighlighter">Definitely not to be used for resigned employees.</span> </p>
                             </div>
-                            <div class="hide-main-overview-help col-md-1 col-2 d-flex align-items-start">
-                                <span wire:click="hideHelp">Hide Help</span>
-                            </div>
+
                         </div>
                         <div>
-                            <div class="d-flex flex-column position-relative">
-                                <label for="search" class="mb-2"><strong class="main-title">Search An Employee</strong></label>
-                                <div class="col-5 col-5position-relative">
-                                    <input
-                                        type="text"
-                                        class="form-control rounded-pill "
-                                        wire:click="toggleSearchEmployee"
-                                        placeholder="Search Employee"
-                                        wire:model.live="searchTerm"
-                                        wire:keyup="loadEmployeeList">
+                            <div class="row d-flex flex-column position-relative">
+                                <div class="col-md-4">
+                                    <label for="search" class="mb-2"><strong class="main-title">Search An Employee</strong></label>
+                                    <div class="col position-relative">
+                                        <input
+                                            type="text"
+                                            class="form-control rounded-pill "
+                                            wire:click="toggleSearchEmployee"
+                                            placeholder="Search Employee"
+                                            wire:model.live="searchTerm"
+                                            wire:keyup="loadEmployeeList">
 
-                                    @if($searchTerm)
-                                    <button
-                                        type="button"
-                                        class="position-absolute top-50 end-0 translate-middle-y border-0 bg-transparent"
-                                        wire:click="closeSearchContainer"
-                                        aria-label="Clear Search" style="width:30px;color:#ccc;left:40%;">
-                                        <i class="fa fa-times-circle text-muted" style="color:#ccc;"></i>
-                                    </button>
-                                    @endif
+                                        @if($searchTerm)
+                                        <button
+                                            type="button"
+                                            class="position-absolute top-50 end-0 translate-middle-y border-0 bg-transparent"
+                                            wire:click="closeSearchContainer"
+                                            aria-label="Clear Search" style="width:30px;color:#ccc;left:85%;">
+                                            <i class="fa fa-times-circle text-muted" style="color:#ccc;"></i>
+                                        </button>
+                                        @endif
+                                    </div>
                                 </div>
                             </div>
                             @if($showEmployeeSearch)
-                            <div class="selectEmp mb-3 bg-white d-flex flex-column position-absolute">
-                                <div class="d-flex justify-content-end">
-                                    <span wire:click="closeSearchContainer"><i class="fa fa-times-circle text-muted" style="color:#ccc;"></i></span>
-                                </div>
-                                <div>
-                                    @if(count($employeeIds) > 0)
-                                    @foreach($employeeIds as $emp_id => $emp_data)
-                                    <div class="d-flex p-2 align-items-start gap-2 mb-2 border rounded bg-white" wire:click="getSelectedEmp('{{  $emp_id }}')">
-                                        <!-- Display employee image if image exists -->
-                                        @if ($emp_data['image'] !== null && $emp_data['image']!= "null" && $emp_data['image']!= "Null" && $emp_data['image'] != "")
-                                        <img src="data:image/jpeg;base64,{{ ($emp_data['image']) }}" style="width: 35px; height: 35px; object-fit: cover;" class="rounded-circle">
-                                        @else
-                                        <!-- Fallback image if no image is found -->
-                                        <img src="{{ asset('images/user.jpg') }}" style="width: 35px; height: 35px; object-fit: cover;" class="rounded-circle">
-                                        @endif
+                            <div class="row">
+                                <div class="col-md-4 position-absolute">
+                                    <div class="selectEmp mb-3 bg-white d-flex flex-column ">
+                                        <div class="d-flex justify-content-end">
+                                            <span wire:click="closeSearchContainer"><i class="fa fa-times-circle text-muted" style="color:#ccc;"></i></span>
+                                        </div>
+                                        <div>
+                                            @if(count($employeeIds) > 0)
+                                            @foreach($employeeIds as $emp_id => $emp_data)
+                                            <div class="d-flex p-2 align-items-start gap-2 mb-2 border rounded bg-white" wire:click="getSelectedEmp('{{  $emp_id }}')">
+                                                <!-- Display employee image if image exists -->
+                                                @if ($emp_data['image'] !== null && $emp_data['image']!= "null" && $emp_data['image']!= "Null" && $emp_data['image'] != "")
+                                                <img src="data:image/jpeg;base64,{{ ($emp_data['image']) }}" style="width: 35px; height: 35px; object-fit: cover;" class="rounded-circle">
+                                                @else
+                                                <!-- Fallback image if no image is found -->
+                                                <img src="{{ asset('images/user.jpg') }}" style="width: 35px; height: 35px; object-fit: cover;" class="rounded-circle">
+                                                @endif
 
-                                        <!-- Display employee name -->
-                                        <div class="d-flex flex-column">
-                                            <span class="normalText">
-                                                {{ ucwords(strtolower($emp_data['full_name'])) }}
-                                            </span>
-                                            <small class="normalText">
-                                                {{ strtoupper($emp_id) }}
-                                            </small>
+                                                <!-- Display employee name -->
+                                                <div class="d-flex flex-column">
+                                                    <span class="normalText">
+                                                        {{ ucwords(strtolower($emp_data['full_name'])) }}
+                                                    </span>
+                                                    <small class="normalText">
+                                                        {{ strtoupper($emp_id) }}
+                                                    </small>
+                                                </div>
+                                            </div>
+                                            @endforeach
+                                            @else
+                                            <div class="text-center subTextValue py-2">No data found for your search query.</div>
+                                            @endif
                                         </div>
                                     </div>
-                                    @endforeach
-                                    @else
-                                    <div class="text-center subTextValue py-2">No data found for your search query.</div>
-                                    @endif
                                 </div>
                             </div>
                             @endif
@@ -110,7 +114,7 @@
                                     </div>
                                 </div>
                                 <div class="row bg-white rounded m-0 border p-2 py-4 vh-auto">
-                                    <div class="col-md-4">
+                                    <div class="col-md-5">
                                         <div class="emp-content rounded d-flex gap-4 justify-content-center border">
                                             <div class="d-flex flex-column gap-2">
                                                 <span class="normalText">Joined On</span>
@@ -148,7 +152,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-8">
+                                    <div class="col-md-7">
                                         <div class="more-info d-flex align-items-start gap-2 border rounded">
                                             <div clas="col">
                                                 <p><strong class="main-title">Salary Information for the months</strong></p>
@@ -180,63 +184,69 @@
                             <div class="col-md-11 col-10 d-flex flex-column">
                                 <p class="main-overview-text mb-1">The <span class="msgHeighlighter">Confirm Employee</span> page enables you to update an employee's status toward the end of the employee's probation period. The regular procedure is to confirm the employee. It is recommended that you use Employee Directory or Employee Overview to filter employees requiring confirmation and then proceed to this page.</span> </p>
                             </div>
-                            <div class="hide-main-overview-help col-md-1 col-2 d-flex align-items-start">
-                                <span wire:click="hideHelp">Hide Help</span>
-                            </div>
+
                         </div>
                         <div class="d-flex flex-column position-relative">
-                            <label for="search" class="mb-2"><strong class="main-title">Search An Employee</strong></label>
-                            <div class="col-5 position-relative">
-                                <input
-                                    type="text"
-                                    class="form-control rounded-pill "
-                                    wire:click="toggleSearchEmployee"
-                                    placeholder="Search Employee"
-                                    wire:model.live="searchTerm"
-                                    wire:keyup="loadEmployeeList">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label for="search" class="mb-2"><strong class="main-title">Search An Employee</strong></label>
+                                    <div class="col position-relative">
+                                        <input
+                                            type="text"
+                                            class="form-control rounded-pill "
+                                            wire:click="toggleSearchEmployee"
+                                            placeholder="Search Employee"
+                                            wire:model.live="searchTerm"
+                                            wire:keyup="loadEmployeeList">
 
-                                @if($searchTerm)
-                                <button
-                                    type="button"
-                                    class="position-absolute top-50 end-0 translate-middle-y border-0 bg-transparent"
-                                    wire:click="closeSearchContainer"
-                                    aria-label="Clear Search" style="width:30px;color:#ccc;left:40%;">
-                                    <i class="fa fa-times-circle text-muted" style="color:#ccc;"></i>
-                                </button>
-                                @endif
+                                        @if($searchTerm)
+                                        <button
+                                            type="button"
+                                            class="position-absolute top-50 end-0 translate-middle-y border-0 bg-transparent"
+                                            wire:click="closeSearchContainer"
+                                            aria-label="Clear Search" style="width:30px;color:#ccc;left:85%;">
+                                            <i class="fa fa-times-circle text-muted" style="color:#ccc;"></i>
+                                        </button>
+                                        @endif
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         @if($showEmployeeSearch)
-                        <div class="selectEmp mb-3 bg-white d-flex flex-column position-absolute">
-                            <div class="d-flex justify-content-end">
-                                <span wire:click="closeSearchContainer"><i class="fa fa-times-circle text-muted" style="color:#ccc;"></i></span>
-                            </div>
-                            <div>
-                                @if(count($employeeIds) > 0)
-                                @foreach($employeeIds as $emp_id => $emp_data)
-                                <div class="d-flex p-2 align-items-start gap-2 mb-2 border rounded bg-white" wire:click="getSelectedEmp('{{  $emp_id }}')">
-                                    <!-- Display employee image if image exists -->
-                                    @if ($emp_data['image'] !== null && $emp_data['image']!= "null" && $emp_data['image']!= "Null" && $emp_data['image'] != "")
-                                    <img src="data:image/jpeg;base64,{{ ($emp_data['image']) }}" style="width: 35px; height: 35px; object-fit: cover;" class="rounded-circle">
-                                    @else
-                                    <!-- Fallback image if no image is found -->
-                                    <img src="{{ asset('images/user.jpg') }}" style="width: 35px; height: 35px; object-fit: cover;" class="rounded-circle">
-                                    @endif
+                        <div class="row">
+                            <div class="col-md-4 position-absolute">
+                                <div class="selectEmp mb-3 bg-white d-flex flex-column ">
+                                    <div class="d-flex justify-content-end">
+                                        <span wire:click="closeSearchContainer"><i class="fa fa-times-circle text-muted" style="color:#ccc;"></i></span>
+                                    </div>
+                                    <div>
+                                        @if(count($employeeIds) > 0)
+                                        @foreach($employeeIds as $emp_id => $emp_data)
+                                        <div class="d-flex p-2 align-items-start gap-2 mb-2 border rounded bg-white" wire:click="getSelectedEmp('{{  $emp_id }}')">
+                                            <!-- Display employee image if image exists -->
+                                            @if ($emp_data['image'] !== null && $emp_data['image']!= "null" && $emp_data['image']!= "Null" && $emp_data['image'] != "")
+                                            <img src="data:image/jpeg;base64,{{ ($emp_data['image']) }}" style="width: 35px; height: 35px; object-fit: cover;" class="rounded-circle">
+                                            @else
+                                            <!-- Fallback image if no image is found -->
+                                            <img src="{{ asset('images/user.jpg') }}" style="width: 35px; height: 35px; object-fit: cover;" class="rounded-circle">
+                                            @endif
 
-                                    <!-- Display employee name -->
-                                    <div class="d-flex flex-column">
-                                        <span class="normalText">
-                                            {{ ucwords(strtolower($emp_data['full_name'])) }}
-                                        </span>
-                                        <small class="normalText">
-                                            {{ strtoupper($emp_id) }}
-                                        </small>
+                                            <!-- Display employee name -->
+                                            <div class="d-flex flex-column">
+                                                <span class="normalText">
+                                                    {{ ucwords(strtolower($emp_data['full_name'])) }}
+                                                </span>
+                                                <small class="normalText">
+                                                    {{ strtoupper($emp_id) }}
+                                                </small>
+                                            </div>
+                                        </div>
+                                        @endforeach
+                                        @else
+                                        <div class="text-center subTextValue py-2">No data found for your search query.</div>
+                                        @endif
                                     </div>
                                 </div>
-                                @endforeach
-                                @else
-                                <div class="text-center subTextValue py-2">No data found for your search query.</div>
-                                @endif
                             </div>
                         </div>
                         @endif
@@ -311,63 +321,69 @@
                                     Here you can extend the probation period for an employee whose confirmation is due.
                                 </p>
                             </div>
-                            <div class="hide-main-overview-help col-md-1 col-2 d-flex align-items-start">
-                                <span wire:click="hideHelp">Hide Help</span>
-                            </div>
+
                         </div>
                         <div class="d-flex flex-column position-relative">
-                            <label for="search" class="mb-2"><strong class="main-title">Search An Employee</strong></label>
-                            <div class="col-5 position-relative">
-                                <input
-                                    type="text"
-                                    class="form-control rounded-pill  "
-                                    wire:click="toggleSearchEmployee"
-                                    placeholder="Search Employee"
-                                    wire:model.live="searchTerm"
-                                    wire:keyup="loadEmployeeList">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label for="search" class="mb-2"><strong class="main-title">Search An Employee</strong></label>
+                                    <div class="col position-relative">
+                                        <input
+                                            type="text"
+                                            class="form-control rounded-pill  "
+                                            wire:click="toggleSearchEmployee"
+                                            placeholder="Search Employee"
+                                            wire:model.live="searchTerm"
+                                            wire:keyup="loadEmployeeList">
 
-                                @if($searchTerm)
-                                <button
-                                    type="button"
-                                    class="position-absolute top-50 end-0 translate-middle-y border-0 bg-transparent"
-                                    wire:click="closeSearchContainer"
-                                    aria-label="Clear Search" style="width:30px;color:#ccc;left:40%;">
-                                    <i class="fa fa-times-circle text-muted" style="color:#ccc;"></i>
-                                </button>
-                                @endif
+                                        @if($searchTerm)
+                                        <button
+                                            type="button"
+                                            class="position-absolute top-50 end-0 translate-middle-y border-0 bg-transparent"
+                                            wire:click="closeSearchContainer"
+                                            aria-label="Clear Search" style="width:30px;color:#ccc;left:85%;">
+                                            <i class="fa fa-times-circle text-muted" style="color:#ccc;"></i>
+                                        </button>
+                                        @endif
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         @if($showEmployeeSearch)
-                        <div class="selectEmp mb-3 bg-white d-flex flex-column position-absolute">
-                            <div class="d-flex justify-content-end">
-                                <span wire:click="closeSearchContainer"><i class="fa fa-times-circle text-muted" style="color:#ccc;"></i></span>
-                            </div>
-                            <div>
-                                @if(count($employeeIds) > 0)
-                                @foreach($employeeIds as $emp_id => $emp_data)
-                                <div class="d-flex p-2 align-items-start gap-2 mb-2 border rounded bg-white" wire:click="getSelectedEmp('{{  $emp_id }}')">
-                                    <!-- Display employee image if image exists -->
-                                    @if ($emp_data['image'] !== null && $emp_data['image']!= "null" && $emp_data['image']!= "Null" && $emp_data['image'] != "")
-                                    <img src="data:image/jpeg;base64,{{ ($emp_data['image']) }}" style="width: 35px; height: 35px; object-fit: cover;" class="rounded-circle">
-                                    @else
-                                    <!-- Fallback image if no image is found -->
-                                    <img src="{{ asset('images/user.jpg') }}" style="width: 35px; height: 35px; object-fit: cover;" class="rounded-circle">
-                                    @endif
+                        <div class="row">
+                            <div class="col-md-4 position-absolute">
+                                <div class="selectEmp mb-3 bg-white d-flex flex-column ">
+                                    <div class="d-flex justify-content-end">
+                                        <span wire:click="closeSearchContainer"><i class="fa fa-times-circle text-muted" style="color:#ccc;"></i></span>
+                                    </div>
+                                    <div>
+                                        @if(count($employeeIds) > 0)
+                                        @foreach($employeeIds as $emp_id => $emp_data)
+                                        <div class="d-flex p-2 align-items-start gap-2 mb-2 border rounded bg-white" wire:click="getSelectedEmp('{{  $emp_id }}')">
+                                            <!-- Display employee image if image exists -->
+                                            @if ($emp_data['image'] !== null && $emp_data['image']!= "null" && $emp_data['image']!= "Null" && $emp_data['image'] != "")
+                                            <img src="data:image/jpeg;base64,{{ ($emp_data['image']) }}" style="width: 35px; height: 35px; object-fit: cover;" class="rounded-circle">
+                                            @else
+                                            <!-- Fallback image if no image is found -->
+                                            <img src="{{ asset('images/user.jpg') }}" style="width: 35px; height: 35px; object-fit: cover;" class="rounded-circle">
+                                            @endif
 
-                                    <!-- Display employee name -->
-                                    <div class="d-flex flex-column">
-                                        <span class="normalText">
-                                            {{ ucwords(strtolower($emp_data['full_name'])) }}
-                                        </span>
-                                        <small class="normalText">
-                                            {{ strtoupper($emp_id) }}
-                                        </small>
+                                            <!-- Display employee name -->
+                                            <div class="d-flex flex-column">
+                                                <span class="normalText">
+                                                    {{ ucwords(strtolower($emp_data['full_name'])) }}
+                                                </span>
+                                                <small class="normalText">
+                                                    {{ strtoupper($emp_id) }}
+                                                </small>
+                                            </div>
+                                        </div>
+                                        @endforeach
+                                        @else
+                                        <div class="text-center subTextValue py-2">No data found for your search query.</div>
+                                        @endif
                                     </div>
                                 </div>
-                                @endforeach
-                                @else
-                                <div class="text-center subTextValue py-2">No data found for your search query.</div>
-                                @endif
                             </div>
                         </div>
                         @endif
@@ -466,63 +482,69 @@
                                 <p class="main-overview-text mb-1">This <span class="msgHeighlighter">Disable Employee Access</span> page enables you to disable an employee's access to the Employee Portal when an employee resigns or is terminated from service.
                                 </p>
                             </div>
-                            <div class="hide-main-overview-help col-md-1 col-2 d-flex align-items-start">
-                                <span wire:click="hideHelp">Hide Help</span>
-                            </div>
+
                         </div>
                         <div class="d-flex flex-column position-relative">
-                            <label for="search" class="mb-2"><strong class="main-title">Search An Employee</strong></label>
-                            <div class="col-5 position-relative">
-                                <input
-                                    type="text"
-                                    class="form-control rounded-pill "
-                                    wire:click="toggleSearchEmployee"
-                                    placeholder="Search Employee"
-                                    wire:model.live="searchTerm"
-                                    wire:keyup="loadEmployeeList">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label for="search" class="mb-2"><strong class="main-title">Search An Employee</strong></label>
+                                    <div class="col position-relative">
+                                        <input
+                                            type="text"
+                                            class="form-control rounded-pill "
+                                            wire:click="toggleSearchEmployee"
+                                            placeholder="Search Employee"
+                                            wire:model.live="searchTerm"
+                                            wire:keyup="loadEmployeeList">
 
-                                @if($searchTerm)
-                                <button
-                                    type="button"
-                                    class="position-absolute top-50 end-0 translate-middle-y border-0 bg-transparent"
-                                    wire:click="closeSearchContainer"
-                                    aria-label="Clear Search" style="width:30px;color:#ccc;left:40%;">
-                                    <i class="fa fa-times-circle text-muted" style="color:#ccc;"></i>
-                                </button>
-                                @endif
+                                        @if($searchTerm)
+                                        <button
+                                            type="button"
+                                            class="position-absolute top-50 end-0 translate-middle-y border-0 bg-transparent"
+                                            wire:click="closeSearchContainer"
+                                            aria-label="Clear Search" style="width:30px;color:#ccc;left:85%;">
+                                            <i class="fa fa-times-circle text-muted" style="color:#ccc;"></i>
+                                        </button>
+                                        @endif
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         @if($showEmployeeSearch)
-                        <div class="selectEmp mb-3 bg-white d-flex flex-column position-absolute">
-                            <div class="d-flex justify-content-end">
-                                <span wire:click="closeSearchContainer"><i class="fa fa-times-circle text-muted" style="color:#ccc;"></i></span>
-                            </div>
-                            <div>
-                                @if(count($employeeIds) > 0)
-                                @foreach($employeeIds as $emp_id => $emp_data)
-                                <div class="d-flex p-2 align-items-start gap-2 mb-2 border rounded bg-white" wire:click="getSelectedEmp('{{  $emp_id }}')">
-                                    <!-- Display employee image if image exists -->
-                                    @if ($emp_data['image'] !== null && $emp_data['image']!= "null" && $emp_data['image']!= "Null" && $emp_data['image'] != "")
-                                    <img src="data:image/jpeg;base64,{{ ($emp_data['image']) }}" style="width: 35px; height: 35px; object-fit: cover;" class="rounded-circle">
-                                    @else
-                                    <!-- Fallback image if no image is found -->
-                                    <img src="{{ asset('images/user.jpg') }}" style="width: 35px; height: 35px; object-fit: cover;" class="rounded-circle">
-                                    @endif
+                        <div class="row">
+                            <div class="col-md-4 position-absolute">
+                                <div class="selectEmp mb-3 bg-white d-flex flex-column ">
+                                    <div class="d-flex justify-content-end">
+                                        <span wire:click="closeSearchContainer"><i class="fa fa-times-circle text-muted" style="color:#ccc;"></i></span>
+                                    </div>
+                                    <div>
+                                        @if(count($employeeIds) > 0)
+                                        @foreach($employeeIds as $emp_id => $emp_data)
+                                        <div class="d-flex p-2 align-items-start gap-2 mb-2 border rounded bg-white" wire:click="getSelectedEmp('{{  $emp_id }}')">
+                                            <!-- Display employee image if image exists -->
+                                            @if ($emp_data['image'] !== null && $emp_data['image']!= "null" && $emp_data['image']!= "Null" && $emp_data['image'] != "")
+                                            <img src="data:image/jpeg;base64,{{ ($emp_data['image']) }}" style="width: 35px; height: 35px; object-fit: cover;" class="rounded-circle">
+                                            @else
+                                            <!-- Fallback image if no image is found -->
+                                            <img src="{{ asset('images/user.jpg') }}" style="width: 35px; height: 35px; object-fit: cover;" class="rounded-circle">
+                                            @endif
 
-                                    <!-- Display employee name -->
-                                    <div class="d-flex flex-column">
-                                        <span class="normalText">
-                                            {{ ucwords(strtolower($emp_data['full_name'])) }}
-                                        </span>
-                                        <small class="normalText">
-                                            {{ strtoupper($emp_id) }}
-                                        </small>
+                                            <!-- Display employee name -->
+                                            <div class="d-flex flex-column">
+                                                <span class="normalText">
+                                                    {{ ucwords(strtolower($emp_data['full_name'])) }}
+                                                </span>
+                                                <small class="normalText">
+                                                    {{ strtoupper($emp_id) }}
+                                                </small>
+                                            </div>
+                                        </div>
+                                        @endforeach
+                                        @else
+                                        <div class="text-center subTextValue py-2">No data found for your search query.</div>
+                                        @endif
                                     </div>
                                 </div>
-                                @endforeach
-                                @else
-                                <div class="text-center subTextValue py-2">No data found for your search query.</div>
-                                @endif
                             </div>
                         </div>
                         @endif
@@ -583,63 +605,69 @@
                                 <p class="main-overview-text mb-1">This <span class="msgHeighlighter">Enable Employee Access</span> page enables you to enable an employee's access to the Employee Portal when an employee resigns or is terminated from service.
                                 </p>
                             </div>
-                            <div class="hide-main-overview-help col-md-1 col-2 d-flex align-items-start">
-                                <span wire:click="hideHelp">Hide Help</span>
-                            </div>
+
                         </div>
                         <div class="d-flex flex-column position-relative">
-                            <label for="search" class="mb-2"><strong class="main-title">Search An Employee</strong></label>
-                            <div class="col-5 position-relative">
-                                <input
-                                    type="text"
-                                    class="form-control rounded-pill"
-                                    wire:click="toggleSearchEmployee"
-                                    placeholder="Search Employee"
-                                    wire:model.live="searchTerm"
-                                    wire:keyup="loadEmployeeList">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label for="search" class="mb-2"><strong class="main-title">Search An Employee</strong></label>
+                                    <div class="col position-relative">
+                                        <input
+                                            type="text"
+                                            class="form-control rounded-pill"
+                                            wire:click="toggleSearchEmployee"
+                                            placeholder="Search Employee"
+                                            wire:model.live="searchTerm"
+                                            wire:keyup="loadEmployeeList">
 
-                                @if($searchTerm)
-                                <button
-                                    type="button"
-                                    class="position-absolute top-50 end-0 translate-middle-y border-0 bg-transparent"
-                                    wire:click="closeSearchContainer"
-                                    aria-label="Clear Search" style="width:30px;color:#ccc;left:40%;">
-                                    <i class="fa fa-times-circle text-muted" style="color:#ccc;"></i>
-                                </button>
-                                @endif
+                                        @if($searchTerm)
+                                        <button
+                                            type="button"
+                                            class="position-absolute top-50 end-0 translate-middle-y border-0 bg-transparent"
+                                            wire:click="closeSearchContainer"
+                                            aria-label="Clear Search" style="width:30px;color:#ccc;left:85%;">
+                                            <i class="fa fa-times-circle text-muted" style="color:#ccc;"></i>
+                                        </button>
+                                        @endif
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         @if($showEmployeeSearch)
-                        <div class="selectEmp mb-3 bg-white d-flex flex-column position-absolute">
-                            <div class="d-flex justify-content-end">
-                                <span wire:click="closeSearchContainer"><i class="fa fa-times-circle text-muted" style="color:#ccc;"></i></span>
-                            </div>
-                            <div>
-                                @if(count($employeeIds) > 0)
-                                @foreach($employeeIds as $emp_id => $emp_data)
-                                <div class="d-flex p-2 align-items-start gap-2 mb-2 border rounded bg-white" wire:click="getSelectedEmp('{{  $emp_id }}')">
-                                    <!-- Display employee image if image exists -->
-                                    @if ($emp_data['image'] !== null && $emp_data['image']!= "null" && $emp_data['image']!= "Null" && $emp_data['image'] != "")
-                                    <img src="data:image/jpeg;base64,{{ ($emp_data['image']) }}" style="width: 35px; height: 35px; object-fit: cover;" class="rounded-circle">
-                                    @else
-                                    <!-- Fallback image if no image is found -->
-                                    <img src="{{ asset('images/user.jpg') }}" style="width: 35px; height: 35px; object-fit: cover;" class="rounded-circle">
-                                    @endif
+                        <div class="row">
+                            <div class="col-md-4 position-absolute">
+                                <div class="selectEmp mb-3 bg-white d-flex flex-column ">
+                                    <div class="d-flex justify-content-end">
+                                        <span wire:click="closeSearchContainer"><i class="fa fa-times-circle text-muted" style="color:#ccc;"></i></span>
+                                    </div>
+                                    <div>
+                                        @if(count($employeeIds) > 0)
+                                        @foreach($employeeIds as $emp_id => $emp_data)
+                                        <div class="d-flex p-2 align-items-start gap-2 mb-2 border rounded bg-white" wire:click="getSelectedEmp('{{  $emp_id }}')">
+                                            <!-- Display employee image if image exists -->
+                                            @if ($emp_data['image'] !== null && $emp_data['image']!= "null" && $emp_data['image']!= "Null" && $emp_data['image'] != "")
+                                            <img src="data:image/jpeg;base64,{{ ($emp_data['image']) }}" style="width: 35px; height: 35px; object-fit: cover;" class="rounded-circle">
+                                            @else
+                                            <!-- Fallback image if no image is found -->
+                                            <img src="{{ asset('images/user.jpg') }}" style="width: 35px; height: 35px; object-fit: cover;" class="rounded-circle">
+                                            @endif
 
-                                    <!-- Display employee name -->
-                                    <div class="d-flex flex-column">
-                                        <span class="normalText">
-                                            {{ ucwords(strtolower($emp_data['full_name'])) }}
-                                        </span>
-                                        <small class="normalText">
-                                            {{ strtoupper($emp_id) }}
-                                        </small>
+                                            <!-- Display employee name -->
+                                            <div class="d-flex flex-column">
+                                                <span class="normalText">
+                                                    {{ ucwords(strtolower($emp_data['full_name'])) }}
+                                                </span>
+                                                <small class="normalText">
+                                                    {{ strtoupper($emp_id) }}
+                                                </small>
+                                            </div>
+                                        </div>
+                                        @endforeach
+                                        @else
+                                        <div class="text-center subTextValue py-2">No data found for your search query.</div>
+                                        @endif
                                     </div>
                                 </div>
-                                @endforeach
-                                @else
-                                <div class="text-center subTextValue py-2">No data found for your search query.</div>
-                                @endif
                             </div>
                         </div>
                         @endif

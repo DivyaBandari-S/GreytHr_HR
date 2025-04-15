@@ -278,8 +278,7 @@ class PfYtdReport extends Component
         } else {
             return;
         }
-        $this->empCompanyLogoUrl = $this->getEmpCompanyLogoUrl(); 
-
+       
         $employeeId = auth()->user()->emp_id;
 
 

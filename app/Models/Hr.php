@@ -66,4 +66,8 @@ class Hr extends Authenticatable
     {
         return $this->hasMany(AdminFavoriteModule::class, 'hr_emp_id', 'hr_emp_id');
     }
+    public function empSeparation()
+    {
+        return $this->hasMany(EmpSeparationDetails::class, 'hr_emp_id', 'hr_emp_id');
+    }
 }

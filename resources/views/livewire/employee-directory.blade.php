@@ -145,12 +145,12 @@
         @if($showHelp==false) 
         <div class="attendance-overview-help">
             <p style="font-size:13px;">The employee directory lists all employee in your organisation.<br/>Filters are available to select employees in a certain category(location,department, etc.) or by status.</p>
-            <p style="font-size:13px;">Explore HR Expert by <a href="https://admin-help.greythr.com/admin/answers/123712613" target="_blank" style="color: #1fb6ff;cursor:pointer;">Help-Doc</a>. <a href="https://youtu.be/drrSfJrjHz0?si=BrqYlKmNr9kFrHLT" target="_blank" style="color: #1fb6ff;cursor:pointer;">&nbsp;How-to Watch Videos&nbsp;</a>and<a href="https://greythr.freshdesk.com/support/search/solutions?term=attendance+overview"style="color: #1fb6ff;cursor:pointer;">&nbsp;FAQ&nbsp;</a>.</p>
+            <p style="font-size:13px;">Explore HR Expert by <a href="/knowledge-base"style="color: #1fb6ff;cursor:pointer;">&nbsp;FAQ&nbsp;</a>.</p>
             <span class="hide-attendance-help"wire:click="hideHelp">Hide Help</span>
         </div>    
         @else 
         <div class="attendance-overview-help-for-showhelp">
-           <button style="font-size: 14px;background-color: white; margin-top: -20px; float: right; color: #0000FF; border: 1px solid #ffff; border-radius: 5px; cursor: pointer;padding: 5px 20px;font-weight:bold;"wire:click="showhelp">Show&nbsp;&nbsp;Help</button>
+           <button style="font-size:14px;background-color: white; margin-top: -20px; float: right; color: #0000FF; border: 1px solid #ffff; border-radius: 5px; cursor: pointer; padding: 5px 20px;font-weight:bold;"wire:click="showhelp">Show&nbsp;&nbsp;Help</button>
         </div> 
         @endif    
       
@@ -200,22 +200,22 @@
  
       
      
-    <div class="table-container"style="max-height:300px;overflow-y:auto;width:100%; margin:0;padding:0 10px;">  
-      <table id="employee-table">
-        <thead style="position:sticky;top:0;">
+    <div class="table-container"style="max-height:300px;overflow-x:auto; width:100%; margin:0;scrollbar-width:none">  
+      <table id="employee-table"style="margin:0px" >
+        <thead style="position: sticky;top:0px">
             <tr>
                 <th>#</th>
                 <th>Employee ID</th>
                 <th>Employee Name</th>
                 <th>Joining Date</th>
-                <th>Status</th>
+                <th>Job Role</th>
                 <th>Phone No</th>
                 <th>Email</th>
                 <th>Extension No</th>
                 <th>Status</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody style="max-height:300px;overflow-y:auto;">
         @if(count($records)>0)    
         @foreach($records as $r1)    
             <tr>

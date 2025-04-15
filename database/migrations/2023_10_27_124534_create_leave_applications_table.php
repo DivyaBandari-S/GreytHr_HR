@@ -15,7 +15,7 @@ return new class extends Migration
             $table->smallInteger('id')->autoIncrement();
             $table->string('emp_id', 10);
             $table->string('category_type', 25)->default('Leave');
-            $table->enum('leave_type', ['Casual Leave Probation', 'Maternity Leave', 'Loss Of Pay', 'Sick Leave', 'Marriage Leave', 'Casual Leave', 'Petarnity Leave', 'Work From Home'])->nullable();
+            $table->enum('leave_type', ['Casual Leave Probation', 'Maternity Leave', 'Loss Of Pay', 'Sick Leave', 'Marriage Leave', 'Casual Leave', 'Petarnity Leave', 'Work From Home','Earned Leave'])->nullable();
             $table->date('from_date')->nullable();
             $table->string('from_session', 10)->nullable();
             $table->string('to_session', 10)->nullable();

@@ -2,7 +2,7 @@
 <style>
       .hide-attendance-help {
     position: absolute;
-    bottom: 75px; /* Adjust as needed */
+    bottom: 160px; /* Adjust as needed */
     right: 10px;
     color: #0000FF;
     font-weight: 500;

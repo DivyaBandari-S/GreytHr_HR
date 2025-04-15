@@ -58,7 +58,9 @@ class EmployeeDetails extends Authenticatable
         'probation_Period',
         'service_age',
         'confirmation_date',
+        'mpin'
     ];
+    protected $hidden = ['password', 'remember_token', 'mpin'];
 
     protected $casts = [
         'company_id' => 'array',
@@ -105,6 +107,11 @@ class EmployeeDetails extends Authenticatable
     {
         return $this->hasMany(LeaveRequest::class, 'emp_id', 'emp_id');
     }
+    public function bulkPhotos()
+    {
+        return $this->hasMany(UploadBulkPhotos::class, 'uploaded_by', 'emp_id');
+    }
+
     public function swipeRecords()
     {
         return $this->hasMany(SwipeRecord::class, 'emp_id', 'emp_id');

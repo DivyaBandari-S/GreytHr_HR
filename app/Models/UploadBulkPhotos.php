@@ -17,4 +17,8 @@ class UploadBulkPhotos extends Model
         'mime_type',
         'file_name'
     ];
+    public function employee()
+    {
+        return $this->belongsTo(EmployeeDetails::class, 'uploaded_by', 'emp_id');
+    }
 }

@@ -13,7 +13,8 @@ class EmpResignations extends Model
         'emp_id',
         'reason',
         'resignation_date',
-        'approved_date',
+        'action_date',
+        'action_by',
         'last_working_day',
         'mime_type',
         'file_name',
@@ -24,6 +25,7 @@ class EmpResignations extends Model
     {
         return $this->belongsTo(EmployeeDetails::class, 'emp_id', 'emp_id');
     }
+
     public function getImageUrlAttribute()
     {
         return $this->signature ? 'data:image/jpeg;base64,' . base64_encode($this->signature) : null;
