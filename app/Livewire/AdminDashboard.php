@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Task;
 use Carbon\Carbon;
 use Exception;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
@@ -69,6 +70,13 @@ class AdminDashboard extends Component
     public $totalEmployees;
     public $empStatus;
     public $employeeTypes;
+    public $serviceAgeLabels = [];
+    public $serviceAgeCounts = [];
+    public $present;
+    public $late;
+    public $absent;
+    public $total = 0;
+    public $serviceData;
     public function updateOption($option)
     {
         $this->selectedOption = $option;
@@ -226,8 +234,15 @@ class AdminDashboard extends Component
             $this->backgroundColors = $genderDistribution->pluck('gender')->map(function ($label) use ($colors) {
                 return $colors[$label] ?? 'rgba(201, 203, 207, 0.5)';
             });
+
+            $this->serviceData = EmployeeDetails::where('status', 1)
+                ->select('service_age')
+                ->get()
+                ->pluck('service_age');
+
             $this->filterDepartmentChart();
             $this->getAttendanceOverView();
+            $this->getServiceAgeDistribution();
         } catch (\Exception $e) {
             if ($e instanceof \Illuminate\Database\QueryException) {
                 // Handle database query exceptions
@@ -254,6 +269,35 @@ class AdminDashboard extends Component
         }
     }
 
+
+    //service age distributionuse Illuminate\Database\QueryException;
+    public function getServiceAgeDistribution()
+    {
+        try {
+            $distribution = EmployeeDetails::where('status', 1)
+                ->selectRaw('service_age, COUNT(*) as count')
+                ->groupBy('service_age')
+                ->orderBy('service_age')
+                ->get();
+
+            $this->serviceAgeLabels = $distribution->pluck('service_age')->toArray();
+            $this->serviceAgeCounts = $distribution->pluck('count')->toArray();
+        } catch (QueryException $e) {
+            // Handle database query errors
+            FlashMessageHelper::flashError('Database query error while fetching service age.' );
+            $this->serviceAgeLabels = [];
+            $this->serviceAgeCounts = [];
+        } catch (Exception $e) {
+            // Handle all other errors
+            FlashMessageHelper::flashError('General error while fetching service age.' );
+            $this->serviceAgeLabels = [];
+            $this->serviceAgeCounts = [];
+        }
+    }
+
+
+
+    //chart for department wise
     public function filterDepartmentChart()
     {
         $filteredList = $this->totalActiveEmpList;
@@ -490,45 +534,22 @@ class AdminDashboard extends Component
                     '/hr/update-employee-details' => 'Update Employee Data',
                     '/hr/add-employee-details/{employee?}' => 'Add Employee Data',
                     '/hr/letter/prepare' => 'Prepare Letter',
-                    '/import' => 'Import Data From Excel',
                     '/hr/employee-data-update/disable' => 'Disable Portal Access',
                     '/hr/employee-data-update/enable' => 'Enable Portal Access',
-                    '/3' => 'Regenerate Employee Password',
                     '/hr/user/employee-separation' => 'Employee Separation',
                     '/hr/employee-data-update/confirm' => 'Confirm Employee',
                     '/hr/employee-data-update/extend' => 'Extend Probation Period',
-                    '/7' => 'Change Employee Number',
                     '/8' => 'Exclude From Payroll',
                     '/hr/employee-data-update/delete' => 'Delete Employee',
-                    '/10' => 'Upload Employee Document',
-                    '/11' => 'Add Bulletin Board',
-                    '/12' => 'Mass Employee Email',
-                    '/14' => 'Employee onboarding',
-                    '/15' => 'Invite Employees(Email Employee Password)',
-                    '/16' => 'Employee Filter',
                     '/hr/user/emp/admin/bulkphoto-upload' => 'Bulk Photo Upload',
-                    '/18' => 'PF/ESI Details',
-                    '/19' => 'Add Nomination Details',
-                    '/21' => 'Bulk Data Upload',
-                    '/23' => 'Upload Forms/Policies',
                     '/hr/user/analytics-hub' => 'People Analytical Hub',
                     '/hr/user/hr-organisation-chart' => 'Organization Chart',
                     '/26' => 'Assign Manager',
                     '/hr/request' => 'Offboarding Request',
                     '/hr/HelpDesk' => 'HelpDesk',
                     '/hr/hrFeeds' => 'Engage',
-
                 ],
 
-                'Information' => [
-                    ' /hr/employee-profile' => 'Employee Information',
-                    '/hr/position-history' => 'Employee Information',
-                    '/hr/employee-asset' => 'Employee Information',
-                    '/hr/bank-account' => 'Employee Information',
-                    '/hr/parent-details' => 'Employee Information',
-                    '/hr/emp-document' => 'Employee Information',
-                    '/hr/previous' => 'Employee Information',
-                ],
                 'payroll' => [
                     '/hr/user/stop-salaries' => 'Stop Salary Processing',
                     '/hr/user/employee-lop-days' => 'Deduct Loss Of Pay(LOP)',
@@ -538,7 +559,6 @@ class AdminDashboard extends Component
                     '/hr/pfytdreport' => 'PF YTD REport',
                     '/hr/itstatement' => 'IT Statement',
                     '/27' => 'Print/Email Payslips',
-                    '/28' => 'Settle Resigned Employee',
                     '/29' => 'Print/Email Reimbursement Payslip',
                     '/30' => 'Arrears',
                     '/31' => 'Update Employee PAN Number',
@@ -553,7 +573,6 @@ class AdminDashboard extends Component
                     '/40' => 'Generate Payroll Statement',
                     '/41' => 'Generate Accounts JV',
                     '/42' => 'Release Payslips To Employees',
-                    '/43' => 'Clean Up Payroll',
                     '/hr/user/hold-salaries' => 'Hold Salary Account',
                     '/hr/user/release-salary ' => 'Release Salary Account',
                     '/46' => 'Resettle Employee',
@@ -568,7 +587,6 @@ class AdminDashboard extends Component
                 ],
                 'leave' => [
                     '/hr/user/holidayList' => 'Add Holidays',
-                    '/55' => 'Post Leave Transction',
                     '/hr//user/grant-summary' => 'Grant Leave',
                     '/hr/user/leaveYearEndProcess' => 'Year End Process',
                     '/hr/user/leave-approval' => 'Approve Leave',
@@ -756,10 +774,6 @@ class AdminDashboard extends Component
         }
     }
 
-    public $present;
-    public $late;
-    public $absent;
-    public $total = 0;
     public function getAttendanceOverView($range = 'this_week')
     {
         $this->present = 0;
@@ -823,7 +837,9 @@ class AdminDashboard extends Component
             'total' => $this->total,
             'present' => $this->present,
             'late' => $this->late,
-            'absent' => $this->absent
+            'absent' => $this->absent,
+            'serviceAgeLabels' => $this->serviceAgeLabels,
+            'serviceAgeCounts' => $this->serviceAgeCounts
         ]);
     }
 }

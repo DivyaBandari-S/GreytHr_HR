@@ -581,12 +581,25 @@
 
                 </div>
                 <div class="tab-page {{ $activeTab === 'in-review' ? 'active' : '' }}" data-tab-page="in-review">
+                <div class="row m-0 mb-3">
+                    <div class="col-md-12 p-0">
+                        <div class="border m-0 rounded mb-3">
+                            <div class="border-bottom px-2 m-0 mt-3 ">
+                                <p class="fw-bold chartHeading">Service Age Distribution</p>
+                            </div>
+                            <div class="serviceChart">
+                                 <canvas id="serviceAgeChart"  wire:ignore></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                     <div class="row m-0 mb-3">
                         <div class="col-md-7">
                         <div class="border m-0 rounded row mb-3">
                                 <div class="border-bottom m-0 mt-3 row">
                                     <div class="col-md-9">
-                                        <p class="fw-bold">Employees By Department</p>
+                                        <p class="fw-bold chartHeading">Employees By Department</p>
                                     </div>
                                 </div>
                                 <div class="col-md-12">
@@ -610,7 +623,7 @@
                                   <div class="border m-0 rounded row mb-3 d-flex justify-content-center">
                                 <div class="border-bottom m-0 mt-3 row ">
                                     <div class="col-md-12">
-                                        <p class="fw-bold">Employee Gender Distribution</p>
+                                        <p class="fw-bold chartHeading">Employee Gender Distribution</p>
                                     </div>
                                 </div>
                                 <div class="genderChart" >
@@ -628,8 +641,6 @@
                     </div>
                     <div class="row m-0 mb-3">
                         <div class="col-md-6 mb-3">
-
-
                             <div class="border m-0 rounded row d-flex justify-content-center">
                                 <div class="border-bottom m-0 mt-3 row">
                                     <div class="col-md-8">
@@ -693,7 +704,7 @@
                             <div class="border m-0 rounded row">
                                 <div class="border-bottom m-0 mt-3 row">
                                     <div class="col-md-6">
-                                        <p class="fw-bold">Tasks Statistics</p>
+                                        <p class="fw-bold chartHeading">Tasks Statistics</p>
                                     </div>
                                     {{-- <div class="col-md-6 mb-3 text-end">
                                         <button class="btn btn-outline-primary btn-sm"><i
@@ -788,7 +799,6 @@
                     </div>
 
                 </div>
-
             </div>
         </section>
     </div>
@@ -1118,7 +1128,43 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 </script>
 
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const ctx = document.getElementById('serviceAgeChart').getContext('2d');
 
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: @json($serviceAgeLabels),
+                datasets: [{
+                    label: 'Employee Count',
+                    data: @json($serviceAgeCounts),
+                    borderColor: 'rgb(54, 162, 235)',
+                    fill: false,
+                    tension: 0.3
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Service Age'
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Employee Count'
+                        }
+                    }
+                }
+            }
+        });
+    });
+</script>
 
 
 
