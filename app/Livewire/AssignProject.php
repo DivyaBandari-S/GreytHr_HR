@@ -59,6 +59,17 @@ class AssignProject extends Component
     public function toggleSelection($empId)
     {
         try {
+          
+            $alreadyAssigned = AssignProjects::where('project_name', $this->selectedProject)
+            ->whereRaw("JSON_SEARCH(emp_id, 'one', ?) IS NOT NULL", [$empId])
+            ->exists();
+            
+        
+
+        if ($alreadyAssigned) {
+            FlashMessageHelper::flashWarning("This employee is already assigned to this project.");
+            return;
+        }
             if (isset($this->selectedPeople[$empId])) {
                 // Deselect employee and reset limit flag
                 unset($this->selectedPeople[$empId]);

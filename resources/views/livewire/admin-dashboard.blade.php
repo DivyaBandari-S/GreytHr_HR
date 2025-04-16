@@ -461,7 +461,17 @@
                                         <p class="fw-bold">Projects</p>
                                     </div>
                                     <div class="col-md-6 text-end">
-                                        <button class="btn btn-outline-primary btn-sm"><i class="fa-regular fa-calendar"></i> This Week</button>
+                                        {{-- <button class="btn btn-outline-primary btn-sm"><i class="fa-regular fa-calendar"></i> This Week</button> --}}
+                                        <button class="btn btn-outline-primary btn-sm dropdown-toggle" type="button" id="dropdownMonthButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="fa-regular fa-calendar"></i> {{ $selectedMonthOption }}
+                                        </button>
+                                        <ul class="dropdown-menu" aria-labelledby="dropdownMonthButton">
+                                            <li><a class="dropdown-item" href="#" wire:click.prevent="updateMonthOption('This Week')">This Week</a></li>
+                                            <li><a class="dropdown-item" href="#" wire:click.prevent="updateMonthOption('This Month')">This Month</a></li>
+                                            <li><a class="dropdown-item" href="#" wire:click.prevent="updateMonthOption('Last Month')">Last Month</a></li>
+                                            <li><a class="dropdown-item" href="#" wire:click.prevent="updateMonthOption('This Year')">This Year</a></li>
+                                        </ul>
+                                        
                                     </div>
                                 </div>
 
@@ -470,109 +480,37 @@
                                     <table class="table fs12">
                                         <thead class="table-secondary">
                                             <tr>
-                                                <th scope="col">ID</th>
-                                                <th scope="col">Name</th>
-                                                <th scope="col">Team</th>
-                                                <th scope="col">Hours</th>
+                                                <th scope="col">Client ID</th>
+                                                <th scope="col">Project Name</th>
+                                                <th scope="col">Team Members</th>
                                                 <th scope="col">Deadline</th>
-                                                <th scope="col">Priority</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr>
-                                                <td>PRO-001</td>
-                                                <td>Office Management App</td>
-                                                <td>
-                                                    <div class="avatar-list-stacked avatar-group-sm">
-                                                        <span class="avatar avatar-rounded">
-                                                            <img class="border border-white" src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-27.jpg" alt="img">
-                                                        </span>
-                                                        <span class="avatar avatar-rounded">
-                                                            <img class="border border-white" src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-30.jpg" alt="img">
-                                                        </span>
-                                                        <span class="avatar avatar-rounded">
-                                                            <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-14.jpg" alt="img">
-                                                        </span>
-                                                        <span class="avatar avatar-rounded">
-                                                            <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-29.jpg" alt="img">
-                                                        </span>
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <p class="mb-1">15/255 Hrs</p>
-                                                    <div class="progress" role="progressbar" aria-label="Example 20px high" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style="height: 5px">
-                                                        <div class="progress-bar" style="width: 25%"></div>
-                                                    </div>
-                                                </td>
-                                                <td>12/09/2024</td>
-                                                <td>
-                                                    <span class="badge text-bg-danger">High</span>
-                                                </td>
-                                            </tr>
-
-                                            <tr>
-                                                <td>PRO-002</td>
-                                                <td>Office Management App</td>
-                                                <td>
-                                                    <div class="avatar-list-stacked avatar-group-sm">
-                                                        <span class="avatar avatar-rounded">
-                                                            <img class="border border-white" src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-27.jpg" alt="img">
-                                                        </span>
-                                                        <span class="avatar avatar-rounded">
-                                                            <img class="border border-white" src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-30.jpg" alt="img">
-                                                        </span>
-                                                        <span class="avatar avatar-rounded">
-                                                            <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-14.jpg" alt="img">
-                                                        </span>
-                                                        <span class="avatar avatar-rounded">
-                                                            <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-29.jpg" alt="img">
-                                                        </span>
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <p class="mb-1">15/255 Hrs</p>
-                                                    <div class="progress" role="progressbar" aria-label="Example 20px high" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style="height: 5px">
-                                                        <div class="progress-bar" style="width: 25%"></div>
-                                                    </div>
-                                                </td>
-                                                <td>12/09/2024</td>
-                                                <td>
-                                                    <span class="badge text-bg-danger">High</span>
-                                                </td>
-                                            </tr>
-
-                                            <tr>
-                                                <td>PRO-003</td>
-                                                <td>Office Management App</td>
-                                                <td>
-                                                    <div class="avatar-list-stacked avatar-group-sm">
-                                                        <span class="avatar avatar-rounded">
-                                                            <img class="border border-white" src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-27.jpg" alt="img">
-                                                        </span>
-                                                        <span class="avatar avatar-rounded">
-                                                            <img class="border border-white" src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-30.jpg" alt="img">
-                                                        </span>
-                                                        <span class="avatar avatar-rounded">
-                                                            <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-14.jpg" alt="img">
-                                                        </span>
-                                                        <span class="avatar avatar-rounded">
-                                                            <img src="https://smarthr.dreamstechnologies.com/react/template/assets/img/profiles/avatar-29.jpg" alt="img">
-                                                        </span>
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <p class="mb-1">15/255 Hrs</p>
-                                                    <div class="progress" role="progressbar" aria-label="Example 20px high" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style="height: 5px">
-                                                        <div class="progress-bar" style="width: 25%"></div>
-                                                    </div>
-                                                </td>
-                                                <td>12/09/2024</td>
-                                                <td>
-                                                    <span class="badge text-bg-danger">High</span>
-                                                </td>
-                                            </tr>
-                                            
+                                            @if ($groupedProjects->isEmpty())
+                                                <tr>
+                                                    <td colspan="4" class="text-center">
+                                                        <img class="task-no-items-found" src="{{ asset('images/nodata.png') }}" alt="No items found" style="max-height: 150px;">
+                                                        <p class="mt-2">No Data Found</p>
+                                                    </td>
+                                                </tr>
+                                            @else
+                                                @foreach ($groupedProjects as $project)
+                                                    <tr>
+                                                        <td>{{ $project['client_id'] }}</td>
+                                                        <td>{{ $project['project_name'] }}</td>
+                                                        <td class="text-center">
+                                                            <strong>{{ $project['team_count'] }}</strong>
+                                                        </td>
+                                                        <td>
+                                                            {{ !empty($project['end_date']) ? \Carbon\Carbon::parse($project['end_date'])->format('d F, Y') : '' }}
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            @endif
                                         </tbody>
+                                        
+
                                     </table>
                                 </div>
                             </div>
