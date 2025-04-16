@@ -154,7 +154,7 @@
                             <li><a href="/user">Bank Transfer</a></li>
                             <li><a href="/user">Cheque / Cash Statement</a></li>
                             <li><a href="/hr/salaryslip">Payslips</a></li>
-                            <li><a href="/user">Hold Salary Payout</a></li>
+                            <li><a href="/hr/user/hold-salaries">Hold Salary Payout</a></li>
                         </ul>
                     </li>
                     <li>

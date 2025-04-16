@@ -40,6 +40,14 @@
             /* .onboardinputs {
                 width: 80%;
             } */
+            .select-inputs {
+                display: flex;
+                align-items: center;
+            }
+
+            .form-check-inline {
+                align-items: center;
+            }
         </style>
         @if (Session::has('success'))
         <div id="success-alert" class="alert alert-success alert-dismissible fade show" style="
@@ -75,9 +83,9 @@
                 <div class="container-fluid main-container " style="background:#f2f2f2;margin:0;padding:0;">
                     <div class="d-flex justify-content-between p-3">
                         <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
-                            <ol class="breadcrumb">
-                                <!-- <li class="breadcrumb-item active" aria-current="page">Add Employee</li> -->
-                            </ol>
+                            <!-- <ol class="breadcrumb">
+                                <li class="breadcrumb-item active" aria-current="page">Add Employee</li>
+                            </ol> -->
                         </nav>
                         <div>
                             <button class="ilynn-btn"><a href="/hr/update-employee-details" style="text-decoration: none;color:white;font-size:14px;">Employee List</a></button>
@@ -129,6 +137,7 @@
                                     <span class="text-danger onboard-Valid">{{ $message }}</span>
                                     @enderror
                                 </div>
+
                                 <div class="form-group col-md-6">
                                     <label class="mt-1" for="com_id">Company Name <span class="text-danger onboard-Valid">*</span></label>
                                     <select wire:change="selectedCompany" wire:model="com_id" class="form-control onboardinputs custom-select placeholder-small m-0" style="margin-bottom: 10px;color: #2c3e50">
@@ -164,7 +173,7 @@
                                 <div class="form-group col-md-6">
                                     <div class="input-group onboarding-check-boxes">
                                         <label class="mt-1">Gender <span class="text-danger onboard-Valid">*</span> </label>
-                                        <div>
+                                        <div class="select-inputs">
                                             <div class="form-check form-check-inline mb-0 mx-2">
                                                 <input type="radio" class="form-check-input" wire:model="gender" value="MALE" id="maleRadio" name="gender">
                                                 <label class="form-check-label-options mt-1 mb-0" for="maleRadio">Male</label>
@@ -235,7 +244,7 @@
 
                                     <div class="input-group onboarding-check-boxes">
                                         <label class="mt-1" for="employee_type">Employee Type</label>
-                                        <div>
+                                        <div class="select-inputs">
                                             <div class="form-check form-check-inline custom-radio">
                                                 <input class="form-check-input  mb-2" type="radio" id="full-time" value="full-time" wire:model="employee_type" checked>
                                                 <label class="form-check-label-options mt-1 " for="full-time">Full-Time</label>
@@ -265,15 +274,20 @@
                                     </div>
                                     <div class="form-group col-md-12">
                                         <label class="mt-1" for="job_location">Job Location <span class="text-danger onboard-Valid">*</span></label>
-                                        <select class="form-control onboardinputs custom-select   placeholder-small m-0" wire:model="job_location" style="margin-bottom: 10px;">
-                                            <option disabled value="">Select job location</option>
-
-                                            @foreach ($job_locations_array as $id)
-                                            <option value="{{ $id }}">{{$id }}</option>
-                                            @endforeach
-                                        </select>
-
-                                        @error('company_id')
+                                        <div class="d-flex" style="gap: 5px;">
+                                            <select class="form-control onboardinputs custom-select   placeholder-small m-0" wire:model="job_location" style="margin-bottom: 10px; width:60%">
+                                                @if(count($job_locations_array)>0)
+                                                <option disabled value=''>Select job location</option>
+                                                @foreach ($job_locations_array as $id)
+                                                <option value="{{ $id }}">{{$id }}</option>
+                                                @endforeach
+                                                @else
+                                                <option disabled value="">No job location found</option>
+                                                @endif
+                                            </select>
+                                            <button type="button" wire:click='openLocationModel' style="background-color: #306cc6; font-weight:400;padding:0px 6px;font-size: 13px !important;border-radius: 5px;color:#f2f2f2;border:none">Add Location</button>
+                                        </div>
+                                        @error('job_location')
                                         <span class="text-danger onboard-Valid">{{ $message }}</span>
                                         @enderror
                                     </div>
@@ -282,8 +296,8 @@
                                 <div class="form-group col-md-6 ">
                                     <div class="form-group col-md-12">
                                         <label>Select Domains / Cost-Centers <span class="text-danger onboard-Valid">*</span></label>
-                                        <div class="checkbox-list onboardinputs" style="max-height: 100px; height: auto; overflow-y: auto;border:1px solid  #ccc;border-radius:5px">
-                                            @if($Projects!=null)
+                                        <div class="checkbox-list onboardinputs" style="max-height: 100px; height: auto; overflow-y: auto;border:1px solid  #ccc;border-radius:5px;padding:5px;">
+                                            @if($Projects && count($Projects))
                                             @foreach($Projects as $project)
                                             <div style="height: 30px;">
                                                 <input type="checkbox" style="margin-left: 5px; margin-bottom: 5px;"
@@ -297,7 +311,14 @@
                                                 </label>
                                             </div>
                                             @endforeach
+                                            @else
+                                            <div style="justify-content: space-between;display:flex;align-items:center">
+                                                <label for="">No projects available</label>
+                                                <button type="button" wire:click='openProjectModel' style="background-color: #306cc6; font-weight:400;padding:0px 6px;font-size: 13px !important;border-radius: 5px;color:#f2f2f2;border:none;height:35px">Add Project</button>
+                                            </div>
+
                                             @endif
+
                                         </div>
                                         @error('emp_domain')
                                         <span class="text-danger onboard-Valid">{{ $message }}</span>
@@ -446,14 +467,18 @@
                                     <div class="input-group onboarding-check-boxes">
                                         <div>
                                             <label class="mt-1">International Employee </label><br>
-                                            <div class="form-check form-check-inline">
-                                                <input class="form-check-input  mb-2" type="radio" wire:model="inter_emp" value="yes" id="yesRadio" name="inter_emp">
-                                                <label class="form-check-label-options mt-1 " for="yesRadio">Yes</label>
+                                            <div class="select-inputs">
+
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input  mb-2" type="radio" wire:model="inter_emp" value="yes" id="yesRadio" name="inter_emp">
+                                                    <label class="form-check-label-options mt-1 " for="yesRadio">Yes</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input  mb-2" type="radio" wire:model="inter_emp" value="no" id="noRadio" name="inter_emp" checked>
+                                                    <label class="form-check-label-options mt-1 " for="noRadio">No</label>
+                                                </div>
                                             </div>
-                                            <div class="form-check form-check-inline">
-                                                <input class="form-check-input  mb-2" type="radio" wire:model="inter_emp" value="no" id="noRadio" name="inter_emp" checked>
-                                                <label class="form-check-label-options mt-1 " for="noRadio">No</label>
-                                            </div>
+
                                         </div>
                                     </div>
                                     <div>
@@ -465,7 +490,7 @@
                                 <div class="form-group col-md-6">
                                     <div class="input-group onboarding-check-boxes">
                                         <label class="mt-1">Job Mode </label>
-                                        <div>
+                                        <div class="select-inputs">
                                             <div class="form-check form-check-inline mb-0 mx-2 ">
                                                 <input class="form-check-input " type="radio" wire:model="job_mode" value="Office" id="OfficeRadio" name="job_mode">
                                                 <label class="form-check-label-options mt-1 mb-0" for="officeRadio">Office</label>
@@ -582,7 +607,7 @@
                                 <div class="form-group col-md-6">
                                     <div class="input-group onboarding-check-boxes">
                                         <label class="mt-1">Martial Status <span class="text-danger onboard-Valid">*</span></label>
-                                        <div>
+                                        <div class="select-inputs">
                                             <div class="form-check form-check-inline">
                                                 <input class="form-check-input mb-2" type="radio" wire:model="marital_status" value="unmarried" id="unmarriedRadio" name="marital_status_group">
                                                 <label class="form-check-label-options mt-1 " for="unmarriedRadio">Single</label>
@@ -604,7 +629,7 @@
                                 <div class="form-group col-md-6">
                                     <div class="input-group onboarding-check-boxes">
                                         <label class="mt-1">Physically Challenge</label>
-                                        <div>
+                                        <div class="select-inputs">
                                             <div class="form-check form-check-inline">
                                                 <input class="form-check-input  mb-2" type="radio" wire:model="physically_challenge" value="yes" id="yesRadio" name="physically_challenge_group">
                                                 <label class="form-check-label-options mt-1" for="yesRadio">Yes</label>
@@ -975,7 +1000,7 @@
                                 <div class="form-group col-md-6">
                                     <div class="  input-group onboarding-check-boxes ">
                                         <label class="mt-1">Spouse Gender </label>
-                                        <div>
+                                        <div class="select-inputs">
                                             <div class="form-check form-check-inline mb-0 mx-2 ">
                                                 <input class="form-check-input " type="radio" wire:model="spouse_gender" value="Male" id="maleRadio" name="gender">
                                                 <label class="form-check-label-options mt-1 mb-0" for="spouse_gender">Male</label>
@@ -1084,7 +1109,7 @@
                                             <div class="form-group col-md-6">
                                                 <div class="input-group onboarding-check-boxes">
                                                     <label class="mt-1">Child-Gender </label>
-                                                    <div>
+                                                    <div class="select-inputs">
                                                         <div class="form-check form-check-inline mb-0 mx-2 ">
                                                             <input class="form-check-input " type="radio" wire:model="newChildren.gender" value="Male" id="maleRadio" name="gender">
                                                             <label class="form-check-label-options mt-1 mb-0" for="maleRadio">Male</label>
@@ -1430,7 +1455,7 @@
     <div class="modal show d-block " tabindex="-1" role="dialog" style="display: block; ">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <div class="modal-header alert alert-success">
+                <div class="modal-header alert alert-success w-100">
                     <h5 class="modal-title ">Success</h5>
                     <a href="/hr/update-employee-details" style="margin-left: auto;"><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" wire:click="closeModal"></button></a>
                 </div>
@@ -1438,12 +1463,12 @@
 
                     @if($action=='add')
                     <p style="width: fit-content;" class="text-align-center "><strong>{{ucfirst(strtolower($this->first_name))}} {{ucfirst(strtolower($this->last_name))}}</strong> Onboarded successful! </p>
-                    <p style="width: fit-content;" class="text-align-cente">with <strong>{{$emp_id}} </strong> Id</p>
+                    <p style="width: fit-content;" class="text-align-cente">with <strong>{{$emp_id}} </strong> Employee Id</p>
                     @elseif($action=='edit')
                     <p style="width: fit-content;" class="text-align-center "><strong>{{ucfirst(strtolower($this->first_name))}} {{ucfirst(strtolower($this->last_name))}}</strong> details updated successful! </p>
                     @elseif($action=='reJoin')
                     <p style="width: fit-content;" class="text-align-center "><strong>{{ucfirst(strtolower($this->first_name))}} {{ucfirst(strtolower($this->last_name))}}</strong> Re-Joined successful! </p>
-                    <p style="width: fit-content;" class="text-align-cente">with <strong>{{$emp_id}} </strong> Id</p>
+                    <p style="width: fit-content;" class="text-align-cente">with <strong>{{$emp_id}} </strong> Employee Id</p>
                     @endif
 
                 </div>
@@ -1490,6 +1515,85 @@
                 </div>
                 <div class="modal-footer justify-content-center">
                     <a> <button type="button" class="ilynn-btn" data-bs-dismiss="modal" wire:click="SelectReportingTo">Continue</button></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-backdrop fade show"></div>
+    @endif
+    @if($islocationModel)
+    <div class="modal show d-block " tabindex="-1" role="dialog" style="display: block; ">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="">
+                <div class="modal-header alert alert-success m-0">
+                    <!-- <h5 class="modal-title ">Success</h5> -->
+                    <h5 class="modal-title ">Add Job Location</h5>
+                    <a style="margin-left: auto;"><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" wire:click="closeLocationModel"></button></a>
+                </div>
+                <div class="modal-body d-flex" style=" flex-direction:column;align-items:center ;max-height:350px;overflow-y: auto;">
+                    <div style="justify-content: center;">
+                        <h6 for="manager_id">Job Location</h6>
+                        <input type="text" class="form-control onboardinputs  placeholder-small  m-0" wire:model="add_job_location" placeholder="Enter job location" style="width: 100%;">
+                    </div>
+                    @error('add_job_location')
+                    <span class="text-danger onboard-Valid">{{ $message }}</span>
+                    @enderror
+
+
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <a> <button type="button" class="ilynn-btn" data-bs-dismiss="modal" wire:click="addJobLocation">Save</button></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-backdrop fade show"></div>
+    @endif
+    @if($isProjectModel)
+    <div class="modal show d-block " tabindex="-1" role="dialog" style="display: block; ">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="">
+                <div class="modal-header alert alert-success m-0">
+                    <!-- <h5 class="modal-title ">Success</h5> -->
+                    <h5 class="modal-title ">Add Project Details</h5>
+                    <a style="margin-left: auto;"><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" wire:click="closeProjectModel"></button></a>
+                </div>
+                <div class="modal-body d-flex" style=" flex-direction:column;align-items:center ;max-height:350px;overflow-y: auto;">
+                    <div class="row w-100">
+                        <div class="col-md-6">
+                            <label for="">Project Name</label>
+                            <input type="text" wire:model="project_name" class="form-control" name="" id="">
+                            @error('project_name')
+                            <span class="text-danger onboard-Valid">{{ $message }}</span>
+                            @enderror
+                        </div>
+                        <div class="col-md-6">
+                            <label for="">Client Name</label>
+                            <input type="text" wire:model="client_name" class="form-control" name="" id="">
+                            @error('client_name')
+                            <span class="text-danger onboard-Valid">{{ $message }}</span>
+                            @enderror
+                        </div>
+                    </div>
+                    <div class="row w-100">
+                        <div class="col-md-6">
+                            <label for="">Start Date</label>
+                            <input type="date" wire:model="proj_start_date" class="form-control" name="" id="">
+                            @error('proj_start_date')
+                            <span class="text-danger onboard-Valid">{{ $message }}</span>
+                            @enderror
+                        </div>
+                        <div class="col-md-6">
+                            <label for="">End Date</label>
+                            <input type="date" wire:model="proj_end_date" class="form-control" name="" id="">
+                            @error('proj_end_date')
+                            <span class="text-danger onboard-Valid">{{ $message }}</span>
+                            @enderror
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <a> <button type="button" class="ilynn-btn" data-bs-dismiss="modal" wire:click="addProjects">Save</button></a>
                 </div>
             </div>
         </div>

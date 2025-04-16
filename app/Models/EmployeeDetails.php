@@ -23,8 +23,8 @@ class EmployeeDetails extends Authenticatable
     protected $fillable = [
         'emp_id',
         'company_id',
-        'department_id',
-        'sub_department_id',
+        'dept_id',
+        'sub_dept_id',
         'first_name',
         'last_name',
         'gender',
@@ -64,6 +64,7 @@ class EmployeeDetails extends Authenticatable
 
     protected $casts = [
         'company_id' => 'array',
+        'emp_domain' => 'array',
     ];
 
     public function empBankDetails()
@@ -79,8 +80,8 @@ class EmployeeDetails extends Authenticatable
     {
         return $this->hasOne(EmpResignations::class, 'emp_id', 'emp_id');
     }
-   
-    
+
+
 
     public function empPersonalInfo()
     {

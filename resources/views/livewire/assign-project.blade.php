@@ -9,6 +9,14 @@
 
             border-radius: 50%;
         }
+        .table th,
+        .table td {
+            padding: 12px;
+            text-align: left;
+            color: #778899;
+            font-size: 12px;
+            font-weight: 500;
+        }
         .table th {
             /* background-color: #f8f9fa; */
             background-color: var(--main-table-heading-bg-color);
@@ -354,11 +362,11 @@
                         <tr>
                             <th>#</th>
                             <th>Client Name</th>
-                            <th>Project Name</th>
+                            <th style="width: 10%">Project Name</th>
                             <th>Employees</th>
                             <th>Start Date</th>
                             <th>End Date</th>
-                            <th style="width: 15%">Actions</th>
+                            <th style="width: 18%">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -378,7 +386,7 @@
                                     <td>{{ ucwords($project->client->client_name) ?? "-" }}</td>
                     
                                     <!-- Display Project Name -->
-                                    <td>{{ ucwords($project->project_name) }}</td>
+                                    <td style="width: 10%">{{ ucwords($project->project_name) }}</td>
                     
                                     <!-- Display Employees -->
                                     <td>

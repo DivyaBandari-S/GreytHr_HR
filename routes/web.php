@@ -310,6 +310,7 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
         Route::get('/user/reports/', ReportsManagement::class)->name('reports');
 
         //Payroll
+        Route::get('/user/payroll-overview', PayrollOverview::class)->name('payroll-overview');
         Route::get('/user/salary-revision', SalaryRevision::class)->name('salary-revision');
         Route::get('/user/employee-salary', EmployeeSalary::class)->name('employee-salary');
         Route::get('/user/employee-salary-component', EmployeeSalaryCommonComponent::class)->name('employee-salary-component');

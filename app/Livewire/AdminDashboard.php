@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Task;
 use Carbon\Carbon;
 use Exception;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
@@ -70,6 +71,14 @@ class AdminDashboard extends Component
     public $totalEmployees;
     public $empStatus;
     public $employeeTypes;
+    public $serviceAgeLabels = [];
+    public $serviceAgeCounts = [];
+    public $present;
+    public $late;
+    public $absent;
+    public $total = 0;
+    public $serviceData;
+    public $selecetedTime;
     public $groupedProjects  = [];
     public $selectedMonthOption = 'This Week';
 
@@ -144,6 +153,7 @@ class AdminDashboard extends Component
         try {
             $this->selectedDepartments;
             $this->signInTime = today()->format('Y-m-d');
+            $this->selecetedTime = today()->format('Y-m-d');
             $this->getContainerData();
             $this->loginHRDetails();
             $this->setActiveTab($this->activeTab);
@@ -230,8 +240,15 @@ class AdminDashboard extends Component
             $this->backgroundColors = $genderDistribution->pluck('gender')->map(function ($label) use ($colors) {
                 return $colors[$label] ?? 'rgba(201, 203, 207, 0.5)';
             });
+
+            $this->serviceData = EmployeeDetails::where('status', 1)
+                ->select('service_age')
+                ->get()
+                ->pluck('service_age');
+
             $this->filterDepartmentChart();
             $this->getAttendanceOverView();
+            $this->getServiceAgeDistribution();            
             $this->filterProjects();
           
 
@@ -306,6 +323,35 @@ public function filterProjects()
     })->values();
 }
 
+
+    //service age distributionuse Illuminate\Database\QueryException;
+    public function getServiceAgeDistribution()
+    {
+        try {
+            $distribution = EmployeeDetails::where('status', 1)
+                ->selectRaw('service_age, COUNT(*) as count')
+                ->groupBy('service_age')
+                ->orderBy('service_age')
+                ->get();
+
+            $this->serviceAgeLabels = $distribution->pluck('service_age')->toArray();
+            $this->serviceAgeCounts = $distribution->pluck('count')->toArray();
+        } catch (QueryException $e) {
+            // Handle database query errors
+            FlashMessageHelper::flashError('Database query error while fetching service age.' );
+            $this->serviceAgeLabels = [];
+            $this->serviceAgeCounts = [];
+        } catch (Exception $e) {
+            // Handle all other errors
+            FlashMessageHelper::flashError('General error while fetching service age.' );
+            $this->serviceAgeLabels = [];
+            $this->serviceAgeCounts = [];
+        }
+    }
+
+
+
+    //chart for department wise
     public function filterDepartmentChart()
     {
         $filteredList = $this->totalActiveEmpList;
@@ -442,7 +488,7 @@ public function filterProjects()
                 ->get()
                 ->unique('emp_id');
 
-        // Initialize arrays to store late and early/on-time employees
+            // Initialize arrays to store late and early/on-time employees
             $this->lateEmployees = [];
             $this->earlyOrOnTimeEmployees = [];
 
@@ -462,7 +508,6 @@ public function filterProjects()
                     $this->earlyOrOnTimeEmployees[] = $swipe;
                 }
             }
-
         } catch (\Exception $e) {
             Log::error("Database error getting swipe data: " . $e->getMessage());
             FlashMessageHelper::flashError('An error occurred while getting swipe data. Please try again later.');
@@ -543,53 +588,47 @@ public function filterProjects()
                     '/hr/update-employee-details' => 'Update Employee Data',
                     '/hr/add-employee-details/{employee?}' => 'Add Employee Data',
                     '/hr/letter/prepare' => 'Prepare Letter',
-                    '/import' => 'Import Data From Excel',
                     '/hr/employee-data-update/disable' => 'Disable Portal Access',
                     '/hr/employee-data-update/enable' => 'Enable Portal Access',
-                    '/3' => 'Regenerate Employee Password',
                     '/hr/user/employee-separation' => 'Employee Separation',
                     '/hr/employee-data-update/confirm' => 'Confirm Employee',
                     '/hr/employee-data-update/extend' => 'Extend Probation Period',
-                    '/7' => 'Change Employee Number',
                     '/8' => 'Exclude From Payroll',
                     '/hr/employee-data-update/delete' => 'Delete Employee',
-                    '/10' => 'Upload Employee Document',
-                    '/11' => 'Add Bulletin Board',
-                    '/12' => 'Mass Employee Email',
-                    '/14' => 'Employee onboarding',
-                    '/15' => 'Invite Employees(Email Employee Password)',
-                    '/16' => 'Employee Filter',
                     '/hr/user/emp/admin/bulkphoto-upload' => 'Bulk Photo Upload',
-                    '/18' => 'PF/ESI Details',
-                    '/19' => 'Add Nomination Details',
-                    '/21' => 'Bulk Data Upload',
-                    '/23' => 'Upload Forms/Policies',
                     '/hr/user/analytics-hub' => 'People Analytical Hub',
                     '/hr/user/hr-organisation-chart' => 'Organization Chart',
                     '/26' => 'Assign Manager',
+                    '/hr/request' => 'Offboarding Request',
+                    '/hr/HelpDesk' => 'HelpDesk',
+                    '/hr/hrFeeds' => 'Engage',
                 ],
+
                 'payroll' => [
-                    '/hr/user/payroll/update' => 'Stop Salary Processing',
-                    '/user/payroll/process' => 'Deduct Loss Of Pay(LOP)',
+                    '/hr/user/stop-salaries' => 'Stop Salary Processing',
+                    '/hr/user/employee-lop-days' => 'Deduct Loss Of Pay(LOP)',
+                    '/hr/payslips' => 'Payslips',
+                    '/hr/ctcslips' => 'CTC Slips',
+                    '/hr/ytdreport' => 'YTD Reports',
+                    '/hr/pfytdreport' => 'PF YTD REport',
+                    '/hr/itstatement' => 'IT Statement',
                     '/27' => 'Print/Email Payslips',
-                    '/28' => 'Settle Resigned Employee',
                     '/29' => 'Print/Email Reimbursement Payslip',
                     '/30' => 'Arrears',
                     '/31' => 'Update Employee PAN Number',
-                    '/32' => 'Revise Employee Salary',
+                    '/hr/user/salary-revision' => 'Revise Employee Salary',
                     '/33' => 'Process Payroll',
                     '/34' => 'Release IT Declaration',
                     '/35' => 'Download IT Declaration For TDS',
                     '/36' => 'Create New Payroll Month',
-                    '/37' => 'Update Payroll Data',
+                    '/hr/user/payroll-salary' => 'Update Payroll Data',
                     '/38' => 'Pay Arrears',
                     '/39' => 'Verify Payroll Difference',
                     '/40' => 'Generate Payroll Statement',
                     '/41' => 'Generate Accounts JV',
                     '/42' => 'Release Payslips To Employees',
-                    '/43' => 'Clean Up Payroll',
-                    '/44' => 'Hold Salary Account',
-                    '/45' => 'Release Salary Account',
+                    '/hr/user/hold-salaries' => 'Hold Salary Account',
+                    '/hr/user/release-salary ' => 'Release Salary Account',
                     '/46' => 'Resettle Employee',
                     '/47' => 'Add TDS Challan',
                     '/48' => 'Bank Transfer',
@@ -602,7 +641,6 @@ public function filterProjects()
                 ],
                 'leave' => [
                     '/hr/user/holidayList' => 'Add Holidays',
-                    '/55' => 'Post Leave Transction',
                     '/hr//user/grant-summary' => 'Grant Leave',
                     '/hr/user/leaveYearEndProcess' => 'Year End Process',
                     '/hr/user/leave-approval' => 'Approve Leave',
@@ -790,45 +828,20 @@ public function filterProjects()
         }
     }
 
-    public $present ;
-    public $late ;
-    public $absent ;
-    public $total = 0;
-    public function getAttendanceOverView($range = 'this_week')
+    public function getAttendanceOverView()
     {
         $this->present = 0;
         $this->late = 0;
         $this->absent = 0;
-    
-        // Calculate the start and end dates based on the range
-        switch ($range) {
-            case 'this_month':
-                $startDate = Carbon::now()->startOfMonth();
-                $endDate = Carbon::now();
-                break;
-            case 'last_month':
-                $startDate = Carbon::now()->subMonth()->startOfMonth();
-                $endDate = Carbon::now()->subMonth()->endOfMonth();
-                break;
-            case 'this_year':
-                $startDate = Carbon::now()->startOfYear();
-                $endDate = Carbon::now();
-                break;
-            case 'this_week':
-            default:
-                $startDate = Carbon::now()->startOfWeek(); // Monday
-                $endDate = Carbon::now(); // today
-                break;
-        }
 
         $employeeIds = $this->totalActiveEmpList->pluck('emp_id');
-        $swipes = SwipeRecord::whereBetween('created_at', [$startDate, $endDate])->get();
+        $swipes = SwipeRecord::whereDate('created_at', $this->selecetedTime)->get();
 
         foreach ($employeeIds as $empId) {
             $swipe = $swipes->firstWhere('emp_id', $empId);
 
             if ($swipe) {
-                $signinTimes = Carbon::parse($swipe->signin_time); // Adjust field name as needed
+                $signinTimes = Carbon::parse($swipe->swipe_time); // Adjust field name as needed
 
                 if ($signinTimes->lte(Carbon::parse('10:00:00'))) {
                     $this->present++;
@@ -839,7 +852,7 @@ public function filterProjects()
                 $this->absent++;
             }
         }
-    
+
         $this->total = $this->present + $this->late + $this->absent;
     }
 
@@ -855,9 +868,11 @@ public function filterProjects()
             'backgroundColors' => $this->backgroundColors,
             'allDepartments' => $this->allDepartments,
             'total' => $this->total,
-            'present'=>$this->present,
-            'late'=>$this->late,
-            'absent'=> $this->absent
+            'present' => $this->present,
+            'late' => $this->late,
+            'absent' => $this->absent,
+            'serviceAgeLabels' => $this->serviceAgeLabels,
+            'serviceAgeCounts' => $this->serviceAgeCounts
         ]);
     }
 }
