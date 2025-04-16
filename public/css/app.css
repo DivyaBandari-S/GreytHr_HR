@@ -309,17 +309,17 @@ ul {
     align-items: center;
 }
 .serviceChart{
-    width: 100%;
+    width: 80%;
     position: relative;
     margin: 0;
     padding: 0;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    justify-content: start;
+    align-items: start;
 }
 #serviceAgeChart{
-    width: 85% !important;  height: 250px !important;
+    width: 80% !important;  height: 210px !important;
 }
 .chartHeading{
     color: #555;

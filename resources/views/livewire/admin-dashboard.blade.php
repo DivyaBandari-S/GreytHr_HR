@@ -199,7 +199,7 @@
                                     <div class="col-md-12">
                                         <div class="d-flex align-items-center justify-content-between mb-3 ">
                                             <p class="fw-bold mb-0">Top 5 Leave Takers</p>
-                                            <select id="dateRange" class="dropdown" wire:model="dateRange" wire:click="getTopLeaveTakers">
+                                            <select id="dateRange" class="dropdown cancel-btn px-4" wire:model="dateRange" wire:click="getTopLeaveTakers">
                                                 <option value="thisMonth">This Month</option>
                                                 <option value="lastMonth">Last Month</option>
                                                 <option value="thisYear">This Year</option>
@@ -342,12 +342,12 @@
                         <div class="col-md-6 pe-0 empTab2">
                             <div class="border m-0 rounded row">
                                 <div class="border-bottom m-0 mt-3 row">
-                                    <div class="col-md-6">
+                                    <div class="col-md-8">
                                         <p class="fw-bold">Clock-In/Out</p>
                                     </div>
-                                    <div class="col-md-6 text-end mb-3">
+                                    <div class="col-md-4 text-end mb-3">
                                         <div class="form-group">
-                                            <input type="date" class="form-control" wire:model="signInTime" wire:change="getSignInOutData"  max="{{ \Carbon\Carbon::today()->format('Y-m-d') }}">
+                                            <input type="date" class="form-control cancel-btn" wire:model="signInTime" wire:change="getSignInOutData"  max="{{ \Carbon\Carbon::today()->format('Y-m-d') }}" style="color:#306cc6;">
                                         </div>
                                     </div>
                                 </div>
@@ -646,14 +646,7 @@
                                     <div class="col-md-8">
                                         <p class="fw-bold chartHeading">Attendance Overview</p>
                                     </div>
-                                    <div class="col-md-4 text-end mb-3">
-                                        <select id="attendance-range" class="form-select form-select-sm w-auto d-inline-block">
-                                            <option value="this_week" selected>This Week</option>
-                                            <option value="this_month">This Month</option>
-                                            <option value="last_month">Last Month</option>
-                                            <option value="this_year">This Year</option>
-                                        </select>
-                                    </div>
+
                                 </div>
                                 <div class="attendanceChart">
                                         <canvas id="attendanceDonutChart" style="width: 320px;height:320px;"></canvas>
@@ -674,11 +667,11 @@
                                 <div class="row m-0">
                                     <p class="mb-1 fw-bold">Status</p>
                                     <div class="col-6 pe-0">
-                                        <p class="mb-1"><i class="fa-solid fa-circle" style="color: #008ffb"></i>
+                                        <p class="mb-1 normalText"><i class="fa-solid fa-circle" style="color: #008ffb"></i>
                                             Late</p>
-                                        <p class="mb-1"><i class="fa-solid fa-circle" style="color: #00e396"></i>
+                                        <p class="mb-1 normalText"><i class="fa-solid fa-circle" style="color: #00e396"></i>
                                             OnTime/Early</p>
-                                        <p class="mb-1"><i class="fa-solid fa-circle" style="color: #ff4560"></i>
+                                        <p class="mb-1 normalText"><i class="fa-solid fa-circle" style="color: #ff4560"></i>
                                             Absent</p>
                                     </div>
                                     <div class="col-6 ps-0 text-end">
@@ -1141,7 +1134,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     data: @json($serviceAgeCounts),
                     borderColor: 'rgb(54, 162, 235)',
                     fill: false,
-                    tension: 0.3
+                    tension: 0.2
                 }]
             },
             options: {
@@ -1150,14 +1143,30 @@ document.addEventListener("DOMContentLoaded", function () {
                     x: {
                         title: {
                             display: true,
-                            text: 'Service Age'
+                            text: 'Service Age',
+                            font:{
+                                size: 12
+                            }
+                        },
+                        ticks:{
+                            font:{
+                                size: 12
+                            }
                         }
                     },
                     y: {
                         beginAtZero: true,
                         title: {
                             display: true,
-                            text: 'Employee Count'
+                            text: 'Employee Count',
+                            font:{
+                                size:12
+                            }
+                        },
+                        ticks:{
+                            font:{
+                                size:12
+                            }
                         }
                     }
                 }

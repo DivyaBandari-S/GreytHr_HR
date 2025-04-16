@@ -77,6 +77,7 @@ class AdminDashboard extends Component
     public $absent;
     public $total = 0;
     public $serviceData;
+    public $selecetedTime;
     public function updateOption($option)
     {
         $this->selectedOption = $option;
@@ -148,6 +149,7 @@ class AdminDashboard extends Component
         try {
             $this->selectedDepartments;
             $this->signInTime = today()->format('Y-m-d');
+            $this->selecetedTime = today()->format('Y-m-d');
             $this->getContainerData();
             $this->loginHRDetails();
             $this->setActiveTab($this->activeTab);
@@ -774,41 +776,20 @@ class AdminDashboard extends Component
         }
     }
 
-    public function getAttendanceOverView($range = 'this_week')
+    public function getAttendanceOverView()
     {
         $this->present = 0;
         $this->late = 0;
         $this->absent = 0;
 
-        // Calculate the start and end dates based on the range
-        switch ($range) {
-            case 'this_month':
-                $startDate = Carbon::now()->startOfMonth();
-                $endDate = Carbon::now();
-                break;
-            case 'last_month':
-                $startDate = Carbon::now()->subMonth()->startOfMonth();
-                $endDate = Carbon::now()->subMonth()->endOfMonth();
-                break;
-            case 'this_year':
-                $startDate = Carbon::now()->startOfYear();
-                $endDate = Carbon::now();
-                break;
-            case 'this_week':
-            default:
-                $startDate = Carbon::now()->startOfWeek(); // Monday
-                $endDate = Carbon::now(); // today
-                break;
-        }
-
         $employeeIds = $this->totalActiveEmpList->pluck('emp_id');
-        $swipes = SwipeRecord::whereBetween('created_at', [$startDate, $endDate])->get();
+        $swipes = SwipeRecord::whereDate('created_at', $this->selecetedTime)->get();
 
         foreach ($employeeIds as $empId) {
             $swipe = $swipes->firstWhere('emp_id', $empId);
 
             if ($swipe) {
-                $signinTimes = Carbon::parse($swipe->signin_time); // Adjust field name as needed
+                $signinTimes = Carbon::parse($swipe->swipe_time); // Adjust field name as needed
 
                 if ($signinTimes->lte(Carbon::parse('10:00:00'))) {
                     $this->present++;

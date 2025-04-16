@@ -220,22 +220,28 @@ class EmpBulkPhotoUpload extends Component
     }
 
 
-    public function getSelectedEmployee($empId, $imagePath, $index)
+    public function getSelectedEmployee($empId, $imagePath, $index, $firstName, $lastName)
     {
         // Initialize selected employees array if it's not set
         if (!isset($this->selectedEmployees)) {
             $this->selectedEmployees = [];
         }
-
+         // Combine names
+    $fullName = ucwords(strtolower($firstName . ' ' . $lastName));
         // Check for duplicate assignments
-        if (isset($this->selectedEmployees[$empId])) {
-            // If the employee is already assigned an image, don't add again
-            Log::warning('Employee already assigned an image: ' . $empId);
-            return;
+        foreach ($this->selectedEmployees as $assigned) {
+            if ($assigned['emp_id'] === $empId) {
+                Log::warning('Employee already assigned: ' . $empId);
+                return;
+            }
         }
 
+        $this->selectedEmployees[$index] = [
+            'emp_id' => $empId,
+            'image' => $imagePath,
+            'name' => $fullName
+        ];
         // Add the employee and their assigned image if not already added
-        $this->selectedEmployees[$empId] = $imagePath;
         $this->openEmployeeContainers[$index] = false;
     }
 
