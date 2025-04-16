@@ -175,7 +175,7 @@
                                             <div class="input-group">
                                                 <input type="text" class="form-control" id="selecetedEmployees_{{ $index }}"
                                                     wire:click="toggleEmployeeContainer('{{ $index }}')"
-                                                    wire:model="selectedEmployees.{{ $index }}" value="{{ $selectedEmployees ? $selectedEmployees['emp_id'] : '' }}" readonly>
+                                                    value="{{ $selectedEmployees[$index]['name'] }}" readonly>
                                                 <div class="input-group-append bg-white border" wire:click="toggleEmployeeContainer('{{ $index }}')">
                                                     <span class="input-group-text" style="border:none; background:none;">
                                                         <i class="ph-caret-down-fill"></i>
@@ -189,7 +189,7 @@
                                                 @if(!is_null($employeeIds) && $employeeIds)
                                                 <div>
                                                     @foreach ($employeeIds as $empData)
-                                                    <div wire:click="getSelectedEmployee('{{ $empData->emp_id }}', '{{ $path }}', {{ $index }})"
+                                                    <div wire:click="getSelectedEmployee('{{ $empData->emp_id }}', '{{ $path }}', {{ $index }},'{{ $empData->first_name }}', '{{ $empData->last_name }}')"
                                                         class="empDiv mt-2 p-2 border rounded bg-white d-flex align-items-center gap-3">
                                                         <div class="rounded-circle name d-flex bg-grey align-items-center justify-content-center">
                                                             <span>
@@ -217,7 +217,7 @@
 
                             </div>
                             @else
-                            <p>No images extracted from the ZIP file.</p>
+                            <p class="normalText">No images extracted from the ZIP file.</p>
                             @endif
                             <!-- Pagination Controls -->
                             <div class="mt-4 mb-4">

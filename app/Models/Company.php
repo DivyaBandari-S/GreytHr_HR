@@ -45,6 +45,7 @@ class Company extends Authenticatable
     protected $casts = [
         'state' => 'array',
         'company_registration_date' => 'date',
+        'branch_locations' => 'array',
     ];
 
 }
