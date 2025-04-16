@@ -272,15 +272,15 @@
                                     so on).
 
                                 </p>
-                                <p class="main-overview-text mb-0">Explore greytHR by <span
+                                {{-- <p class="main-overview-text mb-0">Explore greytHR by <span
                                         class="main-overview-highlited-text">
                                         Help-Doc</span>, watching<span class="main-overview-highlited-text"> How-to
                                         Videos</span>
-                                    and<span class="main-overview-highlited-text"> FAQ</span>.</p>
+                                    and<span class="main-overview-highlited-text"> FAQ</span>.</p> --}}
                             </div>
-                            <div class="hide-main-overview-help col-md-1 col-2 d-flex align-items-start">
+                            {{-- <div class="hide-main-overview-help col-md-1 col-2 d-flex align-items-start">
                                 <span wire:click="hideHelp">Hide Help</span>
-                            </div>
+                            </div> --}}
                         </div>
                     </div>
                 @endif
@@ -296,15 +296,15 @@
                 @if ($addButton)
                     <div>
 
-                        <button wire:click="openModal" class="submit-btn" style="margin-left: 15px;"
-                           >Add
+                        <button wire:click="openModal" class="submit-btn" style="margin-left: 15px;">Add
                             From Master List</button>
 
                     </div>
                 @endif
                 <div class="table-responsive" style="margin: 15px 15px 5px 15px; height: 300px; overflow-y: scroll;">
                     <table class="table pendingLeaveTable table-bordered table-hover ">
-                        <thead class="table-light" style="position: sticky; top: 0; background-color: #f8f9fa; z-index: 1;">
+                        <thead class="table-light"
+                            style="position: sticky; top: 0; background-color: #f8f9fa; z-index: 1;">
 
                             <tr>
                                 <th>
@@ -409,7 +409,8 @@
                         <div class="modal-body">
                             <div class="table-responsive" style= "height: 300px; overflow-y: scroll;">
                                 <table class="table pendingLeaveTable table-bordered table-hover ">
-                                    <thead class="table-light" style="position: sticky; top: 0; background-color: #f8f9fa; z-index: 1;">
+                                    <thead class="table-light"
+                                        style="position: sticky; top: 0; background-color: #f8f9fa; z-index: 1;">
                                         <tr>
                                             <th>
                                                 {{-- <input type="checkbox" wire:click="toggleSelectAll1"> --}}
@@ -426,7 +427,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach ($holidaysList as $index => $holiday)
+                                        @forelse ($holidaysList as $index => $holiday)
                                             <tr>
                                                 <td>
                                                     <div class="form-check">
@@ -434,18 +435,23 @@
                                                             wire:model="selectedHolidays1"
                                                             value="{{ $holiday->id }}" />
                                                     </div>
-                                                    {{-- <input type="checkbox" wire:model="selectedHolidays1" value="{{ $holiday->id }}"> --}}
                                                 </td>
                                                 <td>{{ $index + 1 }}</td>
                                                 <td>{{ $holiday->occasion }}</td>
                                                 <td>{{ \Carbon\Carbon::parse($holiday->date)->format('M d, Y') }}</td>
-
                                                 <td>{{ $holiday->day }}</td>
                                                 <td>{{ $holiday->state }}</td>
-
                                             </tr>
-                                        @endforeach
+                                        @empty
+                                            <tr>
+                                                <td colspan="6" class="text-center">
+                                                    <img class="task-no-items-found" style="height: 150px;" src="{{ asset('images/nodata.png') }}" alt="No items found">
+                                                    <p>No Data Found</p>
+                                                </td>
+                                            </tr>
+                                        @endforelse
                                     </tbody>
+
                                 </table>
                             </div>
                         </div>

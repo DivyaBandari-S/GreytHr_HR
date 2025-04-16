@@ -272,7 +272,7 @@ $query->where('emp_id', $employeeId) // Employee's own posts
     $urls = [
         'posts' => '/hr/everyone',
         'activities' => '/hr/hrFeeds',
-        'kudos' => '/kudos',
+        'kudos' => '/hr/givekudos',
         'post-requests'=>'/emp-post-requests'
         // Add more mappings if necessary
     ];
@@ -300,7 +300,7 @@ $query->where('emp_id', $employeeId) // Employee's own posts
 
           if (auth()->guard('hr')->check()) {
             $this->employeeDetails = Hr::where('hr_emp_id', Auth::user()->hr_emp_id)->first();
-        } elseif (auth()->guard('emp')->check()) {
+        } elseif (auth()->guard('hr')->check()) {
             $this->employeeDetails = EmployeeDetails::where('emp_id', Auth::user()->emp_id)->first();
         } else {
             // Handle case where no guard is matched

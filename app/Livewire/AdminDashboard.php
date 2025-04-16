@@ -6,6 +6,7 @@ use Livewire\Component;
 use App\Helpers\FlashMessageHelper;
 use App\Helpers\LeaveHelper;
 use App\Models\AdminFavoriteModule;
+use App\Models\AssignProjects;
 use App\Models\EmpDepartment;
 use App\Models\EmployeeDetails;
 use App\Models\EmpResignations;
@@ -78,6 +79,9 @@ class AdminDashboard extends Component
     public $total = 0;
     public $serviceData;
     public $selecetedTime;
+    public $groupedProjects  = [];
+    public $selectedMonthOption = 'This Week';
+
     public function updateOption($option)
     {
         $this->selectedOption = $option;
@@ -244,7 +248,10 @@ class AdminDashboard extends Component
 
             $this->filterDepartmentChart();
             $this->getAttendanceOverView();
-            $this->getServiceAgeDistribution();
+            $this->getServiceAgeDistribution();            
+            $this->filterProjects();
+          
+
         } catch (\Exception $e) {
             if ($e instanceof \Illuminate\Database\QueryException) {
                 // Handle database query exceptions
@@ -270,6 +277,51 @@ class AdminDashboard extends Component
             return redirect()->back();
         }
     }
+    public function updateMonthOption($option)
+{
+    $this->selectedMonthOption = $option;
+    $this->filterProjects();
+}
+public function filterProjects()
+{
+    $query = \App\Models\AssignProjects::query();
+
+    switch ($this->selectedMonthOption) {
+        case 'This Week':
+            $query->whereBetween('created_at', [
+                now()->startOfWeek(),
+                now()->endOfWeek(),
+            ]);
+            break;
+
+        case 'This Month':
+            $query->whereMonth('created_at', now()->month)
+                  ->whereYear('created_at', now()->year);
+            break;
+
+        case 'Last Month':
+            $query->whereMonth('created_at', now()->subMonth()->month)
+                  ->whereYear('created_at', now()->subMonth()->year);
+            break;
+
+        case 'This Year':
+            $query->whereYear('created_at', now()->year);
+            break;
+    }
+
+    $projects = $query->get();
+
+    $this->groupedProjects = $projects->groupBy('project_name')->map(function ($group) {
+        return [
+            'client_id' => $group->first()->client_id,
+            'project_name' => $group->first()->project_name,
+            'team_count' => $group->flatMap(function ($item) {
+                return collect(json_decode($item->emp_id, true))->pluck('emp_id');
+            })->unique()->count(),
+            'end_date' => $group->max('end_date'),
+        ];
+    })->values();
+}
 
 
     //service age distributionuse Illuminate\Database\QueryException;
