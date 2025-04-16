@@ -411,7 +411,7 @@
                                     <!-- Actions -->
                                     <td>
                                         <!-- Action Icons: Edit, View, Delete -->
-                                        <a href="#" wire:click="viewProject({{ $project->client->client_id }})" title="View">
+                                        <a href="#"  title="View">
                                             <i class="fas fa-eye text-secondary"></i>
                                         </a>
                                         <a href="#" title="Edit" class="mx-2">
