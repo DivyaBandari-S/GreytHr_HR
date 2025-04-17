@@ -274,19 +274,19 @@
                                     </div>
                                     <div class="form-group col-md-12">
                                         <label class="mt-1" for="job_location">Job Location <span class="text-danger onboard-Valid">*</span></label>
-                                        <div class="d-flex" style="gap: 5px;">
-                                            <select class="form-control onboardinputs custom-select   placeholder-small m-0" wire:model="job_location" style="margin-bottom: 10px; width:60%">
-                                                @if(count($job_locations_array)>0)
-                                                <option disabled value=''>Select job location</option>
-                                                @foreach ($job_locations_array as $id)
-                                                <option value="{{ $id }}">{{$id }}</option>
-                                                @endforeach
-                                                @else
-                                                <option disabled value="">No job location found</option>
-                                                @endif
-                                            </select>
-                                            <button type="button" wire:click='openLocationModel' style="background-color: #306cc6; font-weight:400;padding:0px 6px;font-size: 13px !important;border-radius: 5px;color:#f2f2f2;border:none">Add Location</button>
-                                        </div>
+                                        <!-- <div class="d-flex" style="gap: 5px;"> -->
+                                        <select class="form-control onboardinputs custom-select   placeholder-small m-0" wire:model="job_location" style="margin-bottom: 10px;">
+                                            @if($locations)
+                                            <option disabled value=''>Select job location</option>
+                                            @foreach ($locations as $location)
+                                            <option value="{{ $location->id }}">{{$location->name}}</option>
+                                            @endforeach
+                                            @else
+                                            <option disabled value="">No job location found</option>
+                                            @endif
+                                        </select>
+                                        <!-- <button type="button" wire:click='openLocationModel' style="background-color: #306cc6; font-weight:400;padding:0px 6px;font-size: 13px !important;border-radius: 5px;color:#f2f2f2;border:none">Add Location</button>
+                                        </div> -->
                                         @error('job_location')
                                         <span class="text-danger onboard-Valid">{{ $message }}</span>
                                         @enderror

@@ -32,6 +32,7 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class AddEmployeeDetails extends Component
@@ -216,6 +217,7 @@ class AddEmployeeDetails extends Component
     public $client_name;
     public $proj_start_date;
     public $proj_end_date;
+    public $locations;
 
 
     protected function validationRules()
@@ -264,6 +266,7 @@ class AddEmployeeDetails extends Component
     public function updated($propertyName)
     {
 
+
         if ($this->currentStep != 8 && $this->currentStep != 9) {
             if ($propertyName != 'image') {
                 $this->validateOnly($propertyName, $this->validationRules());
@@ -303,7 +306,7 @@ class AddEmployeeDetails extends Component
 
     {
 
-
+        // dd($this->job_location);
         if ($this->currentStep != 8 && $this->currentStep != 9) {
 
             $this->validate($this->validationRules());
@@ -316,7 +319,6 @@ class AddEmployeeDetails extends Component
 
         // dd($this->job_location);
         if ($this->currentStep == 1) {
-
 
             if ($this->action != 'reJoin') {
                 $existingEmployee = EmployeeDetails::where('email', $this->company_email)
@@ -1028,7 +1030,6 @@ class AddEmployeeDetails extends Component
         }
     }
 
-
     public function logout()
     {
         auth()->guard('com')->logout();
@@ -1054,18 +1055,15 @@ class AddEmployeeDetails extends Component
                 $this->shift_details = CompanyShifts::where('company_id',  $this->com_id)->get();
                 $this->Projects = CompanyProjects::where('company_id',  $this->com_id)->get();
 
-
                 // $this->shift_details = Company_Shifts::where('company_id', $this->com_id)
                 // ->selectRaw("shift_name, DATE_FORMAT(shift_start_time, '%H:%i') as shift_start_time, DATE_FORMAT(shift_end_time, '%H:%i') as shift_end_time")
                 // ->get();
                 // dd( $this->shift_details);
-
                 if ($this->action == 'add') {
                     $trimmedEmail = substr($this->company_email, 0, strpos($this->company_email, '@'));
                     $this->company_email = $trimmedEmail . '@' . $this->email_domain;
                     $this->validateOnly('company_email', $this->validationRules());
                 }
-
 
                 // Fetch departments based on the selected company
                 $this->departments = EmpDepartment::whereIn('company_id', $this->company_id)->get();
@@ -1101,7 +1099,6 @@ class AddEmployeeDetails extends Component
     {
         $this->isProjectModel = false;
         $this->reset('project_name', 'client_name', 'proj_start_date', 'proj_end_date');
-
     }
     public function closeLocationModel()
     {
@@ -1272,7 +1269,19 @@ class AddEmployeeDetails extends Component
 
             $this->company_name = $this->selectedId->company_name;
 
-            $this->job_locations_array = $this->selectedId->branch_locations ?? [];
+
+            // Decode JSON string to array
+            $this->job_locations_array = json_decode($this->selectedId->branch_locations, true)??[];
+            // dd($this->job_locations_array);
+
+            // Check if decoding worked
+            if (!is_array($this->job_locations_array)) {
+                $this->job_locations_array = [];
+            }
+
+
+            $this->locations = DB::table('cities')->whereIn('id', $this->job_locations_array)->get();
+            // dd($locations);
 
             // dd($this->job_locations_array);
             $this->email_domain = $this->selectedId->email_domain;
@@ -1297,7 +1306,7 @@ class AddEmployeeDetails extends Component
 
         if ($existing) {
             FlashMessageHelper::flashWarning('This project already exists for the selected company.');
-            $this->isProjectModel=false;
+            $this->isProjectModel = false;
             return;
         }
 
@@ -1312,7 +1321,7 @@ class AddEmployeeDetails extends Component
 
         FlashMessageHelper::flashSuccess('Project created successfully!.');
         $this->reset('project_name', 'client_name', 'proj_start_date', 'proj_end_date');
-        $this->isProjectModel=false;
+        $this->isProjectModel = false;
     }
 
     public function projectValidationRules()
@@ -1370,7 +1379,7 @@ class AddEmployeeDetails extends Component
 
                 $this->imageBinary = $empdetails->image;
 
-                $this->hire_date =Carbon::parse($empdetails->hire_date)->format('Y-m-d');
+                $this->hire_date = Carbon::parse($empdetails->hire_date)->format('Y-m-d');
                 // dd( $this->hire_date);
                 $this->company_id = $empdetails->company_id;
                 $this->com_id = $this->company_id;
@@ -1409,7 +1418,7 @@ class AddEmployeeDetails extends Component
                 }
 
                 $this->job_title = $empdetails->job_role;
-                $this->job_location = $empdetails->job_location??'';
+                $this->job_location = $empdetails->job_location ?? '';
                 if ($empdetails->emp_domain != null) {
                     $this->emp_domain = $empdetails->emp_domain;
                 }
@@ -1417,7 +1426,7 @@ class AddEmployeeDetails extends Component
 
 
                 // dd( $this->emp_domain);
-                if($this->action=='edit'){
+                if ($this->action == 'edit') {
                     $this->employee_status = $empdetails->employee_status;
                 }
                 $this->mobile_number = $empdetails->emergency_contact;
@@ -1468,9 +1477,10 @@ class AddEmployeeDetails extends Component
 
 
                     // Experience Details
-                    $empExperience=EmpExperience::where('emp_id',$this->emp_id)->first();
-                    // dd($empExperience);
-;                    if (json_decode( $empExperience->experience, true) != [] && json_decode($empExperience->experience, true) != null) {
+                    $empExperience = EmpExperience::where('emp_id', $this->emp_id)->first();
+                        // dd($empExperience);
+                    ;
+                    if (json_decode($empExperience->experience, true) != [] && json_decode($empExperience->experience, true) != null) {
 
                         $this->experience = json_decode($empExperience->experience, true);
                         // dd($this->experience);

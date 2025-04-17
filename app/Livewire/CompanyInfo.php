@@ -96,6 +96,53 @@ class CompanyInfo extends Component
             'email_domain' => 'required|string|max:255|regex:/^[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/|unique:companies,email_domain,' . $this->company_id . ',company_id',
         ];
     }
+    protected $messages = [
+        'company_name.required'=>'Company name is required.',
+        'company_name.unique'=>'Company name has already been taken.',
+        'company_name.string'=>'Company name must be a valid string.',
+        'contact_email.required'=>'Contact email is required.',
+        'contact_email.email'=>'Please enter a valid email.',
+        'contact_email.unique'=>'Contact has already been taken.',
+        'contact_email.required'=>'Contact email has already been taken.',
+        'contact_phone.required'=>'Phone number is required.',
+        'contact_phone.digits'=>'Phone number must be 10 digits',
+        'contact_phone.unique'=>'Phone number has already been taken.',
+        'ceo_name.required'=>'CEO name is required.',
+        'parent_company_id.required_if'=>'Select Parent company when parent company is false..',
+        'company_present_address.required'=>'Company present address is required.',
+        'company_permanent_address.required'=>'Company permanent address is required.',
+        'country.required'=>'Country is required.',
+        'company_industry.required'=>'Company name is required.',
+        'time_zone.required'=>' Time zone is required.',
+        'currency.required'=>'Currency is required.',
+        'company_type.required'=>'Company type is required.',
+        'company_registration_no.required'=>'Company registration number is required.',
+        'gst_no.required'=>'GST number is required.',
+        'gst_no.unique'=>'GST has already been taken.',
+        'pf_no.required'=>'PF number is required.',
+        'pf_no.unique'=>'PF has already been taken.',
+        'lin_no.required'=>'LIN number is required.',
+        'lin_no.unique'=>'LIN has already been taken.',
+        'pan_no.required'=>'PAN number is required.',
+        'pan_no.unique'=>'PAN has already been taken.',
+        'esi_no.required'=>'ESI number is required.',
+        'esi_no.unique'=>'esi_no has already been taken.',
+        'tan_no.required'=>'TAN number is required.',
+        'tan_no.unique'=>'TAN has already been taken.',
+        'company_website.required'=>'Company website is required.',
+        'company_website.url'=>'Company website must be a valid URL.',
+        'company_website.unique'=>'Company website has already been taken.',
+        'company_registration_date.required'=>'Company registration date is required.',
+        'selectedStates.required'=>'Please select States.',
+        'email_domain.required'=>'Email domain is required.',
+        'email_domain.unique'=>'Email domain has already been taken.',
+        'selectedCities.required'=>'Please select Cities.',
+    ];
+
+    public function updated($propertyName)
+    {
+        $this->validateOnly($propertyName, $this->rules());
+    }
 
     public function clearError($field)
     {
@@ -232,14 +279,14 @@ class CompanyInfo extends Component
 
     public function saveCompanyInfo()
     {
-
+        // dd($this->selectedCities);
         $this->validate();
         // Find existing company or set to null
         $company = $this->company_id ? Company::where('company_id', $this->company_id)->first() : null;
 
         // Generate a new company ID if not provided
         $newCompanyId = $this->company_id ?? $this->generateCompanyId();
-
+        // dd($this->is_parent);
         $companyData = [
             'company_id' => $newCompanyId,
             'company_name' => $this->company_name,
@@ -310,10 +357,12 @@ class CompanyInfo extends Component
         }
 
         $this->fill($company->toArray());
-
+// dd($company);
         // Decode stored IDs from JSON
         $this->selectedStates = json_decode($company->state, true) ?? [];
-        $this->selectedCities = json_decode($company->branch_locations, true) ?? [];
+        // dd($this->selectedStates);
+        $this->selectedCities =json_decode( $company->branch_locations, true) ?? [];
+        // dd($company->branch_locations);
 
         // Retrieve state and city names
         $this->selectedStatesData = State::whereIn('id', $this->selectedStates)
