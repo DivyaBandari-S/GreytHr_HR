@@ -429,11 +429,13 @@
                                 <option value="">Select Signatory</option>
                                 @foreach ($signatories as $signatory)
                                     <option
-                                        value="{{ $signatory->first_name }} {{ $signatory->last_name }} ({{ $signatory->designation }})">
-                                        {{ $signatory->first_name }} {{ $signatory->last_name }}
-                                        ({{ $signatory->designation }})
+                                        value="{{ ucwords(strtolower($signatory->first_name)) }} {{ ucwords(strtolower($signatory->last_name)) }} ({{ ucwords(strtolower($signatory->designation)) }})">
+                                        {{ ucwords(strtolower($signatory->first_name)) }}
+                                        {{ ucwords(strtolower($signatory->last_name)) }}
+                                        ({{ ucwords(strtolower($signatory->designation)) }})
                                     </option>
                                 @endforeach
+
                             </select>
 
                             <a href="{{ route('authorize-signatory.page') }}" class="btn btn-link">
@@ -609,7 +611,7 @@
                         <table class="analytic-table">
                             <thead>
                                 <tr>
-                                    <th><input type="checkbox" wire:model="selectAll"></th>
+                                    <th><input type="checkbox" wire:model="selectAll" wire:change="updateSelectEmployee"></th>
                                     <th>ID</th>
                                     <th>Name</th>
                                 </tr>
@@ -618,7 +620,7 @@
                                 @foreach ($employees as $employee)
                                     <tr>
                                         <td>
-                                            <input type="checkbox" wire:model="selectedEmployees"
+                                            <input type="checkbox" wire:model="selectedEmployees" wire:change="updateSelectEmployee"
                                                 value="{{ $employee['id'] }}">
                                         </td>
                                         <td>{{ $employee['id'] }}</td>
@@ -628,6 +630,9 @@
                             </tbody>
                         </table>
                     </div>
+                     @error('selectedEmployees')
+                        <span class="text-danger">{{ $message }}</span>
+                    @enderror
 
                 </div>
             @endif
@@ -635,7 +640,7 @@
             @if ($template_name == 'Appointment Order')
                 <div class="mb-3">
                     <label class="form-label">CTC</label>
-                    <input type="number" class="form-control" wire:model="ctc">
+                    <input type="number" class="form-control" wire:model="ctc" wire:input="updateCTC">
                     @error('ctc')
                         <span class="text-danger">{{ $message }}</span>
                     @enderror

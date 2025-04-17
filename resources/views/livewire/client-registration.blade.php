@@ -1,5 +1,5 @@
-<div class="container mt-5">
-    <h2 style="font-size: 18px;font-weight: bold; margin-top: -20px;">{{ $client_id ? 'Edit Client' : 'Client Registration' }}</h2>
+<div class="container mt-3">
+    <h2 style="font-size: var(----main-headings-font-size);font-weight: 500; margin-left: 10px;a color: var(--main-heading-color)">{{ $client_id ? 'Edit Client' : 'Client Registration' }}</h2>
 
     <!-- Display success message -->
     @if (session()->has('success'))
@@ -8,7 +8,7 @@
         </div>
     @endif
 
-    <form wire:submit.prevent="submitForm">
+    <form wire:submit.prevent="submitForm" autocomplete="off">
         <div class="row">
             <div class="col-md-6" style="margin-left: 90px;">
                 <!-- Client Name -->
@@ -98,7 +98,8 @@
                             @else
                                 <input 
                                     type="password" 
-                                    class="form-control" 
+                                    class="form-control"
+                                    autocomplete="new-password" 
                                     wire:model="password" 
                                     wire:keyup="validateInputChange('password')"
                                 >
@@ -116,7 +117,7 @@
                             <label>Contact Email</label>
                         </div>
                         <div class="col-md-6">
-                            <input type="email" class="form-control" wire:model="contact_email" wire:keyup="validateInputChange('contact_email')">
+                            <input type="email" class="form-control" autocomplete="off" wire:model="contact_email" wire:keyup="validateInputChange('contact_email')">
                             @error('contact_email') <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
                     </div>

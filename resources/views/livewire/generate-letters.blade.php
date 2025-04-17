@@ -32,18 +32,18 @@
                                 generating a letter for an employee. You can also send it to one or multiple employees
                                 in one effort. Note: You can download a copy of the letter in the Generate Letter:
                                 Summary Page.</p>
-                            <p class="main-overview-text">Learn more about the process by watching the <span
+                            {{-- <p class="main-overview-text">Learn more about the process by watching the <span
                                     class="main-overview-highlited-text">
                                     video</span> here. To view frequently asked questions <span
                                     class="main-overview-highlited-text"> click</span>
-                                here.</p>
+                                here.</p> --}}
                         </div>
-                        <div class="hide-main-overview-help col-md-1 col-2 d-flex align-items-start">
+                        {{-- <div class="hide-main-overview-help col-md-1 col-2 d-flex align-items-start">
                             <span wire:click="hideHelp">Hide Help</span>
-                        </div>
+                        </div> --}}
                     </div>
                 @else
-                    <div class="row main-overview-help">
+                    {{-- <div class="row main-overview-help">
                         <div class="col-11 d-flex flex-column">
                             <p class="main-overview-text">The Generate Letter wizard guides you through the process of
                                 generating a letter for an employee. You can also send it to one or multiple employees
@@ -54,7 +54,7 @@
                         <div class="hide-main-overview-help col-1">
                             <span wire:click="showhelp">Show Help</span>
                         </div>
-                    </div>
+                    </div> --}}
                 @endif
             </div>
 

@@ -8,16 +8,16 @@
                     <p class="main-overview-text">The page guides you through an overview of your organization's
                         day-to-day HR
                         activities including lifecycle events like additions, seperations, etc</p>
-                    <p class="main-overview-text">Explore greytHR by <span class="main-overview-highlited-text">
+                    {{-- <p class="main-overview-text">Explore greytHR by <span class="main-overview-highlited-text">
                             Help-Doc</span>, watching<span class="main-overview-highlited-text"> How-to Videos</span>
-                        and<span class="main-overview-highlited-text"> FAQ</span>.</p>
+                        and<span class="main-overview-highlited-text"> FAQ</span>.</p> --}}
                 </div>
-                <div class="hide-main-overview-help col-md-1 col-2 d-flex align-items-start">
+                {{-- <div class="hide-main-overview-help col-md-1 col-2 d-flex align-items-start">
                     <span wire:click="hideHelp">Hide Help</span>
-                </div>
+                </div> --}}
             </div>
         @else
-            <div class="row main-overview-help">
+            {{-- <div class="row main-overview-help">
                 <div class="col-11 d-flex flex-column">
                     <p class="main-overview-text">The page guides you through an overview of your organization's
                         day-to-day
@@ -27,7 +27,7 @@
                 <div class="hide-main-overview-help col-1">
                     <span wire:click="showhelp">Show Help</span>
                 </div>
-            </div>
+            </div> --}}
         @endif
     </div>
 

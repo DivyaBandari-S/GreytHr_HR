@@ -1011,7 +1011,7 @@ body {
 	padding: 20px;
 	/* background: #121212; */
 	position: relative;
-	background: linear-gradient(181deg, rgba(170, 74, 122, 0.1) -11%, rgba(255, 255, 255, 0.1) 27%), linear-gradient(0deg, rgba(255, 255, 255, 1), rgba(237, 237, 237, 0.1)), linear-gradient(0deg, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0.5));
+	background: linear-gradient(181deg, rgba(170, 74, 122, 0.1) -11%, rgba(206, 205, 205, 0.1) 27%), linear-gradient(0deg, rgba(255, 255, 255, 1), rgba(237, 237, 237, 0.1)), linear-gradient(0deg, rgb(220, 217, 217), rgba(255, 255, 255, 0.5));
 	backdrop-filter: blur( 10px );
 	-webkit-backdrop-filter: blur( 10px );
 	border-radius: 10px;

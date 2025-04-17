@@ -26,12 +26,30 @@ class LetterPreparePage extends Component
     protected $rules = [
         'template_name' => 'required',
     ];
+    public function messages()
+    {
+        return [
+            'template_name.required' => 'Template Name is required.',
+            'authorized_signatory.required' => 'Authorized Signatory is required.',
+            'selectedEmployee.required' => 'Please select an employee.',
+            'selectedEmployee.exists' => 'selected employee does not exist in our records.',
+            'selectedEmployees.required' => 'Please select at least one employee.',
+            'selectedEmployees.array' => 'selected employees must be in an array format.',
+            'selectedEmployees.min' => 'Please select at least one employee.',
+            'selectedEmployees.*.exists' => 'One or more selected employees do not exist in our records.',
+            'ctc.required' => 'CTC (Cost to Company) is required for Appointment Order.',
+            'ctc.numeric' => 'CTC must be a valid numeric value.',
+            'ctc.min' => 'CTC must be at least 0.',
+        ];
+    }
 
     protected function getValidationRules()
     {
+        $rules = [];  // Initialize an empty array to hold all validation rules
+    
         // Validate step 1
         if ($this->currentStep == 1) {
-            return [
+            $rules = [
                 'template_name' => 'required',
                 'authorized_signatory' => 'required',
             ];
@@ -39,33 +57,28 @@ class LetterPreparePage extends Component
     
         // Validate step 2
         if ($this->currentStep == 2) {
+    
+            // Validation for "Appointment Order" template
+            if ($this->template_name == "Appointment Order") {
+                $rules['ctc'] = 'required|numeric|min:0';  // Add CTC rule if template is Appointment Order
+            }
+    
             // Validation for single employee
             if ($this->generateFor == 'single') {
-                return [
-                    'selectedEmployee' => 'required|exists:employee_details,emp_id', // Ensure employee exists
-                ];
+                $rules['selectedEmployee'] = 'required|exists:employee_details,emp_id'; // Ensure employee exists
             }
     
             // Validation for multiple employees
-            if ($this->generateFor == 'multiple') {
-                return [
-                    'selectedEmployees' => 'required|array|min:1', // Ensure it's an array and at least one employee is selected
-                    'selectedEmployees.*' => 'exists:employee_details,emp_id', // Ensure each employee exists
-                 
-                ];
+            if ($this->generateFor == 'multiple') {              
+                $rules['selectedEmployees'] = 'required|array|min:1';  // Ensure it's an array and at least one employee is selected
+                $rules['selectedEmployees.*'] = 'exists:employee_details,emp_id';  // Ensure each employee exists
             }
-            if($this->template_name == 'Appointment Order'){
-                return [
-                'ctc' => 'required|numeric|min:0',
-                ];
-            }
-    
-            // Additional validation for "Appointment Order" template
-            
         }
     
-        return []; // Default empty array if no other conditions match
+        // Return combined validation rules
+        return $rules;
     }
+    
     
 
     public function updated($propertyName)
@@ -79,6 +92,14 @@ class LetterPreparePage extends Component
     public function  updateAuthorizedSignatory()
     {
         $this->authorized_signatory = $this->authorized_signatory;
+    }
+    public function  updateCTC()
+    {
+        $this->ctc = $this->ctc;
+    }
+    public function updateSelectEmployee()
+    {
+        $this->selectedEmployees = $this->selectedEmployees;
     }
 
     public function updatedTemplateName()
@@ -185,6 +206,8 @@ class LetterPreparePage extends Component
     
                 // Fetch authorized signatory details
                 Log::info('Fetching authorized signatory details.');
+
+             
                 // dd($this->authorized_signatory);
                 // $authorizedDetails = AuthorizedSignatory::get();
                 $authorizedDetails = AuthorizedSignatory::whereRaw(
@@ -439,6 +462,7 @@ public $employees = [];
             $this->loadEmployees(); // Reload current employees
         }
     }
+    
     public function mount()
     {
         $this->signatories = AuthorizedSignatory::where('is_active', 1)->get(); // Fetch active signatories

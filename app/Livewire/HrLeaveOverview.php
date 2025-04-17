@@ -25,12 +25,14 @@ class HrLeaveOverview extends Component
         'Sick Leave' => '#ffd6a5',
         'Maternity Leave' => '#fdffb6', 
         'Casual Leave' => '#caffbf', 
+        'Earned Leave' => '#9bf6ff',
         'Marriage Leave' => '#a0c4ff', 
         'Casual Leave Probation' => '#bdb2ff', 
         'Paternity Leave' => '#8996cb',
     ];
     public $leaveTypeAbbreviations = [
         'Casual Leave' => 'CL',
+        'Earned Leave' => 'EL',
         'Sick Leave' => 'SL',
         'Maternity Leave' => 'ML',
         'Loss Of Pay' => 'LOP',
